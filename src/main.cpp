@@ -9,8 +9,7 @@
 
 #include "log.h"
 #include "resManager.h"
-
-#include "test.h"
+#include "animation.h"
 
 using json = nlohmann::json;
 using namespace rl;
@@ -25,11 +24,11 @@ int main()
 
     sf::Color bgColor(0, 0, 0);
 
-    Player player;
-    player.setOrigin(50, 50);
-    player.setPosition(500, 300);
-    player.setRotation(-30.f);
+    ResManager::setRootPath("/Users/roy4801/Desktop/Program/rish/dod/");
 
+    Animation test("reimu-hover", 4, "assets/", "reimu-hover{}.png");
+
+    test.setScale(sf::Vector2f(5.f, 5.f));
 
     while (window.isOpen())
     {
@@ -51,18 +50,19 @@ int main()
         // Update
         // ImGui
         ImGui::Begin("Debug");
+            ImGui::Checkbox("draw", &test.debugDrawFlag);
             // Position
-            float pos[2] = {player.getPosition().x, player.getPosition().y};
+            float pos[2] = {test.getPosition().x, test.getPosition().y};
             ImGui::DragFloat2("Position", pos, 1.f);
-            player.setPosition(pos[0], pos[1]);
+            test.setPosition(pos[0], pos[1]);
             // Rotate
-            float rotate = player.getRotation();
+            float rotate = test.getRotation();
             ImGui::SliderFloat("Rotate", &rotate, 0.f, 360.f);
-            player.setRotation(rotate);
+            test.setRotation(rotate);
             // Origin
-            float ori[2] = {player.getOrigin().x, player.getOrigin().y};
+            float ori[2] = {test.getOrigin().x, test.getOrigin().y};
             ImGui::DragFloat2("Origin", ori, 1.f);
-            player.setOrigin(ori[0], ori[1]);
+            test.setOrigin(ori[0], ori[1]);
         ImGui::End();
         // Game Update
 
@@ -82,7 +82,7 @@ int main()
 
         // SFML Draws
         window.pushGLStates();
-            window.draw(player);
+            window.draw(test);
         window.popGLStates();
 
         // imgui draws

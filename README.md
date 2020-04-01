@@ -4,6 +4,8 @@
   * SFML 2.5.1
   * ImGui 1.76
   * ImGui-SFML
+  * fmt
+  * nlohmann-json
 
 * Environment
   * msys2

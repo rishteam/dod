@@ -1,6 +1,6 @@
-#include <animation.h>
-#include <resManager.h>
-#include <log.h>
+#include "animation.h"
+#include "resManager.h"
+#include "log.h"
 
 namespace rl {
 
@@ -52,8 +52,7 @@ void Animation::loadRes()
     {
         std::string tar = fmt::format("{}_{}", m_texName, i);
         std::string fullPath = m_path + fmt::format(m_format, i);
-        // RL_DEBUG("Loading {} path={}", tar, fullPath);
-        if (!ResManager::loadRes(ResTexture, tar, fullPath))
+        if (!ResManager::loadRes(ResType::ResTexture, tar, fullPath))
         {
             RL_ERROR("Failed to load animation {} when loading texture {}\ntarget {}", m_texName, i, fullPath);
             m_spriteVec.clear();
@@ -70,19 +69,18 @@ void Animation::loadRes()
     ready = true;
 }
 
-void Animation::draw(sf::RenderTarget &target)
+void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     RL_ASSERT(ready, "Animation is not ready");
     float dur = reverse ? reverseDuration : duration;
     if (m_clk.getElapsedTime().asSeconds() >= dur / m_count)
     {
         m_clk.restart();
-        if(!reverse)
+        if(!reverse) // normal play
             m_nowFrame++;
         else
             m_nowFrame--;
-
-        if(!reverse)
+        if(!reverse) // normal play
         {
             if(m_nowFrame >= m_count)
             {
@@ -105,9 +103,26 @@ void Animation::draw(sf::RenderTarget &target)
     }
     sf::Sprite &now = *m_spriteVec[m_nowFrame];
     const sf::Transform &trans = getTransform();
-    // const sf::Vector2f &origin = getOrigin();
-    // now.setOrigin(origin);
-    target.draw(now, trans);
+    states.transform *= trans;
+    target.draw(now, states);
+
+    if(!debugDrawFlag) return;
+    // draw origin point
+    sf::Vector2f pos = getPosition();
+    pos.x -= debugCirRadius; pos.y -= debugCirRadius;
+    debugOrigCir.setRadius(debugCirRadius);
+    debugOrigCir.setPosition(pos);
+    debugOrigCir.setFillColor(sf::Color::Red);
+    // draw sprite rect
+    sf::FloatRect rect = now.getLocalBounds();
+    debugRect.setPosition(sf::Vector2f(rect.left, rect.top));
+    debugRect.setSize(sf::Vector2f(rect.width, rect.height));
+    debugRect.setFillColor(sf::Color::Transparent);
+    debugRect.setOutlineColor(sf::Color::Blue);
+    debugRect.setOutlineThickness(debugRectThick);
+    // actual draw
+    target.draw(debugOrigCir);
+    target.draw(debugRect, states);
 }
 
 // TODO: change the end point to loop points
