@@ -8,8 +8,10 @@ set(CMAKE_BUILD_TYPE Debug) # Debug Release
 # Add executable
 add_executable(dod
     src/main.cpp
-    src/log.cpp
+    src/test.cpp
+    # src/animation.cpp
     src/resManager.cpp
+    src/log.cpp
 )
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -60,6 +62,12 @@ if(NOT fmt_FOUND)
 endif()
 target_link_libraries(dod
     fmt::fmt
+)
+
+# Add nlohmann_json
+find_package(nlohmann_json 3.2.0 REQUIRED)
+target_link_libraries(dod
+    nlohmann_json::nlohmann_json
 )
 
 if(MSYS)

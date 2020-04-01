@@ -5,14 +5,19 @@
 
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include <nlohmann/json.hpp>
 
 #include "log.h"
 #include "resManager.h"
 
+#include "test.h"
+
+using json = nlohmann::json;
 using namespace rl;
 
 int main()
 {
+    setvbuf(stdout, nullptr, _IONBF, 0);
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(1280, 720), "CSGO");
     ImGui::SFML::Init(window);
@@ -20,13 +25,11 @@ int main()
 
     sf::Color bgColor(0, 0, 0);
 
-    Logger::setLogLevel(LOG_ERR);
+    Player player;
+    player.setOrigin(50, 50);
+    player.setPosition(500, 300);
+    player.setRotation(-30.f);
 
-    ResManager::setRootPath("C:/Users/Rish/Desktop/rish/dod");
-    ResManager::loadRes(ResType::ResMusic, "main-bg", "assets/a.ogg");
-
-    auto &main_bg = ResManager::getMusic("main-bg");
-    main_bg.play();
 
     while (window.isOpen())
     {
@@ -48,7 +51,18 @@ int main()
         // Update
         // ImGui
         ImGui::Begin("Debug");
-            ImGui::Text("test");
+            // Position
+            float pos[2] = {player.getPosition().x, player.getPosition().y};
+            ImGui::DragFloat2("Position", pos, 1.f);
+            player.setPosition(pos[0], pos[1]);
+            // Rotate
+            float rotate = player.getRotation();
+            ImGui::SliderFloat("Rotate", &rotate, 0.f, 360.f);
+            player.setRotation(rotate);
+            // Origin
+            float ori[2] = {player.getOrigin().x, player.getOrigin().y};
+            ImGui::DragFloat2("Origin", ori, 1.f);
+            player.setOrigin(ori[0], ori[1]);
         ImGui::End();
         // Game Update
 
@@ -57,7 +71,9 @@ int main()
         window.clear(bgColor); // Clear screen
 
         // OpenGL draws
-        glColor3f(1.0, 0.0, 0.0);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glColor4f(1.0, 0.0, 0.0, 0.5);
         glBegin(GL_TRIANGLES);
             glVertex2f(-0.5, -0.5);
             glVertex2f(0.0, 0.5);
@@ -66,7 +82,7 @@ int main()
 
         // SFML Draws
         window.pushGLStates();
-
+            window.draw(player);
         window.popGLStates();
 
         // imgui draws

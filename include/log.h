@@ -11,7 +11,6 @@ namespace rl {
 // Singleton logger
 // TODO: support multithreading
 // TODO: support for Imgui debug console
-
 // TODO: use bit mask to select which level to print
 // also *record* all log of all levels
 
