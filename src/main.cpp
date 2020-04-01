@@ -25,11 +25,6 @@ int main()
 
     sf::Color bgColor(0, 0, 0);
 
-    Player player;
-    player.setOrigin(50, 50);
-    player.setPosition(500, 300);
-    player.setRotation(-30.f);
-
 
     while (window.isOpen())
     {
@@ -51,18 +46,6 @@ int main()
         // Update
         // ImGui
         ImGui::Begin("Debug");
-            // Position
-            float pos[2] = {player.getPosition().x, player.getPosition().y};
-            ImGui::DragFloat2("Position", pos, 1.f);
-            player.setPosition(pos[0], pos[1]);
-            // Rotate
-            float rotate = player.getRotation();
-            ImGui::SliderFloat("Rotate", &rotate, 0.f, 360.f);
-            player.setRotation(rotate);
-            // Origin
-            float ori[2] = {player.getOrigin().x, player.getOrigin().y};
-            ImGui::DragFloat2("Origin", ori, 1.f);
-            player.setOrigin(ori[0], ori[1]);
         ImGui::End();
         // Game Update
 
