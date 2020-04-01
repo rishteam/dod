@@ -6,6 +6,11 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 
+#include "log.h"
+#include "resManager.h"
+
+using namespace rl;
+
 int main()
 {
     // Create the main window
@@ -14,6 +19,14 @@ int main()
     sf::Clock deltaClock;
 
     sf::Color bgColor(0, 0, 0);
+
+    Logger::setLogLevel(LOG_ERR);
+
+    ResManager::setRootPath("C:/Users/Rish/Desktop/rish/dod");
+    ResManager::loadRes(ResType::ResMusic, "main-bg", "assets/a.ogg");
+
+    auto &main_bg = ResManager::getMusic("main-bg");
+    main_bg.play();
 
     while (window.isOpen())
     {

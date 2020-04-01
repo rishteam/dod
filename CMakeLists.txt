@@ -8,6 +8,8 @@ set(CMAKE_BUILD_TYPE Debug) # Debug Release
 # Add executable
 add_executable(dod
     src/main.cpp
+    src/log.cpp
+    src/resManager.cpp
 )
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -39,6 +41,7 @@ target_link_libraries(dod
     ImGui-SFML::ImGui-SFML
 )
 
+# Add OpenGL
 find_package(OpenGL REQUIRED)
 if(NOT OpenGL_FOUND)
     message(FATAL_ERROR "OpenGL not found")
@@ -48,6 +51,15 @@ target_include_directories(dod
 )
 target_link_libraries(dod
     ${OPENGL_LIBRARIES}
+)
+
+# Add fmt
+find_package(fmt REQUIRED)
+if(NOT fmt_FOUND)
+    message(FATAL_ERROR "fmt not found")
+endif()
+target_link_libraries(dod
+    fmt::fmt
 )
 
 if(MSYS)
