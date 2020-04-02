@@ -1,3 +1,4 @@
+#include <array>
 #include <exception>
 
 #include <resManager.h>
@@ -14,7 +15,7 @@ std::vector<std::unique_ptr<sf::SoundBuffer>> ResManager::SoundBufferVec;
 S_RES_FIELD_IMPL(Music);
 
 // Root path for loading the resources
-std::string ResManager::rootPath;
+std::string ResManager::rootPath = ".";
 void ResManager::setRootPath(const std::string &path)
 {
     ResManager::rootPath = path;

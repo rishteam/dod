@@ -8,8 +8,7 @@ set(CMAKE_BUILD_TYPE Debug) # Debug Release
 # Add executable
 add_executable(dod
     src/main.cpp
-    src/test.cpp
-    # src/animation.cpp
+    src/animation.cpp
     src/resManager.cpp
     src/log.cpp
 )
@@ -79,7 +78,7 @@ if(MSYS)
 endif()
 
 # Copy files
-file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+# file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 # file(GLOB BINARY_DEP_DLLS
 #     "${CMAKE_SOURCE_DIR}/bin/*.dll"
 # )
