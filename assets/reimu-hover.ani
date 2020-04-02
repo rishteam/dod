@@ -2,7 +2,7 @@
     "name": "reimu-hover",
     "number": 4,
     "frames": {
-        "type": "separate|spritesheet",
+        "type": "separate",
         "separate": [
             "reimu-hover0.png",
             "reimu-hover1.png",

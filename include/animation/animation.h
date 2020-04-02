@@ -13,8 +13,6 @@
 
 #include <core.h>
 
-// TODO: implement load resource info for origin and fps and scale and loop
-
 // TODO: set loop start end
 // TODO: support flip
 

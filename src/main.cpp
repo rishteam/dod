@@ -1,3 +1,7 @@
+#include <fstream>
+#include <typeinfo>
+#include <cxxabi.h>
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -30,8 +34,22 @@ int main()
     ResManager::setRootPath("/Users/roy4801/Desktop/Program/rish/dod/");
 #endif
 
-    // Animation test("reimu-hover", 4, "assets/", "reimu-hover{}.png");
-    // test.setScale(sf::Vector2f(5.f, 5.f));
+    Animation test("reimu-hover", 4, "assets/", "reimu-hover{}.png");
+    test.setScale(sf::Vector2f(5.f, 5.f));
+
+    std::ifstream aniFile("../assets/reimu-hover.ani");
+    std::string aniContent((std::istreambuf_iterator<char>(aniFile)), (std::istreambuf_iterator<char>())); // read contents
+    json j = json::parse(aniContent);
+    // j << aniFile;
+    auto name = j["name"].get<std::string>();
+    int number = j["number"].get<int>();
+    auto frames = j["frames"];
+    std::string frameType = frames["type"];
+    auto files = frames["separate"];
+    std::vector<std::string> fileList = files;
+    auto isLoop = j["loop"];
+    // for(auto &f : fileList)
+    //     std::cout << f << '\n';
 
     while (window.isOpen())
     {
@@ -53,7 +71,7 @@ int main()
         // Update
         // ImGui
         ImGui::Begin("Debug");
-            // test.debugImGuiWidgets();
+            test.debugImGuiWidgets();
         ImGui::End();
         // Game Update
 
@@ -73,7 +91,7 @@ int main()
 
         // SFML Draws
         window.pushGLStates();
-            // window.draw(test);
+            window.draw(test);
         window.popGLStates();
 
         // imgui draws
