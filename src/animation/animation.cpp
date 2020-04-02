@@ -1,4 +1,5 @@
-#include "animation.h"
+#include "animation/animation.h"
+
 #include "resManager.h"
 #include "log.h"
 
@@ -121,8 +122,8 @@ void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
     debugRect.setOutlineColor(sf::Color::Blue);
     debugRect.setOutlineThickness(debugRectThick);
     // actual draw
-    target.draw(debugOrigCir);
     target.draw(debugRect, states);
+    target.draw(debugOrigCir);
 }
 
 // TODO: change the end point to loop points

@@ -9,6 +9,8 @@
 #include <fmt/core.h>
 #include <fmt/printf.h>
 
+#include <imgui.h>
+
 #include <core.h>
 
 // TODO: implement load resource info for origin and fps and scale and loop
@@ -51,15 +53,40 @@ private:
     int m_count;             // Frame count
     mutable int m_nowFrame;  // Current frame
     std::string m_texName;   // Texture prefix
-    std::string m_format, m_path;
+    std::string m_format;    // Filename format
+    std::string m_path;      // Path to the files
     std::vector<std::shared_ptr<sf::Sprite>> m_spriteVec; // sprite storage
     sf::Sprite empty;
     //
-    mutable sf::Clock m_clk;
-    bool ready; // impl
-
+    mutable sf::Clock m_clk; // clock
+    bool ready; // is the animation ready
+// For Debug ONLY
 public:
-    bool debugDrawFlag;
+    bool debugDrawFlag = false;
+
+    void debugImGuiWindow()
+    {
+        ImGui::Begin(m_texName.c_str());
+        debugImGuiWidgets();
+        ImGui::End();
+    }
+    void debugImGuiWidgets()
+    {
+        ImGui::Checkbox("draw", &debugDrawFlag);
+        // Position
+        float pos[2] = {getPosition().x, getPosition().y};
+        ImGui::DragFloat2("Position", pos, 1.f);
+        setPosition(pos[0], pos[1]);
+        // Rotate
+        float rotate = getRotation();
+        ImGui::SliderFloat("Rotate", &rotate, 0.f, 360.f);
+        setRotation(rotate);
+        // Origin
+        float ori[2] = {getOrigin().x, getOrigin().y};
+        ImGui::DragFloat2("Origin", ori, 1.f);
+        setOrigin(ori[0], ori[1]);
+    }
+
     mutable sf::CircleShape debugOrigCir;
     float debugCirRadius = 5.f;
     mutable sf::RectangleShape debugRect;

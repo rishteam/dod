@@ -1,0 +1,15 @@
+{
+    "name": "reimu-hover",
+    "number": 4,
+    "frames": {
+        "type": "separate|spritesheet",
+        "separate": [
+            "reimu-hover0.png",
+            "reimu-hover1.png",
+            "reimu-hover2.png",
+            "reimu-hover3.png"
+        ]
+    },
+    "loop": true,
+    "reverse": false
+}
