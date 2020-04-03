@@ -1,6 +1,7 @@
 {
     "name": "reimu-hover",
     "number": 4,
+    "rootPath": "./assets/",
     "frames": {
         "type": "separate",
         "separate": [

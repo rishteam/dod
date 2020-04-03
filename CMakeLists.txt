@@ -10,6 +10,7 @@ add_executable(dod
     src/main.cpp
     # Animation
     src/animation/animation.cpp
+    src/animation/loader.cpp
     # utilities
     src/resManager.cpp
     src/log.cpp

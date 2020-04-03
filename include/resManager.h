@@ -58,6 +58,7 @@ public:
     static std::string getPrefix();   // with the slash
 
     static bool loadRes(ResType type, std::string name, std::string path);
+    static bool releaseRes(ResType type, std::string name);
 
     static sf::Image& getImage(std::string name);
     static sf::Texture& getTexture(std::string name);

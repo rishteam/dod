@@ -57,7 +57,7 @@ bool ResManager::loadRes(ResType type, std::string name, std::string path)
         if(path.find(".png") == std::string::npos &&
            path.find(".jpg") == std::string::npos)
         {
-            RL_WARN("Wrong extention for image file");
+            RL_WARN("Wrong extention for image file : {}", path);
             return false;
         }
 
@@ -165,9 +165,55 @@ bool ResManager::loadRes(ResType type, std::string name, std::string path)
     // success to load the resource
     if(res)
     {
-        RL_DEBUG("Succeeded to load {}: {} path={}", type, name, path);
+        // RL_DEBUG("Succeeded to load {}: {} path={}", type, name, path);
     }
     return res;
+}
+
+bool ResManager::releaseRes(ResType type, std::string name)
+{
+    if(type == ResType::ResImage)
+    {
+        auto &imageIdx = ResManager::ImageIdx;
+        auto &imageVec = ResManager::ImageVec;
+        if(imageIdx.count(name))
+        {
+            imageVec.erase(imageVec.begin() + imageIdx[name]);
+            imageIdx.erase(name);
+        }
+    }
+    else if(type == ResType::ResTexture)
+    {
+        auto &texIdx = ResManager::TextureIdx;
+        auto &texVec = ResManager::TextureVec;
+        if (texIdx.count(name))
+        {
+            texVec.erase(texVec.begin() + texIdx[name]);
+            texIdx.erase(name);
+        }
+    }
+    else if(type == ResType::ResSound)
+    {
+        auto &soundIdx = ResManager::SoundIdx;
+        auto &soundVec = ResManager::SoundVec;
+        if (soundIdx.count(name))
+        {
+            soundVec.erase(soundVec.begin() + soundIdx[name]);
+            soundIdx.erase(name);
+        }
+    }
+    else if(type == ResType::ResMusic)
+    {
+        auto &musicIdx = ResManager::MusicIdx;
+        auto &musicVec = ResManager::MusicVec;
+        if (musicIdx.count(name))
+        {
+            musicVec.erase(musicVec.begin() + musicIdx[name]);
+            musicIdx.erase(name);
+        }
+    }
+
+    return true; // TODO: deal with false state
 }
 
 sf::Image& ResManager::getImage(std::string name)

@@ -20,44 +20,71 @@
 
 namespace rl {
 
+class AnimationLoader;
+
+// e.g.
+// Animation test("reimu-hover", 4, "assets/", "reimu-hover{}.png");
+
 class Animation : public sf::Transformable, public sf::Drawable
 {
+    friend class AnimationLoader;
 public:
+    // Constructors
     Animation();
-    Animation(std::string texName, int count,
-        std::string path, std::string fnameFmt,
-        bool load=true);
-    // TODO: impl
-    void setInfo(std::string texName, int count, std::string path, std::string fnameFmt);
-    void loadRes();
+
+    // Load animation from a config file
+    Animation(std::string configPath);
+
+    // Operators
+    Animation& operator=(const Animation &other);
 
     // Main function
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
     // the duration of the animation (second)
     float duration, reverseDuration;
-    bool loop;
-    bool reverse;
+    bool m_loop;
+    bool m_reverse;
 
     bool isEnd();
 
-    void resetFrame() { m_nowFrame = 0; }
+    void addFrame(const sf::Texture &tex)
+    {
+        m_textureVec.push_back(tex);
+    }
+    bool removeFrame(int idx=-1)
+    {
+        if(idx == -1)
+            idx = m_textureVec.size()-1;
+        if(idx < m_textureVec.size() && idx != -1)
+        {
+            m_textureVec.erase(m_textureVec.begin() + idx);
+            return true;
+        }
+        else
+            return false;
+    }
 
-    const sf::Sprite &getNowSprite() const { return m_nowFrame >= 0 && m_nowFrame < m_count ? *m_spriteVec[m_nowFrame] : empty; }
-    int getNowFrame() { return m_nowFrame; }
-    int getTotalFrame() { return m_count; }
+    const sf::Sprite& getSprite() const { return m_sprite; }
+    const sf::Texture& getNowTexture() const { return m_nowFrame < m_textureVec.size() ? m_textureVec[m_nowFrame] : m_emptyTexture; }
+    void resetNowFrameCount() { m_nowFrame = 0; }
+    int getNowFrameCount() { return m_nowFrame; }
+    int getTotalFrameCount() { return m_count; }
 private:
     // Texture attributes
-    int m_count;             // Frame count
-    mutable int m_nowFrame;  // Current frame
-    std::string m_texName;   // Texture prefix
-    std::string m_format;    // Filename format
-    std::string m_path;      // Path to the files
-    std::vector<std::shared_ptr<sf::Sprite>> m_spriteVec; // sprite storage
-    sf::Sprite empty;
+    int m_count;                // Frame count
+    mutable int m_nowFrame;     // Current frame
+    std::string m_texName;      // Texture prefix
+    std::string m_format;       // Filename format
+    std::string m_path;         // Path to the files
+    // TODO: change this to std::list
+    std::vector<sf::Texture> m_textureVec; // Texture list
+    sf::Texture m_emptyTexture; // empty texture
+    mutable sf::Sprite m_sprite;// Sprite for drawing
     //
     mutable sf::Clock m_clk; // clock
     bool ready; // is the animation ready
+
 // For Debug ONLY
 public:
     bool debugDrawFlag = false;
@@ -89,6 +116,15 @@ public:
     float debugCirRadius = 5.f;
     mutable sf::RectangleShape debugRect;
     float debugRectThick = 1.f;
+
+// print
+public:
+    friend std::ostream &operator<<(std::ostream& os, const Animation &ani)
+    {
+        std::string info = fmt::format("<Animation \"{}\" {}>", ani.m_texName, ani.m_count);
+        os << info;
+        return os;
+    }
 };
 
 }

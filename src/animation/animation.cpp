@@ -1,4 +1,7 @@
+#include <fstream>
+
 #include "animation/animation.h"
+#include "animation/loader.h"
 
 #include "resManager.h"
 #include "log.h"
@@ -10,82 +13,54 @@ Animation::Animation()
 {
     duration = reverseDuration = 1.f;
     m_count = m_nowFrame = 0;
-    loop = true;
-    reverse = false;
+    m_loop = true;
+    m_reverse = false;
 
     ready = false;
 }
 
-// TODO: sprite rotation
-// Refactor: Use only one sprite but set different texture.
-
-// Parameter Constructor of rl::Animation
-// Parameters:
-// std::string texName  : texture name
-// int count            : Number of textures
-// std::string path     : Path to the files (Need a slash`/` in the end)
-// std::string fnameFmt : filename format
-// bool load=true       : If true, load resources in constructor. Otherwise it need to load manaually
-Animation::Animation(std::string texName, int count,
-    std::string path, std::string fnameFmt,
-    bool load)
-    : Animation()
+Animation::Animation(std::string configPath) :
+    Animation()
 {
-    m_texName = texName;
-    m_count   = count;
-    m_path    = path;
-    m_format  = fnameFmt;
-    if(load) loadRes();
+    // Read file
+    std::ifstream aniFile(configPath);
+    std::string aniContent((std::istreambuf_iterator<char>(aniFile)), (std::istreambuf_iterator<char>()));
+    //
+    *this = AnimationLoader::loadFromString(aniContent);
 }
 
-void Animation::setInfo(std::string texName, int count,
-                        std::string path, std::string fnameFmt)
+// Operator
+Animation& Animation::operator=(const Animation &other)
 {
-    m_texName = texName;
-    m_count   = count;
-    m_path    = path;
-    m_format  = fnameFmt;
-}
-
-void Animation::loadRes()
-{
-    for(int i = 0; i < m_count; i++)
-    {
-        std::string tar = fmt::format("{}_{}", m_texName, i);
-        std::string fullPath = m_path + fmt::format(m_format, i);
-        if (!ResManager::loadRes(ResType::ResTexture, tar, fullPath))
-        {
-            RL_ERROR("Failed to load animation {} when loading texture {}\ntarget {}", m_texName, i, fullPath);
-            m_spriteVec.clear();
-            m_count = 0;
-            return;
-        }
-        else
-        {
-            sf::Texture &tex = ResManager::getTexture(tar);
-            m_spriteVec.push_back(std::make_shared<sf::Sprite>(tex));
-            sf::Sprite &sprite = *m_spriteVec.back();
-        }
-    }
-    ready = true;
+    m_count = other.m_count;
+    m_nowFrame = other.m_nowFrame;
+    m_texName = other.m_texName;
+    m_format = other.m_format;
+    m_path = other.m_path;
+    m_textureVec = other.m_textureVec;
+    m_emptyTexture = other.m_emptyTexture;
+    m_sprite = other.m_sprite;
+    m_clk = other.m_clk;
+    ready = other.ready;
+    return *this;
 }
 
 void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     RL_ASSERT(ready, "Animation is not ready");
-    float dur = reverse ? reverseDuration : duration;
+    float dur = m_reverse ? reverseDuration : duration;
     if (m_clk.getElapsedTime().asSeconds() >= dur / m_count)
     {
         m_clk.restart();
-        if(!reverse) // normal play
+        if(!m_reverse) // normal play
             m_nowFrame++;
         else
             m_nowFrame--;
-        if(!reverse) // normal play
+        if(!m_reverse) // normal play
         {
             if(m_nowFrame >= m_count)
             {
-                if(loop)
+                if(m_loop)
                     m_nowFrame = 0;
                 else
                     m_nowFrame = m_count-1;
@@ -95,17 +70,18 @@ void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
         {
             if(m_nowFrame < 0)
             {
-                if(loop)
+                if(m_loop)
                     m_nowFrame = m_count-1;
                 else
                     m_nowFrame = 0;
             }
         }
     }
-    sf::Sprite &now = *m_spriteVec[m_nowFrame];
+    m_sprite.setTexture(m_textureVec[m_nowFrame]);
+
     const sf::Transform &trans = getTransform();
     states.transform *= trans;
-    target.draw(now, states);
+    target.draw(m_sprite, states);
 
     if(!debugDrawFlag) return;
     // draw origin point
@@ -115,7 +91,7 @@ void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
     debugOrigCir.setPosition(pos);
     debugOrigCir.setFillColor(sf::Color::Red);
     // draw sprite rect
-    sf::FloatRect rect = now.getLocalBounds();
+    sf::FloatRect rect = m_sprite.getLocalBounds();
     debugRect.setPosition(sf::Vector2f(rect.left, rect.top));
     debugRect.setSize(sf::Vector2f(rect.width, rect.height));
     debugRect.setFillColor(sf::Color::Transparent);
@@ -130,9 +106,9 @@ void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
 bool Animation::isEnd()
 {
     RL_ASSERT(ready, "Animation is not ready");
-    if(loop) return false;
+    if(m_loop) return false;
 
-    if(reverse)
+    if(m_reverse)
         return m_nowFrame == 0;
     else
         return m_nowFrame == m_count-1;

@@ -14,6 +14,7 @@
 #include "log.h"
 #include "resManager.h"
 #include "animation/animation.h"
+#include "animation/loader.h"
 
 using json = nlohmann::json;
 using namespace rl;
@@ -21,6 +22,7 @@ using namespace rl;
 int main()
 {
     setvbuf(stdout, nullptr, _IONBF, 0);
+    setvbuf(stderr, nullptr, _IONBF, 0);
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(1280, 720), "CSGO");
     ImGui::SFML::Init(window);
@@ -29,28 +31,13 @@ int main()
     sf::Color bgColor(0, 0, 0);
 
 #ifdef _WIN32
-    ResManager::setRootPath("C:/Users/Rish/Desktop/rish/dod");
+    ResManager::setRootPath("C:/Users/Rish/Desktop/rish/dod/");
 #elif __APPLE__
     ResManager::setRootPath("/Users/roy4801/Desktop/Program/rish/dod/");
 #endif
 
-    Animation test("reimu-hover", 4, "assets/", "reimu-hover{}.png");
-    test.setScale(sf::Vector2f(5.f, 5.f));
-
-    std::ifstream aniFile("../assets/reimu-hover.ani");
-    std::string aniContent((std::istreambuf_iterator<char>(aniFile)), (std::istreambuf_iterator<char>())); // read contents
-    json j = json::parse(aniContent);
-    // j << aniFile;
-    auto name = j["name"].get<std::string>();
-    int number = j["number"].get<int>();
-    auto frames = j["frames"];
-    std::string frameType = frames["type"];
-    auto files = frames["separate"];
-    std::vector<std::string> fileList = files;
-    auto isLoop = j["loop"];
-    // for(auto &f : fileList)
-    //     std::cout << f << '\n';
-
+    Animation test("../assets/reimu-hover.ani");
+    //
     while (window.isOpen())
     {
         ///////////////////////////////////////
