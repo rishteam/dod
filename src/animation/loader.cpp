@@ -75,4 +75,9 @@ FAIL:
     return empty;
 }
 
+std::string AnimationLoader::dumpFromObject(const Animation &obj)
+{
+
+}
+
 }

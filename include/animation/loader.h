@@ -8,6 +8,8 @@ namespace rl {
 
 class Animation;
 
+// TODO
+
 class AnimationLoader
 {
 public:
@@ -15,6 +17,7 @@ public:
 
     static Animation loadFromString(const std::string &str);
     static Animation loadFromJson(const nlo::json &json);
+    static std::string dumpFromObject(const Animation &obj);
 };
 
 }
