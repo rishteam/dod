@@ -49,6 +49,8 @@ std::ostream& operator<<(std::ostream& os, ResType type);
 // Set root dir of the resource path
 // ResManager::setRootPath("C:/Users/Rish/Desktop/rish/dod");
 
+class Animation; // forward declaration
+
 // Resource Manager
 class ResManager
 {
@@ -77,9 +79,12 @@ private:
     static std::unordered_map<std::string, std::unique_ptr<sf::SoundBuffer>> SoundBufferMap;
     S_RES_FIELD(Music);
 
+public:
     // TODO: implement other missing resources
-    static sf::Texture *missingTexture;
+    static sf::Texture missingTexture;
+    static Animation missingAnimation;
 
+private:
     static std::string rootPath;
     static std::unordered_map<std::string, std::string> filePath[ResCount];
 };

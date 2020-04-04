@@ -1,9 +1,11 @@
 #include <array>
 #include <exception>
 
-#include <resManager.h>
-#include <core.h>
-#include <log.h>
+#include "resManager.h"
+#include "core.h"
+#include "log.h"
+
+#include "animation/animation.h"
 
 namespace rl{
 
@@ -22,10 +24,13 @@ void ResManager::init(const std::string &path)
     ResManager::setRootPath(path);
     // Load missings
     ResManager::loadRes(ResType::ResTexture, "missing_texture", "./assets/missing_texture.png");
-    ResManager::missingTexture = &ResManager::getTexture("missing_texture");
+    ResManager::missingTexture = ResManager::getTexture("missing_texture");
+
+    ResManager::missingAnimation.addFrame(ResManager::missingTexture);
 }
 
-sf::Texture *ResManager::missingTexture = nullptr;
+sf::Texture ResManager::missingTexture;
+Animation ResManager::missingAnimation;
 
 // Root path for loading the resources
 std::string ResManager::rootPath = ".";
@@ -237,7 +242,7 @@ sf::Texture& ResManager::getTexture(std::string name)
     if(!texMap.count(name))
     {
         RL_WARN("Missing texture: {}\n", name);
-        return *ResManager::missingTexture;
+        return ResManager::missingTexture;
     }
     else
         return *texMap[name];

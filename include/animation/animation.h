@@ -43,6 +43,10 @@ public:
     // Main function
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
+    void pause() { m_pause = true; }
+    void resume() { m_pause = false; }
+    void stop() { m_pause = true; m_nowFrame = 0; }
+
     // the duration of the animation (second)
     float duration = 0.f;
     float reverseDuration = 0.f;
@@ -57,6 +61,7 @@ public:
     }
     bool removeFrame(int idx=-1)
     {
+        // TODO: make tex std::list for optimizing
         if(idx == -1)
             idx = m_textureVec.size()-1;
         if(idx < m_textureVec.size() && idx != -1)
@@ -70,7 +75,7 @@ public:
 
     const sf::Sprite& getSprite() const { return m_sprite; }
     const sf::Texture& getNowTexture() const { return m_nowFrame < m_textureVec.size() ? m_textureVec[m_nowFrame] : m_emptyTexture; }
-    void setNowFrameCount(const int cnt) { if(cnt > 0 && cnt < m_count) m_nowFrame = 0; }
+    void setNowFrameCount(const int cnt) { m_nowFrame = cnt>=0 && cnt<m_count ? cnt : 0; }
     int getNowFrameCount() { return m_nowFrame; }
     int getTotalFrameCount() { return m_count; }
     // The load type of the animation
@@ -89,11 +94,13 @@ private:
     std::string m_texName;          // Texture prefix
     // TODO: change this to std::list
     std::vector<sf::Texture> m_textureVec; // Texture list
-    sf::Texture m_emptyTexture; // empty texture
+    sf::Texture m_emptyTexture; // empty texture TODO: deprecate? need check
     mutable sf::Sprite m_sprite;// Sprite for drawing
     //
     mutable sf::Clock m_clk; // clock
     bool m_ready = false; // is the animation ready
+
+    bool m_pause = false; // is the animation pause
 
 // For Debug ONLY
 public:

@@ -38,8 +38,8 @@ int main()
     ResManager::init("/Users/roy4801/Desktop/Program/rish/dod/");
 #endif
     AnimationEditor animationEditor;
-    Animation test("../assets/reimu-hover.ani");
-    test.setScale(sf::Vector2f(5.f, 5.f));
+    // Animation test("../assets/reimu-hover.ani");
+    // test.setScale(sf::Vector2f(5.f, 5.f));
 
     //
     while (window.isOpen())
@@ -50,6 +50,9 @@ int main()
         while (window.pollEvent(event))
         {
             ImGui::SFML::ProcessEvent(event);
+            //
+            animationEditor.processEvent(event);
+
             // Close window: exit
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -64,7 +67,7 @@ int main()
         animationEditor.update();
         ImGui::Begin("Debug");
         {
-            test.debugImGuiWidgets();
+            // test.debugImGuiWidgets();
 
             if(animationEditor.selectedOpenFile)
             {
@@ -90,7 +93,8 @@ int main()
 
         // SFML Draws
         window.pushGLStates();
-            window.draw(test);
+            window.draw(animationEditor);
+            // window.draw(test);
         window.popGLStates();
 
         // imgui draws

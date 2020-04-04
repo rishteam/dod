@@ -1,17 +1,52 @@
 #include <imgui.h>
 
-#include "animation/editor/editor.h"
+#include "resManager.h"
 #include "log.h"
+#include "animation/editor/editor.h"
+#include "animation/loader.h"
 
 namespace rl {
+
+AnimationEditor::AnimationEditor()
+{
+}
+
+void AnimationEditor::processEvent(const sf::Event &e)
+{
+    // RL_DEBUG("Not implement yet");
+}
 
 void AnimationEditor::update()
 {
     updateMainMenuBar();
     //
     updateOpenFileDialog();
+    //
+    if(m_loadEditTarget)
+    {
+        m_showAttributeWindow = true;
+    }
+    updateAttributeWindow();
+    //
+    if (selectedOpenFile)
+    {
+        if(!m_loadEditTarget)
+        {
+            openAnimationConfig(currentOpenFilePath);
+            m_editTarget.setScale(5.f, 5.f);
+            m_editTarget.setPosition(100, 100);
+        }
+        m_editTarget.debugImGuiWindow();
+    }
 }
 
+void AnimationEditor::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+    if(m_loadEditTarget)
+        target.draw(m_editTarget, states);
+}
+
+// TODO: Make this window ment bar
 void AnimationEditor::updateMainMenuBar()
 {
     if(!m_showMainMentBar) return;
@@ -48,6 +83,7 @@ void AnimationEditor::updateOpenFileDialog()
 {
     if(!m_showOpenFileDialog) return;
     ImGui::Begin("Open");
+    // TODO: use string view to optimize
     constexpr int FilePathInputLen = 256;
     static char filePathInputBuf[256];
     ImGui::InputTextWithHint("File Path", "enter path here", filePathInputBuf, FilePathInputLen);
@@ -58,6 +94,54 @@ void AnimationEditor::updateOpenFileDialog()
         m_showOpenFileDialog = false;
         RL_DEBUG("{}", currentOpenFilePath);
     }
+    if(ImGui::Button("debug"))
+    {
+        selectedOpenFile = true;
+        currentOpenFilePath = ResManager::getRootPath() + "./assets/reimu-hover.ani";
+        m_showOpenFileDialog = false;
+    }
+    ImGui::End();
+}
+
+void AnimationEditor::openAnimationConfig(std::string path)
+{
+    m_editTarget = AnimationLoader::loadFromFile(path);
+    m_loadEditTarget = true;
+}
+
+// TODO: make slider disabled when playing the animaion
+void AnimationEditor::updateAttributeWindow()
+{
+    if(!m_showAttributeWindow) return;
+
+    ImGui::Begin("Attribute");
+
+    ImGui::AlignTextToFramePadding();
+    // Frame
+    ImGui::Text("Frames"); ImGui::SameLine();
+    int nowFrame = m_editTarget.getNowFrameCount();
+    ImGui::SliderInt("##frameSlider", &nowFrame, 0, m_editTarget.getTotalFrameCount());
+    m_editTarget.setNowFrameCount(nowFrame);
+    // Play and Stop button
+    static const char *btnLabel[2] = {"Pause", "Play"};
+    if(ImGui::Button(btnLabel[m_buttonState]))
+    {
+        m_buttonState = static_cast<AnimationBtnState>((m_buttonState + 1) % BtnStateTotal);
+        // btn is Pause -> ani is Playing
+        // btn is Play  -> ani is Pausing
+        if (m_buttonState == BtnPause)
+            m_editTarget.resume();
+        else if (m_buttonState == BtnPlay)
+            m_editTarget.pause();
+    }
+    //
+    ImGui::SameLine();
+    if(ImGui::Button("Stop"))
+    {
+        m_buttonState = BtnPlay;
+        m_editTarget.stop();
+    }
+
     ImGui::End();
 }
 

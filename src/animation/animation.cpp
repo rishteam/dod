@@ -16,9 +16,10 @@ Animation::Animation()
 Animation::Animation(const std::string &configPath)
     : Animation()
 {
-    loadConfig(configPath);
+    loadConfig(configPath); // TODO: deprecate
 }
 
+// TODO: deprecate
 void Animation::loadConfig(const std::string &configPath)
 {
     // Read file
@@ -28,11 +29,16 @@ void Animation::loadConfig(const std::string &configPath)
     *this = AnimationLoader::loadFromString(aniContent);
 }
 
+// TODO: split updae and draw
 void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     RL_ASSERT(m_ready, "Animation is not ready");
+    // Update the animation frame
     float dur = reverse ? reverseDuration : duration;
-    if (m_clk.getElapsedTime().asSeconds() >= dur / m_count)
+    //
+    if(m_pause)
+        m_clk.restart();
+    if (!m_pause && m_clk.getElapsedTime().asSeconds() >= dur / m_count)
     {
         m_clk.restart();
         if(!reverse) // normal play

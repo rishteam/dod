@@ -1,6 +1,6 @@
 #include <string>
 #include <vector>
-#include <string>
+#include <fstream>
 
 #include <fmt/format.h>
 
@@ -11,6 +11,20 @@
 
 namespace rl
 {
+
+Animation AnimationLoader::loadFromFile(const std::string &path)
+{
+    // TODO: refactor ot vfs
+    // Read file
+    std::ifstream aniFile(path);
+    if(!aniFile)
+    {
+        RL_ERROR("Failed to load animation: {}\n", path);
+        return ResManager::missingAnimation;
+    }
+    std::string aniContent((std::istreambuf_iterator<char>(aniFile)), (std::istreambuf_iterator<char>()));
+    return loadFromString(aniContent);
+}
 
 Animation AnimationLoader::loadFromString(const std::string &str)
 {
