@@ -53,6 +53,7 @@ std::ostream& operator<<(std::ostream& os, ResType type);
 class ResManager
 {
 public:
+    static void init(const std::string &path);
     static void setRootPath(const std::string &path);
     static std::string getRootPath();
     static std::string getPrefix();   // with the slash
@@ -76,8 +77,10 @@ private:
     static std::unordered_map<std::string, std::unique_ptr<sf::SoundBuffer>> SoundBufferMap;
     S_RES_FIELD(Music);
 
-    static std::string rootPath;
+    // TODO: implement other missing resources
+    static sf::Texture *missingTexture;
 
+    static std::string rootPath;
     static std::unordered_map<std::string, std::string> filePath[ResCount];
 };
 

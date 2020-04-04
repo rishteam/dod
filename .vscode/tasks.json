@@ -6,10 +6,17 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "cd build && make clean && make -j6",
+            "command": "cd build && make -j6 && ./dod.exe",
             "group": {
                 "kind": "build",
                 "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always", // never always
+                "focus": false,
+                "clear": true,
+                "showReuseMessage": true,
+                "panel": "shared"
             }
         },
     ]

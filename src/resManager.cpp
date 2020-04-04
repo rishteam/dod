@@ -16,6 +16,17 @@ S_RES_FIELD_IMPL(Music);
 
 std::unordered_map<std::string, std::string> ResManager::filePath[ResCount];
 
+// Init
+void ResManager::init(const std::string &path)
+{
+    ResManager::setRootPath(path);
+    // Load missings
+    ResManager::loadRes(ResType::ResTexture, "missing_texture", "./assets/missing_texture.png");
+    ResManager::missingTexture = &ResManager::getTexture("missing_texture");
+}
+
+sf::Texture *ResManager::missingTexture = nullptr;
+
 // Root path for loading the resources
 std::string ResManager::rootPath = ".";
 void ResManager::setRootPath(const std::string &path)
@@ -223,8 +234,13 @@ sf::Image& ResManager::getImage(std::string name)
 sf::Texture& ResManager::getTexture(std::string name)
 {
     auto &texMap = ResManager::TextureMap;
-    RL_ASSERT(texMap.count(name), "Texture {} not found", name);
-    return *texMap[name];
+    if(!texMap.count(name))
+    {
+        RL_WARN("Missing texture: {}\n", name);
+        return *ResManager::missingTexture;
+    }
+    else
+        return *texMap[name];
 }
 
 sf::Sound& ResManager::getSound(std::string name)

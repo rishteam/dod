@@ -8,9 +8,14 @@ set(CMAKE_BUILD_TYPE Debug) # Debug Release
 # Add executable
 add_executable(dod
     src/main.cpp
+
     # Animation
     src/animation/animation.cpp
     src/animation/loader.cpp
+
+    # Animation Editor
+    src/animation/editor/editor.cpp
+
     # utilities
     src/resManager.cpp
     src/log.cpp

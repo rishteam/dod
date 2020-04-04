@@ -11,7 +11,7 @@
 
 #include <imgui.h>
 
-#include <core.h>
+#include "core.h"
 
 // TODO: set loop start end
 // TODO: support flip
@@ -21,6 +21,7 @@
 namespace rl {
 
 class AnimationLoader;
+class AnimationEditor;
 
 // e.g.
 // Animation test("../assets/reimu-hover.ani");
@@ -28,6 +29,7 @@ class AnimationLoader;
 class Animation : public sf::Transformable, public sf::Drawable
 {
     friend class AnimationLoader;
+    friend class AnimationEditor;
 public:
     // Constructors
     Animation();
