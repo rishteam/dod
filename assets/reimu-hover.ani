@@ -1,16 +1,17 @@
 {
     "name": "reimu-hover",
     "number": 4,
-    "rootPath": "./assets/",
     "frames": {
         "type": "separate",
         "separate": [
-            "reimu-hover0.png",
-            "reimu-hover1.png",
-            "reimu-hover2.png",
-            "reimu-hover3.png"
+            "./assets/reimu-hover0.png",
+            "./assets/reimu-hover1.png",
+            "./assets/reimu-hover2.png",
+            "./assets/reimu-hover3.png"
         ]
     },
+    "duration": 0.5,
+    "reverseDuration": 1.0,
     "loop": true,
     "reverse": false
 }

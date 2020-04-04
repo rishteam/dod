@@ -37,6 +37,7 @@ int main()
 #endif
 
     Animation test("../assets/reimu-hover.ani");
+    test.setScale(sf::Vector2f(5.f, 5.f));
     //
     while (window.isOpen())
     {

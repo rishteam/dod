@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include <memory>
 #include <unordered_map>
 
@@ -15,13 +16,11 @@
 namespace rl {
 
 // macros for declaring and implementing the resource container
-#define S_RES_FIELD(ID)                                    \
-    static std::unordered_map<std::string, int> ID ## Idx; \
-    static std::vector<std::unique_ptr<sf::ID>> ID ## Vec
+#define S_RES_FIELD(ID)                                                      \
+    static std::unordered_map<std::string, std::unique_ptr<sf::ID>> ID ## Map
 
-#define S_RES_FIELD_IMPL(ID)                                  \
-    std::unordered_map<std::string, int> ResManager::ID ## Idx; \
-    std::vector<std::unique_ptr<sf::ID>> ResManager::ID ## Vec
+#define S_RES_FIELD_IMPL(ID)                                                     \
+    std::unordered_map<std::string, std::unique_ptr<sf::ID>> ResManager::ID ## Map
 
 enum class ResType: char
 {
@@ -31,6 +30,7 @@ enum class ResType: char
     ResMusic
 };
 #define ResCount 4
+
 // for printing enum class ResType
 std::ostream& operator<<(std::ostream& os, ResType type);
 
@@ -56,10 +56,14 @@ public:
     static void setRootPath(const std::string &path);
     static std::string getRootPath();
     static std::string getPrefix();   // with the slash
-
+    // Load the resource
     static bool loadRes(ResType type, std::string name, std::string path);
+    // Release the resource if it can be
     static bool releaseRes(ResType type, std::string name);
+    // Get the file path of a resource
+    static std::string getResPath(ResType type, std::string name);
 
+    // Getters
     static sf::Image& getImage(std::string name);
     static sf::Texture& getTexture(std::string name);
     static sf::Sound& getSound(std::string name);
@@ -69,10 +73,12 @@ private:
     S_RES_FIELD(Image);
     S_RES_FIELD(Texture);
     S_RES_FIELD(Sound);
-    static std::vector<std::unique_ptr<sf::SoundBuffer>> SoundBufferVec;
+    static std::unordered_map<std::string, std::unique_ptr<sf::SoundBuffer>> SoundBufferMap;
     S_RES_FIELD(Music);
 
     static std::string rootPath;
+
+    static std::unordered_map<std::string, std::string> filePath[ResCount];
 };
 
 }

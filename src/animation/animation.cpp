@@ -11,16 +11,15 @@ namespace rl {
 // Default constructor of rl::animation
 Animation::Animation()
 {
-    duration = reverseDuration = 1.f;
-    m_count = m_nowFrame = 0;
-    m_loop = true;
-    m_reverse = false;
-
-    ready = false;
 }
 
-Animation::Animation(std::string configPath) :
-    Animation()
+Animation::Animation(const std::string &configPath)
+    : Animation()
+{
+    loadConfig(configPath);
+}
+
+void Animation::loadConfig(const std::string &configPath)
 {
     // Read file
     std::ifstream aniFile(configPath);
@@ -29,38 +28,22 @@ Animation::Animation(std::string configPath) :
     *this = AnimationLoader::loadFromString(aniContent);
 }
 
-// Operator
-Animation& Animation::operator=(const Animation &other)
-{
-    m_count = other.m_count;
-    m_nowFrame = other.m_nowFrame;
-    m_texName = other.m_texName;
-    m_format = other.m_format;
-    m_path = other.m_path;
-    m_textureVec = other.m_textureVec;
-    m_emptyTexture = other.m_emptyTexture;
-    m_sprite = other.m_sprite;
-    m_clk = other.m_clk;
-    ready = other.ready;
-    return *this;
-}
-
 void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    RL_ASSERT(ready, "Animation is not ready");
-    float dur = m_reverse ? reverseDuration : duration;
+    RL_ASSERT(m_ready, "Animation is not ready");
+    float dur = reverse ? reverseDuration : duration;
     if (m_clk.getElapsedTime().asSeconds() >= dur / m_count)
     {
         m_clk.restart();
-        if(!m_reverse) // normal play
+        if(!reverse) // normal play
             m_nowFrame++;
         else
             m_nowFrame--;
-        if(!m_reverse) // normal play
+        if(!reverse) // normal play
         {
             if(m_nowFrame >= m_count)
             {
-                if(m_loop)
+                if(loop)
                     m_nowFrame = 0;
                 else
                     m_nowFrame = m_count-1;
@@ -70,7 +53,7 @@ void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
         {
             if(m_nowFrame < 0)
             {
-                if(m_loop)
+                if(loop)
                     m_nowFrame = m_count-1;
                 else
                     m_nowFrame = 0;
@@ -105,10 +88,10 @@ void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const
 // TODO: change the end point to loop points
 bool Animation::isEnd()
 {
-    RL_ASSERT(ready, "Animation is not ready");
-    if(m_loop) return false;
+    RL_ASSERT(m_ready, "Animation is not ready");
+    if(loop) return false;
 
-    if(m_reverse)
+    if(reverse)
         return m_nowFrame == 0;
     else
         return m_nowFrame == m_count-1;
