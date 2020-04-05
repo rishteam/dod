@@ -1,9 +1,11 @@
 #pragma once
 
+#include <functional>
 #include <string>
+//
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Drawable.hpp>
-
+//
 #include "animation/animation.h"
 
 namespace rl {
@@ -39,6 +41,12 @@ public:
         BtnStateTotal
     };
     AnimationBtnState m_buttonState = BtnPause;
+
+    // Animation Attribute Editor
+    void updateAnimationAttributeEditorWidgets();
+    // add attribute
+    using AfterInputAttrFunc = std::function<void()>;
+    void AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func=nullptr);
     //
 public:
     std::string currentOpenFilePath;
@@ -49,7 +57,6 @@ private:
     bool m_loadEditTarget = false;
 
     void openAnimationConfig(std::string path);
-
 
 };
 

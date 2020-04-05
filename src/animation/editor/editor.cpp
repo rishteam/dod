@@ -116,12 +116,16 @@ void AnimationEditor::updateAttributeWindow()
 
     ImGui::Begin("Attribute");
 
-    ImGui::AlignTextToFramePadding();
+    // Name
+    ImGui::Text("%s", m_editTarget.m_texName.c_str());
+
     // Frame
+    ImGui::AlignTextToFramePadding();
     ImGui::Text("Frames"); ImGui::SameLine();
     int nowFrame = m_editTarget.getNowFrameCount();
-    ImGui::SliderInt("##frameSlider", &nowFrame, 0, m_editTarget.getTotalFrameCount());
+    ImGui::SliderInt("##frameSlider", &nowFrame, 0, m_editTarget.getTotalFrameCount()-1);
     m_editTarget.setNowFrameCount(nowFrame);
+
     // Play and Stop button
     static const char *btnLabel[2] = {"Pause", "Play"};
     if(ImGui::Button(btnLabel[m_buttonState]))
@@ -134,7 +138,8 @@ void AnimationEditor::updateAttributeWindow()
         else if (m_buttonState == BtnPlay)
             m_editTarget.pause();
     }
-    //
+
+    // Stop button
     ImGui::SameLine();
     if(ImGui::Button("Stop"))
     {
@@ -142,7 +147,58 @@ void AnimationEditor::updateAttributeWindow()
         m_editTarget.stop();
     }
 
+    // Attribute Editor
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+    ImGui::Columns(2);
+    updateAnimationAttributeEditorWidgets();
+    ImGui::Columns(1);
+    ImGui::PopStyleVar();
+
     ImGui::End();
+}
+
+void AnimationEditor::updateAnimationAttributeEditorWidgets()
+{
+    // table head
+    ImGui::Separator();
+    ImGui::Text("Attributes"); ImGui::NextColumn();
+    ImGui::Text("Values"); ImGui::NextColumn();
+    ImGui::Separator();
+    // attributes
+    AttributeEditor_addAttribute("Frame Count", [&]() {
+        ImGui::Text("%d\n", m_editTarget.m_count);
+    });
+    AttributeEditor_addAttribute("Duration", [&]() {
+        ImGui::InputFloat("##float", &m_editTarget.duration, 0.01f, 0.1f);
+        ImGui::SameLine();
+        ImGui::Text("(s)");
+    });
+    AttributeEditor_addAttribute("Reverse Duration", [&]() {
+        ImGui::InputFloat("##float", &m_editTarget.reverseDuration, 0.01f, 0.1f);
+        ImGui::SameLine();
+        ImGui::Text("(s)");
+    });
+    AttributeEditor_addAttribute("Loop", [&]() {
+        ImGui::Checkbox("##chk", &m_editTarget.loop);
+    });
+
+    AttributeEditor_addAttribute("Reverse", [&]() {
+        ImGui::Checkbox("##chk", &m_editTarget.reverse);
+    });
+}
+
+void AnimationEditor::AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func)
+{
+    ImGui::PushID(label);
+    ImGui::AlignTextToFramePadding();
+    // left
+    ImGui::TreeNodeEx(label, ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+    ImGui::NextColumn();
+    // right
+    if(func) func();
+    else ImGui::Text("-");
+    ImGui::NextColumn();
+    ImGui::PopID();
 }
 
 }
