@@ -116,6 +116,11 @@ void AnimationEditor::updateAttributeWindow()
 
     ImGui::Begin("Attribute");
 
+    // Save button
+    if(ImGui::Button("Save"))
+        ImGui::OpenPopup("Save");
+    updateSaveModal();
+
     // Name
     ImGui::Text("%s", m_editTarget.m_texName.c_str());
 
@@ -199,6 +204,23 @@ void AnimationEditor::AttributeEditor_addAttribute(const char *label, AfterInput
     else ImGui::Text("-");
     ImGui::NextColumn();
     ImGui::PopID();
+}
+
+void AnimationEditor::updateSaveModal()
+{
+    if (ImGui::BeginPopupModal("Save", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("All changes will be saved (overwrite)\n");
+
+        if (ImGui::Button("OK", ImVec2(120, 0)))
+            ImGui::CloseCurrentPopup();
+        ImGui::SetItemDefaultFocus();
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+            ImGui::CloseCurrentPopup();
+
+        ImGui::EndPopup();
+    }
 }
 
 }

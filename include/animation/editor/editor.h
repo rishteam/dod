@@ -47,6 +47,8 @@ public:
     // add attribute
     using AfterInputAttrFunc = std::function<void()>;
     void AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func=nullptr);
+    // Update the save popup modal
+    void updateSaveModal();
     //
 public:
     std::string currentOpenFilePath;
