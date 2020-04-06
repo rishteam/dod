@@ -101,6 +101,8 @@ std::string AnimationLoader::dumpFromObject(const Animation &obj)
     json["number"] = obj.m_count;
     json["loop"] = obj.loop;
     json["reverse"] = obj.reverse;
+    json["duration"] = obj.duration;
+    json["reverseDuration"] = obj.reverseDuration;
     json["frames"] = nlo::json::object();
 
     if(obj.m_loadType == Animation::LoadType::AniLoadSeparate)
@@ -121,6 +123,20 @@ std::string AnimationLoader::dumpFromObject(const Animation &obj)
     }
 
     return json.dump(4);
+}
+
+void AnimationLoader::saveToFile(const Animation &obj, const std::string &path)
+{
+    std::ofstream of(path, std::ofstream::out | std::ofstream::trunc);
+    of.exceptions(std::ofstream::badbit);
+    try
+    {
+        of << AnimationLoader::dumpFromObject(obj);
+    }
+    catch(const std::ofstream::failure &e)
+    {
+        RL_ERROR("Failed to save animation: {}\n", e.what());
+    }
 }
 
 }

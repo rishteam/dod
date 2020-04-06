@@ -1,17 +1,17 @@
 {
-    "name": "reimu-hover",
-    "number": 4,
+    "duration": 0.5,
     "frames": {
-        "type": "separate",
         "separate": [
             "./assets/reimu-hover0.png",
             "./assets/reimu-hover1.png",
             "./assets/reimu-hover2.png",
             "./assets/reimu-hover3.png"
-        ]
+        ],
+        "type": "separate"
     },
-    "duration": 0.5,
-    "reverseDuration": 1.0,
     "loop": true,
-    "reverse": false
+    "name": "reimu-hover",
+    "number": 4,
+    "reverse": false,
+    "reverseDuration": 0.5
 }

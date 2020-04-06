@@ -51,14 +51,19 @@ public:
     void updateSaveModal();
     //
 public:
-    std::string currentOpenFilePath;
-    bool selectedOpenFile = false;
-
+    std::string currentOpenFilePath;  // The path of current open file
+    bool selectedOpenFile = false;    // Is the file selected
 private:
-    Animation m_editTarget;
-    bool m_loadEditTarget = false;
+    bool m_saveOpenedFile = false;    // Is the file saved
+    bool m_openFileChanged = false;   // Is the file changed
 
-    void openAnimationConfig(std::string path);
+    Animation m_editTarget;
+    bool m_loadEditTarget = false;    // Is the file loaded
+
+    // Open animation file
+    void openAnimationConfig(const std::string &path);
+    // Save animation file
+    void saveAnimationConfig(const std::string &path);
 
 };
 

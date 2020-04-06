@@ -16,27 +16,36 @@ void AnimationEditor::processEvent(const sf::Event &e)
     // RL_DEBUG("Not implement yet");
 }
 
+// TODO: Make updateXXXs() to im mode
 void AnimationEditor::update()
 {
     updateMainMenuBar();
-    //
+    // File dialog
     updateOpenFileDialog();
-    //
+    // Attribute Window
     if(m_loadEditTarget)
-    {
         m_showAttributeWindow = true;
-    }
     updateAttributeWindow();
-    //
+    // if selected
     if (selectedOpenFile)
     {
+        // if not loaded yet
         if(!m_loadEditTarget)
         {
+            // load
             openAnimationConfig(currentOpenFilePath);
             m_editTarget.setScale(5.f, 5.f);
             m_editTarget.setPosition(100, 100);
         }
+        //
         m_editTarget.debugImGuiWindow();
+        // Save the animation file and reset states
+        if(m_saveOpenedFile)
+        {
+            m_openFileChanged = false;
+            m_saveOpenedFile = false;
+            saveAnimationConfig(currentOpenFilePath);
+        }
     }
 }
 
@@ -56,7 +65,7 @@ void AnimationEditor::updateMainMenuBar()
     {
         if(ImGui::MenuItem("New", "Ctrl+N"))
         {
-
+            RL_WARN("Not implement yet");
         }
         if(ImGui::MenuItem("Open", "Ctrl+O"))
         {
@@ -91,22 +100,33 @@ void AnimationEditor::updateOpenFileDialog()
     {
         selectedOpenFile = true;
         currentOpenFilePath = filePathInputBuf;
+
         m_showOpenFileDialog = false;
-        RL_DEBUG("{}", currentOpenFilePath);
+        m_loadEditTarget = false;
     }
+    // TODO: Debug ONLY
     if(ImGui::Button("debug"))
     {
         selectedOpenFile = true;
         currentOpenFilePath = ResManager::getRootPath() + "./assets/reimu-hover.ani";
         m_showOpenFileDialog = false;
+        m_loadEditTarget = false;
     }
+    // RL_DEBUG("{}", currentOpenFilePath);
+    // TODO: Debug ONLY
+
     ImGui::End();
 }
 
-void AnimationEditor::openAnimationConfig(std::string path)
+void AnimationEditor::openAnimationConfig(const std::string &path)
 {
     m_editTarget = AnimationLoader::loadFromFile(path);
     m_loadEditTarget = true;
+}
+
+void AnimationEditor::saveAnimationConfig(const std::string &path)
+{
+    AnimationLoader::saveToFile(m_editTarget, path);
 }
 
 // TODO: make slider disabled when playing the animaion
@@ -171,24 +191,44 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
     ImGui::Separator();
     // attributes
     AttributeEditor_addAttribute("Frame Count", [&]() {
+        static auto prevCount = m_editTarget.m_count;
+        //
         ImGui::Text("%d\n", m_editTarget.m_count);
+        //
+        if(m_editTarget.m_count != prevCount) m_openFileChanged = true;
     });
     AttributeEditor_addAttribute("Duration", [&]() {
+        static auto prevDuration = m_editTarget.duration;
+        //
         ImGui::InputFloat("##float", &m_editTarget.duration, 0.01f, 0.1f);
         ImGui::SameLine();
         ImGui::Text("(s)");
+        //
+        if(m_editTarget.duration != prevDuration) m_openFileChanged = true;
     });
     AttributeEditor_addAttribute("Reverse Duration", [&]() {
+        static auto prevReverseDuration = m_editTarget.reverseDuration;
+        //
         ImGui::InputFloat("##float", &m_editTarget.reverseDuration, 0.01f, 0.1f);
         ImGui::SameLine();
         ImGui::Text("(s)");
+        //
+        if(m_editTarget.reverseDuration != prevReverseDuration) m_openFileChanged = true;
     });
     AttributeEditor_addAttribute("Loop", [&]() {
+        static auto prevLoop = m_editTarget.loop;
+        //
         ImGui::Checkbox("##chk", &m_editTarget.loop);
+        //
+        if(m_editTarget.loop != prevLoop) m_openFileChanged = true;
     });
 
     AttributeEditor_addAttribute("Reverse", [&]() {
+        static auto prevReverse = m_editTarget.reverse;
+        //
         ImGui::Checkbox("##chk", &m_editTarget.reverse);
+        //
+        if(m_editTarget.reverse != prevReverse) m_openFileChanged = true;
     });
 }
 
@@ -213,7 +253,10 @@ void AnimationEditor::updateSaveModal()
         ImGui::Text("All changes will be saved (overwrite)\n");
 
         if (ImGui::Button("OK", ImVec2(120, 0)))
+        {
             ImGui::CloseCurrentPopup();
+            m_saveOpenedFile = true;
+        }
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
         if (ImGui::Button("Cancel", ImVec2(120, 0)))
