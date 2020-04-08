@@ -26,26 +26,27 @@ void AnimationEditor::update()
     if(m_loadEditTarget)
         m_showAttributeWindow = true;
     updateAttributeWindow();
-    // if selected
-    if (selectedOpenFile)
+    // if not opened
+    if (!selectedOpenFile)
+        return;
+    // if not loaded yet
+    if(!m_loadEditTarget)
     {
-        // if not loaded yet
-        if(!m_loadEditTarget)
-        {
-            // load
-            openAnimationConfig(currentOpenFilePath);
-            m_editTarget.setScale(5.f, 5.f);
-            m_editTarget.setPosition(100, 100);
-        }
-        //
-        m_editTarget.debugImGuiWindow();
-        // Save the animation file and reset states
-        if(m_saveOpenedFile)
-        {
-            m_openFileChanged = false;
-            m_saveOpenedFile = false;
-            saveAnimationConfig(currentOpenFilePath);
-        }
+        // load
+        openAnimationConfig(currentOpenFilePath);
+        m_editTarget.setScale(5.f, 5.f);
+        m_editTarget.setPosition(100, 100);
+    }
+    // update ani debug window
+    m_editTarget.debugImGuiWindow();
+    // Save the animation file and reset states
+    if(m_saveOpenedFile)
+    {
+        // reset states
+        m_openFileChanged = false;
+        m_saveOpenedFile = false;
+        // actual save file
+        saveAnimationConfig(currentOpenFilePath);
     }
 }
 
@@ -137,8 +138,26 @@ void AnimationEditor::updateAttributeWindow()
     ImGui::Begin("Attribute");
 
     // Save button
+    static bool s_saveBtnShowText = false;
     if(ImGui::Button("Save"))
-        ImGui::OpenPopup("Save");
+    {
+        if(m_openFileChanged)
+            ImGui::OpenPopup("Save");
+        else
+            s_saveBtnShowText = true;
+    }
+    if(s_saveBtnShowText) // if show text
+    {
+        static sf::Clock s_clk;
+        ImGui::SameLine();
+        ImGui::Text("Nothing changed");
+        // show the texts for 3 seconds
+        if(s_clk.getElapsedTime().asSeconds() >= 3.f)
+        {
+            s_saveBtnShowText = false;
+            s_clk.restart();
+        }
+    }
     updateSaveModal();
 
     // Name
@@ -191,11 +210,7 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
     ImGui::Separator();
     // attributes
     AttributeEditor_addAttribute("Frame Count", [&]() {
-        static auto prevCount = m_editTarget.m_count;
-        //
         ImGui::Text("%d\n", m_editTarget.m_count);
-        //
-        if(m_editTarget.m_count != prevCount) m_openFileChanged = true;
     });
     AttributeEditor_addAttribute("Duration", [&]() {
         static auto prevDuration = m_editTarget.duration;
@@ -204,7 +219,11 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         ImGui::SameLine();
         ImGui::Text("(s)");
         //
-        if(m_editTarget.duration != prevDuration) m_openFileChanged = true;
+        if(m_editTarget.duration != prevDuration) // if changed
+        {
+            m_openFileChanged = true;
+            prevDuration = m_editTarget.duration;
+        }
     });
     AttributeEditor_addAttribute("Reverse Duration", [&]() {
         static auto prevReverseDuration = m_editTarget.reverseDuration;
@@ -213,14 +232,22 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         ImGui::SameLine();
         ImGui::Text("(s)");
         //
-        if(m_editTarget.reverseDuration != prevReverseDuration) m_openFileChanged = true;
+        if(m_editTarget.reverseDuration != prevReverseDuration) // if changed
+        {
+            m_openFileChanged = true;
+            prevReverseDuration = m_editTarget.reverseDuration;
+        }
     });
     AttributeEditor_addAttribute("Loop", [&]() {
         static auto prevLoop = m_editTarget.loop;
         //
         ImGui::Checkbox("##chk", &m_editTarget.loop);
         //
-        if(m_editTarget.loop != prevLoop) m_openFileChanged = true;
+        if(m_editTarget.loop != prevLoop) // if changed
+        {
+            m_openFileChanged = true;
+            prevLoop = m_editTarget.loop;
+        }
     });
 
     AttributeEditor_addAttribute("Reverse", [&]() {
@@ -228,7 +255,11 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         //
         ImGui::Checkbox("##chk", &m_editTarget.reverse);
         //
-        if(m_editTarget.reverse != prevReverse) m_openFileChanged = true;
+        if(m_editTarget.reverse != prevReverse) // if changed
+        {
+            m_openFileChanged = true;
+            prevReverse = m_editTarget.reverse;
+        }
     });
 }
 
