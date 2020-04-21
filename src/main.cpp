@@ -1,7 +1,3 @@
-#include <fstream>
-#include <typeinfo>
-#include <cxxabi.h>
-
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -9,7 +5,6 @@
 
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include <nlohmann/json.hpp>
 
 #include "log.h"
 #include "resManager.h"
@@ -18,7 +13,6 @@
 #include "animation/animation.h"
 #include "animation/loader.h"
 
-using json = nlohmann::json;
 using namespace rl;
 
 int main()
@@ -31,7 +25,6 @@ int main()
     sf::Clock deltaClock;
 
     sf::Color bgColor(0, 0, 0);
-
 #ifdef _WIN32
     ResManager::init("C:/Users/Rish/Desktop/rish/dod/");
 #elif __APPLE__

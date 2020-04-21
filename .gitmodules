@@ -1,0 +1,3 @@
+[submodule "deps/nativefiledialog"]
+	path = deps/nativefiledialog
+	url = https://github.com/roy4801/nativefiledialog

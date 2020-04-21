@@ -5,6 +5,8 @@ project(dod)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug) # Debug Release
 
+add_subdirectory(deps/nativefiledialog)
+
 # Add executable
 add_executable(dod
     src/main.cpp
@@ -22,6 +24,10 @@ add_executable(dod
 )
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include
+)
+
+target_compile_options(dod
+    PUBLIC -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Woverloaded-virtual -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wno-sign-compare
 )
 
 if(APPLE)
@@ -79,8 +85,8 @@ target_link_libraries(dod
 
 if(MSYS)
     target_link_libraries(dod
-        -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
-        -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+        # -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
+        # -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
         # -mconsole / -mwindows
     )
 endif()

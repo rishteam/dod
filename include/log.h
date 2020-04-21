@@ -70,6 +70,8 @@ public:
 
 private:
     Logger() = default;
+public:
+    ~Logger() = default;
 };
 
 }

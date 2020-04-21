@@ -33,6 +33,7 @@ class Animation : public sf::Transformable, public sf::Drawable
 public:
     // Constructors
     Animation();
+    virtual ~Animation() = default;
 
     // Load animation from a config file
     Animation(const std::string &configPath);
@@ -64,7 +65,7 @@ public:
         // TODO: make tex std::list for optimizing
         if(idx == -1)
             idx = m_textureVec.size()-1;
-        if(idx < m_textureVec.size() && idx != -1)
+        if(idx < (int)m_textureVec.size() && idx != -1)
         {
             m_textureVec.erase(m_textureVec.begin() + idx);
             return true;
