@@ -1,9 +1,14 @@
+#include <filesystem>
 #include <imgui.h>
 
 #include "resManager.h"
 #include "log.h"
 #include "animation/editor/editor.h"
 #include "animation/loader.h"
+
+#include "utils/filedialog.h"
+
+namespace fs = std::filesystem;
 
 namespace rl {
 
@@ -86,37 +91,16 @@ void AnimationEditor::updateMainMenuBar()
     ImGui::EndMainMenuBar();
 }
 
-// TODO: Get rid of this in the future
-// TODO: Figure out hot to use std::string in ImGui::TextXXX()
-// TODO: fugure out how to make Input and Button work together
+// TODO: Set the default path
 void AnimationEditor::updateOpenFileDialog()
 {
     if(!m_showOpenFileDialog) return;
-    ImGui::Begin("Open");
-    // TODO: use string view to optimize
-    constexpr int FilePathInputLen = 256;
-    static char filePathInputBuf[256];
-    ImGui::InputTextWithHint("File Path", "enter path here", filePathInputBuf, FilePathInputLen);
-    if(ImGui::Button("Open"))
-    {
+    if (FileDialog::SelectSingleFile("ani;", nullptr, currentOpenFilePath))
+    { 
         selectedOpenFile = true;
-        currentOpenFilePath = filePathInputBuf;
-
         m_showOpenFileDialog = false;
         m_loadEditTarget = false;
     }
-    // TODO: Debug ONLY
-    if(ImGui::Button("debug"))
-    {
-        selectedOpenFile = true;
-        currentOpenFilePath = ResManager::getRootPath() + "./assets/reimu-hover.ani";
-        m_showOpenFileDialog = false;
-        m_loadEditTarget = false;
-    }
-    // RL_DEBUG("{}", currentOpenFilePath);
-    // TODO: Debug ONLY
-
-    ImGui::End();
 }
 
 void AnimationEditor::openAnimationConfig(const std::string &path)

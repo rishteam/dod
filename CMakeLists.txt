@@ -21,6 +21,8 @@ add_executable(dod
     # utilities
     src/resManager.cpp
     src/log.cpp
+    # fs
+    src/utils/filedialog.cpp
 )
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -81,6 +83,11 @@ target_link_libraries(dod
 find_package(nlohmann_json 3.2.0 REQUIRED)
 target_link_libraries(dod
     nlohmann_json::nlohmann_json
+)
+
+# Add nativefiledialog
+target_link_libraries(dod
+    nfd::nfd
 )
 
 if(MSYS)

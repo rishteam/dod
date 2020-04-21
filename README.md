@@ -1,5 +1,13 @@
 # dod
 
+## Clone
+
+```bash
+git clone --recursive https://github.com/rishteam/dod.git
+```
+
+## Build
+
 * Dependencies
   * SFML 2.5.1
   * ImGui 1.76
@@ -10,8 +18,6 @@
 * Environment
   * msys2
   * cmake
-
-## Build
 
 ```bash
 mkdir build && cd build
