@@ -115,6 +115,7 @@ public:
     }
     void debugImGuiWidgets()
     {
+        ImGui::Text("Animation: %s", m_texName.c_str());
         ImGui::Checkbox("draw", &debugDrawFlag);
         // Position
         float pos[2] = {getPosition().x, getPosition().y};

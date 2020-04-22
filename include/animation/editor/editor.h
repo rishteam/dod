@@ -16,24 +16,33 @@ class AnimationEditor : public sf::Drawable
 {
 public:
     AnimationEditor();
-    virtual ~AnimationEditor() = default;
+    virtual ~AnimationEditor();
 
     void processEvent(const sf::Event &e); // TODO
     void update();
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
+// TODO: make these in class
 // private:
+    bool m_showEditor = true;
+    ImGuiWindowFlags m_windowFlag = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
+
     // Main menu bar
-    void updateMainMenuBar();
-    bool m_showMainMentBar = true;
+    void hideMenuBar() { m_windowFlag &= (~ImGuiWindowFlags_MenuBar); }
+    void showMenuBar() { m_windowFlag |= ImGuiWindowFlags_MenuBar; }
+    void updateMenuBar();
+    bool m_showMainMenuBar = true;
 
     // Open File Dialog
     void updateOpenFileDialog();
-    bool m_showOpenFileDialog = false; // flag
+    bool m_showOpenFileDialog = false;
 
     // Attribute Window
     void updateAttributeWindow();
     bool m_showAttributeWindow = false;
+    void showAttributeWindow() { m_showAttributeWindow = true; }
+    void hideAttributeWindow() { m_showAttributeWindow = false; }
+
     enum AnimationBtnState : unsigned char
     {
         BtnPause = 0,
@@ -51,14 +60,19 @@ public:
     void updateSaveModal();
     //
 public:
-    std::string currentOpenFilePath;  // The path of current open file
-    bool selectedOpenFile = false;    // Is the file selected
+    // The path of current open file
+    std::string currentOpenFilePath;
+    // Is the file selected
+    bool selectedOpenFile = false;
 private:
-    bool m_saveOpenedFile = false;    // Is the file saved
-    bool m_openFileChanged = false;   // Is the file changed
-
+    // Is the file saved
+    bool m_saveOpenedFile = false;
+    // Is the file changed
+    bool m_openFileChanged = false;
+    // Current editing animation object
     Animation m_editTarget;
-    bool m_loadEditTarget = false;    // Is the file loaded
+    // Is the file loaded
+    bool m_loadEditTarget = false;
 
     // Open animation file
     void openAnimationConfig(const std::string &path);

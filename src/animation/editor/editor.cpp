@@ -16,43 +16,53 @@ AnimationEditor::AnimationEditor()
 {
 }
 
-void AnimationEditor::processEvent(const sf::Event &e)
+AnimationEditor::~AnimationEditor()
 {
-    // RL_DEBUG("Not implement yet");
 }
 
-// TODO: Make updateXXXs() to im mode
+void AnimationEditor::processEvent(const sf::Event &e)
+{
+}
+
 void AnimationEditor::update()
 {
-    updateMainMenuBar();
+    if(!m_showEditor) return;
+    if (!ImGui::Begin("Animation Editor", &m_showEditor, m_windowFlag))
+    {
+        ImGui::End();
+        return;
+    }
+    // Menu bar
+    updateMenuBar();
     // File dialog
     updateOpenFileDialog();
     // Attribute Window
-    if(m_loadEditTarget)
-        m_showAttributeWindow = true;
     updateAttributeWindow();
     // if not opened
-    if (!selectedOpenFile)
-        return;
-    // if not loaded yet
-    if(!m_loadEditTarget)
+    if (selectedOpenFile)
     {
-        // load
-        openAnimationConfig(currentOpenFilePath);
-        m_editTarget.setScale(5.f, 5.f);
-        m_editTarget.setPosition(100, 100);
+        // if not loaded yet
+        if(!m_loadEditTarget)
+        {
+            // load
+            openAnimationConfig(currentOpenFilePath);
+            m_editTarget.setScale(5.f, 5.f);
+            m_editTarget.setPosition(100, 100);
+        }
+        // update ani debug window
+        ImGui::Separator();
+        m_editTarget.debugImGuiWidgets();
+        // Save the animation file and reset states
+        if(m_saveOpenedFile)
+        {
+            // reset states
+            m_openFileChanged = false;
+            m_saveOpenedFile = false;
+            // actual save file
+            saveAnimationConfig(currentOpenFilePath);
+        }
     }
-    // update ani debug window
-    m_editTarget.debugImGuiWindow();
-    // Save the animation file and reset states
-    if(m_saveOpenedFile)
-    {
-        // reset states
-        m_openFileChanged = false;
-        m_saveOpenedFile = false;
-        // actual save file
-        saveAnimationConfig(currentOpenFilePath);
-    }
+    ImGui::End();
 }
 
 void AnimationEditor::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -61,12 +71,9 @@ void AnimationEditor::draw(sf::RenderTarget &target, sf::RenderStates states) co
         target.draw(m_editTarget, states);
 }
 
-// TODO: Make this window ment bar
-void AnimationEditor::updateMainMenuBar()
+void AnimationEditor::updateMenuBar()
 {
-    if(!m_showMainMentBar) return;
-    //
-    ImGui::BeginMainMenuBar();
+    ImGui::BeginMenuBar();
     if(ImGui::BeginMenu("File"))
     {
         if(ImGui::MenuItem("New", "Ctrl+N"))
@@ -77,10 +84,6 @@ void AnimationEditor::updateMainMenuBar()
         {
             m_showOpenFileDialog = true;
         }
-        ImGui::Separator();
-        if (ImGui::MenuItem("Exit"))
-        {
-        }
         ImGui::EndMenu();
     }
     if(ImGui::BeginMenu("Edit"))
@@ -88,7 +91,7 @@ void AnimationEditor::updateMainMenuBar()
 
         ImGui::EndMenu();
     }
-    ImGui::EndMainMenuBar();
+    ImGui::EndMenuBar();
 }
 
 // TODO: Set the default path
@@ -96,11 +99,11 @@ void AnimationEditor::updateOpenFileDialog()
 {
     if(!m_showOpenFileDialog) return;
     if (FileDialog::SelectSingleFile("ani;", nullptr, currentOpenFilePath))
-    { 
+    {
         selectedOpenFile = true;
-        m_showOpenFileDialog = false;
         m_loadEditTarget = false;
     }
+    m_showOpenFileDialog = false;
 }
 
 void AnimationEditor::openAnimationConfig(const std::string &path)
@@ -117,9 +120,10 @@ void AnimationEditor::saveAnimationConfig(const std::string &path)
 // TODO: make slider disabled when playing the animaion
 void AnimationEditor::updateAttributeWindow()
 {
+    if (m_loadEditTarget)
+        showAttributeWindow();
+    // if not show then early out
     if(!m_showAttributeWindow) return;
-
-    ImGui::Begin("Attribute");
 
     // Save button
     static bool s_saveBtnShowText = false;
@@ -181,8 +185,6 @@ void AnimationEditor::updateAttributeWindow()
     updateAnimationAttributeEditorWidgets();
     ImGui::Columns(1);
     ImGui::PopStyleVar();
-
-    ImGui::End();
 }
 
 void AnimationEditor::updateAnimationAttributeEditorWidgets()
