@@ -12,7 +12,9 @@ namespace fs = std::filesystem;
 
 namespace rl {
 
-AnimationEditor::AnimationEditor()
+AnimationEditor::AnimationEditor() : editorMenuBar(*this),
+                                     editorFileDialog(*this),
+                                     attributeWidget(*this)
 {
 }
 
@@ -30,14 +32,14 @@ void AnimationEditor::update()
     if (!ImGui::Begin("Animation Editor", &m_showEditor, m_windowFlag))
     {
         ImGui::End();
-        return;
+        return; // early out
     }
     // Menu bar
-    updateMenuBar();
+    editorMenuBar.update();
     // File dialog
-    updateOpenFileDialog();
+    editorFileDialog.update();
     // Attribute Window
-    updateAttributeWindow();
+    attributeWidget.updateAttributeWindow();
     // if not opened
     if (selectedOpenFile)
     {
@@ -71,41 +73,6 @@ void AnimationEditor::draw(sf::RenderTarget &target, sf::RenderStates states) co
         target.draw(m_editTarget, states);
 }
 
-void AnimationEditor::updateMenuBar()
-{
-    ImGui::BeginMenuBar();
-    if(ImGui::BeginMenu("File"))
-    {
-        if(ImGui::MenuItem("New", "Ctrl+N"))
-        {
-            RL_WARN("Not implement yet");
-        }
-        if(ImGui::MenuItem("Open", "Ctrl+O"))
-        {
-            m_showOpenFileDialog = true;
-        }
-        ImGui::EndMenu();
-    }
-    if(ImGui::BeginMenu("Edit"))
-    {
-
-        ImGui::EndMenu();
-    }
-    ImGui::EndMenuBar();
-}
-
-// TODO: Set the default path
-void AnimationEditor::updateOpenFileDialog()
-{
-    if(!m_showOpenFileDialog) return;
-    if (FileDialog::SelectSingleFile("ani;", nullptr, currentOpenFilePath))
-    {
-        selectedOpenFile = true;
-        m_loadEditTarget = false;
-    }
-    m_showOpenFileDialog = false;
-}
-
 void AnimationEditor::openAnimationConfig(const std::string &path)
 {
     m_editTarget = AnimationLoader::loadFromFile(path);
@@ -117,11 +84,54 @@ void AnimationEditor::saveAnimationConfig(const std::string &path)
     AnimationLoader::saveToFile(m_editTarget, path);
 }
 
-// TODO: make slider disabled when playing the animaion
-void AnimationEditor::updateAttributeWindow()
+//--------------------------------------------------------------------------------
+// AnimationEditor::EditorMenuBar implementations
+//
+void AnimationEditor::EditorMenuBar::update()
 {
-    if (m_loadEditTarget)
-        showAttributeWindow();
+    ImGui::BeginMenuBar();
+    if(ImGui::BeginMenu("File"))
+    {
+        if(ImGui::MenuItem("New", "Ctrl+N"))
+        {
+            RL_WARN("Not implement yet");
+        }
+        if(ImGui::MenuItem("Open", "Ctrl+O"))
+        {
+            editor.editorFileDialog.show();
+        }
+        ImGui::EndMenu();
+    }
+    if(ImGui::BeginMenu("Edit"))
+    {
+        ImGui::EndMenu();
+    }
+    ImGui::EndMenuBar();
+}
+
+//--------------------------------------------------------------------------------
+// AnimationEditor::OpenFileDialog implementations
+//
+// TODO: Set the default path
+void AnimationEditor::OpenFileDialog::update()
+{
+    if(!m_showOpenFileDialog) return;
+    if (FileDialog::SelectSingleFile("ani;", nullptr, editor.currentOpenFilePath))
+    {
+        editor.selectedOpenFile = true;
+        editor.m_loadEditTarget = false;
+    }
+    m_showOpenFileDialog = false;
+}
+
+//--------------------------------------------------------------------------------
+// AnimationEditor::AttributeWidget implementations
+//
+// TODO: make slider disabled when playing the animaion
+void AnimationEditor::AttributeWidget::updateAttributeWindow()
+{
+    if (editor.m_loadEditTarget)
+        this->show();
     // if not show then early out
     if(!m_showAttributeWindow) return;
 
@@ -129,7 +139,7 @@ void AnimationEditor::updateAttributeWindow()
     static bool s_saveBtnShowText = false;
     if(ImGui::Button("Save"))
     {
-        if(m_openFileChanged)
+        if (editor.m_openFileChanged)
             ImGui::OpenPopup("Save");
         else
             s_saveBtnShowText = true;
@@ -148,6 +158,7 @@ void AnimationEditor::updateAttributeWindow()
     }
     updateSaveModal();
 
+    auto &m_editTarget = editor.m_editTarget;
     // Name
     ImGui::Text("%s", m_editTarget.m_texName.c_str());
 
@@ -187,8 +198,10 @@ void AnimationEditor::updateAttributeWindow()
     ImGui::PopStyleVar();
 }
 
-void AnimationEditor::updateAnimationAttributeEditorWidgets()
+void AnimationEditor::AttributeWidget::updateAnimationAttributeEditorWidgets()
 {
+    auto &m_editTarget = editor.m_editTarget;
+    //
     // table head
     ImGui::Separator();
     ImGui::Text("Attributes"); ImGui::NextColumn();
@@ -207,7 +220,7 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         //
         if(m_editTarget.duration != prevDuration) // if changed
         {
-            m_openFileChanged = true;
+            editor.m_openFileChanged = true;
             prevDuration = m_editTarget.duration;
         }
     });
@@ -220,7 +233,7 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         //
         if(m_editTarget.reverseDuration != prevReverseDuration) // if changed
         {
-            m_openFileChanged = true;
+            editor.m_openFileChanged = true;
             prevReverseDuration = m_editTarget.reverseDuration;
         }
     });
@@ -231,7 +244,7 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         //
         if(m_editTarget.loop != prevLoop) // if changed
         {
-            m_openFileChanged = true;
+            editor.m_openFileChanged = true;
             prevLoop = m_editTarget.loop;
         }
     });
@@ -243,13 +256,13 @@ void AnimationEditor::updateAnimationAttributeEditorWidgets()
         //
         if(m_editTarget.reverse != prevReverse) // if changed
         {
-            m_openFileChanged = true;
+            editor.m_openFileChanged = true;
             prevReverse = m_editTarget.reverse;
         }
     });
 }
 
-void AnimationEditor::AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func)
+void AnimationEditor::AttributeWidget::AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func)
 {
     ImGui::PushID(label);
     ImGui::AlignTextToFramePadding();
@@ -263,7 +276,7 @@ void AnimationEditor::AttributeEditor_addAttribute(const char *label, AfterInput
     ImGui::PopID();
 }
 
-void AnimationEditor::updateSaveModal()
+void AnimationEditor::AttributeWidget::updateSaveModal()
 {
     if (ImGui::BeginPopupModal("Save", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
@@ -272,7 +285,7 @@ void AnimationEditor::updateSaveModal()
         if (ImGui::Button("OK", ImVec2(120, 0)))
         {
             ImGui::CloseCurrentPopup();
-            m_saveOpenedFile = true;
+            editor.m_saveOpenedFile = true;
         }
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();

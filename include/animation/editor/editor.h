@@ -23,41 +23,72 @@ public:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 // TODO: make these in class
-// private:
+private:
     bool m_showEditor = true;
     ImGuiWindowFlags m_windowFlag = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
 
-    // Main menu bar
-    void hideMenuBar() { m_windowFlag &= (~ImGuiWindowFlags_MenuBar); }
-    void showMenuBar() { m_windowFlag |= ImGuiWindowFlags_MenuBar; }
-    void updateMenuBar();
-    bool m_showMainMenuBar = true;
+    // menu bar
+    class EditorMenuBar {
+    public:
+        EditorMenuBar(AnimationEditor &e) : editor(e)
+        {
+        }
+        void hideMenuBar() { editor.m_windowFlag &= (~ImGuiWindowFlags_MenuBar); }
+        void showMenuBar() { editor.m_windowFlag |= ImGuiWindowFlags_MenuBar; }
+        void update();
+    private:
+        bool m_showMainMenuBar = true;
+        AnimationEditor &editor;
+    };
+    friend class EditorMenuBar;
+    EditorMenuBar editorMenuBar;
 
     // Open File Dialog
-    void updateOpenFileDialog();
-    bool m_showOpenFileDialog = false;
+    class OpenFileDialog {
+    public:
+        OpenFileDialog(AnimationEditor &e) : editor(e)
+        {}
+        void show() { m_showOpenFileDialog = true; }
+        void hide() { m_showOpenFileDialog = false; }
+        void update();
+    private:
+        bool m_showOpenFileDialog = false;
+        AnimationEditor &editor;
+    };
+    friend class OpenFileDialog;
+    OpenFileDialog editorFileDialog;
 
     // Attribute Window
-    void updateAttributeWindow();
-    bool m_showAttributeWindow = false;
-    void showAttributeWindow() { m_showAttributeWindow = true; }
-    void hideAttributeWindow() { m_showAttributeWindow = false; }
-
-    enum AnimationBtnState : unsigned char
-    {
-        BtnPause = 0,
-        BtnPlay,
-        BtnStateTotal
+    class AttributeWidget {
+    public:
+        AttributeWidget(AnimationEditor &e) : editor(e)
+        {}
+        void updateAttributeWindow();
+        void show() { m_showAttributeWindow = true; }
+        void hide() { m_showAttributeWindow = false; }
+        bool getShow() { return m_showAttributeWindow; }
+    private:
+        // Animation Attribute Editor
+        void updateAnimationAttributeEditorWidgets();
+        // add attribute
+        using AfterInputAttrFunc = std::function<void()>;
+        void AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func=nullptr);
+        // Update the save popup modal
+        void updateSaveModal();
+        bool m_showAttributeWindow = false;
+        AnimationEditor &editor;
+        //
+        enum AnimationBtnState : unsigned char
+        {
+            BtnPause = 0,
+            BtnPlay,
+            BtnStateTotal
+        };
+        AnimationBtnState m_buttonState = BtnPause;
     };
-    AnimationBtnState m_buttonState = BtnPause;
+    friend class AttributeWidget;
+    AttributeWidget attributeWidget;
 
-    // Animation Attribute Editor
-    void updateAnimationAttributeEditorWidgets();
-    // add attribute
-    using AfterInputAttrFunc = std::function<void()>;
-    void AttributeEditor_addAttribute(const char *label, AfterInputAttrFunc func=nullptr);
-    // Update the save popup modal
-    void updateSaveModal();
     //
 public:
     // The path of current open file
