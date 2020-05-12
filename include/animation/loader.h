@@ -8,6 +8,9 @@ namespace rl {
 
 class Animation;
 
+/**
+ * @brief
+ */
 class AnimationLoader
 {
 public:

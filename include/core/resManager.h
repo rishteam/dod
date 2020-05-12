@@ -30,7 +30,7 @@ template <typename T>
 class ResManager
 {
 public:
-    T& load(const std::string &resName, const std::string &path);
+    bool load(const std::string &resName, const std::string &path);
 
     bool release(const std::string &resName);
 
@@ -41,6 +41,8 @@ public:
     T& get(const std::string &resName);
 
     T& getDefaultResource();
+    bool isDefaultResource(const T &res) { return getDefaultResource() == res; }
+
 private:
     inline void deleteIfExists(const std::string &resName, const std::string &path)
     {
@@ -73,7 +75,7 @@ private:
  * @return false Failed
  */
 template <typename T>
-T& ResManager<T>::load(const std::string &resName, const std::string &path)
+bool ResManager<T>::load(const std::string &resName, const std::string &path)
 {
     RL_DEBUG("Load resource: {} {}", resName, path);
 
@@ -87,10 +89,10 @@ T& ResManager<T>::load(const std::string &resName, const std::string &path)
     {
         RL_ERROR("Failed to load res: {} {}", resName, path);
         m_resMap.erase(resName);
-        return getDefaultResource();
+        return false;
     }
     setResourcePath(resName, path);
-    return res;
+    return true;
 }
 
 /**
@@ -195,7 +197,7 @@ inline sf::Texture &ResManager<sf::Texture>::getDefaultResource()
  * @return false Failed
  */
 template <>
-inline sf::Sound& ResManager<sf::Sound>::load(const std::string &resName, const std::string &path)
+inline bool ResManager<sf::Sound>::load(const std::string &resName, const std::string &path)
 {
     static std::unordered_map<std::string, sf::SoundBuffer> soundBufferMap;
 
@@ -210,12 +212,12 @@ inline sf::Sound& ResManager<sf::Sound>::load(const std::string &resName, const 
     {
         RL_ERROR("Failed to load res: {} {}", resName, path);
         m_resMap.erase(resName);
-        return getDefaultResource();
+        return false;
     }
     sound.setBuffer(soundBuffer);
     // Set path
     setResourcePath(resName, path);
-    return sound;
+    return true;
 }
 
 /**
@@ -228,7 +230,7 @@ inline sf::Sound& ResManager<sf::Sound>::load(const std::string &resName, const 
  * @return false
  */
 template <>
-inline sf::Music& ResManager<sf::Music>::load(const std::string &resName, const std::string &path)
+inline bool ResManager<sf::Music>::load(const std::string &resName, const std::string &path)
 {
     deleteIfExists(resName, path);
     // Load the music
@@ -237,10 +239,10 @@ inline sf::Music& ResManager<sf::Music>::load(const std::string &resName, const 
     {
         RL_ERROR("Failed to load music: {} {}", resName, path);
         m_resMap.erase(resName);
-        return getDefaultResource();
+        return false;
     }
     setResourcePath(resName, path);
-    return music;
+    return true;
 }
 
 } // namespace rl

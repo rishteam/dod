@@ -1,3 +1,10 @@
+/**
+ * @file loader.cpp
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Animation Loader
+ * @version 0.1
+ * @date 2020-05-12
+ */
 #include <string>
 #include <vector>
 #include <fstream>
@@ -6,8 +13,13 @@
 
 #include "core/core.h"
 #include "core/log.h"
+#include "core/resHolder.h"
 #include "animation/animation.h"
 #include "animation/loader.h"
+
+/**
+ * @TODO change animation loader to serialization library
+ */
 
 namespace rl
 {
@@ -20,7 +32,7 @@ Animation AnimationLoader::loadFromFile(const std::string &path)
     if(!aniFile)
     {
         RL_ERROR("Failed to load animation: {}\n", path);
-        return ResManager::missingAnimation;
+        return Animation(ResHolder::Texture().getDefaultResource());
     }
     std::string aniContent((std::istreambuf_iterator<char>(aniFile)), (std::istreambuf_iterator<char>()));
     return loadFromString(aniContent);
@@ -60,9 +72,9 @@ Animation AnimationLoader::loadFromJson(const nlo::json &json)
             std::string targetName = fmt::format("{}_{}", ani.m_texName, i);
             std::string filePath = fileList[i];
             // success to load
-            if (ResManager::loadRes(ResType::ResTexture, targetName, filePath))
+            if (ResHolder::Texture().load(targetName, filePath))
             {
-                auto &tex = ResManager::getTexture(targetName);
+                auto &tex = ResHolder::Texture().get(targetName);
                 ani.addFrame(tex);
                 goodCnt++;
             }
@@ -73,7 +85,7 @@ Animation AnimationLoader::loadFromJson(const nlo::json &json)
             for (int i = 0; i < fileList.size(); i++)
             {
                 std::string targetName = fmt::format("{}_{}", ani.m_texName, i);
-                if (!ResManager::releaseRes(ResType::ResTexture, targetName))
+                if(!ResHolder::Texture().release(targetName))
                     RL_ERROR("Failed to release texture {}\n", targetName);
             }
             goto FAIL;
@@ -110,7 +122,7 @@ std::string AnimationLoader::dumpFromObject(const Animation &obj)
         json["frames"]["type"] = "separate";
         std::vector<std::string> pathList;
         for(int i = 0; i < obj.m_count; i++)
-            pathList.push_back(ResManager::getResPath(ResType::ResTexture, fmt::format("{}_{}", obj.m_texName, i)));
+            pathList.emplace_back(ResHolder::Texture().getResPath(fmt::format("{}_{}", obj.m_texName, i)));
         json["frames"]["separate"] = pathList;
     }
     else if (obj.m_loadType == Animation::LoadType::AniLoadSpriteSheet)

@@ -14,12 +14,15 @@
 #include "animation/animation.h"
 #include "animation/loader.h"
 
-#include <stdexcept>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 using namespace rl;
 
 int main()
 {
+    fs::current_path(fs::current_path().parent_path());
+    //
     setvbuf(stdout, nullptr, _IONBF, 0);
     setvbuf(stderr, nullptr, _IONBF, 0);
     // Create the main window
@@ -29,13 +32,14 @@ int main()
 
     sf::Color bgColor(0, 0, 0);
 
-    auto &tex = ResHolder::Texture().load("test", "../assets/missing_texture.png");
-    sf::Sprite sp(tex);
+    // auto &tex = ResHolder::Texture().load("test", "../assets/missing_texture.png");
+    // sf::Sprite sp(tex);
     // auto &missTex = ResHolder::Texture()
 
+
     // AnimationEditor animationEditor;
-    // Animation test("../assets/reimu-hover.ani");
-    // test.setScale(sf::Vector2f(5.f, 5.f));
+    Animation test("assets/reimu-hover.ani");
+    test.setScale(sf::Vector2f(5.f, 5.f));
 
     //
     while (window.isOpen())
@@ -63,7 +67,7 @@ int main()
         // animationEditor.update();
         ImGui::Begin("Debug");
         {
-            // test.debugImGuiWidgets();
+            test.debugImGuiWidgets();
 
             // if(animationEditor.selectedOpenFile)
             // {
@@ -90,8 +94,8 @@ int main()
         // SFML Draws
         window.pushGLStates();
             // window.draw(animationEditor);
-            // window.draw(test);
-            window.draw(sp);
+            window.draw(test);
+            // window.draw(sp);
         window.popGLStates();
 
         // imgui draws

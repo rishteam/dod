@@ -12,8 +12,8 @@ add_executable(dod
     src/main.cpp
 
     # Animation
-    # src/animation/animation.cpp
-    # src/animation/loader.cpp
+    src/animation/animation.cpp
+    src/animation/loader.cpp
 
     # Animation Editor
     # src/animation/editor/editor.cpp

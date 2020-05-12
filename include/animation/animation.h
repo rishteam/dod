@@ -35,6 +35,12 @@ public:
     Animation();
     virtual ~Animation() = default;
 
+    Animation(const sf::Texture &texture)
+    {
+        addFrame(texture);
+        duration = reverseDuration = 0.5f;
+    }
+
     // Load animation from a config file
     Animation(const std::string &configPath);
 
