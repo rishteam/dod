@@ -6,12 +6,15 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 
-#include "log.h"
-#include "resManager.h"
+#include "core/log.h"
+#include "core/resManager.h"
+#include "core/resHolder.h"
 
 #include "animation/editor/editor.h"
 #include "animation/animation.h"
 #include "animation/loader.h"
+
+#include <stdexcept>
 
 using namespace rl;
 
@@ -25,12 +28,12 @@ int main()
     sf::Clock deltaClock;
 
     sf::Color bgColor(0, 0, 0);
-#ifdef _WIN32
-    ResManager::init("C:/Users/Rish/Desktop/rish/dod/");
-#elif __APPLE__
-    ResManager::init("/Users/roy4801/Desktop/Program/rish/dod/");
-#endif
-    AnimationEditor animationEditor;
+
+    auto &tex = ResHolder::Texture().load("test", "../assets/missing_texture.png");
+    sf::Sprite sp(tex);
+    // auto &missTex = ResHolder::Texture()
+
+    // AnimationEditor animationEditor;
     // Animation test("../assets/reimu-hover.ani");
     // test.setScale(sf::Vector2f(5.f, 5.f));
 
@@ -44,7 +47,7 @@ int main()
         {
             ImGui::SFML::ProcessEvent(event);
             //
-            animationEditor.processEvent(event);
+            // animationEditor.processEvent(event);
 
             // Close window: exit
             if (event.type == sf::Event::Closed)
@@ -57,15 +60,15 @@ int main()
         ///////////////////////////////////////
         // Update
         // ImGui
-        animationEditor.update();
+        // animationEditor.update();
         ImGui::Begin("Debug");
         {
             // test.debugImGuiWidgets();
 
-            if(animationEditor.selectedOpenFile)
-            {
-                ImGui::Text(animationEditor.currentOpenFilePath.c_str());
-            }
+            // if(animationEditor.selectedOpenFile)
+            // {
+            //     ImGui::Text(animationEditor.currentOpenFilePath.c_str());
+            // }
         }
         ImGui::End();
         // Game Update
@@ -86,8 +89,9 @@ int main()
 
         // SFML Draws
         window.pushGLStates();
-            window.draw(animationEditor);
+            // window.draw(animationEditor);
             // window.draw(test);
+            window.draw(sp);
         window.popGLStates();
 
         // imgui draws

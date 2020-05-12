@@ -12,15 +12,16 @@ add_executable(dod
     src/main.cpp
 
     # Animation
-    src/animation/animation.cpp
-    src/animation/loader.cpp
+    # src/animation/animation.cpp
+    # src/animation/loader.cpp
 
     # Animation Editor
-    src/animation/editor/editor.cpp
+    # src/animation/editor/editor.cpp
 
     # utilities
-    src/resManager.cpp
-    src/log.cpp
+    src/core/resManager.cpp
+    src/core/resHolder.cpp
+    src/core/log.cpp
     # fs
     src/utils/filedialog.cpp
 )
@@ -92,8 +93,8 @@ target_link_libraries(dod
 
 if(MSYS)
     target_link_libraries(dod
-        # -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
-        # -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+        -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
+        -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
         # -mconsole / -mwindows
     )
 endif()

@@ -1,8 +1,7 @@
 #pragma once
 
-#include <log.h>
-
-#include <debug-trap.h>
+#include "core/core.h"
+#include "utils/debug-trap.h"
 
 #define RL_DEBUG_DEFINE
 

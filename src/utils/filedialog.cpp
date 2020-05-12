@@ -1,6 +1,6 @@
 #include <nfd.h>
 
-#include "log.h"
+#include "core/log.h"
 #include "utils/filedialog.h"
 
 namespace rl {
@@ -43,7 +43,7 @@ bool FileDialog::SelectMultipleFile(const char *filter, const char *defaultPath,
         for (size_t i = 0; i < count; ++i)
         {
             nfdchar_t *path = NFD_PathSet_GetPath(&pathSet, i);
-            outPathList.push_back(std::string(path));
+            outPathList.emplace_back(path);
         }
         NFD_PathSet_Free(&pathSet);
         return true;

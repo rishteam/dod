@@ -8,8 +8,6 @@ namespace rl {
 
 class Animation;
 
-// TODO
-
 class AnimationLoader
 {
 public:

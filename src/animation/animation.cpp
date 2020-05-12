@@ -3,8 +3,8 @@
 #include "animation/animation.h"
 #include "animation/loader.h"
 
-#include "resManager.h"
-#include "log.h"
+#include "core/resManager.h"
+#include "core/log.h"
 
 namespace rl {
 

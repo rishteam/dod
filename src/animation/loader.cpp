@@ -4,8 +4,8 @@
 
 #include <fmt/format.h>
 
-#include "resManager.h"
-#include "log.h"
+#include "core/core.h"
+#include "core/log.h"
 #include "animation/animation.h"
 #include "animation/loader.h"
 

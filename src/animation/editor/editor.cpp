@@ -1,8 +1,8 @@
 #include <filesystem>
 #include <imgui.h>
 
-#include "resManager.h"
-#include "log.h"
+#include "core/resManager.h"
+#include "core/log.h"
 #include "animation/editor/editor.h"
 #include "animation/loader.h"
 

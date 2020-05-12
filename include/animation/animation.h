@@ -11,7 +11,7 @@
 
 #include <imgui.h>
 
-#include "core.h"
+#include "core/core.h"
 
 // TODO: set loop start end
 // TODO: support flip
@@ -47,14 +47,13 @@ public:
     void pause() { m_pause = true; }
     void resume() { m_pause = false; }
     void stop() { m_pause = true; m_nowFrame = 0; }
+    bool isEnd();
 
     // the duration of the animation (second)
     float duration = 0.f;
     float reverseDuration = 0.f;
     bool loop = false;
     bool reverse = false;
-
-    bool isEnd();
 
     void addFrame(const sf::Texture &tex)
     {
