@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.10)
 project(dod)
 
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 17)
 
 include(cmake/StandardProjectSettings.cmake)
 # Project option
@@ -40,9 +39,19 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 
+set(DOD_USE_TEST_MAIN NO)
+if(DOD_USE_TEST_MAIN)
+    set(DOD_MAIN_FILE src/testmain.cpp)
+else()
+    set(DOD_MAIN_FILE src/main.cpp)
+endif()
+
+# Config generate for dod
+configure_file(${PROJECT_SOURCE_DIR}/config/config.h.in ${PROJECT_SOURCE_DIR}/include/config.h @ONLY)
+
 # Add executable
 add_executable(dod
-    src/main.cpp
+    ${DOD_MAIN_FILE}
 
     # Animation
     src/animation/animation.cpp

@@ -28,19 +28,19 @@ public:
 
     /// Texture Manager
     ResManager<sf::Texture> texture;
-    static inline ResManager<sf::Texture>& Texture() { return Get().texture; }
+    static ResManager<sf::Texture>& Texture() { return Get().texture; }
     /// Image Manager
     ResManager<sf::Image> image;
-    static inline ResManager<sf::Image> &Image() { return Get().image; }
+    static ResManager<sf::Image> &Image() { return Get().image; }
     /// Font Manager
     ResManager<sf::Font> font;
-    static inline ResManager<sf::Font> &Font() { return Get().font; }
+    static ResManager<sf::Font> &Font() { return Get().font; }
     /// Music Manager
     ResManager<sf::Music> music;
-    static inline ResManager<sf::Music> &Music() { return Get().music; }
+    static ResManager<sf::Music> &Music() { return Get().music; }
     /// Sound Manager
     ResManager<sf::Sound> sound;
-    static inline ResManager<sf::Sound> &Sound() { return Get().sound; }
+    static ResManager<sf::Sound> &Sound() { return Get().sound; }
 
 private:
     /**
