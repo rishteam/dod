@@ -2,9 +2,42 @@ cmake_minimum_required(VERSION 3.10)
 
 project(dod)
 
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE Debug) # Debug Release
 
+include(cmake/StandardProjectSettings.cmake)
+# Project option
+add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_17)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+  option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
+  if (ENABLE_BUILD_WITH_TIME_TRACE)
+    add_compile_definitions(project_options INTERFACE -ftime-trace)
+  endif()
+endif()
+
+# Link this 'library' to use the warnings specified in CompilerWarnings.cmake
+add_library(project_warnings INTERFACE)
+
+# standard compiler warnings
+include(cmake/CompilerWarnings.cmake)
+set_project_warnings(project_warnings)
+
+# sanitizer options if supported by compiler
+include(cmake/Sanitizers.cmake)
+enable_sanitizers(project_options)
+
+# enable doxygen
+option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
+if(ENABLE_DOXYGEN)
+    add_subdirectory(docs)
+endif()
+
+# allow for static analysis options
+include(cmake/StaticAnalyzers.cmake)
+
+# Dependencies
 add_subdirectory(deps/nativefiledialog)
 
 # Add executable
@@ -16,7 +49,7 @@ add_executable(dod
     src/animation/loader.cpp
 
     # Animation Editor
-    # src/animation/editor/editor.cpp
+    src/animation/editor/editor.cpp
 
     # utilities
     src/core/resManager.cpp
@@ -28,10 +61,7 @@ add_executable(dod
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
-
-target_compile_options(dod
-    PUBLIC -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Woverloaded-virtual -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wno-sign-compare
-)
+target_link_libraries(dod project_options project_warnings)
 
 if(APPLE)
     set(SFML_STATIC_LIBRARIES False)

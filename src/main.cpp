@@ -37,9 +37,9 @@ int main()
     // auto &missTex = ResHolder::Texture()
 
 
-    // AnimationEditor animationEditor;
-    Animation test("assets/reimu-hover.ani");
-    test.setScale(sf::Vector2f(5.f, 5.f));
+    AnimationEditor animationEditor;
+    // Animation test("assets/reimu-hover.ani");
+    // test.setScale(sf::Vector2f(5.f, 5.f));
 
     //
     while (window.isOpen())
@@ -51,7 +51,7 @@ int main()
         {
             ImGui::SFML::ProcessEvent(event);
             //
-            // animationEditor.processEvent(event);
+            animationEditor.processEvent(event);
 
             // Close window: exit
             if (event.type == sf::Event::Closed)
@@ -64,15 +64,15 @@ int main()
         ///////////////////////////////////////
         // Update
         // ImGui
-        // animationEditor.update();
+        animationEditor.update();
         ImGui::Begin("Debug");
         {
-            test.debugImGuiWidgets();
+            // test.debugImGuiWidgets();
 
-            // if(animationEditor.selectedOpenFile)
-            // {
-            //     ImGui::Text(animationEditor.currentOpenFilePath.c_str());
-            // }
+            if(animationEditor.selectedOpenFile)
+            {
+                ImGui::Text(animationEditor.currentOpenFilePath.c_str());
+            }
         }
         ImGui::End();
         // Game Update
@@ -93,8 +93,8 @@ int main()
 
         // SFML Draws
         window.pushGLStates();
-            // window.draw(animationEditor);
-            window.draw(test);
+            window.draw(animationEditor);
+            // window.draw(test);
             // window.draw(sp);
         window.popGLStates();
 
