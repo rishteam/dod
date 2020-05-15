@@ -15,6 +15,8 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     exit 1
 fi
 
+# Create build dir if it is not exist
+[[ -d ./build ]] || mkdir build;
 
 if [[ "$1" == "full" ]]; then
     rm -rf ./build/*

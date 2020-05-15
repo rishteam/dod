@@ -47,6 +47,8 @@ else()
 endif()
 
 # Config generate for dod
+set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
+string(LENGTH ${CONFIG_H_SOURCE_DIR} CONFIG_H_SOURCE_DIR_LEN)
 configure_file(${PROJECT_SOURCE_DIR}/config/config.h.in ${PROJECT_SOURCE_DIR}/include/config.h @ONLY)
 
 # Add executable
@@ -54,18 +56,18 @@ add_executable(dod
     ${DOD_MAIN_FILE}
 
     # Animation
-    src/animation/animation.cpp
-    src/animation/loader.cpp
+    # src/animation/animation.cpp
+    # src/animation/loader.cpp
 
     # Animation Editor
-    src/animation/editor/editor.cpp
+    # src/animation/editor/editor.cpp
 
     # utilities
-    src/core/resManager.cpp
-    src/core/resHolder.cpp
-    src/core/log.cpp
+    # src/core/resManager.cpp
+    # src/core/resHolder.cpp
+    # src/core/log.cpp
     # fs
-    src/utils/filedialog.cpp
+    # src/utils/filedialog.cpp
 )
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -123,6 +125,12 @@ target_link_libraries(dod
 find_package(nlohmann_json 3.2.0 REQUIRED)
 target_link_libraries(dod
     nlohmann_json::nlohmann_json
+)
+
+# Add spdlog
+find_package(spdlog REQUIRED)
+target_link_libraries(dod
+    spdlog::spdlog
 )
 
 # Add nativefiledialog
