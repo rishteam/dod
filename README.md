@@ -10,10 +10,13 @@ git clone --recursive https://github.com/rishteam/dod.git
 
 * Dependencies
   * SFML 2.5.1
-  * ImGui 1.76
   * ImGui-SFML
   * fmt
   * nlohmann-json
+
+```bash
+pacman -S - < packages.txt
+```
 
 * Environment
   * msys2

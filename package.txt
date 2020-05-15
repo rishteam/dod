@@ -1,0 +1,8 @@
+mingw-w64-i686-cppcheck
+mingw-w64-i686-doxygen
+mingw-w64-i686-graphviz
+mingw-w64-i686-cmake
+mingw-w64-i686-qt5
+mingw-w64-i686-sfml
+mingw-w64-i686-fmt
+mingw-w64-i686-nlohmann-json

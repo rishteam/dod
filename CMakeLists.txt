@@ -39,7 +39,7 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 
-set(DOD_USE_TEST_MAIN NO)
+set(DOD_USE_TEST_MAIN YES)
 if(DOD_USE_TEST_MAIN)
     set(DOD_MAIN_FILE src/testmain.cpp)
 else()
@@ -77,7 +77,7 @@ if(APPLE)
     set(SFML_DIR "/usr/local/Cellar/sfml/2.5.1")
     target_compile_definitions(dod PUBLIC "GL_SILENCE_DEPRECATION")
 elseif(MSYS)
-    set(SFML_STATIC_LIBRARIES True)
+    set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/mingw32/lib/cmake/SFML")
 else()
     message(FATAL_ERROR "Not supported")
@@ -132,8 +132,8 @@ target_link_libraries(dod
 
 if(MSYS)
     target_link_libraries(dod
-        -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
-        -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+        # -lwsock32 -lws2_32 -static-libgcc -static-libstdc++
+        # -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
         # -mconsole / -mwindows
     )
 endif()
