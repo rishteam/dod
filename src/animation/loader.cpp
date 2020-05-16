@@ -99,7 +99,7 @@ Animation AnimationLoader::loadFromJson(const nlo::json &json)
 
     ani.m_ready = true;
     // DEBUG
-    RL_DEBUG("{}", dumpFromObject(ani));
+    RL_TRACE("{}", dumpFromObject(ani));
 
     return ani;
 FAIL:

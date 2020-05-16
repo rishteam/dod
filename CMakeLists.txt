@@ -39,7 +39,7 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 
-set(DOD_USE_TEST_MAIN YES)
+option(DOD_USE_TEST_MAIN "Use test main" NO)
 if(DOD_USE_TEST_MAIN)
     set(DOD_MAIN_FILE src/testmain.cpp)
 else()
@@ -56,18 +56,18 @@ add_executable(dod
     ${DOD_MAIN_FILE}
 
     # Animation
-    # src/animation/animation.cpp
-    # src/animation/loader.cpp
+    src/animation/animation.cpp
+    src/animation/loader.cpp
 
     # Animation Editor
-    # src/animation/editor/editor.cpp
+    src/animation/editor/editor.cpp
 
     # utilities
-    # src/core/resManager.cpp
-    # src/core/resHolder.cpp
+    src/core/resManager.cpp
+    src/core/resHolder.cpp
     src/core/log.cpp
     # fs
-    # src/utils/filedialog.cpp
+    src/utils/filedialog.cpp
 )
 target_include_directories(dod
     PRIVATE ${PROJECT_SOURCE_DIR}/include

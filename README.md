@@ -23,7 +23,5 @@ pacman -S - < packages.txt
   * cmake
 
 ```bash
-mkdir build && cd build
-cmake -G "MSYS Makefiles" ..
-make
+./script/build.sh full run
 ```

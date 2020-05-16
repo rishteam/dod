@@ -77,7 +77,7 @@ private:
 template <typename T>
 bool ResManager<T>::load(const std::string &resName, const std::string &path)
 {
-    RL_DEBUG("Load resource: {} {}", resName, path);
+    RL_TRACE("Load resource: {} {}", resName, path);
 
     // Delete if exists
     deleteIfExists(resName, path);
@@ -179,7 +179,7 @@ T& ResManager<T>::getDefaultResource()
 template <>
 inline sf::Texture &ResManager<sf::Texture>::getDefaultResource()
 {
-    RL_DEBUG("load missing texture");
+    RL_TRACE("load missing texture");
     if (!exists("default_texture"))
     {
         load("default_texture", "assets/missing_texture.png");

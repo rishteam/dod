@@ -21,6 +21,8 @@ using namespace rl;
 
 int main()
 {
+    Logger::Init();
+
     fs::current_path(fs::current_path().parent_path());
     //
     setvbuf(stdout, nullptr, _IONBF, 0);

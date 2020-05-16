@@ -50,6 +50,7 @@ case "$1" in
 ;;
 
 "run")
+    cmake_go
     make_go
     run $?
 ;;
