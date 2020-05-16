@@ -1,24 +1,18 @@
-#include <cstdio>
+#include <iostream>
 #include "config.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include "core/log.h"
+// #include <spdlog/spdlog.h>
 
-#include "core/resManager.h"
 
 using namespace std;
+using namespace rl;
+
 
 int main()
 {
-    try
-    {
-        throw 1;
-    }
-    catch(int a)
-    {
-        printf("%d\n", a);
-    }
+    Logger::Init();
 
-    rl::ResManager<sf::Texture> texture;
-    rl::ResManager<sf::Music> music;
+    RL_TRACE("tets");
+
 }

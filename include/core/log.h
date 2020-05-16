@@ -1,77 +1,71 @@
+/**
+ * @file log.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Logger
+ * @version 0.1
+ * @date 2020-05-16
+ */
 #pragma once
 
-#include <iostream>
-#include <string>
+#include <memory>
 
-#include <fmt/core.h>
-#include <fmt/printf.h>
+#include <spdlog/spdlog.h>
+
+#include "core/core.h"
 
 namespace rl {
 
-// Singleton logger
-// TODO: support multithreading
-// TODO: support for Imgui debug console
-// TODO: use bit mask to select which level to print
-// also *record* all log of all levels
+// level, __FILE__, __LINE__, __PRETTY_FUNCTION__, format, ##__VA_ARGS__
+#define RL_TRACE(...) rl::Logger::GetClientLogger().trace(__VA_ARGS__)
+#define RL_INFO(...) rl::Logger::GetClientLogger().info(__VA_ARGS__)
+#define RL_WARN(...) rl::Logger::GetClientLogger().warn(__VA_ARGS__)
+#define RL_ERROR(...) rl::Logger::GetClientLogger().error(__VA_ARGS__)
+#define RL_CIRTICAL(...) rl::Logger::GetClientLogger().critical(__VA_ARGS__)
 
-enum LogLevel: unsigned int
-{
-    LOG_NONE = 0,
-    LOG_INFO,  // For info msg
-    LOG_WARN,  // For Warning msg
-    LOG_ERR,   // For Error msg
-    LOG_DEBUG, // For debug msg
+#define RL_CORE_TRACE(...) rl::Logger::GetCoreLogger().trace(__VA_ARGS__)
+#define RL_CORE_INFO(...) rl::Logger::GetCoreLogger().info(__VA_ARGS__)
+#define RL_CORE_WARN(...) rl::Logger::GetCoreLogger().warn(__VA_ARGS__)
+#define RL_CORE_ERROR(...) rl::Logger::GetCoreLogger().error(__VA_ARGS__)
+#define RL_CORE_CIRTICAL(...) rl::Logger::GetCoreLogger().critical(__VA_ARGS__)
 
-    LOG_LEVEL_NUM // for count
-};
-
-#define RL_LOG(level, format, ...) rl::Logger::logger.writeLog(level, __FILE__, __LINE__, __PRETTY_FUNCTION__, format, ##__VA_ARGS__)
-#define RL_INFO(format, ...) RL_LOG(rl::LOG_INFO, format, ##__VA_ARGS__)
-#define RL_WARN(format, ...) RL_LOG(rl::LOG_WARN, format, ##__VA_ARGS__)
-#define RL_ERROR(format, ...) RL_LOG(rl::LOG_ERR, format, ##__VA_ARGS__)
-#define RL_DEBUG(format, ...) RL_LOG(rl::LOG_DEBUG, format, ##__VA_ARGS__)
-
+/**
+ * @brief Logger class
+ */
 class Logger
 {
 public:
-    static Logger logger;
-    static LogLevel nowLevel;
-    //
+    /**
+     * @brief Initialize the Logger
+     */
+    static void Init();
 
-    static const char *LogName[LOG_LEVEL_NUM];
+    /**
+     * @brief Get the Core Logger object
+     * @return spdlog::logger& Core Logger
+     */
+    static spdlog::logger& GetCoreLogger() { return *CoreLogger; }
 
-    void vwriteLog(LogLevel level,
-        const char* file, const int line, const char * func, const char* format,
-        fmt::format_args args)
-    {
-        if(level > Logger::nowLevel) return;
-        fmt::printf("[%s] %s @ %s:%d\n", Logger::LogName[level], func, file, line);
-        fmt::vprint(format, args);
-        fmt::print("\n");
-        fflush(stdout);
-    }
-
-    template<typename... Args>
-    void writeLog(LogLevel level,
-        const char* file, const int line, const char * func, const char* format,
-        const Args & ... args)
-    {
-        vwriteLog(level, file, line, func, format, fmt::make_format_args(args...));
-    }
-
-    static void setLogLevel(LogLevel level)
-    {
-        Logger::nowLevel = level;
-    }
-    static LogLevel getLogLevel()
-    {
-        return Logger::nowLevel;
-    }
+    /**
+     * @brief Get the Client Logger object
+     * @return spdlog::logger& Client Logger
+     */
+    static spdlog::logger& GetClientLogger() { return *ClientLogger; }
 
 private:
+    /// @brief static Core Logger object
+    static std::shared_ptr<spdlog::logger> CoreLogger;
+    /// @brief static Client Logger object
+    static std::shared_ptr<spdlog::logger> ClientLogger;
+
     Logger() = default;
-public:
-    ~Logger() = default;
 };
+
+/**
+ * @brief Remove the project path the full path (Convert to relative path)
+ *
+ * @param path full path
+ * @return const char* reloative path
+ */
+const char* GetSrcFileRelativePath(const char* path);
 
 }

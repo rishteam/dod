@@ -65,7 +65,7 @@ add_executable(dod
     # utilities
     # src/core/resManager.cpp
     # src/core/resHolder.cpp
-    # src/core/log.cpp
+    src/core/log.cpp
     # fs
     # src/utils/filedialog.cpp
 )

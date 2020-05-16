@@ -1,4 +1,7 @@
 
+# log files
+*.log
+
 # Auto generated files
 include/config.h
 
