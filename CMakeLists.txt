@@ -82,7 +82,9 @@ elseif(MSYS)
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/mingw32/lib/cmake/SFML")
 else()
-    message(FATAL_ERROR "Not supported")
+    set(SFML_STATIC_LIBRARIES False)
+    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+#    message(FATAL_ERROR "Not supported")
 endif()
 
 # Add SFML

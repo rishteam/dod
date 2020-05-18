@@ -43,3 +43,10 @@ build/
 
 imgui.ini
 .DS_Store
+/cmake-build-debug/
+/cmake-build-release/
+.idea/.gitignore
+.idea/dod.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml

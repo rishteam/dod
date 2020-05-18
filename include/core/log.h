@@ -20,13 +20,13 @@ namespace rl {
 #define RL_INFO(...) rl::Logger::GetClientLogger().info(__VA_ARGS__)
 #define RL_WARN(...) rl::Logger::GetClientLogger().warn(__VA_ARGS__)
 #define RL_ERROR(...) rl::Logger::GetClientLogger().error(__VA_ARGS__)
-#define RL_CIRTICAL(...) rl::Logger::GetClientLogger().critical(__VA_ARGS__)
+#define RL_CRITICAL(...) rl::Logger::GetClientLogger().critical(__VA_ARGS__)
 
 #define RL_CORE_TRACE(...) rl::Logger::GetCoreLogger().trace(__VA_ARGS__)
 #define RL_CORE_INFO(...) rl::Logger::GetCoreLogger().info(__VA_ARGS__)
 #define RL_CORE_WARN(...) rl::Logger::GetCoreLogger().warn(__VA_ARGS__)
 #define RL_CORE_ERROR(...) rl::Logger::GetCoreLogger().error(__VA_ARGS__)
-#define RL_CORE_CIRTICAL(...) rl::Logger::GetCoreLogger().critical(__VA_ARGS__)
+#define RL_CORE_CRITICAL(...) rl::Logger::GetCoreLogger().critical(__VA_ARGS__)
 
 /**
  * @brief Logger class
