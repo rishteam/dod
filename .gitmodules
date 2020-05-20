@@ -1,0 +1,3 @@
+[submodule "RishEngine/deps/nativefiledialog"]
+	path = RishEngine/deps/nativefiledialog
+	url = https://github.com/roy4801/nativefiledialog.git
