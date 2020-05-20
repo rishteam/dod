@@ -9,9 +9,12 @@
 
 #include <memory>
 
+#ifndef SPDLOG_FMT_EXTERNAL
+    #define SPDLOG_FMT_EXTERNAL
+#endif
 #include <spdlog/spdlog.h>
 
-#include "core/core.h"
+#include "Rish/Core/Core.h"
 
 namespace rl {
 

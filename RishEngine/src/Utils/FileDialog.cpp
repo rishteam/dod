@@ -1,7 +1,7 @@
 #include <nfd.h>
 
-#include "core/log.h"
-#include "utils/filedialog.h"
+#include "Rish/Core/Log.h"
+#include "Rish/Utils/FileDialog.h"
 
 namespace rl {
 

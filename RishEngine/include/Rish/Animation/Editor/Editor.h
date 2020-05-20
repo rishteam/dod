@@ -6,7 +6,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 //
-#include "animation/animation.h"
+#include "Rish/Animation/Animation.h"
 
 namespace rl {
 
@@ -66,7 +66,7 @@ private:
         void updateAttributeWindow();
         void show() { m_showAttributeWindow = true; }
         void hide() { m_showAttributeWindow = false; }
-        bool getShow() { return m_showAttributeWindow; }
+        bool getShow() const { return m_showAttributeWindow; }
     private:
         // Animation Attribute Editor
         void updateAnimationAttributeEditorWidgets();

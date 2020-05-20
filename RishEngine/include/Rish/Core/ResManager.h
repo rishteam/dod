@@ -17,8 +17,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include "core/core.h"
-#include "core/log.h"
+#include "Rish/Core/Core.h"
+#include "Rish/Core/Log.h"
 
 namespace rl {
 

@@ -11,11 +11,11 @@
 
 #include <fmt/format.h>
 
-#include "core/core.h"
-#include "core/log.h"
-#include "core/resHolder.h"
-#include "animation/animation.h"
-#include "animation/loader.h"
+#include "Rish/Core/Core.h"
+#include "Rish/Core/Log.h"
+#include "Rish/Core/ResHolder.h"
+#include "Rish/Animation/Animation.h"
+#include "Rish/Animation/Loader.h"
 
 /**
  * @TODO change animation loader to serialization library

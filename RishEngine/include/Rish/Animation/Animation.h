@@ -11,7 +11,7 @@
 
 #include <imgui.h>
 
-#include "core/core.h"
+#include "Rish/Core/Core.h"
 
 // TODO: set loop start end
 // TODO: support flip

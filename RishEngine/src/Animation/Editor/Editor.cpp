@@ -1,12 +1,12 @@
 #include <filesystem>
 #include <imgui.h>
 
-#include "core/resManager.h"
-#include "core/log.h"
-#include "animation/editor/editor.h"
-#include "animation/loader.h"
+#include "Rish/Core/ResManager.h"
+#include "Rish/Core/Log.h"
+#include "Rish/Animation/Editor/Editor.h"
+#include "Rish/Animation/Loader.h"
 
-#include "utils/filedialog.h"
+#include "Rish/Utils/FileDialog.h"
 
 namespace fs = std::filesystem;
 

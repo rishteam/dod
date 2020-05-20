@@ -1,7 +1,7 @@
 #include <iostream>
 #include "config.h"
 
-#include "core/log.h"
+#include "Rish/Core/Log.h"
 //#include <spdlog/spdlog.h>
 //#include <spdlog/sinks/stdout_color_sinks.h>
 

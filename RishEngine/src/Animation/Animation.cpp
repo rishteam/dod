@@ -1,10 +1,10 @@
 #include <fstream>
 
-#include "animation/animation.h"
-#include "animation/loader.h"
+#include "Rish/Animation/Animation.h"
+#include "Rish/Animation/Loader.h"
 
-#include "core/resManager.h"
-#include "core/log.h"
+#include "Rish/Core/ResManager.h"
+#include "Rish/Core/Log.h"
 
 namespace rl {
 

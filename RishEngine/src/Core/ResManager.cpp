@@ -1,4 +1,4 @@
-#include "core/resManager.h"
+#include "Rish/Core/ResManager.h"
 
 namespace rl {
 
