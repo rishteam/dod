@@ -24,19 +24,23 @@
 #define BIT(x) (1<<(x))
 
 #if defined _WIN32 || defined __CYGWIN__
-  #ifdef RL_BUILD_DLL
-    // Exporting...
-    #ifdef __GNUC__
-      #define RL_API __attribute__ ((dllexport))
+  #ifdef RL_USE_STATIC
+    #ifdef RL_BUILD_DLL
+      // Exporting...
+      #ifdef __GNUC__
+        #define RL_API __attribute__ ((dllexport))
+      #else
+        #define RL_API __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+      #endif
     #else
-      #define RL_API __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+      #ifdef __GNUC__
+        #define RL_API __attribute__ ((dllimport))
+      #else
+        #define RL_API __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+      #endif
     #endif
   #else
-    #ifdef __GNUC__
-      #define RL_API __attribute__ ((dllimport))
-    #else
-      #define RL_API __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
-    #endif
+    #define RL_API
   #endif
   #define NOT_EXPORTED
 #else

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(dod)
+project(RishEngine)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -39,21 +39,26 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 
-option(DOD_USE_TEST_MAIN "Use test main" NO)
-if(DOD_USE_TEST_MAIN)
-    set(DOD_MAIN_FILE src/testmain.cpp)
-else()
-    set(DOD_MAIN_FILE src/main.cpp)
-endif()
+# TODO: move this to sandbox or leave only testmain.cpp for testing purpose only
+# option(DOD_USE_TEST_MAIN "Use test main" NO)
+# if(DOD_USE_TEST_MAIN)
+#     set(DOD_MAIN_FILE src/testmain.cpp)
+# else()
+#     set(DOD_MAIN_FILE src/main.cpp)
+# endif()
 
-# Config generate for dod
+# Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
 string(LENGTH ${CONFIG_H_SOURCE_DIR} CONFIG_H_SOURCE_DIR_LEN)
 configure_file(${PROJECT_SOURCE_DIR}/config/Config.h.in ${PROJECT_SOURCE_DIR}/include/Rish/Config.h @ONLY)
 
+# TODO: support for dynamic linking for the engine
+
 # Add executable
-add_executable(dod
-    ${DOD_MAIN_FILE}
+add_library(RishEngine
+    # ${DOD_MAIN_FILE}
+    # Application
+    src/Core/Application.cpp
 
     # Animation
     src/Animation/Animation.cpp
@@ -66,18 +71,21 @@ add_executable(dod
     src/Core/ResManager.cpp
     src/Core/ResHolder.cpp
     src/Core/Log.cpp
+
     # fs
     src/Utils/FileDialog.cpp
 )
-target_include_directories(dod
+# alias
+add_library(Rish::Engine ALIAS RishEngine)
+target_include_directories(RishEngine
     PUBLIC ${PROJECT_SOURCE_DIR}/include
 )
-target_link_libraries(dod project_options project_warnings)
+target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
 
 if(APPLE)
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/usr/local/Cellar/sfml/2.5.1")
-    target_compile_definitions(dod PUBLIC "GL_SILENCE_DEPRECATION")
+    target_compile_definitions(RishEngine PUBLIC "GL_SILENCE_DEPRECATION")
 elseif(MSYS)
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/mingw32/lib/cmake/SFML")
@@ -89,7 +97,7 @@ endif()
 
 # Add SFML
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
-target_link_libraries(dod
+target_link_libraries(RishEngine
     sfml-system sfml-window sfml-graphics sfml-network sfml-audio
 )
 
@@ -98,7 +106,7 @@ find_package(ImGui-SFML REQUIRED)
 if(NOT ImGui-SFML_FOUND)
     message(FATAL_ERROR "ImGui-SFML not found")
 endif()
-target_link_libraries(dod
+target_link_libraries(RishEngine
     ImGui-SFML::ImGui-SFML
 )
 
@@ -107,10 +115,10 @@ find_package(OpenGL REQUIRED)
 if(NOT OpenGL_FOUND)
     message(FATAL_ERROR "OpenGL not found")
 endif()
-target_include_directories(dod
+target_include_directories(RishEngine
     PUBLIC ${OPENGL_INCLUDE_DIRS}
 )
-target_link_libraries(dod
+target_link_libraries(RishEngine
     ${OPENGL_LIBRARIES}
 )
 
@@ -119,29 +127,29 @@ find_package(fmt REQUIRED)
 if(NOT fmt_FOUND)
     message(FATAL_ERROR "fmt not found")
 endif()
-target_link_libraries(dod
+target_link_libraries(RishEngine
     fmt::fmt
 )
 
 # Add nlohmann_json
 find_package(nlohmann_json 3.2.0 REQUIRED)
-target_link_libraries(dod
+target_link_libraries(RishEngine
     nlohmann_json::nlohmann_json
 )
 
 # Add spdlog
 find_package(spdlog REQUIRED)
-target_link_libraries(dod
+target_link_libraries(RishEngine
     spdlog::spdlog
 )
 
 # Add nativefiledialog
-target_link_libraries(dod
+target_link_libraries(RishEngine
     nfd::nfd
 )
 
 if(MSYS)
-    target_link_libraries(dod
+    target_link_libraries(RishEngine
         # -lwsock32 -lws2_32 -static-libgcc -static-libstdc++
         # -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
         # -mconsole / -mwindows
