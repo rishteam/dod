@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Rish/Utils/debug-trap.h"
+#include "Rish/Core/Log.h"
 
 #define RL_DEBUG_DEFINE
 
@@ -24,7 +25,7 @@
 #define BIT(x) (1<<(x))
 
 #if defined _WIN32 || defined __CYGWIN__
-  #ifdef RL_USE_STATIC
+  #ifndef RL_USE_STATIC
     #ifdef RL_BUILD_DLL
       // Exporting...
       #ifdef __GNUC__

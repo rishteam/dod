@@ -82,6 +82,16 @@ target_include_directories(RishEngine
 )
 target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
 
+option(RL_USE_STATIC "Use RishEngine as a static libaray" ON)
+if(RL_USE_STATIC)
+    target_compile_definitions(RishEngine PUBLIC "RL_USE_STATIC")
+endif()
+
+option(RL_BUILD_DLL "Build dll" OFF)
+if(RL_BUILD_DLL)
+    target_compile_definitions(RishEngine PUBLIC "RL_BUILD_DLL")
+endif()
+
 if(APPLE)
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/usr/local/Cellar/sfml/2.5.1")

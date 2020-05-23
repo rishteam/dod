@@ -8,7 +8,8 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "RL_USE_STATIC"
             ],
             "compilerPath": "C:/msys64/mingw32/bin/g++.exe",
             "cStandard": "c11",

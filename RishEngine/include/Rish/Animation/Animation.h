@@ -68,9 +68,10 @@ public:
     bool removeFrame(int idx=-1)
     {
         // TODO: make tex std::list for optimizing
+        int size = static_cast<int>(m_textureVec.size());
         if(idx == -1)
-            idx = m_textureVec.size()-1;
-        if(idx < (int)m_textureVec.size() && idx != -1)
+            idx = size-1;
+        if(idx < size && idx != -1)
         {
             m_textureVec.erase(m_textureVec.begin() + idx);
             return true;

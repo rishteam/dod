@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BINARY_NAME=dod
+BINARY_NAME=Sandbox/Sandbox.exe
 
 usage() {
     cat <<EOF
@@ -23,6 +23,8 @@ cmake_go() {
 make_go() {
     make -j6
 }
+
+# -----------------------------------------------------------------------------
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     usage

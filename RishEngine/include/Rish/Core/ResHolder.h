@@ -2,7 +2,6 @@
  * @file resHolder.h
  * @author roy4801 (roy@rish.com.tw)
  * @brief Header of Resource Holder
- * @version 0.1
  * @date 2020-05-12
  */
 #pragma once

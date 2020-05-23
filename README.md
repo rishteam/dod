@@ -25,3 +25,7 @@ pacman -S - < packages.txt
 ```bash
 ./script/build.sh full run
 ```
+
+## Reference
+
+* [Game Engine series - Ther Cherno](https://www.youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT)

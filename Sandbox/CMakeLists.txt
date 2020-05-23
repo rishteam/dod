@@ -6,6 +6,6 @@ add_executable(Sandbox
     SandboxApp.cpp
 )
 target_link_libraries(Sandbox
-    Rish::Engine
+    Rish::Engine project_options project_warnings
 )
 
