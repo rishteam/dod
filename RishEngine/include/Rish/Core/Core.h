@@ -10,16 +10,25 @@
 #endif
 
 #ifdef RL_ENABLE_ASSERT
-#define RL_ASSERT(x, fmt, ...)                                 \
-    {                                                          \
-        if (!(x))                                              \
-        {                                                      \
-            RL_ERROR("Assertion Failed: " fmt, ##__VA_ARGS__); \
-            psnip_trap();                                      \
-        }                                                      \
-    }
+  #define RL_ASSERT(x, fmt, ...)                                 \
+      {                                                          \
+          if (!(x))                                              \
+          {                                                      \
+              RL_ERROR("Assertion Failed: " fmt, ##__VA_ARGS__); \
+              psnip_trap();                                      \
+          }                                                      \
+      }
+  #define RL_CORE_ASSERT(x, fmt, ...)                                 \
+      {                                                               \
+          if(!(x))                                                    \
+          {                                                           \
+              RL_CORE_ERROR("Assertion Failed: " fmt, ##__VA_ARGS__); \
+              psnip_trap();                                           \
+          }                                                           \
+      }
 #else
-#define RL_ASSERT(x, fmt, ...)
+  #define RL_ASSERT(x, fmt, ...)
+  #define RL_CORE_ASSERT(x, fmt, ...)
 #endif
 
 #define BIT(x) (1<<(x))

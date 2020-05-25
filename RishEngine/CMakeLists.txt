@@ -56,14 +56,15 @@ configure_file(${PROJECT_SOURCE_DIR}/config/Config.h.in ${PROJECT_SOURCE_DIR}/in
 
 # Add executable
 add_library(RishEngine
-    # ${DOD_MAIN_FILE}
     # Application
     src/Core/Application.cpp
+
+    # Window
+    src/Platform/SFMLWindow.cpp
 
     # Animation
     src/Animation/Animation.cpp
     src/Animation/Loader.cpp
-
     # Animation Editor
     src/Animation/Editor/Editor.cpp
 

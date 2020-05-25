@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Rish/rlpch.h"
+
 #include "Rish/Core/Core.h"
+#include "Rish/Core/Window.h"
 
 namespace rl {
 
@@ -11,6 +14,8 @@ public:
     virtual ~Application();
 
     void run();
+private:
+    std::unique_ptr<Window> m_window;
 };
 
 Application* CreateApplication();

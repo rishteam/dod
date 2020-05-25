@@ -9,6 +9,7 @@ namespace rl {
 
 Application::Application()
 {
+    m_window = std::unique_ptr<Window>(Window::Create());
 }
 
 Application::~Application()
@@ -17,11 +18,11 @@ Application::~Application()
 
 void Application::run()
 {
-    AppRenderEvent e;
-
-    RL_INFO("{}", e);
-
-    while(1);
+    while(m_window->isOpen())
+    {
+        m_window->onUpdate();
+        m_window->onDraw();
+    }
 }
 
 }
