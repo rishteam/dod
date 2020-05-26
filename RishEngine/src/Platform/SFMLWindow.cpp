@@ -1,5 +1,4 @@
 #include <SFML/Window/VideoMode.hpp>
-#include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
 //
 #include <imgui.h>
@@ -22,6 +21,18 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     m_SFMLWindow(sf::VideoMode(width, height), title)
 {
     ImGui::SFML::Init(m_SFMLWindow);
+
+    SFMLEventDispatcher::SFMLEventCallback closeEvent = [&](const sf::Event &e) {
+        WindowCloseEvent windowClose;
+        m_eventCallback(windowClose);
+    };
+    m_SFMLEventDispatcher.addListener(sf::Event::Closed, closeEvent);
+
+    SFMLEventDispatcher::SFMLEventCallback resizeEvent = [&](const sf::Event &e) {
+        WindowResizeEvent resize(e.size.width, e.size.height);
+        m_eventCallback(resize);
+    };
+    m_SFMLEventDispatcher.addListener(sf::Event::Resized, resizeEvent);
 }
 
 SFMLWindow::~SFMLWindow()
@@ -31,7 +42,7 @@ SFMLWindow::~SFMLWindow()
 
 void SFMLWindow::onUpdate()
 {
-    RL_CORE_ASSERT(m_eventCallback, "Epvent Callback is not ready");
+    RL_CORE_ASSERT(m_eventCallback, "Event Callback is not ready");
 
     m_SFMLWindow.clear(m_clearColor);
     //
@@ -39,18 +50,7 @@ void SFMLWindow::onUpdate()
     while(m_SFMLWindow.pollEvent(event))
     {
         ImGui::SFML::ProcessEvent(event);
-
-        // TODO: maybe use event dispatcher again?
-        if(event.type == sf::Event::Closed)
-        {
-            WindowCloseEvent windowClose;
-            m_eventCallback(windowClose);
-        }
-        else if(event.type == sf::Event::Resized)
-        {
-            WindowResizeEvent resize(event.size.width, event.size.height);
-            m_eventCallback(resize);
-        }
+        m_SFMLEventDispatcher.handleEvent(event);
     }
     ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
 }

@@ -44,7 +44,7 @@ void Application::onEvent(Event &e)
 
 bool Application::onWindowClose(WindowCloseEvent &e)
 {
-    RL_CORE_TRACE("Close : {}", e);
+    RL_CORE_TRACE("{}", e);
     m_running = false;
     return true;
 }
