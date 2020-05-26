@@ -26,7 +26,7 @@ public:
     void onUpdate() override;
     void onDraw() override;
 
-    void setEventCallback(const EventCallbackFunc &callback);
+    void setEventCallback(const EventCallbackFunc &callback) override { m_eventCallback = callback; }
 
     bool isOpen() override { return m_SFMLWindow.isOpen(); }
 
@@ -36,6 +36,7 @@ private:
     sf::RenderWindow m_SFMLWindow;
     sf::Clock m_clock;
     sf::Color m_clearColor = sf::Color::Black;
+    EventCallbackFunc m_eventCallback;
 };
 
 }

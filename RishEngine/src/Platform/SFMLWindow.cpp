@@ -1,12 +1,14 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
-#include <SFML/OpenGL.hpp>
 //
 #include <imgui.h>
 #include <imgui-SFML.h>
 //
-#include <Rish/Platform/SFMLWindow.h>
+#include "Rish/Core/Core.h"
+#include "Rish/Platform/SFMLWindow.h"
+
+#include "Rish/Events/ApplicationEvent.h"
 
 namespace rl {
 
@@ -29,6 +31,8 @@ SFMLWindow::~SFMLWindow()
 
 void SFMLWindow::onUpdate()
 {
+    RL_CORE_ASSERT(m_eventCallback, "Epvent Callback is not ready");
+
     m_SFMLWindow.clear(m_clearColor);
     //
     sf::Event event;
@@ -36,11 +40,17 @@ void SFMLWindow::onUpdate()
     {
         ImGui::SFML::ProcessEvent(event);
 
-        // TODO: temp
+        // TODO: maybe use event dispatcher again?
         if(event.type == sf::Event::Closed)
-            m_SFMLWindow.close();
+        {
+            WindowCloseEvent windowClose;
+            m_eventCallback(windowClose);
+        }
         else if(event.type == sf::Event::Resized)
-            glViewport(0, 0, event.size.width, event.size.height);
+        {
+            WindowResizeEvent resize(event.size.width, event.size.height);
+            m_eventCallback(resize);
+        }
     }
     ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
 }
@@ -52,10 +62,6 @@ void SFMLWindow::onDraw()
     m_SFMLWindow.popGLStates();
     //
     m_SFMLWindow.display();
-}
-
-void SFMLWindow::setEventCallback(const EventCallbackFunc &callback)
-{
 }
 
 }
