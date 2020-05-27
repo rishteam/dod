@@ -75,6 +75,10 @@ add_library(RishEngine
 
     # fs
     src/Utils/FileDialog.cpp
+
+    # Layer
+    src/Layer/Layer.cpp
+    src/Layer/LayerStack.cpp
 )
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
@@ -98,7 +102,7 @@ if(APPLE)
     set(SFML_DIR "/usr/local/Cellar/sfml/2.5.1")
     target_compile_definitions(RishEngine PUBLIC "GL_SILENCE_DEPRECATION")
 elseif(MSYS)
-    set(SFML_STATIC_LIBRARIES False)
+    set(SFML_STATIC_LIBRARIES True)
     set(SFML_DIR "/mingw32/lib/cmake/SFML")
 else()
     set(SFML_STATIC_LIBRARIES False)

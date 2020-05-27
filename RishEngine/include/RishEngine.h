@@ -17,6 +17,9 @@
 #include "Rish/Core/ResHolder.h"
 #include "Rish/Core/Application.h"
 
+// Event module
+#include "Rish/Events/Event.h"
+
 // Utils Module
 #include "Rish/Utils/debug-trap.h"
 #include "Rish/Utils/FileDialog.h"
@@ -28,3 +31,6 @@
 
 // Entry Point
 #include "EntryPoint.h"
+
+// Layers
+#include "Rish/Layer/Layer.h"

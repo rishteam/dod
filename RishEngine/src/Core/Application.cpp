@@ -30,6 +30,8 @@ void Application::run()
     {
         m_window->onUpdate();
 
+        for(Layer* layer: m_LayerStack) layer->OnUpdate();
+
         if(m_window)
             m_window->onDraw();
     }
@@ -40,6 +42,32 @@ void Application::onEvent(Event &e)
     EventDispatcher dispatcher(e);
     dispatcher.dispatch<WindowCloseEvent>(BIND_APPEVENT_FUNC(onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(BIND_APPEVENT_FUNC(onWindowResize));
+
+    for(auto it = m_LayerStack.end() ; it != m_LayerStack.begin() ;)
+    {
+        (*--it)->OnEvent(e);
+        // if event is handled break;
+    }
+}
+
+void Application::pushLayer(Layer* layer)
+{
+    m_LayerStack.pushLayer(layer);
+}
+
+void Application::pushOverlay(Layer* overlay)
+{
+    m_LayerStack.pushOverlay(overlay);
+}
+
+void Application::popLayer(Layer* layer)
+{
+    m_LayerStack.popLayer(layer);
+}
+
+void Application::popOverlay(Layer* overlay)
+{
+    m_LayerStack.popOverlay(overlay);
 }
 
 bool Application::onWindowClose(WindowCloseEvent &e)

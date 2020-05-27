@@ -1,10 +1,31 @@
 #include <RishEngine.h>
 
+class ExampleSandbox : public rl::Layer
+{
+public:
+    ExampleSandbox()
+    : Layer("example")
+    {
+    }
+
+    void OnUpdate() override
+    {
+        RL_INFO("ExampleLayer::Update");
+    }
+
+    void OnEvent(rl::Event& event) override
+    {
+        RL_TRACE("{0}", event);
+    }
+
+};
+
 class Sandbox : public rl::Application
 {
 public:
     Sandbox()
     {
+        pushLayer(new ExampleSandbox());
         // RL_CORE_ASSERT(false, "123");
         // RL_ASSERT(false, "456");
     }
