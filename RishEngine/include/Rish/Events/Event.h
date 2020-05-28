@@ -40,10 +40,15 @@ enum class EventType
 enum EventCategory
 {
     None                     = 0,
+    /// Application Event
     EventCategoryApplication = BIT(0),
+    /// Input Event
     EventCategoryInput       = BIT(1),
+    /// Keyboard Event
     EventCategoryKeyboard    = BIT(2),
+    /// Mouse Event
     EventCategoryMouse       = BIT(3),
+    /// Mouse Button Event
     EventCategoryMouseButton = BIT(4)
 };
 
@@ -52,9 +57,9 @@ enum EventCategory
  * @details Provide functionalities such as RTTI and debug name
  * @warning Must add inside a declaration of a Event class
  */
-#define EVENT_CLASS_TYPE(type)  \
-    static EventType getStaticType() { return EventType::type; } \
-    virtual EventType getEventType() const override { return getStaticType(); }   \
+#define EVENT_CLASS_TYPE(type)                                                  \
+    static EventType getStaticType() { return EventType::type; }                \
+    virtual EventType getEventType() const override { return getStaticType(); } \
     virtual const char* getName() const override { return #type; }
 
 /**
@@ -101,13 +106,13 @@ public:
     }
 
 private:
-    /// @brief Is this event have been handled. (will not be propagated)
+    /// Is this event have been handled. (will not be propagated)
     bool m_handled = false;
 };
 
 /**
  * @brief Event Dispatcher
- * @details
+ * @details Dispatch the RishEngine Event to it handle function e.g. `on???Event(??? &e)`
  */
 class EventDispatcher
 {

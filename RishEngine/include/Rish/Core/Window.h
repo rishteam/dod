@@ -16,7 +16,7 @@ namespace rl {
 /**
  * @brief Window class
  * @details Interface of abstract Window class
- * @warning Implement concrete Window class of corresponding platform or lower library
+ * @warning Implement concrete Window class of corresponding platform or lower level library
  */
 class RL_API Window
 {

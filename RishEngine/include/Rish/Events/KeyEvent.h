@@ -1,7 +1,7 @@
 /**
  * @file KeyEvent.h
  * @author roy4801 (roy@rish.com.tw)
- * @brief Keyboard events
+ * @brief Header of Keyboard events
  * @date 2020-05-23
  */
 #pragma once
@@ -12,23 +12,19 @@ namespace rl {
 
 /**
  * @brief Key Event Interface
- * @warning This class is for interface ONLY, do not attempt to construct it
+ * @warning This class is for interface **ONLY**, do not attempt to construct it
  */
 class RL_API KeyEvent : public Event
 {
 public:
-    inline int getKeyCode() const
-    {
-        return m_keyCode;
-    }
-
     EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 protected:
-    KeyEvent(int keycode) : m_keyCode(keycode)
+    KeyEvent(int keycode_) : keyCode(keycode_)
     {
     }
 
-    int m_keyCode;
+public:
+    int keyCode;
 };
 
 /**
@@ -38,18 +34,17 @@ protected:
 class RL_API KeyPressedEvent : public KeyEvent
 {
 public:
-    KeyPressedEvent(int keycode, int repeat) : KeyEvent(keycode)
-        , m_repeat(repeat)
+    KeyPressedEvent(int keycode_, int repeat_) : KeyEvent(keycode_)
+        , repeat(repeat_)
     {
     }
 
-    inline int getRepeatCount() const { return m_repeat; }
-
-    EVENT_CLASS_TOSTRING("KeyPressEvent: keycode={} repeat={}", m_keyCode, m_repeat)
+    EVENT_CLASS_TOSTRING("KeyPressEvent: keycode={} repeat={}", keyCode, repeat)
 
     EVENT_CLASS_TYPE(KeyPressed)
-private:
-    int m_repeat;
+
+public:
+    int repeat;
 };
 
 /**
@@ -59,11 +54,11 @@ private:
 class RL_API KeyReleasedEvent : public KeyEvent
 {
 public:
-    KeyReleasedEvent(int keycode) : KeyEvent(keycode)
+    KeyReleasedEvent(int keycode_) : KeyEvent(keycode_)
     {
     }
 
-    EVENT_CLASS_TOSTRING("KeyReleaseEvent: keycode={}", m_keyCode)
+    EVENT_CLASS_TOSTRING("KeyReleaseEvent: keycode={}", keyCode)
 
     EVENT_CLASS_TYPE(KeyReleased)
 };

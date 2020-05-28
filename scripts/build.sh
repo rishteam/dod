@@ -59,7 +59,7 @@ case "$1" in
 
 "docs")
     make doxygen-docs
-    [[ "$2" == "open" ]] && start ./docs/html/index.html
+    [[ "$2" == "open" ]] && start ./RishEngine/docs/html/index.html
 ;;
 
 "-h" | "--help")

@@ -23,12 +23,8 @@ namespace rl {
 class RL_API SFMLEventDispatcher
 {
 public:
-    SFMLEventDispatcher()
-    {
-    }
-    ~SFMLEventDispatcher()
-    {
-    }
+    SFMLEventDispatcher() = default;
+    ~SFMLEventDispatcher() = default;
 
     using SFMLEventCallback = std::function<void(const sf::Event &)>;
     void addListener(sf::Event::EventType type, const SFMLEventCallback &callback)
@@ -84,7 +80,10 @@ private:
 
 /**
  * @brief SFMl Window class
- * @details Wraps the sf::RenderWindow and provides API
+ * @details Concrete class that implements rl::Window using SFML
+ *         Wraps the sf::RenderWindow and provides API
+ *         When a event happened in Window, Window class will create the RishEngine event
+ *         and send it back to Application through event callback set by Application
  */
 class RL_API SFMLWindow final : public Window
 {
@@ -95,6 +94,11 @@ public:
     void onUpdate() override;
     void onDraw() override;
 
+    /**
+     * @brief Set the Event Callback object
+     * @details This is used by Application class for setting the event callback.
+     * @param callback Event Callback function
+     */
     void setEventCallback(const EventCallbackFunc &callback) override { m_eventCallback = callback; }
 
     bool isOpen() override { return m_SFMLWindow.isOpen(); }
@@ -102,10 +106,15 @@ public:
     sf::RenderWindow& getWindowRef() { return m_SFMLWindow; }
 
 private:
+    /// SFML render window
     sf::RenderWindow m_SFMLWindow;
+    /// clock
     sf::Clock m_clock;
+    /// background color
     sf::Color m_clearColor = sf::Color::Black;
+    /// event callback set by Application
     EventCallbackFunc m_eventCallback;
+    /// dispatches the sf::Event to RishEngine Event
     SFMLEventDispatcher m_SFMLEventDispatcher;
 };
 

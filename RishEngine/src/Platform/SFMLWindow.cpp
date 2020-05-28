@@ -57,6 +57,7 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     // mouse moved event
     SFML_EVENT_CALLBACK(mouseMovedEvent) = [&](const sf::Event &e) {
         MouseMovedEvent m(static_cast<float>(e.mouseMove.x), static_cast<float>(e.mouseMove.y));
+        m_eventCallback(m);
     };
     m_SFMLEventDispatcher.addListener(sf::Event::MouseMoved, mouseMovedEvent);
 

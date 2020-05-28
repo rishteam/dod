@@ -1,9 +1,19 @@
+/**
+ * @file MouseEvent.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header if Mouse Events
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include "Rish/Events/Event.h"
 
 namespace rl {
 
+/**
+ * @brief Mouse Moved Event
+ * @details Provide position
+ */
 class RL_API MouseMovedEvent : public Event
 {
 public:
@@ -25,6 +35,10 @@ public:
     float x, y;
 };
 
+/**
+ * @brief Mouse Scrolled Event
+ * @details Offers position and offset
+ */
 class RL_API MouseScrolledEvent : public Event
 {
 public:
@@ -50,13 +64,11 @@ public:
 
 /**
  * @brief Mouse Button Event Interface
- * @warning This class is for interface ONLY, do not attempt to construct it
+ * @warning This class is for interface **ONLY**, do not attempt to construct it
  */
 class RL_API MouseButtonEvent : public Event
 {
 public:
-    inline int getMouseButton() const { return button; }
-
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 protected:
@@ -70,6 +82,10 @@ public:
     int x, y;
 };
 
+/**
+ * @brief Mouse Button Pressed
+ * @details Provide which button is pressed and the mouse position
+ */
 class RL_API MouseButtonPressedEvent : public MouseButtonEvent
 {
 public:
@@ -82,6 +98,10 @@ public:
     EVENT_CLASS_TYPE(MouseButtonPressed)
 };
 
+/**
+ * @brief Mouse Button Released Event
+ * @details Provide which button is pressed and the mouse position
+ */
 class RL_API MouseButtonReleasedEvent : public MouseButtonEvent
 {
 public:
