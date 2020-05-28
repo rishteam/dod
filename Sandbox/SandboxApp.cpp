@@ -8,13 +8,14 @@ public:
     {
     }
 
-    void OnUpdate() override
+    void onUpdate() override
     {
         RL_INFO("ExampleLayer::Update");
     }
 
-    void OnEvent(rl::Event& event) override
+    void onEvent(rl::Event& event) override
     {
+        RL_INFO("ExampleLayer::onEvent");
         RL_TRACE("{0}", event);
     }
 

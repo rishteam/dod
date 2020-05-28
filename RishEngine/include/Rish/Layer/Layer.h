@@ -14,10 +14,10 @@ public:
 	Layer(const std::string& debugname = "Layer");
 	virtual ~Layer();
 
-	virtual void OnAttach() {};
-	virtual void OnDetach() {};
-	virtual void OnUpdate() {};
-	virtual void OnEvent(Event& event) {};
+	virtual void onAttach() {};
+	virtual void onDetach() {};
+	virtual void onUpdate() {};
+	virtual void onEvent(Event& event) {};
 
 	inline const std::string& GetName() const { return m_DebugName; }
 protected:

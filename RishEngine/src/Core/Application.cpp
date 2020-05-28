@@ -30,7 +30,7 @@ void Application::run()
     {
         m_window->onUpdate();
 
-        for(Layer* layer: m_LayerStack) layer->OnUpdate();
+        for(Layer* layer: m_LayerStack) layer->onUpdate();
 
         if(m_window)
             m_window->onDraw();
@@ -45,7 +45,8 @@ void Application::onEvent(Event &e)
 
     for(auto it = m_LayerStack.end() ; it != m_LayerStack.begin() ;)
     {
-        (*--it)->OnEvent(e);
+        RL_INFO("IN APP Event");
+        (*--it)->onEvent(e);
         // if event is handled break;
     }
 }
