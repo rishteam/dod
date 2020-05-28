@@ -43,9 +43,10 @@ void Application::onEvent(Event &e)
     dispatcher.dispatch<WindowCloseEvent>(BIND_APPEVENT_FUNC(onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(BIND_APPEVENT_FUNC(onWindowResize));
 
+    RL_CORE_INFO("{}", e.toString());
+
     for(auto it = m_LayerStack.end() ; it != m_LayerStack.begin() ;)
     {
-        RL_INFO("IN APP Event");
         (*--it)->onEvent(e);
         // if event is handled break;
     }

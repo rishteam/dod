@@ -1,9 +1,19 @@
+/**
+ * @file ApplicationEvent.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header of Application Events
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include "Rish/Events/Event.h"
 
 namespace rl {
 
+/**
+ * @brief Window Resize Event
+ * @details With width and height
+ */
 class RL_API WindowResizeEvent : public Event
 {
 public:
@@ -17,10 +27,14 @@ public:
     EVENT_CLASS_TYPE(WindowResize)
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 
-// private:
+public:
     uint32_t m_width, m_height;
 };
 
+/**
+ * @brief Window Close Event
+ * @details
+ */
 class RL_API WindowCloseEvent : public Event
 {
 public:
@@ -34,6 +48,9 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
+/**
+ * @brief App Tick
+ */
 class RL_API AppTickEvent : public Event
 {
 public:
@@ -45,6 +62,9 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
+/**
+ * @brief App Update
+ */
 class RL_API AppUpdateEvent : public Event
 {
 public:
@@ -56,6 +76,9 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
+/**
+ * @brief App Render
+ */
 class RL_API AppRenderEvent : public Event
 {
 public:

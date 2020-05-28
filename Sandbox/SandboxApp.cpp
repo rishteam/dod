@@ -15,8 +15,7 @@ public:
 
     void onEvent(rl::Event& event) override
     {
-        RL_INFO("ExampleLayer::onEvent");
-        RL_TRACE("{0}", event);
+        RL_TRACE("ExampleLayerOnEvent: {0}", event);
     }
 
 };

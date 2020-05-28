@@ -7,12 +7,7 @@
  */
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <list>
-#include <memory>
-#include <unordered_map>
+#include "Rish/rlpch.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>

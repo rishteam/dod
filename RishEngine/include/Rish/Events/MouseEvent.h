@@ -1,95 +1,115 @@
+/**
+ * @file MouseEvent.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header if Mouse Events
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include "Rish/Events/Event.h"
 
 namespace rl {
 
+/**
+ * @brief Mouse Moved Event
+ * @details Provide position
+ */
 class RL_API MouseMovedEvent : public Event
 {
 public:
-    MouseMovedEvent(float x, float y)
-        : m_x(x), m_y(y)
+    MouseMovedEvent(float x_, float y_)
+        : x(x_), y(y_)
     {
     }
 
-    inline float getX() const { return m_x; }
-    inline float getY() const { return m_y; }
     inline std::pair<float, float> getPair() const {
-        return std::make_pair(m_x, m_y);
+        return std::make_pair(x, y);
     }
 
-    EVENT_CLASS_TOSTRING("MouseMovedEvent: x={:4.2f} y={:4.2f}", m_x, m_y)
+    EVENT_CLASS_TOSTRING("MouseMovedEvent: x={:4.2f} y={:4.2f}", x, y)
 
     EVENT_CLASS_TYPE(MouseMoved)
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
-private:
-    float m_x, m_y;
+
+public:
+    float x, y;
 };
 
+/**
+ * @brief Mouse Scrolled Event
+ * @details Offers position and offset
+ */
 class RL_API MouseScrolledEvent : public Event
 {
 public:
-    MouseScrolledEvent(float xOffset, float yOffset)
-        : m_xOffset(xOffset), m_yOffset(yOffset)
+    MouseScrolledEvent(float xOffset_=0.f, float yOffset_=0.f, float x_=0.f, float y_=0.f)
+        : xOffset(xOffset_), yOffset(yOffset_), x(x_), y(y_)
     {
     }
 
-    inline float getXOffset() const { return m_xOffset; }
-    inline float getYOffset() const { return m_yOffset; }
     inline std::pair<float, float> getPair() const
     {
-        return std::make_pair(m_xOffset, m_yOffset);
+        return std::make_pair(xOffset, yOffset);
     }
 
-    EVENT_CLASS_TOSTRING("MouseScrolledEvent: xOff={:4.2f} yOff={:4.2f}", m_xOffset, m_yOffset)
+    EVENT_CLASS_TOSTRING("MouseScrolledEvent: off=({:4.2f},{:4.2f}) pos=({:4.2f},{:4.2f})", xOffset, yOffset, x, y)
 
     EVENT_CLASS_TYPE(MouseScrolled)
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
-private:
-    float m_xOffset, m_yOffset;
+public:
+    float xOffset, yOffset;
+    float x, y;
 };
 
 /**
  * @brief Mouse Button Event Interface
- * @warning This class is for interface ONLY, do not attempt to construct it
+ * @warning This class is for interface **ONLY**, do not attempt to construct it
  */
 class RL_API MouseButtonEvent : public Event
 {
 public:
-    inline int getMouseButton() const { return m_button; }
-
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 protected:
-    MouseButtonEvent(int btn)
-        : m_button(btn)
+    MouseButtonEvent(int btn, int x_, int y_)
+        : button(btn), x(x_), y(y_)
     {
     }
 
-    int m_button;
+public:
+    int button;
+    int x, y;
 };
 
+/**
+ * @brief Mouse Button Pressed
+ * @details Provide which button is pressed and the mouse position
+ */
 class RL_API MouseButtonPressedEvent : public MouseButtonEvent
 {
 public:
-    MouseButtonPressedEvent(int button) : MouseButtonEvent(button)
+    MouseButtonPressedEvent(int btn, int x_, int y_) : MouseButtonEvent(btn, x_, y_)
     {
     }
 
-    EVENT_CLASS_TOSTRING("MouseButtonPressedEvent: btn={}", m_button)
+    EVENT_CLASS_TOSTRING("MouseButtonPressedEvent: btn={}, ({}, {})", button, x, y)
 
     EVENT_CLASS_TYPE(MouseButtonPressed)
 };
 
+/**
+ * @brief Mouse Button Released Event
+ * @details Provide which button is pressed and the mouse position
+ */
 class RL_API MouseButtonReleasedEvent : public MouseButtonEvent
 {
 public:
-    MouseButtonReleasedEvent(int button) : MouseButtonEvent(button)
+    MouseButtonReleasedEvent(int btn, int x_, int y_) : MouseButtonEvent(btn, x_, y_)
     {
     }
 
-    EVENT_CLASS_TOSTRING("MouseButtonReleasedEvent: btn={}", m_button)
+    EVENT_CLASS_TOSTRING("MouseButtonReleasedEvent: btn={}, ({}, {})", button, x, y)
 
     EVENT_CLASS_TYPE(MouseButtonReleased)
 };

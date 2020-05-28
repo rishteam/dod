@@ -86,6 +86,7 @@ target_include_directories(RishEngine
     PUBLIC ${PROJECT_SOURCE_DIR}/include
 )
 target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
+target_precompile_headers(RishEngine PUBLIC ${PROJECT_SOURCE_DIR}/include/Rish/rlpch.h) # precompiled headers
 
 option(RL_USE_STATIC "Use RishEngine as a static libaray" ON)
 if(RL_USE_STATIC)

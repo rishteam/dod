@@ -1,14 +1,15 @@
+/**
+ * @file Animation.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Animation header
+ * @date 2020-05-28
+ */
 #pragma once
-
-#include <string>
-#include <vector>
-#include <algorithm>
+#include "Rish/rlpch.h"
 
 #include <SFML/Graphics.hpp>
-
 #include <fmt/core.h>
 #include <fmt/printf.h>
-
 #include <imgui.h>
 
 #include "Rish/Core/Core.h"
@@ -26,6 +27,10 @@ class AnimationEditor;
 // e.g.
 // Animation test("../assets/reimu-hover.ani");
 
+/**
+ * @brief Animation class
+ * @details
+ */
 class Animation : public sf::Transformable, public sf::Drawable
 {
     friend class AnimationLoader;
@@ -85,29 +90,32 @@ public:
     void setNowFrameCount(const int cnt) { m_nowFrame = cnt>=0 && cnt<m_count ? cnt : 0; }
     int getNowFrameCount() { return m_nowFrame; }
     int getTotalFrameCount() { return m_count; }
-    // The load type of the animation
+    /// The load type of the animation
     enum class LoadType : unsigned char
     {
+        /// None load type
         AniLoadNone = 0,
-        AniLoadSeparate,    // Load frames in spearate files
-        AniLoadSpriteSheet, // Load frames in a sprite sheet
+        /// Load frames in spearate files
+        AniLoadSeparate,
+        /// Load frames in a sprite sheet
+        AniLoadSpriteSheet,
+        /// Total count
         AniLoadTypeTotal
     };
     LoadType m_loadType = LoadType::AniLoadNone;
 private:
     // Texture attributes
-    int m_count = 0;                // Frame count
-    mutable int m_nowFrame = 0;     // Current frame
-    std::string m_texName;          // Texture prefix
-    // TODO: change this to std::list
-    std::vector<sf::Texture> m_textureVec; // Texture list
-    sf::Texture m_emptyTexture; // empty texture TODO: deprecate? need check
-    mutable sf::Sprite m_sprite;// Sprite for drawing
+    int m_count = 0;                //! Frame count
+    mutable int m_nowFrame = 0;     //! Current frame
+    std::string m_texName;          //! Texture prefix
+    std::vector<sf::Texture> m_textureVec; //! Texture list
+    sf::Texture m_emptyTexture; //! empty texture TODO: deprecate? need check
+    mutable sf::Sprite m_sprite;//! Sprite for drawing
     //
-    mutable sf::Clock m_clk; // clock
-    bool m_ready = false; // is the animation ready
+    mutable sf::Clock m_clk; //! clock
+    bool m_ready = false; //! is the animation ready
 
-    bool m_pause = false; // is the animation pause
+    bool m_pause = false; //! is the animation pause
 
 // For Debug ONLY
 public:

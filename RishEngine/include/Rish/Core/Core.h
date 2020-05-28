@@ -31,6 +31,8 @@
   #define RL_CORE_ASSERT(x, fmt, ...)
 #endif
 
+#define RL_UNUSED(x) ((void)(x))
+
 #define BIT(x) (1<<(x))
 
 #if defined _WIN32 || defined __CYGWIN__
