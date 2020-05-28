@@ -7,7 +7,7 @@
  */
 #pragma once
 
-#include <memory>
+#include "Rish/rlpch.h"
 
 #ifndef SPDLOG_FMT_EXTERNAL
     #define SPDLOG_FMT_EXTERNAL

@@ -1,3 +1,9 @@
+/**
+ * @file rlpch.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief RishEngine precompiled header
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include <iostream>
@@ -8,6 +14,7 @@
 
 #include <string>
 #include <sstream>
+#include <list>
 #include <vector>
 #include <map>
 #include <set>

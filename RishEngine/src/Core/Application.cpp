@@ -40,6 +40,8 @@ void Application::onEvent(Event &e)
     EventDispatcher dispatcher(e);
     dispatcher.dispatch<WindowCloseEvent>(BIND_APPEVENT_FUNC(onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(BIND_APPEVENT_FUNC(onWindowResize));
+
+    RL_CORE_INFO("{}", e.toString());
 }
 
 bool Application::onWindowClose(WindowCloseEvent &e)

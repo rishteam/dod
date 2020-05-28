@@ -15,7 +15,7 @@ git clone --recursive https://github.com/rishteam/dod.git
   * nlohmann-json
 
 ```bash
-pacman -S - < packages.txt
+pacman -S - < package.txt
 ```
 
 * Environment
@@ -23,8 +23,11 @@ pacman -S - < packages.txt
   * cmake
 
 ```bash
-./script/build.sh full run
+./scripts/build.sh full run
 ```
+
+* Generate documentation
+  * `make doxygen-docs`
 
 ## Reference
 

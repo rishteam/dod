@@ -1,7 +1,6 @@
 #pragma once
 
-#include <functional>
-#include <string>
+#include "Rish/rlpch.h"
 //
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Drawable.hpp>

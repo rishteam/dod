@@ -1,14 +1,9 @@
 #pragma once
-
-#include <string>
-#include <vector>
-#include <algorithm>
+#include "Rish/rlpch.h"
 
 #include <SFML/Graphics.hpp>
-
 #include <fmt/core.h>
 #include <fmt/printf.h>
-
 #include <imgui.h>
 
 #include "Rish/Core/Core.h"

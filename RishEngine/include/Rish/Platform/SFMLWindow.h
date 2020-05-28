@@ -16,7 +16,10 @@
 
 namespace rl {
 
-// forward declatation
+/**
+ * @brief SFML Event dispatcher
+ * @detials Dispatch the SFML Events to the RishEngine Events
+ */
 class RL_API SFMLEventDispatcher
 {
 public:
@@ -33,8 +36,14 @@ public:
         m_eventHandlers[type] = callback;
     }
 
+    void removeListener(sf::Event::EventType type) { m_eventHandlers.erase(type); }
+
     void handleEvent(const sf::Event &e)
     {
+        // Deprecated events we just ignore them
+        if(e.type == sf::Event::MouseWheelMoved)
+            return;
+
         if(!m_eventHandlers.count(e.type))
         {
             RL_CORE_WARN("Unhandled event occured: {}", m_EventTypeName[e.type]);
