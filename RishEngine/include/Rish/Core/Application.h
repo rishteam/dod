@@ -8,6 +8,10 @@
 
 namespace rl {
 
+/**
+ * @brief Application class
+ * @details The main application
+ */
 class RL_API Application
 {
 public:

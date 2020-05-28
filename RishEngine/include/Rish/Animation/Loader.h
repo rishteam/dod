@@ -1,3 +1,9 @@
+/**
+ * @file Loader.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header of Animation Loader
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include <nlohmann/json.hpp>
@@ -9,7 +15,8 @@ namespace rl {
 class Animation;
 
 /**
- * @brief
+ * @brief Animation Loader
+ * @details Loader of Animation
  */
 class AnimationLoader
 {

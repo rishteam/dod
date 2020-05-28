@@ -1,3 +1,9 @@
+/**
+ * @file Core.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header of core utilities
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include "Rish/Utils/debug-trap.h"

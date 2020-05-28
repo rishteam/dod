@@ -18,7 +18,7 @@ namespace rl {
 
 /**
  * @brief SFML Event dispatcher
- * @detials Dispatch the SFML Events to the RishEngine Events
+ * @details Dispatch the SFML Events to the RishEngine Events
  */
 class RL_API SFMLEventDispatcher
 {
