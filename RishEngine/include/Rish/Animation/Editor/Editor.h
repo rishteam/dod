@@ -1,3 +1,9 @@
+/**
+ * @file Editor.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header of Animation Editor
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include "Rish/rlpch.h"
@@ -11,6 +17,10 @@ namespace rl {
 
 class AnimationLoader;
 
+/**
+ * @brief Animation Editor class
+ * @details Editor for editing Animation
+ */
 class AnimationEditor : public sf::Drawable
 {
 public:
@@ -26,7 +36,7 @@ private:
     bool m_showEditor = true;
     ImGuiWindowFlags m_windowFlag = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
 
-    // menu bar
+    /// menu bar
     class EditorMenuBar {
     public:
         EditorMenuBar(AnimationEditor &e) : editor(e)
@@ -42,7 +52,7 @@ private:
     friend class EditorMenuBar;
     EditorMenuBar editorMenuBar;
 
-    // Open File Dialog
+    /// Open File Dialog
     class OpenFileDialog {
     public:
         OpenFileDialog(AnimationEditor &e) : editor(e)
@@ -57,7 +67,7 @@ private:
     friend class OpenFileDialog;
     OpenFileDialog editorFileDialog;
 
-    // Attribute Window
+    /// Attribute Window
     class AttributeWidget {
     public:
         AttributeWidget(AnimationEditor &e) : editor(e)

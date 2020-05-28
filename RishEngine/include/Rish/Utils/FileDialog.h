@@ -1,3 +1,9 @@
+/**
+ * @file FileDialog.h
+ * @author roy4801 (roy@rish.com.tw)
+ * @brief Header of FileDialog
+ * @date 2020-05-28
+ */
 #pragma once
 
 #include <string>
@@ -7,6 +13,10 @@
 
 namespace rl {
 
+/**
+ * @brief File Dialog class
+ * @details Providing file dialog utilities
+ */
 class FileDialog
 {
 public:
