@@ -28,10 +28,12 @@ void Application::run()
 {
     while(m_running)
     {
+        // Update window
         m_window->onUpdate();
-
-        for(Layer* layer: m_LayerStack) layer->onUpdate();
-
+        // Update layers
+        for(Layer* layer: m_LayerStack)
+            layer->onUpdate();
+        // Draw window
         if(m_window)
             m_window->onDraw();
     }
@@ -43,12 +45,12 @@ void Application::onEvent(Event &e)
     dispatcher.dispatch<WindowCloseEvent>(BIND_APPEVENT_FUNC(onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(BIND_APPEVENT_FUNC(onWindowResize));
 
-    RL_CORE_INFO("{}", e.toString());
+    // RL_CORE_INFO("{}", e.toString());
 
-    for(auto it = m_LayerStack.end() ; it != m_LayerStack.begin() ;)
+    for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
     {
-        (*--it)->onEvent(e);
-        // if event is handled break;
+        (*it)->onEvent(e);
+        // TODO: if event is handled break;
     }
 }
 

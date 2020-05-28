@@ -39,14 +39,6 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 
-# TODO: move this to sandbox or leave only testmain.cpp for testing purpose only
-# option(DOD_USE_TEST_MAIN "Use test main" NO)
-# if(DOD_USE_TEST_MAIN)
-#     set(DOD_MAIN_FILE src/testmain.cpp)
-# else()
-#     set(DOD_MAIN_FILE src/main.cpp)
-# endif()
-
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
 string(LENGTH ${CONFIG_H_SOURCE_DIR} CONFIG_H_SOURCE_DIR_LEN)
@@ -93,6 +85,7 @@ if(RL_USE_STATIC)
     target_compile_definitions(RishEngine PUBLIC "RL_USE_STATIC")
 endif()
 
+# TODO: flip switch with RL_USE_STATIC
 option(RL_BUILD_DLL "Build dll" OFF)
 if(RL_BUILD_DLL)
     target_compile_definitions(RishEngine PUBLIC "RL_BUILD_DLL")

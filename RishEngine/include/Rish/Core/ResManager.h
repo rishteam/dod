@@ -7,13 +7,13 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include "Rish/Core/Core.h"
-#include "Rish/Core/Log.h"
+#include <Rish/Core/Core.h>
+#include <Rish/Core/Log.h>
 
 namespace rl {
 

@@ -6,12 +6,8 @@
  */
 #pragma once
 
+#include "Rish/rlpch.h"
 #include "Rish/Core/Core.h"
-
-#include <iostream>
-#include <string>
-#include <typeinfo>
-#include <functional>
 
 #include <fmt/format.h>
 
@@ -54,8 +50,12 @@ enum EventCategory
 
 /**
  * @brief Event class type macro
- * @details Provide functionalities such as RTTI and debug name
- * @warning Must add inside a declaration of a Event class
+ * @details Provide functionalities such as RTTI and debug name.
+ * `getStaticType()` returns the type enum of that event, `getEventTyoe()` wraps the `getStaticType()`
+ * And the `getEventType()` is polymorphic function so which version will the instance call is determined
+ * in run-time. Hence, it implements simple RTTI.
+ *
+ * @warning Must add inside a declaration of a Event class **ONLY**
  */
 #define EVENT_CLASS_TYPE(type)                                                  \
     static EventType getStaticType() { return EventType::type; }                \

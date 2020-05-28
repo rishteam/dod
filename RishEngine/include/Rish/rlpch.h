@@ -11,6 +11,8 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include <chrono>
+#include <typeinfo>
 
 #include <string>
 #include <sstream>
@@ -20,7 +22,6 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
-#include <chrono>
 
 // filesystem
 #if defined(__clang__)

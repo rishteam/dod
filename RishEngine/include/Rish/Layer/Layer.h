@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "Rish/Core/Core.h"
-
-#include "Rish/Events/Event.h"
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
+#include <Rish/Core/Log.h>
+#include <Rish/Events/Event.h>
 
 namespace rl {
 
@@ -20,13 +20,13 @@ namespace rl {
 class RL_API Layer
 {
 public:
-	Layer(const std::string& debugname = "Layer");
+	Layer(const std::string& debugname="Layer");
 	virtual ~Layer();
 
-	virtual void onAttach() {};
-	virtual void onDetach() {};
-	virtual void onUpdate() {};
-	virtual void onEvent(Event& event) {};
+	virtual void onAttach() { RL_CORE_TRACE("[{}] onAttach", m_DebugName); };
+	virtual void onDetach() { RL_CORE_TRACE("[{}] onDetach", m_DebugName); };
+	virtual void onUpdate() { RL_CORE_TRACE("[{}] default onUpdate", m_DebugName); };
+	virtual void onEvent(Event &event) { RL_CORE_TRACE("[{}] default onEvent({})", m_DebugName, event.toString()); };
 
 	inline const std::string& GetName() const { return m_DebugName; }
 protected:

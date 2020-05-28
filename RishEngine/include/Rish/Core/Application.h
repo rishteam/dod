@@ -30,8 +30,11 @@ private:
     bool onWindowClose(WindowCloseEvent &e);
     bool onWindowResize(WindowResizeEvent &e);
 
+    /// Window
     std::unique_ptr<Window> m_window;
+    /// Is the application still running
     bool m_running = false;
+    /// Layer container
     LayerStack m_LayerStack;
 };
 

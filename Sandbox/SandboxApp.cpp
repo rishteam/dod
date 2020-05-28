@@ -10,7 +10,7 @@ public:
 
     void onUpdate() override
     {
-        RL_INFO("ExampleLayer::Update");
+        RL_TRACE("ExampleLayer onUpdate");
     }
 
     void onEvent(rl::Event& event) override
@@ -26,8 +26,6 @@ public:
     Sandbox()
     {
         pushLayer(new ExampleSandbox());
-        // RL_CORE_ASSERT(false, "123");
-        // RL_ASSERT(false, "456");
     }
     virtual ~Sandbox() override
     {
