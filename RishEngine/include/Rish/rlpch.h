@@ -21,3 +21,12 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <chrono>
+
+// filesystem
+#if defined(__clang__)
+    #include <boost/filesystem/operations.hpp>
+#elif defined(__GNUC__) || defined(__GNUG__)
+    #include <filesystem>
+#elif defined(_MSC_VER)
+    #include <filesystem>
+#endif

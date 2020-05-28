@@ -1,3 +1,9 @@
+/**
+ * @file Layer.h
+ * @author icejj (icejj@rish.com.tw)
+ * @brief Header of Layer
+ * @date 2020-05-29
+ */
 #pragma once
 
 #include "Rish/Core/Core.h"
@@ -7,7 +13,10 @@
 
 namespace rl {
 
-
+/**
+ * @brief Layer class
+ * @details
+ */
 class RL_API Layer
 {
 public:
@@ -24,6 +33,5 @@ protected:
 	std::string m_DebugName;
 
 };
-
 
 }

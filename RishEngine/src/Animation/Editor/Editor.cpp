@@ -1,4 +1,5 @@
-#include <filesystem>
+#include "Rish/rlpch.h"
+
 #include <imgui.h>
 
 #include "Rish/Core/ResManager.h"
@@ -8,7 +9,11 @@
 
 #include "Rish/Utils/FileDialog.h"
 
+#if defined(__APPLE__)
+namespace fs = boost::filesystem;
+#else
 namespace fs = std::filesystem;
+#endif
 
 namespace rl {
 

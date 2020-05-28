@@ -39,5 +39,4 @@ void LayerStack::popOverlay(Layer* layer)
 	if(it != end()) m_Layers.erase(it);
 }
 
-
 }

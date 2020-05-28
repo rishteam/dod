@@ -17,7 +17,11 @@ run() {
 }
 
 cmake_go() {
-    cmake -G "MSYS Makefiles" ..
+    if [[ "`uname`" == "Darwin" ]]; then
+        cmake ..
+    else
+        cmake -G "MSYS Makefiles" ..
+    fi
 }
 
 make_go() {

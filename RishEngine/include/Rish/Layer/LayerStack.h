@@ -1,3 +1,9 @@
+/**
+ * @file LayerStack.h
+ * @author icejj (icejj@rish.com.tw)
+ * @brief Header of LayerStack
+ * @date 2020-05-29
+ */
 #pragma once
 
 #include "Rish/Core/Core.h"
@@ -7,6 +13,10 @@
 
 namespace rl {
 
+/**
+ * @brief Layer Stack class
+ * @details A list of layer for drawing on screen and interactive with
+ */
 class RL_API LayerStack
 {
 public:
@@ -26,8 +36,4 @@ private:
 
 };
 
-
 }
-
-
-
