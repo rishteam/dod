@@ -13,15 +13,32 @@ EOF
 }
 
 run() {
-    [[ $? -eq 0 ]] && ./$BINARY_NAME
+    [[ ! $? -eq 0 ]] && return
+    if [[ "`uname`" == "Darwin" ]]; then
+        ./`echo "$BINARY_NAME" | sed 's/.exe//'`
+    else
+        ./$BINARY_NAME
+    fi
 }
 
 cmake_go() {
-    cmake -G "MSYS Makefiles" ..
+    if [[ "`uname`" == "Darwin" ]]; then
+        cmake ..
+    else
+        cmake -G "MSYS Makefiles" ..
+    fi
 }
 
 make_go() {
     make -j6
+}
+
+start_go() {
+    if [[ "`uname`" == "Darwin" ]]; then
+        open "$1"
+    else
+        start "$1"
+    fi
 }
 
 # -----------------------------------------------------------------------------
@@ -59,7 +76,7 @@ case "$1" in
 
 "docs")
     make doxygen-docs
-    [[ "$2" == "open" ]] && start ./RishEngine/docs/html/index.html
+    [[ "$2" == "open" ]] && start_go ./RishEngine/docs/html/index.html
 ;;
 
 "-h" | "--help")

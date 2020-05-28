@@ -20,7 +20,7 @@ void Logger::Init()
     logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("dod.log", true));
 
     // Add duplicate filter based on time
-    auto duplicateFilter = std::make_shared<spdlog::sinks::dup_filter_sink_mt>(std::chrono::seconds(1));
+    auto duplicateFilter = std::make_shared<spdlog::sinks::dup_filter_sink_mt>(std::chrono::seconds(5));
     for(auto &i : logSinks)
         duplicateFilter->add_sink(i);
 

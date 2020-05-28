@@ -28,8 +28,12 @@ void Application::run()
 {
     while(m_running)
     {
+        // Update window
         m_window->onUpdate();
-
+        // Update layers
+        for(Layer* layer: m_LayerStack)
+            layer->onUpdate();
+        // Draw window
         if(m_window)
             m_window->onDraw();
     }
@@ -41,7 +45,33 @@ void Application::onEvent(Event &e)
     dispatcher.dispatch<WindowCloseEvent>(BIND_APPEVENT_FUNC(onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(BIND_APPEVENT_FUNC(onWindowResize));
 
-    RL_CORE_INFO("{}", e.toString());
+    // RL_CORE_INFO("{}", e.toString());
+
+    for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
+    {
+        (*it)->onEvent(e);
+        // TODO: if event is handled break;
+    }
+}
+
+void Application::pushLayer(Layer* layer)
+{
+    m_LayerStack.pushLayer(layer);
+}
+
+void Application::pushOverlay(Layer* overlay)
+{
+    m_LayerStack.pushOverlay(overlay);
+}
+
+void Application::popLayer(Layer* layer)
+{
+    m_LayerStack.popLayer(layer);
+}
+
+void Application::popOverlay(Layer* overlay)
+{
+    m_LayerStack.popOverlay(overlay);
 }
 
 bool Application::onWindowClose(WindowCloseEvent &e)

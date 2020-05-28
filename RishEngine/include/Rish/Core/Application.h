@@ -5,6 +5,7 @@
 #include "Rish/Core/Core.h"
 #include "Rish/Core/Window.h"
 #include "Rish/Events/ApplicationEvent.h"
+#include "Rish/Layer/LayerStack.h"
 
 namespace rl {
 
@@ -20,12 +21,21 @@ public:
 
     void run();
     void onEvent(Event &e);
+
+    void pushLayer(Layer* layer);
+    void pushOverlay(Layer* overlay);
+    void popLayer(Layer* layer);
+    void popOverlay(Layer* overlay);
 private:
     bool onWindowClose(WindowCloseEvent &e);
     bool onWindowResize(WindowResizeEvent &e);
 
+    /// Window
     std::unique_ptr<Window> m_window;
+    /// Is the application still running
     bool m_running = false;
+    /// Layer container
+    LayerStack m_LayerStack;
 };
 
 Application* CreateApplication();
