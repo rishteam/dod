@@ -23,11 +23,15 @@ public:
 	LayerStack();
 	~LayerStack();
 
+	/// Push Layer from m_LayerInsertIndex
 	void pushLayer(Layer* layer);
+	/// Push Layer from last
 	void pushOverlay(Layer* overlay);
+	/// Pop Layer
 	void popLayer(Layer* layer);
+	/// Pop Overlay
 	void popOverlay(Layer* overlay);
-
+	// typedefs
 	typedef std::vector<Layer*>::iterator iterator;
 	typedef std::vector<Layer*>::reverse_iterator reverse_iterator;
 	typedef std::vector<Layer*>::const_iterator const_iterator;
@@ -45,8 +49,8 @@ public:
 private:
 	/// a vector of layer*
 	std::vector<Layer*> m_Layers;
-	iterator m_LayerInsert;
-
+	/// start index of inserting a layer
+	unsigned int m_LayerInsertIndex;
 };
 
 }

@@ -1,4 +1,4 @@
 #pragma once
 
-#define SOURCE_DIR_PATH "/Users/roy4801/Desktop/Program/rish/dod/RishEngine/"
-#define SOURCE_DIR_PATH_LEN 51
+#define SOURCE_DIR_PATH "C:/Users/lpc05/Desktop/dod/RishEngine/"
+#define SOURCE_DIR_PATH_LEN 38
