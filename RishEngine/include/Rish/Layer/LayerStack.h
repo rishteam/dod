@@ -45,7 +45,7 @@ public:
 private:
 	/// a vector of layer*
 	std::vector<Layer*> m_Layers;
-	iterator m_LayerInsert;
+	unsigned int m_LayerInsertIndex;
 
 };
 
