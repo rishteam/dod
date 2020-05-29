@@ -18,7 +18,6 @@ LayerStack::~LayerStack()
 
 void LayerStack::pushLayer(Layer* layer)
 {
-	// m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
 	m_Layers.emplace(begin() + m_LayerInsertIndex, layer);
 	layer->onAttach();
 	m_LayerInsertIndex++;
@@ -48,7 +47,6 @@ void LayerStack::popOverlay(Layer* overlay)
 	{
 		overlay->onDetach();
 		m_Layers.erase(it);
-
 	}
 }
 
