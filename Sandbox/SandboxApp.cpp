@@ -16,8 +16,23 @@ public:
     void onEvent(rl::Event& event) override
     {
         RL_TRACE("ExampleLayerOnEvent: {0}", event);
+        if(event.getEventType() == rl::EventType::MouseMoved)
+            event.handled = true;
+    }
+};
+
+class Test : public rl::Layer
+{
+public:
+    Test()
+        : Layer("test")
+    {
     }
 
+    void onEvent(rl::Event &event) override
+    {
+        RL_TRACE("Test OnEvent: {0}", event);
+    }
 };
 
 class Sandbox : public rl::Application
@@ -25,6 +40,7 @@ class Sandbox : public rl::Application
 public:
     Sandbox()
     {
+        pushLayer(new Test());
         pushLayer(new ExampleSandbox());
     }
     virtual ~Sandbox() override

@@ -50,7 +50,9 @@ void Application::onEvent(Event &e)
     for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
     {
         (*it)->onEvent(e);
-        // TODO: if event is handled break;
+        // if event is handled then break
+        if(e.handled)
+            break;
     }
 }
 

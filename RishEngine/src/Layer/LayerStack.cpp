@@ -18,9 +18,8 @@ LayerStack::~LayerStack()
 
 void LayerStack::pushLayer(Layer* layer)
 {
-	m_Layers.emplace(m_LayerInsert, layer);
+	m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
 	layer->onAttach();
-	m_LayerInsert++;
 }
 
 void LayerStack::pushOverlay(Layer* overlay)

@@ -27,19 +27,25 @@ public:
 	void pushOverlay(Layer* overlay);
 	void popLayer(Layer* layer);
 	void popOverlay(Layer* overlay);
+
+	typedef std::vector<Layer*>::iterator iterator;
+	typedef std::vector<Layer*>::reverse_iterator reverse_iterator;
+	typedef std::vector<Layer*>::const_iterator const_iterator;
+	typedef std::vector<Layer*>::const_reverse_iterator const_reverse_iterator;
 	// iterator
-	std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
-	std::vector<Layer*>::iterator end() { return m_Layers.end();   }
-	std::vector<Layer*>::reverse_iterator rbegin() { return m_Layers.rbegin(); }
-	std::vector<Layer*>::reverse_iterator rend() { return m_Layers.rend(); }
+	iterator begin() { return m_Layers.begin(); }
+	iterator end() { return m_Layers.end();   }
+	reverse_iterator rbegin() { return m_Layers.rbegin(); }
+	reverse_iterator rend() { return m_Layers.rend(); }
 	// const iterator
-	std::vector<Layer*>::const_iterator begin() const { return m_Layers.begin(); }
-	std::vector<Layer*>::const_iterator end() const { return m_Layers.end();   }
-	std::vector<Layer*>::const_reverse_iterator rbegin() const { return m_Layers.rbegin(); }
-	std::vector<Layer*>::const_reverse_iterator rend() const { return m_Layers.rend(); }
+	const_iterator begin() const { return m_Layers.begin(); }
+	const_iterator end() const { return m_Layers.end();   }
+	const_reverse_iterator rbegin() const { return m_Layers.rbegin(); }
+	const_reverse_iterator rend() const { return m_Layers.rend(); }
 private:
+	/// a vector of layer*
 	std::vector<Layer*> m_Layers;
-	std::vector<Layer*>::iterator m_LayerInsert;
+	iterator m_LayerInsert;
 
 };
 

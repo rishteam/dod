@@ -105,9 +105,9 @@ public:
         return getCategoryFlags() & category;
     }
 
-private:
+public:
     /// Is this event have been handled. (will not be propagated)
-    bool m_handled = false;
+    bool handled = false;
 };
 
 /**
@@ -141,7 +141,7 @@ public:
         {
             try
             {
-                m_event.m_handled = eventFunc(dynamic_cast<T &>(m_event));
+                m_event.handled = eventFunc(dynamic_cast<T &>(m_event));
             }
             catch (const std::bad_cast &e)
             {
