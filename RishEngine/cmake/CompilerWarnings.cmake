@@ -48,7 +48,6 @@ function(set_project_warnings project_name)
       -Wnon-virtual-dtor # warn the user if a class with virtual functions has a
                          # non-virtual destructor. This helps catch hard to
                          # track down memory errors
-      -Wold-style-cast # warn for c-style casts
       -Wcast-align # warn for potential performance problem casts
       -Wunused # warn on anything being unused
       -Woverloaded-virtual # warn if you overload (not override) a virtual
@@ -60,9 +59,12 @@ function(set_project_warnings project_name)
       -Wformat=2 # warn on security issues around functions that format output
       # (ie printf)
 
+      ### Disabled Warnings ###
+      -Wno-old-style-cast # warn for c-style casts
       # sign related things
-      # -Wsign-conversion # warn on sign conversions
+      -Wno-sign-conversion # warn on sign conversions
       -Wno-sign-compare
+      #########################
   )
 
   if (WARNINGS_AS_ERRORS)

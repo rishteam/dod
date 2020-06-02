@@ -10,10 +10,14 @@
 
 namespace rl {
 
+Application *Application::s_instance = nullptr;
+
 #define BIND_APPEVENT_FUNC(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 Application::Application()
 {
+    RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have ONE Application instance");
+    Application::s_instance = this; // set instance
     m_window = std::unique_ptr<Window>(Window::Create());
     m_window->setEventCallback(BIND_APPEVENT_FUNC(onEvent));
 

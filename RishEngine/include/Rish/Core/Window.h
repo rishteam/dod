@@ -40,6 +40,11 @@ public:
     /// implement this in inherited class
     static Window *Create(const std::string &title="Rish Engine", uint32_t width=1280, uint32_t height=720);
 
+    virtual void initImGui() = 0;
+    virtual void shutdownImGui() = 0;
+    virtual void updateImGui() = 0;
+    virtual void renderImGui() = 0;
+
 protected:
     Window(const std::string &title, const uint32_t width, const uint32_t height)
         : m_title(title), m_width(width), m_height(height)

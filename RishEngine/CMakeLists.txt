@@ -71,6 +71,7 @@ add_library(RishEngine
     # Layer
     src/Layer/Layer.cpp
     src/Layer/LayerStack.cpp
+    src/Layer/ImGuiLayer.cpp
 )
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
@@ -80,15 +81,14 @@ target_include_directories(RishEngine
 target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
 target_precompile_headers(RishEngine PUBLIC ${PROJECT_SOURCE_DIR}/include/Rish/rlpch.h) # precompiled headers
 
-option(RL_USE_STATIC "Use RishEngine as a static libaray" ON)
-if(RL_USE_STATIC)
-    target_compile_definitions(RishEngine PUBLIC "RL_USE_STATIC")
+option(RL_SHARED_LIB "Build shared lib" OFF)
+if(RL_SHARED_LIB)
+    target_compile_definitions(RishEngine PUBLIC "RL_SHARED_LIB")
 endif()
 
-# TODO: flip switch with RL_USE_STATIC
-option(RL_BUILD_DLL "Build dll" OFF)
-if(RL_BUILD_DLL)
-    target_compile_definitions(RishEngine PUBLIC "RL_BUILD_DLL")
+option(RL_USE_DYNAMIC_LIBS "Use shared library" OFF)
+if(RL_USE_DYNAMIC_LIBS)
+    target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
 endif()
 
 if(APPLE)

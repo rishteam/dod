@@ -31,7 +31,7 @@ public:
 	virtual void onUpdate() { RL_CORE_TRACE("[{}] default onUpdate", m_DebugName); };
 	/// On Event
 	virtual void onEvent(Event &event) { RL_CORE_TRACE("[{}] default onEvent({})", m_DebugName, event.toString()); };
-
+	/// Get debug name
 	inline const std::string& GetName() const { return m_DebugName; }
 protected:
 	std::string m_DebugName;

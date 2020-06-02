@@ -16,6 +16,11 @@ namespace rl {
 class RL_API Application
 {
 public:
+    static Application& Get() { return *s_instance; }
+    static Application *s_instance;
+
+    Window& getWindow() { return *m_window; }
+
     Application();
     virtual ~Application();
 

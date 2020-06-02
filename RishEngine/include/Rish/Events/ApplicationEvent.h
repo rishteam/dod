@@ -49,6 +49,54 @@ public:
 };
 
 /**
+ * @brief Window Focus Event
+ * @details
+ */
+class RL_API WindowFocusEvent : public Event
+{
+    WindowFocusEvent()
+    {
+    }
+
+    EVENT_CLASS_TOSTRING("WindowFocusEvent")
+
+    EVENT_CLASS_TYPE(WindowFocus)
+    EVENT_CLASS_CATEGORY(EventCategoryApplication)
+};
+
+/**
+ * @brief Window Lost Focus Event
+ * @details
+ */
+class RL_API WindowLostFocusEvent : public Event
+{
+    WindowLostFocusEvent()
+    {
+    }
+
+    EVENT_CLASS_TOSTRING("WindowLostFocusEvent")
+
+    EVENT_CLASS_TYPE(WindowLostFocus)
+    EVENT_CLASS_CATEGORY(EventCategoryApplication)
+};
+
+/**
+ * @brief Window Moved Event
+ * @details
+ */
+class RL_API WindowMoved : public Event
+{
+    WindowMoved()
+    {
+    }
+
+    EVENT_CLASS_TOSTRING("WindowMoved")
+
+    EVENT_CLASS_TYPE(WindowMoved)
+    EVENT_CLASS_CATEGORY(EventCategoryApplication)
+};
+
+/**
  * @brief App Tick
  */
 class RL_API AppTickEvent : public Event

@@ -30,6 +30,7 @@
 
 // Layers
 #include "Rish/Layer/Layer.h"
+#include "Rish/Layer/ImGuiLayer.h"
 
 // Entry Point
 #include "EntryPoint.h"

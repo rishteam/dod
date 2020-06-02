@@ -1,9 +1,6 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/System/Clock.hpp>
 //
-#include <imgui.h>
-#include <imgui-SFML.h>
-//
 #include "Rish/Core/Core.h"
 #include "Rish/Platform/SFMLWindow.h"
 
@@ -15,6 +12,14 @@ namespace rl {
 
 #define SFML_EVENT_CALLBACK(x) SFMLEventDispatcher::SFMLEventCallback x
 
+/**
+ * @brief Window create function for SFMLWindow
+ *
+ * @param title Title
+ * @param width Width
+ * @param height Height
+ * @return Window* Pointer to allocated SFMLWindow
+ */
 Window* Window::Create(const std::string &title, uint32_t width, uint32_t height)
 {
     return new SFMLWindow(title, width, height);
@@ -24,7 +29,7 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     : Window(title, width, height),
     m_SFMLWindow(sf::VideoMode(width, height), title)
 {
-    ImGui::SFML::Init(m_SFMLWindow);
+    // ImGui::SFML::Init(m_SFMLWindow);
 
     // Add SFML Event mapping
     SFML_EVENT_CALLBACK(closeEvent) = [&](const sf::Event &e) {
@@ -93,7 +98,6 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
 
 SFMLWindow::~SFMLWindow()
 {
-    ImGui::SFML::Shutdown();
 }
 
 void SFMLWindow::onUpdate()
@@ -105,17 +109,17 @@ void SFMLWindow::onUpdate()
     sf::Event event;
     while(m_SFMLWindow.pollEvent(event))
     {
-        ImGui::SFML::ProcessEvent(event);
+        // ImGui::SFML::ProcessEvent(event);
         m_SFMLEventDispatcher.handleEvent(event);
     }
-    ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
+    // ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
 }
 
 void SFMLWindow::onDraw()
 {
-    m_SFMLWindow.pushGLStates();
-    ImGui::SFML::Render(m_SFMLWindow);
-    m_SFMLWindow.popGLStates();
+    // m_SFMLWindow.pushGLStates();
+    // ImGui::SFML::Render(m_SFMLWindow);
+    // m_SFMLWindow.popGLStates();
     //
     m_SFMLWindow.display();
 }

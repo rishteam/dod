@@ -11,8 +11,13 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 #include <Rish/Core/Window.h>
+#include <Rish/Events/ApplicationEvent.h>
+#include <Rish/Events/KeyEvent.h>
+#include <Rish/Events/MouseEvent.h>
 
 namespace rl {
 
@@ -103,7 +108,20 @@ public:
 
     bool isOpen() override { return m_SFMLWindow.isOpen(); }
 
-    sf::RenderWindow& getWindowRef() { return m_SFMLWindow; }
+    sf::RenderWindow& getWindow() { return m_SFMLWindow; }
+
+    void initImGui() override { ImGui::SFML::Init(m_SFMLWindow); }
+    void shutdownImGui() override { ImGui::SFML::Shutdown(); }
+    void updateImGui() override
+    {
+        ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
+    }
+    void renderImGui() override
+    {
+        m_SFMLWindow.pushGLStates();
+        ImGui::SFML::Render(m_SFMLWindow);
+        m_SFMLWindow.popGLStates();
+    }
 
 private:
     /// SFML render window
