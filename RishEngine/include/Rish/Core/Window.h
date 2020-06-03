@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
-#include "Rish/Core/Core.h"
-#include "Rish/Events/Event.h"
+#include <Rish/Core/Core.h>
+#include <Rish/Events/Event.h>
 
 namespace rl {
 

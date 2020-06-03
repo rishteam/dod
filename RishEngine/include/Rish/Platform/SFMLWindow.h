@@ -110,22 +110,15 @@ public:
 
     sf::RenderWindow& getWindow() { return m_SFMLWindow; }
 
-    void initImGui() override { ImGui::SFML::Init(m_SFMLWindow); }
-    void shutdownImGui() override { ImGui::SFML::Shutdown(); }
-    void updateImGui() override
-    {
-        ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
-    }
-    void renderImGui() override
-    {
-        m_SFMLWindow.pushGLStates();
-        ImGui::SFML::Render(m_SFMLWindow);
-        m_SFMLWindow.popGLStates();
-    }
+    void initImGui() override;
+    void shutdownImGui() override;
+    void updateImGui() override;
+    void renderImGui() override;
 
 private:
     /// SFML render window
     sf::RenderWindow m_SFMLWindow;
+    bool m_loadDefaultFont=true;
     /// clock
     sf::Clock m_clock;
     /// background color

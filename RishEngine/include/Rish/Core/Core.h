@@ -56,3 +56,9 @@
 #else
     #define RL_API
 #endif
+
+/**
+ * @brief Bind Event function macro
+ * @details For EventDispatcher
+ */
+#define RL_BIND_EVENT_FUNC(x) std::bind(&x, this, std::placeholders::_1)

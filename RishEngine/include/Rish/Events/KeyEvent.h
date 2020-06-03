@@ -63,4 +63,19 @@ public:
     EVENT_CLASS_TYPE(KeyReleased)
 };
 
+/**
+ * @brief Key Typed Event
+ * @details
+ */
+class RL_API KeyTypedEvent : public KeyEvent
+{
+public:
+    KeyTypedEvent(int keycode_) : KeyEvent(keycode_)
+    {}
+
+    EVENT_CLASS_TOSTRING("KeyTypedEvent: keycode={}", keyCode)
+
+    EVENT_CLASS_TYPE(KeyTyped)
+};
+
 }

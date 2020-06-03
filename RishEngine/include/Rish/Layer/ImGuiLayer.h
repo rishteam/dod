@@ -6,10 +6,13 @@
  */
 #pragma once
 
-#include <imgui.h>
-
 #include <Rish/Core/Core.h>
+#include <Rish/Core/Window.h>
 #include <Rish/Layer/Layer.h>
+#include <Rish/Events/Event.h>
+#include <Rish/Events/ApplicationEvent.h>
+#include <Rish/Events/KeyEvent.h>
+#include <Rish/Events/MouseEvent.h>
 
 namespace rl {
 
@@ -27,8 +30,17 @@ public:
     void onDetach() override;
     void onUpdate() override;
     void onEvent(Event &event) override;
-
 private:
+    bool onMouseButtonPressed(MouseButtonPressedEvent &event);
+    bool onMouseButtonReleased(MouseButtonReleasedEvent &event);
+    bool onMouseMoved(MouseMovedEvent &event);
+    bool onMouseScrolled(MouseScrolledEvent &event);
+    bool onKeyPressed(KeyPressedEvent &event);
+    bool onKeyReleased(KeyReleasedEvent &event);
+    bool onKeyTyped(KeyTypedEvent &event);
+    bool onWindowResize(WindowResizeEvent &event);
+private:
+    Window &m_window;
 };
 
 }

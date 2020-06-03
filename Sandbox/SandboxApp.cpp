@@ -44,8 +44,8 @@ class Sandbox : public rl::Application
 public:
     Sandbox()
     {
-        pushLayer(new Test());
-        pushLayer(new ExampleSandbox());
+        // pushLayer(new Test());
+        // pushLayer(new ExampleSandbox());
         pushLayer(new rl::ImGuiLayer());
     }
     virtual ~Sandbox() override
