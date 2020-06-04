@@ -1,5 +1,8 @@
 #include <imgui.h>
 
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/OpenGL.hpp>
+
 #include <Rish/Core/Application.h>
 #include <Rish/Layer/ImGuiLayer.h>
 
@@ -17,28 +20,30 @@ ImGuiLayer::~ImGuiLayer()
 
 void ImGuiLayer::onAttach()
 {
+    RL_CORE_TRACE("[{}] onAttach", GetName());
     Application::Get().getWindow().initImGui();
 }
 
 void ImGuiLayer::onDetach()
 {
+    RL_CORE_TRACE("[{}] onDetach", GetName());
     Application::Get().getWindow().shutdownImGui();
 }
 
 void ImGuiLayer::onUpdate()
 {
-    if (!ImGui::GetCurrentContext())
-        return;
-
+    RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
+    //
     ImGuiIO& io = ImGui::GetIO();
     auto &window = Application::Get().getWindow();
     io.DisplaySize = ImVec2(window.getWidth(), window.getHeight());
 
-    RL_CORE_TRACE("{} {}", io.MousePos.x, io.MousePos.y);
-
     Application::Get().getWindow().updateImGui();
 
+    static char buf[1024];
+
     ImGui::Begin("123");
+    ImGui::InputText("Input: ", buf, IM_ARRAYSIZE(buf));
     ImGui::End();
 
     Application::Get().getWindow().renderImGui();
@@ -46,8 +51,7 @@ void ImGuiLayer::onUpdate()
 
 void ImGuiLayer::onEvent(Event &event)
 {
-    if(!ImGui::GetCurrentContext())
-        return;
+    RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
     //
     EventDispatcher dispatcher(event);
     dispatcher.dispatch<MouseButtonPressedEvent>(RL_BIND_EVENT_FUNC(ImGuiLayer::onMouseButtonPressed));
@@ -83,22 +87,47 @@ bool ImGuiLayer::onMouseMoved(MouseMovedEvent &event)
 
 bool ImGuiLayer::onMouseScrolled(MouseScrolledEvent &event)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    io.MouseWheelH += event.xOffset;
+    io.MouseWheel += event.yOffset;
+    return false;
 }
 
 bool ImGuiLayer::onKeyPressed(KeyPressedEvent &event)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    io.KeysDown[event.keyCode] = true;
+
+    io.KeyCtrl = io.KeysDown[sf::Keyboard::LControl] || io.KeysDown[sf::Keyboard::RControl];
+    io.KeyShift = io.KeysDown[sf::Keyboard::LShift] || io.KeysDown[sf::Keyboard::RShift];
+    io.KeyAlt = io.KeysDown[sf::Keyboard::LAlt] || io.KeysDown[sf::Keyboard::RAlt];
+    io.KeySuper = io.KeysDown[sf::Keyboard::LSystem] || io.KeysDown[sf::Keyboard::RSystem];
+    return false;
 }
 
 bool ImGuiLayer::onKeyReleased(KeyReleasedEvent &event)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    io.KeysDown[event.keyCode] = false;
+    return false;
 }
 
 bool ImGuiLayer::onKeyTyped(KeyTypedEvent &event)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    int keycode = event.keyCode;
+    if (keycode > 0 && keycode < 0x10000)
+        io.AddInputCharacter((unsigned int)keycode);
+    return false;
 }
 
 bool ImGuiLayer::onWindowResize(WindowResizeEvent &event)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(event.m_width, event.m_height);
+    io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+    glViewport(0, 0, event.m_width, event.m_height);
+    return false;
 }
 
 }

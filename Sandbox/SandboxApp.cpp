@@ -35,7 +35,7 @@ public:
 
     void onEvent(rl::Event &event) override
     {
-        RL_TRACE("Test OnEvent: {0}", event);
+        // RL_TRACE("Test OnEvent: {0}", event);
     }
 };
 
@@ -44,8 +44,8 @@ class Sandbox : public rl::Application
 public:
     Sandbox()
     {
-        // pushLayer(new Test());
-        // pushLayer(new ExampleSandbox());
+        pushLayer(new Test());
+        pushLayer(new ExampleSandbox());
         pushLayer(new rl::ImGuiLayer());
     }
     virtual ~Sandbox() override

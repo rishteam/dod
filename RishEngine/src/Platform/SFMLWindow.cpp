@@ -195,7 +195,7 @@ void UpdateFontTexture()
 sf::Texture &GetFontTexture() { return *s_fontTexture; }
 
 bool s_windowHasFocus = false;
-}
+} // end namespace
 
 #define SFML_EVENT_CALLBACK(x) SFMLEventDispatcher::SFMLEventCallback x
 
@@ -235,16 +235,27 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
 
     // key pressed event
     SFML_EVENT_CALLBACK(keyPressedEvent) = [&](const sf::Event &e) {
-        // keyPressedEvent p;
-        RL_CORE_TRACE("Pressed = {} {} {} {} {}", e.key.code, e.key.control, e.key.shift, e.key.system, e.key.alt);
+        KeyPressedEvent keyPress(e.key.code, false);
+        RL_CORE_TRACE("{}", keyPress.toString());
+        m_eventCallback(keyPress);
     };
     m_SFMLEventDispatcher.addListener(sf::Event::KeyPressed, keyPressedEvent);
 
     // key released event
     SFML_EVENT_CALLBACK(keyReleasedEvent) = [&](const sf::Event &e) {
-        RL_CORE_TRACE("Released = {} {} {} {} {}", e.key.code, e.key.control, e.key.shift, e.key.system, e.key.alt);
+        KeyReleasedEvent keyRelease(e.key.code);
+        m_eventCallback(keyRelease);
     };
     m_SFMLEventDispatcher.addListener(sf::Event::KeyReleased, keyReleasedEvent);
+
+    // key typed event
+    SFML_EVENT_CALLBACK(keyTypedEvent) = [&](const sf::Event &e) {
+        if(e.text.unicode < ' ' || e.text.unicode == 127)
+            return;
+        KeyTypedEvent keyTyped(e.text.unicode);
+        m_eventCallback(keyTyped);
+    };
+    m_SFMLEventDispatcher.addListener(sf::Event::TextEntered, keyTypedEvent);
 
     // mouse moved event
     SFML_EVENT_CALLBACK(mouseMovedEvent) = [&](const sf::Event &e) {
@@ -450,10 +461,10 @@ void SFMLWindow::updateImGui()
                                   static_cast<int>(io.MousePos.y));
             sf::Mouse::setPosition(mousePos);
         }
-        else
-        {
-            // io.MousePos = mousePos;
-        }
+        // else
+        // {
+        //     io.MousePos = mousePos;
+        // }
         for (unsigned int i = 0; i < 5; i++)
         {
             io.MouseDown[i] = /* s_touchDown[i] || sf::Touch::isDown(i) || */

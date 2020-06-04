@@ -9,6 +9,7 @@
 #include <Rish/Core/Core.h>
 #include <Rish/Core/Window.h>
 #include <Rish/Layer/Layer.h>
+
 #include <Rish/Events/Event.h>
 #include <Rish/Events/ApplicationEvent.h>
 #include <Rish/Events/KeyEvent.h>
