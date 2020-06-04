@@ -36,7 +36,7 @@ void ImGuiLayer::onUpdate()
     //
     ImGuiIO& io = ImGui::GetIO();
     auto &window = Application::Get().getWindow();
-    io.DisplaySize = ImVec2(window.getWidth(), window.getHeight());
+    io.DisplaySize = ImVec2((float)window.getWidth(), (float)window.getHeight());
 
     Application::Get().getWindow().updateImGui();
 
@@ -81,7 +81,7 @@ bool ImGuiLayer::onMouseButtonReleased(MouseButtonReleasedEvent &event)
 bool ImGuiLayer::onMouseMoved(MouseMovedEvent &event)
 {
     ImGuiIO &io = ImGui::GetIO();
-    io.MousePos = ImVec2(event.x, event.y);
+    io.MousePos = ImVec2((float)event.x, (float)event.y);
     return false;
 }
 
@@ -96,8 +96,8 @@ bool ImGuiLayer::onMouseScrolled(MouseScrolledEvent &event)
 bool ImGuiLayer::onKeyPressed(KeyPressedEvent &event)
 {
     ImGuiIO &io = ImGui::GetIO();
-    io.KeysDown[event.keyCode] = true;
-
+    io.KeysDown[event.keyCode] = true; // set the key
+    // Special Keys
     io.KeyCtrl = io.KeysDown[sf::Keyboard::LControl] || io.KeysDown[sf::Keyboard::RControl];
     io.KeyShift = io.KeysDown[sf::Keyboard::LShift] || io.KeysDown[sf::Keyboard::RShift];
     io.KeyAlt = io.KeysDown[sf::Keyboard::LAlt] || io.KeysDown[sf::Keyboard::RAlt];
@@ -108,7 +108,7 @@ bool ImGuiLayer::onKeyPressed(KeyPressedEvent &event)
 bool ImGuiLayer::onKeyReleased(KeyReleasedEvent &event)
 {
     ImGuiIO &io = ImGui::GetIO();
-    io.KeysDown[event.keyCode] = false;
+    io.KeysDown[event.keyCode] = false; // unset the key
     return false;
 }
 

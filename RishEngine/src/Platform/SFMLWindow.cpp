@@ -70,7 +70,7 @@ void RenderDrawLists(ImDrawData* draw_data) {
     glEnableClientState(GL_COLOR_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    glViewport(0, 0, (GLsizei)fb_width, (GLsizei)fb_height);
+    glViewport(0, 0, fb_width, fb_height);
 
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
@@ -109,7 +109,7 @@ void RenderDrawLists(ImDrawData* draw_data) {
                     convertImTextureIDToGLTextureHandle(pcmd->TextureId);
                 glBindTexture(GL_TEXTURE_2D, textureHandle);
                 glScissor((int)pcmd->ClipRect.x,
-                          (int)(fb_height - pcmd->ClipRect.w),
+                          (int)((float)fb_height - pcmd->ClipRect.w),
                           (int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
                           (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
                 glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,
@@ -361,7 +361,7 @@ void SFMLWindow::initImGui()
 
     // Set window size
     auto size = m_SFMLWindow.getSize();
-    io.DisplaySize = ImVec2(size.x, size.y);
+    io.DisplaySize = ImVec2((float)size.x, (float)size.y);
 
     // clipboard
     io.SetClipboardTextFn = setClipboardText;
@@ -448,7 +448,7 @@ void SFMLWindow::updateImGui()
     ImGuiIO &io = ImGui::GetIO();
     // Set window size
     auto size = m_SFMLWindow.getSize();
-    io.DisplaySize = ImVec2(size.x, size.y);
+    io.DisplaySize = ImVec2((float)size.x, (float)size.y);
     // Set time
     sf::Time dt = m_clock.restart();
     io.DeltaTime = dt.asSeconds();
