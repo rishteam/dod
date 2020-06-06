@@ -32,10 +32,12 @@ public:
     virtual void setEventCallback(const EventCallbackFunc &callback) = 0;
 
     virtual bool isOpen() = 0;
+    virtual void* getPlatformWindow() const = 0;
 
     virtual std::string getTitle() const { return m_title; }
     virtual uint32_t getWidth() const { return m_width; }
     virtual uint32_t getHeight() const { return m_height; }
+
 
     /// implement this in inherited class
     static Window *Create(const std::string &title="Rish Engine", uint32_t width=1280, uint32_t height=720);

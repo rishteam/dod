@@ -1,5 +1,8 @@
 #include <RishEngine.h>
 
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
+
 class ExampleSandbox : public rl::Layer
 {
 public:
@@ -10,7 +13,8 @@ public:
 
     void onUpdate() override
     {
-        // RL_TRACE("ExampleLayer onUpdate");
+        if(rl::Input::isMouseButtonPressed(sf::Mouse::Left))
+            RL_TRACE("Left pressed");
     }
 
     void onEvent(rl::Event& event) override
@@ -21,30 +25,11 @@ public:
     }
 };
 
-class Test : public rl::Layer
-{
-public:
-    Test()
-        : Layer("test")
-    {
-    }
-
-    void onUpdate() override
-    {
-    }
-
-    void onEvent(rl::Event &event) override
-    {
-        // RL_TRACE("Test OnEvent: {0}", event);
-    }
-};
-
 class Sandbox : public rl::Application
 {
 public:
     Sandbox()
     {
-        pushLayer(new Test());
         pushLayer(new ExampleSandbox());
         pushLayer(new rl::ImGuiLayer());
     }

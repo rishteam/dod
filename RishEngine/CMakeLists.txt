@@ -54,6 +54,9 @@ add_library(RishEngine
     # Window
     src/Platform/SFMLWindow.cpp
 
+    # Input
+    src/Platform/SFMLInput.cpp
+
     # Animation
     src/Animation/Animation.cpp
     src/Animation/Loader.cpp

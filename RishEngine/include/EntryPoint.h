@@ -15,6 +15,7 @@ int main(int argc, char **argv)
     RL_CORE_INFO("RishEngine is running");
     app->run();
 
-    RL_CORE_INFO("Deleting the RishEngine");
+    RL_CORE_INFO("Shutdowning the RishEngine");
     delete app;
+    RL_CORE_INFO("Goodbye");
 }

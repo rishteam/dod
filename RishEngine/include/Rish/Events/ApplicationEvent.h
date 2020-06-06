@@ -54,6 +54,7 @@ public:
  */
 class RL_API WindowFocusEvent : public Event
 {
+public:
     WindowFocusEvent()
     {
     }
@@ -70,6 +71,7 @@ class RL_API WindowFocusEvent : public Event
  */
 class RL_API WindowLostFocusEvent : public Event
 {
+public:
     WindowLostFocusEvent()
     {
     }
@@ -86,6 +88,7 @@ class RL_API WindowLostFocusEvent : public Event
  */
 class RL_API WindowMoved : public Event
 {
+public:
     WindowMoved()
     {
     }

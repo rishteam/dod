@@ -94,26 +94,27 @@ class RL_API SFMLWindow final : public Window
 {
 public:
     SFMLWindow(const std::string &title, const uint32_t width, const uint32_t height);
-    ~SFMLWindow() override;
+    virtual ~SFMLWindow() override;
 
-    void onUpdate() override;
-    void onDraw() override;
+    virtual void onUpdate() override;
+    virtual void onDraw() override;
 
     /**
      * @brief Set the Event Callback object
      * @details This is used by Application class for setting the event callback.
      * @param callback Event Callback function
      */
-    void setEventCallback(const EventCallbackFunc &callback) override { m_eventCallback = callback; }
+    virtual void setEventCallback(const EventCallbackFunc &callback) override { m_eventCallback = callback; }
 
-    bool isOpen() override { return m_SFMLWindow.isOpen(); }
+    virtual bool isOpen() override { return m_SFMLWindow.isOpen(); }
+    virtual void* getPlatformWindow() const override { return (void*)(&m_SFMLWindow); }
 
     sf::RenderWindow& getWindow() { return m_SFMLWindow; }
 
-    void initImGui() override;
-    void shutdownImGui() override;
-    void updateImGui() override;
-    void renderImGui() override;
+    virtual void initImGui() override;
+    virtual void shutdownImGui() override;
+    virtual void updateImGui() override;
+    virtual void renderImGui() override;
 
 private:
     /// SFML render window

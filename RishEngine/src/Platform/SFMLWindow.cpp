@@ -13,6 +13,9 @@
 
 namespace rl {
 
+/**
+ * @brief namespace for imgui SFML implementation
+ */
 namespace {
 
 ImTextureID convertGLTextureHandleToImTextureID(GLuint glTextureHandle)
@@ -216,8 +219,6 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     : Window(title, width, height),
     m_SFMLWindow(sf::VideoMode(width, height), title)
 {
-    // ImGui::SFML::Init(m_SFMLWindow);
-
     // Add SFML Event mapping
     SFML_EVENT_CALLBACK(closeEvent) = [&](const sf::Event &e) {
         RL_UNUSED(e);
@@ -232,6 +233,22 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
         m_eventCallback(resize);
     };
     m_SFMLEventDispatcher.addListener(sf::Event::Resized, resizeEvent);
+
+    // Window Focus event
+    SFML_EVENT_CALLBACK(focusEvent) = [&](const sf::Event &e) {
+        RL_UNUSED(e);
+        WindowFocusEvent focus;
+        m_eventCallback(focus);
+    };
+    m_SFMLEventDispatcher.addListener(sf::Event::GainedFocus, focusEvent);
+
+    // Window Lost focus event
+    SFML_EVENT_CALLBACK(lostFocusEvent) = [&](const sf::Event &e) {
+        RL_UNUSED(e);
+        WindowLostFocusEvent lostFocus;
+        m_eventCallback(lostFocus);
+    };
+    m_SFMLEventDispatcher.addListener(sf::Event::LostFocus, lostFocusEvent);
 
     // key pressed event
     SFML_EVENT_CALLBACK(keyPressedEvent) = [&](const sf::Event &e) {
@@ -307,18 +324,12 @@ void SFMLWindow::onUpdate()
     sf::Event event;
     while(m_SFMLWindow.pollEvent(event))
     {
-        // ImGui::SFML::ProcessEvent(event);
         m_SFMLEventDispatcher.handleEvent(event);
     }
-    // ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
 }
 
 void SFMLWindow::onDraw()
 {
-    // m_SFMLWindow.pushGLStates();
-    // ImGui::SFML::Render(m_SFMLWindow);
-    // m_SFMLWindow.popGLStates();
-    //
     m_SFMLWindow.display();
 }
 
@@ -330,11 +341,22 @@ void SFMLWindow::initImGui()
     ImGui::SetCurrentContext(ctx);
     ImGuiIO &io = ImGui::GetIO();
 
+    io.BackendPlatformName = "imgui_impl_sfml";
+
     // tell ImGui which features we support
     // io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-    io.BackendPlatformName = "imgui_impl_sfml";
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    ImGuiStyle &style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
 
     // init keyboard mapping
     io.KeyMap[ImGuiKey_Tab] = sf::Keyboard::Tab;

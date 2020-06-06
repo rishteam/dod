@@ -40,11 +40,21 @@ void ImGuiLayer::onUpdate()
 
     Application::Get().getWindow().updateImGui();
 
-    static char buf[1024];
+    // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    // ImGui::Begin("DockSpace Demo", p_open, window_flags);
+    // ImGui::PopStyleVar();
 
-    ImGui::Begin("123");
-    ImGui::InputText("Input: ", buf, IM_ARRAYSIZE(buf));
+    static bool ff[2] = {true, true};
+
+    ff[0] = ImGui::Begin("aa", &ff[0]);
+    ImGui::Text("123");
     ImGui::End();
+
+    ff[1] = ImGui::Begin("bb", &ff[1]);
+    ImGui::Text("456");
+    ImGui::End();
+
+    // ImGui::End();
 
     Application::Get().getWindow().renderImGui();
 }

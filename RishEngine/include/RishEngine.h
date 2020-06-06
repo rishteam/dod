@@ -19,6 +19,9 @@
 // Event module
 #include "Rish/Events/Event.h"
 
+// Input Module
+#include "Rish/Core/Input.h"
+
 // Utils Module
 #include "Rish/Utils/debug-trap.h"
 #include "Rish/Utils/FileDialog.h"
