@@ -64,6 +64,8 @@ add_library(RishEngine
     src/Core/ResManager.cpp
     src/Core/ResHolder.cpp
     src/Core/Log.cpp
+    src/Core/FileSystem.cpp
+    src/Core/VFS.cpp
 
     # fs
     src/Utils/FileDialog.cpp
