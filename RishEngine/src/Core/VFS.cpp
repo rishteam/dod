@@ -29,6 +29,7 @@ void VFS::Unmount(const std::string &path)
 
 bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalPath)
 {
+	// TODO: ???? WTF
 	if (path[0] != '/')
 	{
 		outphysicalPath = path;

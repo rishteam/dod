@@ -15,6 +15,8 @@
 #include "Rish/Core/Log.h"
 #include "Rish/Core/ResHolder.h"
 #include "Rish/Core/Application.h"
+#include "Rish/Core/FileSystem.h"
+#include "Rish/Core/VFS.h"
 
 // Event module
 #include "Rish/Events/Event.h"
