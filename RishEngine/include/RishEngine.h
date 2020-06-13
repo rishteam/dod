@@ -20,7 +20,7 @@
 #include "Rish/Events/Event.h"
 
 // Input Module
-#include "Rish/Core/Input.h"
+#include "Rish/Input/Input.h"
 
 // Utils Module
 #include "Rish/Utils/debug-trap.h"

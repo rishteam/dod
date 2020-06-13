@@ -10,6 +10,8 @@
 
 namespace rl {
 
+// Since the Input instance will be existed in the whole lifetime of the engine
+// We don't bother to delete it
 Input *Input::s_instance = new SFMLInput();
 
 bool SFMLInput::isKeyPressedImpl(int keycode)

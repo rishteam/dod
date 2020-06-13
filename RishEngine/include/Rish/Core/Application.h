@@ -1,3 +1,9 @@
+/**
+ * @file Application.h
+ * @author roy4801 (roy@rish.com.tw), icejj
+ * @brief Header of Application class
+ * @date 2020-06-13
+ */
 #pragma once
 
 #include "Rish/rlpch.h"

@@ -13,8 +13,6 @@ public:
 
     void onUpdate() override
     {
-        if(rl::Input::isMouseButtonPressed(sf::Mouse::Left))
-            RL_TRACE("Left pressed");
     }
 
     void onEvent(rl::Event& event) override

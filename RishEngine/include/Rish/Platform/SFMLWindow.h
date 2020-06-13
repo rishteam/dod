@@ -1,6 +1,6 @@
 /**
  * @file SFMLWindow.h
- * @author roy4801 (you@domain.com)
+ * @author roy4801 (roy@rish.com.tw)
  * @brief Header of SFMLWindow class
  * @date 2020-05-25
  */

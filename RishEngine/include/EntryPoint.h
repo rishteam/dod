@@ -1,3 +1,8 @@
+/**
+ * @file EntryPoint.h
+ * @brief The Entry Point of RishEngine Applications
+ * @author roy4801 (roy@rish.com.tw)
+ */
 #pragma once
 
 extern rl::Application* rl::CreateApplication();

@@ -48,8 +48,6 @@ void Application::onEvent(Event &e)
     dispatcher.dispatch<WindowCloseEvent>(RL_BIND_EVENT_FUNC(Application::onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(RL_BIND_EVENT_FUNC(Application::onWindowResize));
 
-    // RL_CORE_INFO("{}", e.toString());
-
     for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
     {
         (*it)->onEvent(e);
@@ -90,6 +88,7 @@ bool Application::onWindowResize(WindowResizeEvent &e)
 {
     RL_CORE_TRACE("{}", e);
     glViewport(0, 0, e.m_width, e.m_height);
+    return false;
 }
 
 }
