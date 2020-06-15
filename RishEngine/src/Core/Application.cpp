@@ -13,14 +13,16 @@ namespace rl {
 
 Application *Application::s_instance = nullptr;
 
-Application::Application()
+Application::Application(const std::string &name, uint32_t width, uint32_t height)
 {
     RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have ONE Application instance");
     Application::s_instance = this; // set instance
-    m_window = std::unique_ptr<Window>(Window::Create());
+    m_window = std::unique_ptr<Window>(Window::Create(name, width, height));
     m_window->setEventCallback(RL_BIND_EVENT_FUNC(Application::onEvent));
-
-    m_running = true;
+    m_running = true; // set the running flag
+    // Push the imgui overlay
+    m_imguiLayer = new ImGuiLayer();
+    pushOverlay(m_imguiLayer);
 }
 
 Application::~Application()
@@ -36,6 +38,11 @@ void Application::run()
         // Update layers
         for(Layer* layer: m_LayerStack)
             layer->onUpdate();
+        // Update ImGui
+        m_imguiLayer->begin();
+        for(Layer* layer : m_LayerStack)
+            layer->onImGuiRender();
+        m_imguiLayer->end();
         // Draw window
         if(m_window)
             m_window->onDraw();

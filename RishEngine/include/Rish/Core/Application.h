@@ -12,6 +12,7 @@
 #include "Rish/Core/Window.h"
 #include "Rish/Events/ApplicationEvent.h"
 #include "Rish/Layer/LayerStack.h"
+#include "Rish/Layer/ImGuiLayer.h"
 
 namespace rl {
 
@@ -27,7 +28,7 @@ public:
 
     Window& getWindow() { return *m_window; }
 
-    Application();
+    Application(const std::string &name = "Rish Engine", uint32_t width = 1280, uint32_t height = 720);
     virtual ~Application();
 
     void run();
@@ -43,6 +44,8 @@ private:
 
     /// Window
     std::unique_ptr<Window> m_window;
+    /// ImGui Layer
+    ImGuiLayer *m_imguiLayer;
     /// Is the application still running
     bool m_running = false;
     /// Layer container

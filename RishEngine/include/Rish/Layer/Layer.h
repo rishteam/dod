@@ -29,6 +29,8 @@ public:
 	virtual void onDetach() { RL_CORE_TRACE("[{}] onDetach", m_DebugName); };
 	/// On Update
 	virtual void onUpdate() { RL_CORE_TRACE("[{}] default onUpdate", m_DebugName); };
+	/// On Imgui render
+	virtual void onImGuiRender() { RL_CORE_TRACE("[{}] default onImGuiRender", m_DebugName); }
 	/// On Event
 	virtual void onEvent(Event &event) { RL_CORE_TRACE("[{}] default onEvent({})", m_DebugName, event.toString()); };
 	/// Get debug name

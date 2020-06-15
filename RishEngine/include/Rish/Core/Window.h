@@ -38,9 +38,8 @@ public:
     virtual uint32_t getWidth() const { return m_width; }
     virtual uint32_t getHeight() const { return m_height; }
 
-
     /// implement this in inherited class
-    static Window *Create(const std::string &title="Rish Engine", uint32_t width=1280, uint32_t height=720);
+    static Window *Create(const std::string &title, uint32_t width, uint32_t height);
 
     virtual void initImGui() = 0;
     virtual void shutdownImGui() = 0;

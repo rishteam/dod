@@ -1,18 +1,40 @@
 #include <RishEngine.h>
 
+#include <imgui.h>
+
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 
-class ExampleSandbox : public rl::Layer
+class ExampleSandboxLayer : public rl::Layer
 {
 public:
-    ExampleSandbox()
+    ExampleSandboxLayer()
     : Layer("example")
     {
     }
 
     void onUpdate() override
     {
+    }
+
+    void onImGuiRender() override
+    {
+        ImGui::Begin("aa");
+        ImGui::Text("123");
+        ImGui::End();
+
+        ImGui::Begin("bb");
+        ImGui::Text("456");
+        ImGui::End();
+
+        ImGui::Begin("cc");
+        ImGui::Text("789");
+        ImGui::End();
+
+        ImGui::Begin("Console");
+        ImGui::Text("aaaaa");
+        ImGui::Text("bbbbb");
+        ImGui::End();
     }
 
     void onEvent(rl::Event& event) override
@@ -26,10 +48,9 @@ public:
 class Sandbox : public rl::Application
 {
 public:
-    Sandbox()
+    Sandbox() : rl::Application("Sandbox", 1920, 1080)
     {
-        pushLayer(new ExampleSandbox());
-        pushLayer(new rl::ImGuiLayer());
+        pushLayer(new ExampleSandboxLayer());
     }
     virtual ~Sandbox() override
     {

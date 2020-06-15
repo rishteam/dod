@@ -30,32 +30,21 @@ void ImGuiLayer::onDetach()
     Application::Get().getWindow().shutdownImGui();
 }
 
-void ImGuiLayer::onUpdate()
+void ImGuiLayer::begin()
 {
     RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
     //
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
     auto &window = Application::Get().getWindow();
     io.DisplaySize = ImVec2((float)window.getWidth(), (float)window.getHeight());
 
     Application::Get().getWindow().updateImGui();
+}
 
-    // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    // ImGui::Begin("DockSpace Demo", p_open, window_flags);
-    // ImGui::PopStyleVar();
-
-    static bool ff[2] = {true, true};
-
-    ff[0] = ImGui::Begin("aa", &ff[0]);
-    ImGui::Text("123");
-    ImGui::End();
-
-    ff[1] = ImGui::Begin("bb", &ff[1]);
-    ImGui::Text("456");
-    ImGui::End();
-
-    // ImGui::End();
-
+void ImGuiLayer::end()
+{
+    RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
+    //
     Application::Get().getWindow().renderImGui();
 }
 

@@ -29,8 +29,15 @@ public:
 
     void onAttach() override;
     void onDetach() override;
-    void onUpdate() override;
+    /// Begin imgui frame
+    void begin();
+    /// End imgui frame
+    void end();
+
     void onEvent(Event &event) override;
+
+    void onUpdate() override {}
+    void onImGuiRender() override {}
 private:
     bool onMouseButtonPressed(MouseButtonPressedEvent &event);
     bool onMouseButtonReleased(MouseButtonReleasedEvent &event);
