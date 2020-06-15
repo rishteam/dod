@@ -23,6 +23,19 @@ public:
      */
     Time(float time=0.0f) : m_time(time)
     {
+        m_clock_start = std::chrono::steady_clock::now();
+    }
+
+    /**
+     * @brief The time from the application create until now
+     * 
+     * @return float 
+     */
+    static float now()
+    {
+        auto clock_end = std::chrono::steady_clock::now();
+        std::chrono::duration<float> time_span = std::chrono::duration_cast<std::chrono::duration<float>>(clock_end - m_clock_start);
+        return time_span.count();
     }
 
     /**
@@ -88,7 +101,7 @@ public:
 
 private:
     float m_time = 0.0f;
-
+    static std::chrono::steady_clock::time_point m_clock_start;
 public:
     friend std::ostream& operator<<(std::ostream& os, Time &t)
     {
@@ -102,7 +115,24 @@ public:
  */
 class Clock
 {
+public:
+    Clock();
 
+    Time getElapsedTime()
+    {
+        // A function provide getCurrentTime that return Time
+    }
+
+    Time restart()
+    {
+        Time now; // A function provide getCurrentTime() that return Time
+        Time elapsed = now - m_startTime;
+        m_startTime = now;
+        return now;
+    }
+
+private:
+    Time m_startTime;
 };
 
 /**
