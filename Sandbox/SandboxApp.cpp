@@ -13,8 +13,11 @@ public:
     {
     }
 
-    void onUpdate() override
+    void onUpdate(rl::Time dt) override
     {
+        static rl::Time tmp;
+        tmp += dt;
+        RL_INFO("dt={}", tmp);
     }
 
     void onImGuiRender() override

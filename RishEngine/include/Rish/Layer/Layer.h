@@ -9,6 +9,7 @@
 #include <Rish/rlpch.h>
 #include <Rish/Core/Core.h>
 #include <Rish/Core/Log.h>
+#include <Rish/Core/Time.h>
 #include <Rish/Events/Event.h>
 
 namespace rl {
@@ -28,7 +29,7 @@ public:
 	/// On Detach
 	virtual void onDetach() { RL_CORE_TRACE("[{}] onDetach", m_DebugName); };
 	/// On Update
-	virtual void onUpdate() { RL_CORE_TRACE("[{}] default onUpdate", m_DebugName); };
+	virtual void onUpdate(Time dt) { RL_CORE_TRACE("[{}] default onUpdate dt={}", m_DebugName, dt); };
 	/// On Imgui render
 	virtual void onImGuiRender() { RL_CORE_TRACE("[{}] default onImGuiRender", m_DebugName); }
 	/// On Event

@@ -2,12 +2,15 @@
 
 #include "Rish/Core/Core.h"
 #include "Rish/Core/Application.h"
+#include "Rish/Core/Time.h"
 
 #include "Rish/Events/Event.h"
 #include "Rish/Events/ApplicationEvent.h"
 
 #include <fmt/printf.h>
 #include <fmt/format.h>
+
+#include <SFML/System/Clock.hpp>
 
 namespace rl {
 
@@ -31,18 +34,28 @@ Application::~Application()
 
 void Application::run()
 {
+    static sf::Clock clk; // TODO(roy4801): make RishEngine clock in the future
+
     while(m_running)
     {
+        // Update time
+        float now = clk.getElapsedTime().asSeconds();
+        Time dt = now - m_prevFrameTime;
+        m_prevFrameTime = now;
+
         // Update window
         m_window->onUpdate();
+
         // Update layers
         for(Layer* layer: m_LayerStack)
-            layer->onUpdate();
+            layer->onUpdate(dt);
+
         // Update ImGui
         m_imguiLayer->begin();
         for(Layer* layer : m_LayerStack)
             layer->onImGuiRender();
         m_imguiLayer->end();
+
         // Draw window
         if(m_window)
             m_window->onDraw();

@@ -15,6 +15,7 @@
 #include "Rish/Core/Log.h"
 #include "Rish/Core/ResHolder.h"
 #include "Rish/Core/Application.h"
+#include "Rish/Core/Time.h"
 
 // Event module
 #include "Rish/Events/Event.h"

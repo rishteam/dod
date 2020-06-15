@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     //
     rl::Logger::Init();
 
-    RL_CORE_INFO("Starting the RishEngine");
+    RL_CORE_INFO("Initializating the RishEngine");
     auto app = rl::CreateApplication();
 
     RL_CORE_INFO("RishEngine is running");

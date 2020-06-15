@@ -46,10 +46,12 @@ private:
     std::unique_ptr<Window> m_window;
     /// ImGui Layer
     ImGuiLayer *m_imguiLayer;
-    /// Is the application still running
-    bool m_running = false;
     /// Layer container
     LayerStack m_LayerStack;
+    /// Is the application still running
+    bool m_running = false;
+    /// previous frame time
+    float m_prevFrameTime = 0.0f;
 };
 
 Application* CreateApplication();

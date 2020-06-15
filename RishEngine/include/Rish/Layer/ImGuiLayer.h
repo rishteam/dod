@@ -8,6 +8,7 @@
 
 #include <Rish/Core/Core.h>
 #include <Rish/Core/Window.h>
+#include <Rish/Core/Time.h>
 #include <Rish/Layer/Layer.h>
 
 #include <Rish/Events/Event.h>
@@ -36,7 +37,7 @@ public:
 
     void onEvent(Event &event) override;
 
-    void onUpdate() override {}
+    void onUpdate(Time dt) override {}
     void onImGuiRender() override {}
 private:
     bool onMouseButtonPressed(MouseButtonPressedEvent &event);
