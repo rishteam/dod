@@ -23,21 +23,14 @@ public:
      */
     Time(float time=0.0f) : m_time(time)
     {
-        m_clock_start = std::chrono::steady_clock::now();
     }
 
     /**
      * @brief The time from the application create until now
      * 
-     * @return float 
+     * @return Time 
      */
-    static float now()
-    {
-        auto clock_end = std::chrono::steady_clock::now();
-        std::chrono::duration<float> time_span = std::chrono::duration_cast<std::chrono::duration<float>>(clock_end - m_clock_start);
-        return time_span.count();
-    }
-
+    static Time now();
     /**
      * @brief Cast the Time to float
      * @return float Cast in to float
@@ -116,20 +109,28 @@ public:
 class Clock
 {
 public:
-    Clock();
-
-    Time getElapsedTime()
+    Clock()
+        : m_startTime(Time::now())
     {
-        // A function provide getCurrentTime that return Time
     }
 
-    Time restart()
-    {
-        Time now; // A function provide getCurrentTime() that return Time
-        Time elapsed = now - m_startTime;
-        m_startTime = now;
-        return now;
-    }
+    /**
+     * @brief Get the elapsed time
+     * 
+     * @details This function returns the time elapsed since the last call to restart()
+     * 
+     * @return Time 
+     */
+    Time getElapsedTime();
+
+    /**
+     * @brief Restart the clock
+     * 
+     * @details Puts the time counter to now. It also returns the time elapsed since the clock was started
+     * 
+     * @return Time 
+     */
+    Time restart();
 
 private:
     Time m_startTime;

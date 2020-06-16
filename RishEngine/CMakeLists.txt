@@ -75,6 +75,9 @@ add_library(RishEngine
     src/Layer/Layer.cpp
     src/Layer/LayerStack.cpp
     src/Layer/ImGuiLayer.cpp
+
+    # Time
+    src/Core/Time.cpp
 )
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

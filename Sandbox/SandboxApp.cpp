@@ -15,9 +15,11 @@ public:
 
     void onUpdate(rl::Time dt) override
     {
-        static rl::Time tmp;
-        tmp += dt;
-        RL_INFO("dt={}", tmp);
+        if(test_clock.getElapsedTime() > 2)
+        {
+            RL_TRACE("update!!!!");
+            test_clock.restart();
+        }
     }
 
     void onImGuiRender() override
@@ -46,6 +48,9 @@ public:
         if(event.getEventType() == rl::EventType::MouseMoved)
             event.handled = true;
     }
+private:
+    rl::Clock test_clock;
+
 };
 
 class Sandbox : public rl::Application
