@@ -30,7 +30,7 @@ public:
      * 
      * @return Time 
      */
-    static Time now();
+    static Time Now();
     /**
      * @brief Cast the Time to float
      * @return float Cast in to float
@@ -110,7 +110,7 @@ class Clock
 {
 public:
     Clock()
-        : m_startTime(Time::now())
+        : m_startTime(Time::Now())
     {
     }
 
@@ -136,6 +136,8 @@ private:
     Time m_startTime;
 };
 
+using TimerCallback = std::function<void()>;
+
 /**
  * @brief
  * @todo templace class for customizing callback function
@@ -143,12 +145,24 @@ private:
 class Timer
 {
 public:
-    Timer();
+    Timer(Time &t, TimerCallback callback);
+
+    void start();
+
+    static void AddTimer(Timer &t);
+
+    static void AddLoopTimer(Timer &t);
+
+    static void Update();
 
 private:
 
-    static std::vector<Timer> m_timerList;
+    Time m_t;
+    Time m_start;
+    TimerCallback m_timerCallback;
 
+    static std::vector<Timer> m_timerList;
+    static std::vector<Timer> m_loopTimerList;
 };
 
 }
