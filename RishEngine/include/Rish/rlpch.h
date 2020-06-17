@@ -24,6 +24,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <sys/stat.h>
+#include <iterator>
+#include <fstream>
+
 // filesystem
 #if defined(__clang__)
     #include <boost/filesystem/operations.hpp>

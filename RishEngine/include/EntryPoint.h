@@ -13,6 +13,7 @@ int main(int argc, char **argv)
     setvbuf(stdout, nullptr, _IONBF, 0);
     //
     rl::Logger::Init();
+    rl::VFS::Init();
 
     RL_CORE_INFO("Initializating the RishEngine");
     auto app = rl::CreateApplication();
@@ -22,5 +23,7 @@ int main(int argc, char **argv)
 
     RL_CORE_INFO("Shutdowning the RishEngine");
     delete app;
+
+    rl::VFS::ShutDown();
     RL_CORE_INFO("Goodbye");
 }
