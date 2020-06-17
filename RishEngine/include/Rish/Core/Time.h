@@ -142,6 +142,12 @@ private:
  */
 class Timer
 {
+public:
+    Timer();
+
+private:
+
+    static std::vector<Timer> m_timerList;
 
 };
 
