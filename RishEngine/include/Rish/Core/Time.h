@@ -145,13 +145,13 @@ using TimerCallback = std::function<void()>;
 class Timer
 {
 public:
-    Timer(Time &t, TimerCallback callback);
+    Timer(Time t, TimerCallback callback);
 
     void start();
 
-    static void AddTimer(Timer &t);
+    static void AddTimer(Timer t);
 
-    static void AddLoopTimer(Timer &t);
+    static void AddLoopTimer(Timer t);
 
     static void Update();
 
@@ -161,8 +161,8 @@ private:
     Time m_start;
     TimerCallback m_timerCallback;
 
-    static std::vector<Timer> m_timerList;
-    static std::vector<Timer> m_loopTimerList;
+    static std::list<Timer> m_timerList;
+    static std::list<Timer> m_loopTimerList;
 };
 
 }

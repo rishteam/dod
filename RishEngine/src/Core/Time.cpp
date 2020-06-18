@@ -24,43 +24,57 @@ Time Clock::restart()
 	return elapsed;
 }
 
-Timer::Timer(Time &t, TimerCallback callback)
+Timer::Timer(Time t, TimerCallback callback)
 {
 	m_t = t;
 	m_timerCallback = callback;
 }
+
+std::list<Timer> Timer::m_timerList;
+std::list<Timer> Timer::m_loopTimerList;
 
 void Timer::start()
 {
 	m_start = Time::Now();
 }
 
-void Timer::AddTimer(Timer &t)
+void Timer::AddTimer(Timer t)
 {
 	m_timerList.push_back(t);
 }
 
-void Timer::AddLoopTimer(Timer &t)
+void Timer::AddLoopTimer(Timer t)
 {
 	m_loopTimerList.push_back(t);
 }
 
 void Timer::Update()
 {
-	for(auto &timer: m_timerList)
+	auto timer = m_timerList.begin();
+
+	while (timer != m_timerList.end())
 	{
-		if(Time::Now() - timer.m_start >= timer.m_t)
+		if(Time::Now() - timer->m_start >= timer->m_t)
 		{
-			
+			timer->m_timerCallback();
+			m_timerList.erase(timer++);
+		}
+		else
+		{
+			++timer;
 		}
 	}
 
-	for(auto &timer: m_loopTimerList)
-	{
-		if(Time::Now() - timer.m_start >= timer.m_t)
-		{
+	auto loopTimer = m_loopTimerList.begin();
 
+	while (loopTimer != m_loopTimerList.end())
+	{
+		if(Time::Now() - loopTimer->m_start >= loopTimer->m_t)
+		{
+			loopTimer->m_timerCallback();
+			loopTimer->start();
 		}
+		++loopTimer;
 	}
 }
 

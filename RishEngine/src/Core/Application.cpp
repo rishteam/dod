@@ -26,6 +26,17 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     // Push the imgui overlay
     m_imguiLayer = new ImGuiLayer();
     pushOverlay(m_imguiLayer);
+
+    Timer t(Time(5), []() {
+        RL_CORE_INFO("Timer: Test Timer");
+    });
+    Timer::AddLoopTimer(t);
+
+    Timer t2(Time(5), []() {
+        RL_CORE_INFO("Timer: Can you do me a favor");
+    });
+    Timer::AddLoopTimer(t2);
+
 }
 
 Application::~Application()
@@ -46,6 +57,9 @@ void Application::run()
         // Update window
         m_window->onUpdate();
 
+        // Update Timer
+        Timer::Update();
+
         // Update layers
         for(Layer* layer: m_LayerStack)
             layer->onUpdate(dt);
@@ -55,6 +69,7 @@ void Application::run()
         for(Layer* layer : m_LayerStack)
             layer->onImGuiRender();
         m_imguiLayer->end();
+
 
         // Draw window
         if(m_window)
