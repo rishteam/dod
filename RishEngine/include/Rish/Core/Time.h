@@ -11,6 +11,8 @@
 
 namespace rl {
 
+#define PERMANENT -1
+
 /**
  * @brief Time Class
  */
@@ -103,8 +105,17 @@ public:
 };
 
 /**
- * @brief
- * @todo Implement
+ * @brief Clock class
+ * @details A class that measure the elapsed time
+ * 
+ * @code{.cpp}
+ * rl::Clock clock
+ * ...
+ * Time t1 = clock.getElapsedTime();
+ * ...
+ * Time t2 = clock.restart();
+ * 
+ * @endcode
  */
 class Clock
 {
@@ -139,20 +150,48 @@ private:
 using TimerCallback = std::function<void()>;
 
 /**
- * @brief
- * @todo templace class for customizing callback function
+ * @brief Timer class
+ * @details A timer that binds function to a specific time, the function will not run until the times up.
+ * Timer have static timerList and static loopTimerList that stores the timer.
  */
 class Timer
 {
+
 public:
+
     Timer(Time t, TimerCallback callback);
 
-    void start();
+    /**
+     * @brief restart the timer
+     * 
+     */
+    void restart();
 
+    /**
+     * @brief Add the timer to the list
+     * 
+     * @details The timer in the timer list only execute once. When the timer is added to the list, it will start timeing.
+     * 
+     * @param t Timer that binds the time and function
+     */
     static void AddTimer(Timer t);
 
-    static void AddLoopTimer(Timer t);
+    /**
+     * @brief Add the timer to the loop list
+     * 
+     * @details The timer in the timer list execute quanity of times. When the timer is added to the list, it will start timing.
+     * 
+     * @param t Timer that binds the time and function
+     * @param times Times that the timer will execute
+     */
+    static void AddLoopTimer(Timer t, int times = PERMANENT);
 
+    /**
+     * @brief Update method
+     * 
+     * @details Update all the timers in the list
+     * 
+     */
     static void Update();
 
 private:
@@ -160,6 +199,7 @@ private:
     Time m_t;
     Time m_start;
     TimerCallback m_timerCallback;
+    int m_loopTimes;
 
     static std::list<Timer> m_timerList;
     static std::list<Timer> m_loopTimerList;

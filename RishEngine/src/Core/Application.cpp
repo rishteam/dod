@@ -27,15 +27,15 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     m_imguiLayer = new ImGuiLayer();
     pushOverlay(m_imguiLayer);
 
-    Timer t(Time(5), []() {
+    Timer t(Time(3), []() {
         RL_CORE_INFO("Timer: Test Timer");
     });
-    Timer::AddLoopTimer(t);
+    Timer::AddTimer(t);
 
-    Timer t2(Time(5), []() {
+    Timer t2(Time(3), []() {
         RL_CORE_INFO("Timer: Can you do me a favor");
     });
-    Timer::AddLoopTimer(t2);
+    Timer::AddLoopTimer(t2, 2);
 
 }
 

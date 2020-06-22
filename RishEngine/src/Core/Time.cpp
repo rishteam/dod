@@ -28,23 +28,27 @@ Timer::Timer(Time t, TimerCallback callback)
 {
 	m_t = t;
 	m_timerCallback = callback;
+	m_loopTimes = PERMANENT;
 }
 
 std::list<Timer> Timer::m_timerList;
 std::list<Timer> Timer::m_loopTimerList;
 
-void Timer::start()
+void Timer::restart()
 {
 	m_start = Time::Now();
 }
 
 void Timer::AddTimer(Timer t)
 {
+	t.restart();
 	m_timerList.push_back(t);
 }
 
-void Timer::AddLoopTimer(Timer t)
+void Timer::AddLoopTimer(Timer t, int times)
 {
+	t.restart();
+	t.m_loopTimes = times;
 	m_loopTimerList.push_back(t);
 }
 
@@ -69,11 +73,22 @@ void Timer::Update()
 
 	while (loopTimer != m_loopTimerList.end())
 	{
-		if(Time::Now() - loopTimer->m_start >= loopTimer->m_t)
+		if(loopTimer->m_loopTimes)
 		{
-			loopTimer->m_timerCallback();
-			loopTimer->start();
+			if(Time::Now() - loopTimer->m_start >= loopTimer->m_t)
+			{
+				loopTimer->m_timerCallback();
+				loopTimer->restart();
+				// if loopTims < 0 indicates it is PERMANENT so that it should be -1, else should decrement by 1
+				loopTimer->m_loopTimes = ( loopTimer->m_loopTimes < 0 ? loopTimer->m_loopTimes : --loopTimer->m_loopTimes);
+			}
 		}
+
+		if(!loopTimer->m_loopTimes)
+		{
+			m_timerList.erase(loopTimer);
+		}
+
 		++loopTimer;
 	}
 }
