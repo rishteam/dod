@@ -14,6 +14,8 @@
 
 namespace rl {
 
+#define S_PER_UPDATE 0.01
+
 Application *Application::s_instance = nullptr;
 
 Application::Application(const std::string &name, uint32_t width, uint32_t height)
@@ -27,16 +29,6 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     m_imguiLayer = new ImGuiLayer();
     pushOverlay(m_imguiLayer);
 
-    Timer t(Time(3), []() {
-        RL_CORE_INFO("Timer: Test Timer");
-    });
-    Timer::AddTimer(t);
-
-    Timer t2(Time(3), []() {
-        RL_CORE_INFO("Timer: Can you do me a favor");
-    });
-    Timer::AddLoopTimer(t2, 2);
-
 }
 
 Application::~Application()
@@ -45,7 +37,9 @@ Application::~Application()
 
 void Application::run()
 {
-    static sf::Clock clk; // TODO(roy4801): make RishEngine clock in the future
+    // static sf::Clock clk; // TODO(roy4801): make RishEngine clock in the future
+    Clock clk;
+    float lag = 0.0;
 
     while(m_running)
     {
@@ -53,7 +47,8 @@ void Application::run()
         float now = clk.getElapsedTime().asSeconds();
         Time dt = now - m_prevFrameTime;
         m_prevFrameTime = now;
-
+        lag += dt;
+            
         // Update window
         m_window->onUpdate();
 
@@ -69,7 +64,6 @@ void Application::run()
         for(Layer* layer : m_LayerStack)
             layer->onImGuiRender();
         m_imguiLayer->end();
-
 
         // Draw window
         if(m_window)
