@@ -93,4 +93,10 @@ void Timer::Update()
 	}
 }
 
+void Timer::Clear()
+{
+	m_timerList.clear();
+	m_loopTimerList.clear();
+}
+
 }

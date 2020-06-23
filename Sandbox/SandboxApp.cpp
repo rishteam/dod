@@ -15,11 +15,7 @@ public:
 
     void onUpdate(rl::Time dt) override
     {
-        if(test_clock.getElapsedTime() > 2)
-        {
-            RL_TRACE("update!!!!");
-            test_clock.restart();
-        }
+        RL_TRACE("ExampleSandboxLayer Update");
     }
 
     void onImGuiRender() override

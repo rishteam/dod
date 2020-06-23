@@ -12,6 +12,7 @@
 namespace rl {
 
 #define PERMANENT -1
+#define ALL -1
 
 /**
  * @brief Time Class
@@ -193,6 +194,12 @@ public:
      * 
      */
     static void Update();
+
+    /**
+     * @brief Clear all the timer in the timer list
+     * 
+     */
+    static void Clear();
 
 private:
 
