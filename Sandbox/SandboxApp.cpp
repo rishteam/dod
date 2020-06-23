@@ -32,10 +32,6 @@ public:
         ImGui::Text("789");
         ImGui::End();
 
-        ImGui::Begin("Console");
-        ImGui::Text("aaaaa");
-        ImGui::Text("bbbbb");
-        ImGui::End();
     }
 
     void onEvent(rl::Event& event) override

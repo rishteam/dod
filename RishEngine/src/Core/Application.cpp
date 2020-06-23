@@ -12,6 +12,8 @@
 
 #include <SFML/System/Clock.hpp>
 
+#include <imgui.h>
+
 namespace rl {
 
 #define S_PER_UPDATE 0.01

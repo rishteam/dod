@@ -38,7 +38,11 @@ public:
     void onEvent(Event &event) override;
 
     void onUpdate(Time dt) override {}
-    void onImGuiRender() override {}
+
+    // TODO: maybe remove these?
+    void beginDockspace();
+    void endDockspacce();
+
 private:
     bool onMouseButtonPressed(MouseButtonPressedEvent &event);
     bool onMouseButtonReleased(MouseButtonReleasedEvent &event);
