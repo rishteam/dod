@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
-#include "Rish/Core/Core.h"
-#include "Rish/Events/Event.h"
+#include <Rish/Core/Core.h>
+#include <Rish/Events/Event.h>
 
 namespace rl {
 
@@ -32,13 +32,19 @@ public:
     virtual void setEventCallback(const EventCallbackFunc &callback) = 0;
 
     virtual bool isOpen() = 0;
+    virtual void* getPlatformWindow() const = 0;
 
     virtual std::string getTitle() const { return m_title; }
     virtual uint32_t getWidth() const { return m_width; }
     virtual uint32_t getHeight() const { return m_height; }
 
     /// implement this in inherited class
-    static Window *Create(const std::string &title="Rish Engine", uint32_t width=1280, uint32_t height=720);
+    static Window *Create(const std::string &title, uint32_t width, uint32_t height);
+
+    virtual void initImGui() = 0;
+    virtual void shutdownImGui() = 0;
+    virtual void updateImGui() = 0;
+    virtual void renderImGui() = 0;
 
 protected:
     Window(const std::string &title, const uint32_t width, const uint32_t height)

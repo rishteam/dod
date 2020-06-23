@@ -24,7 +24,7 @@ enum class EventType
     WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
     AppTick, AppUpdate, AppRender,
     // Keyboard Events
-    KeyPressed, KeyReleased,
+    KeyPressed, KeyReleased, KeyTyped,
     // Mouse Events
     MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 };
@@ -92,7 +92,7 @@ class RL_API Event
     friend class EventDispatcher;
 
 public:
-    virtual ~Event() = default;
+    virtual ~Event() {}
     // implement by macro in a sub-class
     virtual EventType getEventType() const = 0;
     virtual const char *getName() const = 0;

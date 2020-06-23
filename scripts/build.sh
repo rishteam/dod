@@ -9,6 +9,7 @@ Usage: $0 <command>
     clean [run]    Call \`make clean\` after cmake before \`make -j6\`
     run            Run the program after building
     docs [open]    Build the docs
+    cloc           Calculate Lines Of Code
 EOF
 }
 
@@ -77,6 +78,10 @@ case "$1" in
 "docs")
     make doxygen-docs
     [[ "$2" == "open" ]] && start_go ./RishEngine/docs/html/index.html
+;;
+
+"cloc")
+    cloc --exclude-dir=deps,build,cmake-build-debug,cmake-build-release,.idea,.vscode ..
 ;;
 
 "-h" | "--help")

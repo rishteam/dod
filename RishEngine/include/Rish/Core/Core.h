@@ -41,32 +41,24 @@
 
 #define BIT(x) (1<<(x))
 
-#if defined _WIN32 || defined __CYGWIN__
-  #ifndef RL_USE_STATIC
-    #ifdef RL_BUILD_DLL
-      // Exporting...
-      #ifdef __GNUC__
-        #define RL_API __attribute__ ((dllexport))
-      #else
-        #define RL_API __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
-      #endif
+#if RL_SHARED_LIB
+    #if defined(_WIN32) && defined(_MSC_VER)
+        #ifdef RL_EXPORTS
+            #define RL_API __declspec(dllexport)
+        #else
+            #define RL_API __declspec(dllimport)
+        #endif
+    #elif __GNUC__ >= 4
+        #define RL_API __attribute__ ((visibility("default")))
     #else
-      #ifdef __GNUC__
-        #define RL_API __attribute__ ((dllimport))
-      #else
-        #define RL_API __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
-      #endif
+        #define RL_API
     #endif
-  #else
-    #define RL_API
-  #endif
-  #define NOT_EXPORTED
 #else
-  #if __GNUC__ >= 4
-    #define RL_API __attribute__ ((visibility ("default")))
-    #define NOT_EXPORTED  __attribute__ ((visibility ("hidden")))
-  #else
     #define RL_API
-    #define NOT_EXPORTED
-  #endif
 #endif
+
+/**
+ * @brief Bind Event function macro
+ * @details For EventDispatcher
+ */
+#define RL_BIND_EVENT_FUNC(x) std::bind(&x, this, std::placeholders::_1)

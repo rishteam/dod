@@ -15,11 +15,15 @@
 #include "Rish/Core/Log.h"
 #include "Rish/Core/ResHolder.h"
 #include "Rish/Core/Application.h"
+#include "Rish/Core/Time.h"
 #include "Rish/Core/FileSystem.h"
 #include "Rish/Core/VFS.h"
 
 // Event module
 #include "Rish/Events/Event.h"
+
+// Input Module
+#include "Rish/Input/Input.h"
 
 // Utils Module
 #include "Rish/Utils/debug-trap.h"
@@ -32,6 +36,7 @@
 
 // Layers
 #include "Rish/Layer/Layer.h"
+#include "Rish/Layer/ImGuiLayer.h"
 
 // Entry Point
 #include "EntryPoint.h"

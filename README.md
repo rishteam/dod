@@ -11,8 +11,10 @@ git clone --recursive https://github.com/rishteam/dod.git
 * Dependencies
   * SFML 2.5.1
   * ImGui-SFML
+    * Built with imgui docking branch
   * fmt
   * nlohmann-json
+  * spdlog
 
 ```bash
 pacman -S - < package.txt

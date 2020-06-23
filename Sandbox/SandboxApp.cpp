@@ -1,53 +1,64 @@
 #include <RishEngine.h>
 
-class ExampleSandbox : public rl::Layer
+#include <imgui.h>
+
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
+
+class ExampleSandboxLayer : public rl::Layer
 {
 public:
-    ExampleSandbox()
+    ExampleSandboxLayer()
     : Layer("example")
     {
     }
 
-    void onUpdate() override
+    void onUpdate(rl::Time dt) override
     {
-        // RL_TRACE("ExampleLayer onUpdate");
+        if(test_clock.getElapsedTime() > 2)
+        {
+            RL_TRACE("update!!!!");
+            test_clock.restart();
+        }
+    }
+
+    void onImGuiRender() override
+    {
+        ImGui::Begin("aa");
+        ImGui::Text("123");
+        ImGui::End();
+
+        ImGui::Begin("bb");
+        ImGui::Text("456");
+        ImGui::End();
+
+        ImGui::Begin("cc");
+        ImGui::Text("789");
+        ImGui::End();
+
+        ImGui::Begin("Console");
+        ImGui::Text("aaaaa");
+        ImGui::Text("bbbbb");
+        ImGui::End();
     }
 
     void onEvent(rl::Event& event) override
     {
-        // RL_TRACE("ExampleLayerOnEvent: {0}", event);
+        // RL_TRACE("ExampleLayer OnEvent: {0}", event);
         if(event.getEventType() == rl::EventType::MouseMoved)
             event.handled = true;
     }
-};
+private:
+    rl::Clock test_clock;
 
-class Test : public rl::Layer
-{
-public:
-    Test()
-        : Layer("test")
-    {
-    }
-
-    void onEvent(rl::Event &event) override
-    {
-        // RL_TRACE("Test OnEvent: {0}", event);
-    }
 };
 
 class Sandbox : public rl::Application
 {
 public:
-    Sandbox()
+    Sandbox() : rl::Application("Sandbox", 1920, 1080)
     {
-        pushLayer(new Test());
-        pushLayer(new ExampleSandbox());
-
-        rl::VFS::Get()->Mount("data", "data/");
-        rl::VFS::Get()->Mount("data", "a/b/c/");
-        std::string s;
-        rl::VFS::Get()->ResolvePhysicalPath("data/a.jpg", s);
-        RL_TRACE("{}", s);
+        pushLayer(new ExampleSandboxLayer());
     }
     virtual ~Sandbox() override
     {

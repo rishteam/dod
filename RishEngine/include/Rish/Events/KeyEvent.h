@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include <Rish/Core/Core.h>
 #include "Rish/Events/Event.h"
 
 namespace rl {
@@ -19,7 +20,8 @@ class RL_API KeyEvent : public Event
 public:
     EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 protected:
-    KeyEvent(int keycode_) : keyCode(keycode_)
+    KeyEvent(int keycode) :
+        keyCode(keycode)
     {
     }
 
@@ -34,8 +36,9 @@ public:
 class RL_API KeyPressedEvent : public KeyEvent
 {
 public:
-    KeyPressedEvent(int keycode_, int repeat_) : KeyEvent(keycode_)
-        , repeat(repeat_)
+    KeyPressedEvent(int keycode_, int repeat_) :
+        KeyEvent(keycode_),
+        repeat(repeat_)
     {
     }
 
@@ -54,13 +57,29 @@ public:
 class RL_API KeyReleasedEvent : public KeyEvent
 {
 public:
-    KeyReleasedEvent(int keycode_) : KeyEvent(keycode_)
+    KeyReleasedEvent(int keycode_) :
+        KeyEvent(keycode_)
     {
     }
 
     EVENT_CLASS_TOSTRING("KeyReleaseEvent: keycode={}", keyCode)
 
     EVENT_CLASS_TYPE(KeyReleased)
+};
+
+/**
+ * @brief Key Typed Event
+ * @details
+ */
+class RL_API KeyTypedEvent : public KeyEvent
+{
+public:
+    KeyTypedEvent(int keycode_) : KeyEvent(keycode_)
+    {}
+
+    EVENT_CLASS_TOSTRING("KeyTypedEvent: keycode={}", keyCode)
+
+    EVENT_CLASS_TYPE(KeyTyped)
 };
 
 }

@@ -1,6 +1,6 @@
 /**
  * @file SFMLWindow.h
- * @author roy4801 (you@domain.com)
+ * @author roy4801 (roy@rish.com.tw)
  * @brief Header of SFMLWindow class
  * @date 2020-05-25
  */
@@ -11,8 +11,13 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 #include <Rish/Core/Window.h>
+#include <Rish/Events/ApplicationEvent.h>
+#include <Rish/Events/KeyEvent.h>
+#include <Rish/Events/MouseEvent.h>
 
 namespace rl {
 
@@ -89,25 +94,32 @@ class RL_API SFMLWindow final : public Window
 {
 public:
     SFMLWindow(const std::string &title, const uint32_t width, const uint32_t height);
-    ~SFMLWindow() override;
+    virtual ~SFMLWindow() override;
 
-    void onUpdate() override;
-    void onDraw() override;
+    virtual void onUpdate() override;
+    virtual void onDraw() override;
 
     /**
      * @brief Set the Event Callback object
      * @details This is used by Application class for setting the event callback.
      * @param callback Event Callback function
      */
-    void setEventCallback(const EventCallbackFunc &callback) override { m_eventCallback = callback; }
+    virtual void setEventCallback(const EventCallbackFunc &callback) override { m_eventCallback = callback; }
 
-    bool isOpen() override { return m_SFMLWindow.isOpen(); }
+    virtual bool isOpen() override { return m_SFMLWindow.isOpen(); }
+    virtual void* getPlatformWindow() const override { return (void*)(&m_SFMLWindow); }
 
-    sf::RenderWindow& getWindowRef() { return m_SFMLWindow; }
+    sf::RenderWindow& getWindow() { return m_SFMLWindow; }
+
+    virtual void initImGui() override;
+    virtual void shutdownImGui() override;
+    virtual void updateImGui() override;
+    virtual void renderImGui() override;
 
 private:
     /// SFML render window
     sf::RenderWindow m_SFMLWindow;
+    bool m_loadDefaultFont=true;
     /// clock
     sf::Clock m_clock;
     /// background color
