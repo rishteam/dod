@@ -1,5 +1,5 @@
 #include <RishEngine.h>
-
+#include <EntryPoint.h>
 #include <imgui.h>
 
 #include <SFML/Window/Keyboard.hpp>
@@ -21,17 +21,16 @@ public:
     void onImGuiRender() override
     {
         ImGui::Begin("aa");
-        ImGui::Text("123");
+        ImGui::Text("This is SandBox");
         ImGui::End();
 
-        ImGui::Begin("bb");
-        ImGui::Text("456");
-        ImGui::End();
+        // ImGui::Begin("bb");
+        // ImGui::Text("456");
+        // ImGui::End();
 
-        ImGui::Begin("cc");
-        ImGui::Text("789");
-        ImGui::End();
-
+        // ImGui::Begin("cc");
+        // ImGui::Text("789");
+        // ImGui::End();
     }
 
     void onEvent(rl::Event& event) override

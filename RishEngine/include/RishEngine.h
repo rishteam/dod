@@ -39,4 +39,4 @@
 #include "Rish/Layer/ImGuiLayer.h"
 
 // Entry Point
-#include "EntryPoint.h"
+// #include "EntryPoint.h"
