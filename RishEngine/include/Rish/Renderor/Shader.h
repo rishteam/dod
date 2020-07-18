@@ -1,15 +1,21 @@
 #include "Rish/rlpch.h"
 #include "Rish/Core/Log.h"
 #include "glad/glad.h"
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace rl {
+
+bool LoadFileContent(std::string &s, const char *path);
 
 class Shader
 {
 public:
 	Shader(const char *vertPath, const char *fragPath);
-	~Shader();
+	~Shader()
+	{
+		glDeleteProgram(program);
+	}
 
 	void bind();
 	void unbind();
@@ -17,9 +23,9 @@ public:
 	uint32_t getShaderID() const {return program; }
 
 	int getLocationByName(const std::string &name);
-	
-	void setInt();
-	void setIntArray();
+
+	void setInt(const std::string &name, int value);
+	void setIntArray(const std::string &name, int *values, uint32_t count);
 	//
 	void setFloat(const std::string &name, float value);
 	void setFloat2(const std::string &name, const glm::vec2 &value);
@@ -27,8 +33,8 @@ public:
 	void setFloat4(const std::string &name, const glm::vec4 &value);
 	//
 	void setMat2(const std::string &name, const glm::mat2 &matrix);
-	void setMat2(const std::string &name, const glm::mat3 &matrix);
-	void setMat2(const std::string &name, const glm::mat4 &matrix);
+	void setMat3(const std::string &name, const glm::mat3 &matrix);
+	void setMat4(const std::string &name, const glm::mat4 &matrix);
 	//
 	void uploadUniformFloat(const std::string &name, float value);
 	void uploadUniformFloat2(const std::string &name, glm::vec2 &value);
