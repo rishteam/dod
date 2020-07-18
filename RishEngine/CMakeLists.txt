@@ -38,6 +38,7 @@ include(cmake/StaticAnalyzers.cmake)
 
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
+add_subdirectory(deps/glad)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
@@ -80,6 +81,9 @@ add_library(RishEngine
 
     # Time
     src/Core/Time.cpp
+
+    # Renderor
+    src/Core/Shader.cpp
 )
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
@@ -173,6 +177,12 @@ target_link_libraries(RishEngine
 target_link_libraries(RishEngine
     nfd::nfd
 )
+
+# Add glad
+target_link_libraries(RishEngine
+    glad::glad
+)
+
 
 if(MSYS)
     target_link_libraries(RishEngine
