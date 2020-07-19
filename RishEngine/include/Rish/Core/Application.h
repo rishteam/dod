@@ -52,6 +52,8 @@ private:
     bool m_running = false;
     /// previous frame time
     float m_prevFrameTime = 0.0f;
+
+    uint32_t m_vertexArray, m_vertexBuffer, m_indexBuffer;
 };
 
 Application* CreateApplication();

@@ -1,6 +1,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/Clipboard.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <glad/glad.h>
 #include <SFML/OpenGL.hpp>
 #include <SFML/System/Clock.hpp>
 //
@@ -309,6 +310,11 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
         m_eventCallback(m);
     };
     m_SFMLEventDispatcher.addListener(sf::Event::MouseButtonReleased, mouseButtonReleaseEvent);
+
+    if(!gladLoadGL())
+    {
+        RL_CORE_ERROR("Error loading openGL function");
+    }
 }
 
 SFMLWindow::~SFMLWindow()

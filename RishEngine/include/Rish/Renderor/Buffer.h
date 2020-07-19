@@ -1,6 +1,8 @@
+#pragma once
+
+#include <glad/glad.h>
 #include "Rish/rlpch.h"
 #include "RISH/Core/Log.h"
-#include <glad/glad.h>
 
 namespace rl
 {

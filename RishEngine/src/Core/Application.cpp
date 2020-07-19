@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include <SFML/OpenGL.hpp>
 
 #include "Rish/Core/Core.h"
@@ -14,6 +15,10 @@
 
 #include <imgui.h>
 
+// #include "Rish/Renderor/Buffer.h"
+// #include "Rish/Renderor/VertexArray.h"
+// #include "Rish/Renderor/Shader.h"
+
 namespace rl {
 
 #define S_PER_UPDATE 0.01
@@ -29,8 +34,31 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     m_running = true; // set the running flag
     // Push the imgui overlay
     m_imguiLayer = new ImGuiLayer();
-    pushOverlay(m_imguiLayer);
+    pushOverlay(m_imguiLayer); 
 
+    glGenVertexArrays(1, &m_vertexArray);
+    glBindVertexArray(m_vertexArray);
+
+
+    // glGenBuffers(1, &m_vertexBuffer);
+    // glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+
+    // float vertices[3 * 3] = {
+    //     -0.5f, -0.5f, 0.0f,
+    //      0.5f, -0.5f, 0.0f,
+    //      0.0f,  0.5f, 0.0f,
+    // };
+
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    // glEnableVertexAttribArray(0);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+
+    // glGenBuffers(1, &m_indexBuffer);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+    
+    // unsigned int indices[3] = { 0, 1, 2};
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
 Application::~Application()
@@ -50,7 +78,12 @@ void Application::run()
         Time dt = now - m_prevFrameTime;
         m_prevFrameTime = now;
         lag += dt;
-            
+
+        // glClear(GL_COLOR_BUFFER_BIT);
+        // glBindVertexArray(m_vertexArray);
+        // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+        // glBindVertexArray(0);
+
         // Update window
         m_window->onUpdate();
 
