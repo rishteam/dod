@@ -1,9 +1,9 @@
 #include <imgui.h>
 
 #include <SFML/Window/Keyboard.hpp>
-#include <SFML/OpenGL.hpp>
-
 #include <Rish/Core/Application.h>
+
+#include <SFML/OpenGL.hpp>
 #include <Rish/Layer/ImGuiLayer.h>
 
 namespace rl {

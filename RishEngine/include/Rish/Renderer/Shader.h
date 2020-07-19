@@ -13,6 +13,10 @@ bool LoadFileContent(std::string &s, const char *path);
 class Shader
 {
 public:
+
+	// For testing
+	Shader(const std::string &vertSrc, const std::string &fragSrc);
+
 	Shader(const char *vertPath, const char *fragPath);
 	~Shader()
 	{

@@ -13,6 +13,11 @@
 #include "Rish/Events/ApplicationEvent.h"
 #include "Rish/Layer/LayerStack.h"
 #include "Rish/Layer/ImGuiLayer.h"
+#include <glad/glad.h>
+#include "Rish/Renderer/Buffer.h"
+#include "Rish/Renderer/VertexArray.h"
+#include "Rish/Renderer/Shader.h"
+
 
 namespace rl {
 
@@ -53,7 +58,11 @@ private:
     /// previous frame time
     float m_prevFrameTime = 0.0f;
 
-    uint32_t m_vertexArray, m_vertexBuffer, m_indexBuffer;
+    std::shared_ptr<Shader> m_shader;
+    std::shared_ptr<VertexArray> m_vertexArray;
+
+    std::shared_ptr<Shader> testShader;
+    std::shared_ptr<VertexArray> testVA;
 };
 
 Application* CreateApplication();

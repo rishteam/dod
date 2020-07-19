@@ -1,6 +1,3 @@
-#include <glad/glad.h>
-#include <SFML/OpenGL.hpp>
-
 #include "Rish/Core/Core.h"
 #include "Rish/Core/Application.h"
 #include "Rish/Core/Time.h"
@@ -12,12 +9,11 @@
 #include <fmt/format.h>
 
 #include <SFML/System/Clock.hpp>
-
+#include <SFML/OpenGL.hpp>
 #include <imgui.h>
 
-// #include "Rish/Renderor/Buffer.h"
-// #include "Rish/Renderor/VertexArray.h"
-// #include "Rish/Renderor/Shader.h"
+// #include "Rish/Renderer/Buffer.h"
+// #include "Rish/Renderer/VertexArray.h"
 
 namespace rl {
 
@@ -36,29 +32,120 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     m_imguiLayer = new ImGuiLayer();
     pushOverlay(m_imguiLayer); 
 
-    glGenVertexArrays(1, &m_vertexArray);
-    glBindVertexArray(m_vertexArray);
+    m_vertexArray.reset(new VertexArray());
 
+    float vertices[3 * 7] = {
+        -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+         0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
+         0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
+    };
 
-    // glGenBuffers(1, &m_vertexBuffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    std::shared_ptr<VertexBuffer> vertexBuffer;
+    vertexBuffer.reset(new VertexBuffer(vertices, sizeof(vertices)));
 
-    // float vertices[3 * 3] = {
-    //     -0.5f, -0.5f, 0.0f,
-    //      0.5f, -0.5f, 0.0f,
-    //      0.0f,  0.5f, 0.0f,
-    // };
+    BufferLayout layout = {
 
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
-    // glEnableVertexAttribArray(0);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+        { ShaderDataType::Float3, "a_Position"},
+        { ShaderDataType::Float4, "a_Color"}
+    };
 
-    // glGenBuffers(1, &m_indexBuffer);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-    
-    // unsigned int indices[3] = { 0, 1, 2};
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    vertexBuffer->setLayout(layout);
+    m_vertexArray->addVertexBuffer(vertexBuffer);
+
+    uint32_t indices[3] = { 0, 1, 2 };
+    std::shared_ptr<IndexBuffer> indexBuffer;
+    indexBuffer.reset(new IndexBuffer(indices, sizeof(indices)/sizeof(uint32_t)));
+    m_vertexArray->setIndexBuffer(indexBuffer);
+
+    m_vertexArray->unbind(); // Always remember to UNBIND if AMD
+
+    testVA.reset(new VertexArray());
+
+    float square[3 * 4] = {
+        -0.75f, -0.75f, 0.0f,
+         0.75f, -0.75f, 0.0f,
+         0.75f,  0.75f, 0.0f,
+        -0.75f,  0.75f, 0.0f
+    };
+
+    std::shared_ptr<VertexBuffer> squareVB;
+    squareVB.reset(new VertexBuffer(square, sizeof(square)));
+    squareVB->setLayout({
+
+        { ShaderDataType::Float3, "a_Position" }
+    });
+    testVA->addVertexBuffer(squareVB);
+
+    uint32_t squareIndices[6] = { 0, 1, 2, 2, 0, 3};
+    std::shared_ptr<IndexBuffer> squareIB;
+    squareIB.reset(new IndexBuffer(squareIndices, sizeof(squareIndices)/sizeof(uint32_t)));
+    testVA->setIndexBuffer(squareIB);
+
+    testVA->unbind();
+    std::string vertexSrc = R"(
+
+        #version 330 core
+
+        layout(location = 0) in vec3 a_Position;
+        layout(location = 1) in vec4 a_Color;
+
+        out vec3 v_Position;
+        out vec4 v_Color;
+
+        void main()
+        {
+            gl_Position = vec4(a_Position, 1.0);
+            v_Position = a_Position;
+            v_Color = a_Color;
+        }
+    )";
+
+    std::string fragSrc = R"(
+
+        #version 330 core
+
+        layout(location = 0) out vec4 color;
+
+        in vec3 v_Position;
+        in vec4 v_Color;
+
+        void main()
+        {
+            color = vec4(v_Position * 0.5 + 0.5, 1.0);
+            color = v_Color;
+        }   
+    )";
+
+    m_shader.reset(new Shader(vertexSrc, fragSrc));
+
+    std::string blueShaderVertexSrc = R"(
+        #version 330 core
+        
+        layout(location = 0) in vec3 a_Position;
+
+        out vec3 v_Position;
+
+        void main()
+        {
+            v_Position = a_Position;
+            gl_Position = vec4(a_Position, 1.0);	
+        }
+    )";
+
+    std::string blueShaderFragmentSrc = R"(
+        #version 330 core
+        
+        layout(location = 0) out vec4 color;
+
+        in vec3 v_Position;
+
+        void main()
+        {
+            color = vec4(0.2, 0.3, 0.8, 1.0);
+        }
+    )";
+
+    testShader.reset(new Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
 }
 
 Application::~Application()
@@ -79,10 +166,6 @@ void Application::run()
         m_prevFrameTime = now;
         lag += dt;
 
-        // glClear(GL_COLOR_BUFFER_BIT);
-        // glBindVertexArray(m_vertexArray);
-        // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-        // glBindVertexArray(0);
 
         // Update window
         m_window->onUpdate();
@@ -99,6 +182,17 @@ void Application::run()
         for(Layer* layer : m_LayerStack)
             layer->onImGuiRender();
         m_imguiLayer->end();
+
+        testShader->bind();
+        testVA->bind();
+        glDrawElements(GL_TRIANGLES, testVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+        testVA->unbind();
+        
+        m_shader->bind();
+        m_vertexArray->bind();
+        glDrawElements(GL_TRIANGLES, m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+        m_vertexArray->unbind();
+
 
         // Draw window
         if(m_window)

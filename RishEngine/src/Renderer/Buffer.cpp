@@ -1,4 +1,4 @@
-#include "Rish/Renderor/Buffer.h"
+#include "Rish/Renderer/Buffer.h"
 
 namespace rl {
 

@@ -83,9 +83,9 @@ add_library(RishEngine
     src/Core/Time.cpp
 
     # Renderor
-    src/Renderor/Shader.cpp
-    src/Renderor/VertexArray.cpp
-    src/Renderor/Buffer.cpp
+    src/Renderer/Shader.cpp
+    src/Renderer/VertexArray.cpp
+    src/Renderer/Buffer.cpp
 )
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

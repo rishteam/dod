@@ -1,4 +1,4 @@
-#include "Rish/Renderor/VertexArray.h"
+#include "Rish/Renderer/VertexArray.h"
 
 namespace rl {
 
@@ -29,7 +29,7 @@ VertexArray::VertexArray()
 
 VertexArray::~VertexArray()
 {
-	glDeleteBuffers(1, &vao);
+	glDeleteVertexArrays(1, &vao);
 }
 
 void VertexArray::bind() const
@@ -42,7 +42,7 @@ void VertexArray::unbind() const
 	glBindVertexArray(0);
 }
 
-void VertexArray::addVertexBuffer(VertexBuffer *vertexBuffer)
+void VertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 {
 	glBindVertexArray(vao);
 	vertexBuffer->bind();
@@ -54,19 +54,19 @@ void VertexArray::addVertexBuffer(VertexBuffer *vertexBuffer)
 		glEnableVertexAttribArray(m_vertexBufferIndex);
 
 		glVertexAttribPointer(m_vertexBufferIndex,
-		element.getComponentCount(),
-		ShaderDataTypeToOpenGLBaseType(element.type),
-		element.normalized ? GL_TRUE : GL_FALSE,
-		layout.getStride(),
-		(const void*)element.offset
+			element.getComponentCount(),
+			ShaderDataTypeToOpenGLBaseType(element.type),
+			element.normalized ? GL_TRUE : GL_FALSE,
+			layout.getStride(),
+			(const void*)element.offset
 		);
 		m_vertexBufferIndex++;
-	}
 
-	m_vertexBuffer = vertexBuffer;
+		m_vertexBuffer = vertexBuffer;
+	}
 }
 
-void VertexArray::setIndexBufer(IndexBuffer *indexBuf)
+void VertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuf)
 {
 	glBindVertexArray(vao);
 	indexBuf->bind();

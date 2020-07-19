@@ -1,4 +1,4 @@
-#include "Rish/Renderor/Shader.h"
+#include "Rish/Renderer/Shader.h"
 
 namespace rl {
 
@@ -15,6 +15,21 @@ bool LoadFileContent(std::string &s, const char *path)
 
 	RL_CORE_ERROR("Failed to open file!");
 	return false;
+}
+
+
+Shader::Shader(const std::string &vertSrc, const std::string &fragSrc)
+{
+	const char *vertexSrc = vertSrc.c_str();
+	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertexSrc);
+	const char *fragmentSrc = fragSrc.c_str();
+	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragmentSrc);
+
+	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
+	program = LinkShaderProgram(vert, frag);
+
+	glDeleteShader(vert);
+	glDeleteShader(frag);
 }
 
 Shader::Shader(const char *vertPath, const char *fragPath)
@@ -58,7 +73,7 @@ uint32_t Shader::CompileShader(GLenum type, const char **src)
 	if(!success)
 	{
 		glGetShaderInfoLog(shader, 512, nullptr, log);
-		RL_CORE_ERROR("Error Shader %s compile error\n %s", type == GL_VERTEX_SHADER ? "Vertex" : "Fragment", log);
+		RL_CORE_ERROR("Error Shader {} compile error\n {}", type == GL_VERTEX_SHADER ? "Vertex" : "Fragment", log);
 		return 0;
 	}
 	return shader;
