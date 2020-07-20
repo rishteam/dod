@@ -15,9 +15,10 @@ EditorLayer::EditorLayer()
 	m_vertexArray.reset(new rl::VertexArray());
 
 	float vertices[3 * 7] = {
-		-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-		0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-		0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f};
+		-0.9f,  0.9f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+		 0.1f,  0.9f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
+		-0.4f,  0.1f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
+	};
 
 	std::shared_ptr<rl::VertexBuffer> vertexBuffer;
 	vertexBuffer.reset(new rl::VertexBuffer(vertices, sizeof(vertices)));
@@ -73,7 +74,10 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
-
+	rl::FramebufferSpecification fbspec;
+	fbspec.width = 1920;
+	fbspec.height = 1000;
+	m_framebuffer.reset(new rl::Framebuffer(fbspec));
 }
 
 void EditorLayer::onDetach()
@@ -83,6 +87,8 @@ void EditorLayer::onDetach()
 void EditorLayer::onUpdate(Time dt)
 {
 	RL_TRACE("Test Editor Layer");
+
+	m_framebuffer->bind();
 
 	m_shader->bind();
 	m_vertexArray->bind();
@@ -95,6 +101,9 @@ void EditorLayer::onUpdate(Time dt)
 	glDrawElements(GL_TRIANGLES, testVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	testVA->unbind();
 	m_texture->unbind();
+
+
+	m_framebuffer->unbind();
 }
 
 void EditorLayer::onImGuiRender()
@@ -109,6 +118,13 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("cc");
 	ImGui::Text("789");
+	ImGui::End();
+
+	ImGui::Begin("TestFramebuffer");
+	uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
+
+	// TODO Actually should be (void*)textureID, but it went error on it, but this can work??
+	ImGui::Image((uintptr_t)textureID, ImVec2{1280, 720});
 	ImGui::End();
 }
 

@@ -14,7 +14,9 @@ Texture2D::Texture2D(const std::string& path)
 	{
 		RL_CORE_ERROR("[Texture2D] Error on loading image");
 	}
-	image.flipVertically();
+
+	// TODO maybe ImGui::Image's (0, 0) pos is different from openGL 
+	// image.flipVertically();
 
 	m_width = image.getSize().x;
 	m_height = image.getSize().y;
@@ -28,7 +30,7 @@ Texture2D::Texture2D(const std::string& path)
 
 	glTextureSubImage2D(m_rendererID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)image.getPixelsPtr());
 	glBindTexture(GL_TEXTURE_2D, 0);
-};
+}
 
 Texture2D::~Texture2D()
 {

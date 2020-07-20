@@ -26,6 +26,8 @@ private:
 	std::shared_ptr<rl::VertexArray> testVA;
 
 	std::shared_ptr<rl::Texture2D> m_texture;
+
+	std::shared_ptr<rl::Framebuffer> m_framebuffer;
 };
 
 }

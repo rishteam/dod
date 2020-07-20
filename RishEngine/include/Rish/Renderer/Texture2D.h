@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Rish/rlpch.h"
 
 namespace rl {
