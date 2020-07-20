@@ -19,7 +19,13 @@ public:
 	virtual void onEvent(rl::Event& event) override;
 
 private:
+	std::shared_ptr<rl::Shader> m_shader;
+	std::shared_ptr<rl::VertexArray> m_vertexArray;
 
+	std::shared_ptr<rl::Shader> testShader;
+	std::shared_ptr<rl::VertexArray> testVA;
+
+	std::shared_ptr<rl::Texture2D> m_texture;
 };
 
 }

@@ -13,7 +13,7 @@ bool LoadFileContent(std::string &s, const char *path)
 		return true;
 	}
 
-	RL_CORE_ERROR("Failed to open file!");
+	RL_CORE_ERROR("[LoadFileContent] Failed to open file!");
 	return false;
 }
 
@@ -34,8 +34,8 @@ Shader::Shader(const std::string &vertSrc, const std::string &fragSrc)
 
 Shader::Shader(const char *vertPath, const char *fragPath)
 {
-	RL_CORE_ASSERT(LoadFileContent(m_vertSource, vertPath) == true, "");
-	RL_CORE_ASSERT(LoadFileContent(m_fragSource, fragPath) == true, "");
+	RL_CORE_ASSERT(LoadFileContent(m_vertSource, vertPath) == true, "[Shader] Failed to open File");
+	RL_CORE_ASSERT(LoadFileContent(m_fragSource, fragPath) == true, "[Shader] Failed to open File");
 
 	const char *verSrc = m_vertSource.c_str();
 	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrc);
@@ -148,6 +148,48 @@ void Shader::setMat3(const std::string &name, const glm::mat3 &matrix)
 void Shader::setMat4(const std::string &name, const glm::mat4 &matrix)
 {
 	glUniformMatrix4fv(getLocationByName(name), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::uploadUniformInt(const std::string &name, int value)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniform1i(location, value);
+}
+
+void Shader::uploadUniformFloat(const std::string &name, float value)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniform1f(location, value);
+}
+
+void Shader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniform2f(location, value.x, value.y);
+}
+
+void Shader::uploadUniformFloat3(const std::string &name, const glm::vec3 &value)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniform3f(location, value.x, value.y, value.z);
+}
+
+void Shader::uploadUniformFloat4(const std::string &name, const glm::vec4 &value)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+void Shader::uploadUniformMat3(const std::string &name, const glm::mat3 &matrix)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix)
+{
+	GLint location = glGetUniformLocation(program, name.c_str());
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 }

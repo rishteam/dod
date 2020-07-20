@@ -38,5 +38,11 @@
 #include "Rish/Layer/Layer.h"
 #include "Rish/Layer/ImGuiLayer.h"
 
+// Renderer
+#include "Rish/Renderer/Buffer.h"
+#include "Rish/Renderer/Shader.h"
+#include "Rish/Renderer/VertexArray.h"
+#include "Rish/Renderer/Texture2D.h"
+
 // Entry Point
 // #include "EntryPoint.h"

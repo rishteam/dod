@@ -40,14 +40,14 @@ void ImGuiLayer::begin()
 
     Application::Get().getWindow().updateImGui();
 
-    beginDockspace();
+    // beginDockspace();
 }
 
 void ImGuiLayer::end()
 {
     RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
     //
-    endDockspacce();
+    // endDockspacce();
     Application::Get().getWindow().renderImGui();
 }
 
