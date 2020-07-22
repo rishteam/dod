@@ -27,7 +27,7 @@ EditorLayer::EditorLayer()
 	};
 
 	vertexBuffer->setLayout(layout);
-	m_vertexArray->addVertexBuffer(vertexBuffer);
+    m_vertexArray->setVertexBuffer(vertexBuffer);
 
 	uint32_t indices[3] = {0, 1, 2};
 	std::shared_ptr<rl::IndexBuffer> indexBuffer;
@@ -43,7 +43,7 @@ EditorLayer::EditorLayer()
 		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
-	}; 
+	};
 
 	std::shared_ptr<rl::VertexBuffer> squareVB;
 	squareVB.reset(new rl::VertexBuffer(square, sizeof(square)));
@@ -51,7 +51,7 @@ EditorLayer::EditorLayer()
 		{rl::ShaderDataType::Float3, "a_Position"},
 		{rl::ShaderDataType::Float2, "a_TexCoord"}
 	});
-	testVA->addVertexBuffer(squareVB);
+    testVA->setVertexBuffer(squareVB);
 
 	uint32_t squareIndices[6] = {0, 1, 2, 2, 0, 3};
 	std::shared_ptr<rl::IndexBuffer> squareIB =std::make_shared<rl::IndexBuffer>(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
@@ -64,7 +64,7 @@ EditorLayer::EditorLayer()
 	m_texture = std::make_shared<rl::Texture2D>("assets/texture/1.png");
 
 	testShader->bind();
-	testShader->uploadUniformInt("u_Texture", 0);
+	testShader->setInt("u_Texture", 0);
 }
 
 void EditorLayer::onAttach()

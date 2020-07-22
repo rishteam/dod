@@ -1,12 +1,22 @@
+/**
+ * @file Buffer.h
+ * @author icejj (lpc0503@gmail.com), roy4801 (roy@nisra.net)
+ * @brief Related to vertex attribute
+ * @version 0.1
+ * @date 2020-07-22
+ */
 #pragma once
 
 #include <glad/glad.h>
-#include "Rish/rlpch.h"
-#include "RISH/Core/Log.h"
+#include <Rish/rlpch.h>
+#include <Rish/Core/Log.h>
 
 namespace rl
 {
 
+/**
+ * @brief Shader data type enum
+ */
 enum class ShaderDataType
 {
 	None = 0,
@@ -23,6 +33,11 @@ enum class ShaderDataType
 	Bool
 };
 
+/**
+ * @brief Return size in bytes by its type
+ * @param type Shader Data Type
+ * @return Size in bytes
+ */
 static uint32_t ShaderDataTypeSize(ShaderDataType type)
 {
 	switch (type)
@@ -55,6 +70,10 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
 	return 0;
 }
 
+/**
+ * @brief Vertex Attribute Element
+ * @details The class defines a vertex attribute with name and its data type
+ */
 struct BufferElement
 {
 	std::string name;
@@ -69,6 +88,10 @@ struct BufferElement
 	{
 	}
 
+    /**
+     * @brief Get the component count
+     * @return Component count
+     */
 	uint32_t getComponentCount() const
 	{
 		switch (type)
@@ -101,6 +124,11 @@ struct BufferElement
 	}
 };
 
+/**
+ * @brief Vertex Attribute Container
+ * @details This class contains a series of BufferElement which defined by client. <br/>
+ * It will calculate the stride and offset for the vertex attributes.
+ */
 class BufferLayout
 {
 public:
@@ -140,6 +168,10 @@ private:
 	uint32_t m_stride = 0;
 };
 
+/**
+ * @brief Vertex Buffer Object
+ * @details It consists of a VBO id and a BufferLayout
+ */
 class VertexBuffer
 {
 public:
@@ -161,6 +193,10 @@ private:
 	BufferLayout m_layout;
 };
 
+/**
+ * @brief Index/Element Buffer Object
+ * @details It consists of a EBO id and count
+ */
 class IndexBuffer
 {
 public:
@@ -170,6 +206,10 @@ public:
 	void bind() const;
 	void unbind() const;
 
+	/**
+	 * @brief Get number vertex in index buffer
+	 * @return count
+	 */
 	uint32_t getCount() const { return m_count; }
 private:
 	uint32_t ebo;

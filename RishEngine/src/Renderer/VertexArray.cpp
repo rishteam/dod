@@ -42,7 +42,7 @@ void VertexArray::unbind() const
 	glBindVertexArray(0);
 }
 
-void VertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+void VertexArray::setVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 {
 	glBindVertexArray(vao);
 	vertexBuffer->bind();
