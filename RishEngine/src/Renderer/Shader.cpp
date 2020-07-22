@@ -1,31 +1,12 @@
-#include "Rish/Renderer/Shader.h"
+#include <Rish/Renderer/Shader.h>
+#include <Rish/Core/FileSystem.h>
 
 #include "Rish/Core/FileSystem.h"
 
 namespace rl {
 
-
-// TODO Maybe change to rl::fileSystem
-bool LoadFileContent(std::string &s, const char *path)
-{
-	FileSystem file;
-
-	if(file.FileExists(path))
-	{
-		s = file.ReadTextFile(path);
-		return true;
-	}
-
-	RL_CORE_ERROR("[LoadFileContent] Failed to open file!");
-	return false;
-}
-
-
 Shader::Shader(const std::string &vertPath, const std::string &fragPath)
 {
-	RL_CORE_ASSERT(LoadFileContent(m_vertSource, vertPath.c_str()) == true, "[Shader] Failed to open File");
-	RL_CORE_ASSERT(LoadFileContent(m_fragSource, fragPath.c_str()) == true, "[Shader] Failed to open File");
-
 	const char *verSrc = m_vertSource.c_str();
 	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrc);
 	const char *fragSrc = m_fragSource.c_str();
@@ -39,15 +20,21 @@ Shader::Shader(const std::string &vertPath, const std::string &fragPath)
 	glDeleteShader(frag);
 }
 
-Shader::Shader(const char *vertSrc, const char *fragSrc)
+Shader::Shader(const char *vertPath, const char *fragPath)
 {
-	const char *vertexSrc = vertSrc;
-	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertexSrc);
-	const char *fragmentSrc = fragSrc;
-	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragmentSrc);
+	m_vertSource = FileSystem::ReadTextFile(vertPath);
+	RL_CORE_ASSERT(m_vertSource != "", "[Shader] Failed to open File");
+	m_fragSource = FileSystem::ReadTextFile(fragPath);
+	RL_CORE_ASSERT(m_fragSource != "", "[Shader] Failed to open File");
 
+	const char *verSrc = m_vertSource.c_str();
+	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrc);
+	const char *fragSrc = m_fragSource.c_str();
+	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrc);
 	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
+
 	program = LinkShaderProgram(vert, frag);
+	RL_CORE_ASSERT(program, "Failed to link shader");
 
 	glDeleteShader(vert);
 	glDeleteShader(frag);
@@ -101,7 +88,7 @@ uint32_t Shader::LinkShaderProgram(uint32_t vertex, uint32_t fragment)
 	return program;
 }
 
-int Shader::getLocationByName(const std::string &name)
+int Shader::getLocationByName(const std::string &name) const
 {
 	RL_CORE_ASSERT(program > 0, "Error on program");
 	int location = glGetUniformLocation(program, name.c_str());
@@ -151,48 +138,6 @@ void Shader::setMat3(const std::string &name, const glm::mat3 &matrix)
 void Shader::setMat4(const std::string &name, const glm::mat4 &matrix)
 {
 	glUniformMatrix4fv(getLocationByName(name), 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
-void Shader::uploadUniformInt(const std::string &name, int value)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniform1i(location, value);
-}
-
-void Shader::uploadUniformFloat(const std::string &name, float value)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniform1f(location, value);
-}
-
-void Shader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniform2f(location, value.x, value.y);
-}
-
-void Shader::uploadUniformFloat3(const std::string &name, const glm::vec3 &value)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniform3f(location, value.x, value.y, value.z);
-}
-
-void Shader::uploadUniformFloat4(const std::string &name, const glm::vec4 &value)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniform4f(location, value.x, value.y, value.z, value.w);
-}
-
-void Shader::uploadUniformMat3(const std::string &name, const glm::mat3 &matrix)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
-void Shader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix)
-{
-	GLint location = glGetUniformLocation(program, name.c_str());
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 }

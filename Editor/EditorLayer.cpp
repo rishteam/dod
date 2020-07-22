@@ -30,7 +30,7 @@ EditorLayer::EditorLayer()
 	};
 
 	vertexBuffer->setLayout(layout);
-	m_vertexArray->addVertexBuffer(vertexBuffer);
+    m_vertexArray->setVertexBuffer(vertexBuffer);
 
 	uint32_t indices[3] = {0, 1, 2};
 	std::shared_ptr<rl::IndexBuffer> indexBuffer;
@@ -46,7 +46,7 @@ EditorLayer::EditorLayer()
 		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
-	}; 
+	};
 
 	std::shared_ptr<rl::VertexBuffer> squareVB;
 	squareVB.reset(new rl::VertexBuffer(square, sizeof(square)));
@@ -54,7 +54,7 @@ EditorLayer::EditorLayer()
 		{rl::ShaderDataType::Float3, "a_Position"},
 		{rl::ShaderDataType::Float2, "a_TexCoord"}
 	});
-	testVA->addVertexBuffer(squareVB);
+    testVA->setVertexBuffer(squareVB);
 
 	uint32_t squareIndices[6] = {0, 1, 2, 2, 0, 3};
 	std::shared_ptr<rl::IndexBuffer> squareIB =std::make_shared<rl::IndexBuffer>(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
@@ -66,19 +66,19 @@ EditorLayer::EditorLayer()
 	VFS::Get()->ResolvePhysicalPath("/shader/vertexShader/vertexSrc.glsl", vertPath);
 	VFS::Get()->ResolvePhysicalPath("/shader/fragmentShader/fragSrc.glsl", fragPath);
 
-	m_shader = std::make_shared<rl::Shader>(vertPath, fragPath);
+	m_shader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
 
 	VFS::Get()->ResolvePhysicalPath("/shader/vertexShader/blueVertSrc.glsl", vertPath);
 	VFS::Get()->ResolvePhysicalPath("/shader/fragmentShader/blueFragSrc.glsl", fragPath);
 
-	testShader = std::make_shared<rl::Shader>(vertPath, fragPath);
+	testShader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
 
 	VFS::Get()->ResolvePhysicalPath("/texture/1.png", texPath);
 
 	m_texture = std::make_shared<rl::Texture2D>(texPath);
 
 	testShader->bind();
-	testShader->uploadUniformInt("u_Texture", 0);
+	testShader->setInt("u_Texture", 0);
 }
 
 void EditorLayer::onAttach()
