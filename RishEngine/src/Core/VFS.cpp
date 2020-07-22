@@ -66,11 +66,11 @@ bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalP
 	{
 		RL_CORE_ERROR("VFSError: Mapping list is empty {}", virtualDir);
 	}
-
 	// e.g. Mount("res", "fuck/res")
 	// v: res/test.txt p:fuck/res/test.txt
 	// remainder = test.txt
 	std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
+	// RL_CORE_TRACE("{}", remainder);
 	//Search the file in the mapping list
 	for (const std::string &physicalPath : m_MountPoints[virtualDir])
 	{

@@ -1,15 +1,18 @@
 #include "Rish/Renderer/Shader.h"
 
+#include "Rish/Core/FileSystem.h"
+
 namespace rl {
 
 
 // TODO Maybe change to rl::fileSystem
 bool LoadFileContent(std::string &s, const char *path)
 {
-	std::ifstream ifs(path);
-	if(ifs)
+	FileSystem file;
+
+	if(file.FileExists(path))
 	{
-		s.assign((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+		s = file.ReadTextFile(path);
 		return true;
 	}
 
@@ -18,24 +21,10 @@ bool LoadFileContent(std::string &s, const char *path)
 }
 
 
-Shader::Shader(const std::string &vertSrc, const std::string &fragSrc)
+Shader::Shader(const std::string &vertPath, const std::string &fragPath)
 {
-	const char *vertexSrc = vertSrc.c_str();
-	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertexSrc);
-	const char *fragmentSrc = fragSrc.c_str();
-	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragmentSrc);
-
-	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
-	program = LinkShaderProgram(vert, frag);
-
-	glDeleteShader(vert);
-	glDeleteShader(frag);
-}
-
-Shader::Shader(const char *vertPath, const char *fragPath)
-{
-	RL_CORE_ASSERT(LoadFileContent(m_vertSource, vertPath) == true, "[Shader] Failed to open File");
-	RL_CORE_ASSERT(LoadFileContent(m_fragSource, fragPath) == true, "[Shader] Failed to open File");
+	RL_CORE_ASSERT(LoadFileContent(m_vertSource, vertPath.c_str()) == true, "[Shader] Failed to open File");
+	RL_CORE_ASSERT(LoadFileContent(m_fragSource, fragPath.c_str()) == true, "[Shader] Failed to open File");
 
 	const char *verSrc = m_vertSource.c_str();
 	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrc);
@@ -45,6 +34,20 @@ Shader::Shader(const char *vertPath, const char *fragPath)
 
 	program = LinkShaderProgram(vert, frag);
 	RL_CORE_ASSERT(program, "");
+
+	glDeleteShader(vert);
+	glDeleteShader(frag);
+}
+
+Shader::Shader(const char *vertSrc, const char *fragSrc)
+{
+	const char *vertexSrc = vertSrc;
+	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertexSrc);
+	const char *fragmentSrc = fragSrc;
+	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragmentSrc);
+
+	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
+	program = LinkShaderProgram(vert, frag);
 
 	glDeleteShader(vert);
 	glDeleteShader(frag);

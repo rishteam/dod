@@ -34,5 +34,4 @@ private:
 	FramebufferSpecification m_spec;
 };
 
-
 }

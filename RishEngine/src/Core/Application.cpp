@@ -52,7 +52,6 @@ void Application::run()
         m_prevFrameTime = now;
         lag += dt;
 
-
         // Update window
         m_window->onUpdate();
 

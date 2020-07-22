@@ -10,4 +10,4 @@ target_link_libraries(Editor
     Rish::Engine project_options project_warnings
 )
 
-file(COPY ${PROJECT_SOURCE_DIR}/asset DESTINATION ${PROJECT_BINARY_DIR})
+file(COPY ${PROJECT_SOURCE_DIR}/assets DESTINATION ${PROJECT_BINARY_DIR})

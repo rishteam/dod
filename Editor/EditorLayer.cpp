@@ -8,7 +8,10 @@ namespace rl {
 EditorLayer::EditorLayer()
 : Layer("editorLayer")
 {
-    RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
+	VFS::Get()->Mount("shader", "Editor/assets/shader");
+	VFS::Get()->Mount("texture", "Editor/assets/texture");
+
+	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_vertexArray = std::make_shared<rl::VertexArray>();
 
@@ -59,9 +62,20 @@ EditorLayer::EditorLayer()
 
 	testVA->unbind();
 
-	m_shader = std::make_shared<rl::Shader>("assets/shader/vertexShader/vertexSrc.glsl", "assets/shader/fragmentShader/fragSrc.glsl");
-    testShader = std::make_shared<rl::Shader>("assets/shader/vertexShader/blueVertSrc.glsl", "assets/shader/fragmentShader/blueFragSrc.glsl");
-	m_texture = std::make_shared<rl::Texture2D>("assets/texture/1.png");
+	std::string vertPath, fragPath, texPath;
+	VFS::Get()->ResolvePhysicalPath("/shader/vertexShader/vertexSrc.glsl", vertPath);
+	VFS::Get()->ResolvePhysicalPath("/shader/fragmentShader/fragSrc.glsl", fragPath);
+
+	m_shader = std::make_shared<rl::Shader>(vertPath, fragPath);
+
+	VFS::Get()->ResolvePhysicalPath("/shader/vertexShader/blueVertSrc.glsl", vertPath);
+	VFS::Get()->ResolvePhysicalPath("/shader/fragmentShader/blueFragSrc.glsl", fragPath);
+
+	testShader = std::make_shared<rl::Shader>(vertPath, fragPath);
+
+	VFS::Get()->ResolvePhysicalPath("/texture/1.png", texPath);
+
+	m_texture = std::make_shared<rl::Texture2D>(texPath);
 
 	testShader->bind();
 	testShader->uploadUniformInt("u_Texture", 0);
@@ -81,7 +95,7 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
-	RL_TRACE("Test Editor Layer");
+	// RL_TRACE("Test Editor Layer");
 
 	m_framebuffer->bind();
 
@@ -96,7 +110,6 @@ void EditorLayer::onUpdate(Time dt)
 	glDrawElements(GL_TRIANGLES, testVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	testVA->unbind();
 	m_texture->unbind();
-
 
 	m_framebuffer->unbind();
 }
