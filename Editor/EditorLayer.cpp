@@ -10,7 +10,7 @@ EditorLayer::EditorLayer()
 {
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-	m_vertexArray.reset(new rl::VertexArray());
+    m_vertexArray = std::make_shared<rl::VertexArray>();
 
 	float vertices[3 * 7] = {
 		-0.9f,  0.9f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -19,7 +19,7 @@ EditorLayer::EditorLayer()
 	};
 
 	std::shared_ptr<rl::VertexBuffer> vertexBuffer;
-	vertexBuffer.reset(new rl::VertexBuffer(vertices, sizeof(vertices)));
+	vertexBuffer = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
 
 	rl::BufferLayout layout = {
 		{rl::ShaderDataType::Float3, "a_Position"},
@@ -31,7 +31,7 @@ EditorLayer::EditorLayer()
 
 	uint32_t indices[3] = {0, 1, 2};
 	std::shared_ptr<rl::IndexBuffer> indexBuffer;
-	indexBuffer.reset(new rl::IndexBuffer(indices, sizeof(indices) / sizeof(uint32_t)));
+	indexBuffer = std::make_shared<rl::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
 	m_vertexArray->setIndexBuffer(indexBuffer);
 
 	m_vertexArray->unbind(); // Always remember to UNBIND if AMD
@@ -54,15 +54,14 @@ EditorLayer::EditorLayer()
 	testVA->addVertexBuffer(squareVB);
 
 	uint32_t squareIndices[6] = {0, 1, 2, 2, 0, 3};
-	std::shared_ptr<rl::IndexBuffer> squareIB;
-	squareIB.reset(new rl::IndexBuffer(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+	std::shared_ptr<rl::IndexBuffer> squareIB =std::make_shared<rl::IndexBuffer>(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 	testVA->setIndexBuffer(squareIB);
 
 	testVA->unbind();
 
-	m_shader.reset(new rl::Shader("asset/shader/vertexShader/vertexSrc.glsl", """asset/shader/fragmentShader/fragSrc.glsl"));
-	testShader.reset(new rl::Shader("asset/shader/vertexShader/blueVertSrc.glsl", """asset/shader/fragmentShader/blueFragSrc.glsl"));
-	m_texture.reset(new rl::Texture2D("asset/texture/1.png"));
+	m_shader = std::make_shared<rl::Shader>("asset/shader/vertexShader/vertexSrc.glsl", "asset/shader/fragmentShader/fragSrc.glsl");
+    testShader = std::make_shared<rl::Shader>("asset/shader/vertexShader/blueVertSrc.glsl", "asset/shader/fragmentShader/blueFragSrc.glsl");
+	m_texture = std::make_shared<rl::Texture2D>("asset/texture/1.png");
 
 	testShader->bind();
 	testShader->uploadUniformInt("u_Texture", 0);
@@ -73,7 +72,7 @@ void EditorLayer::onAttach()
 	rl::FramebufferSpecification fbspec;
 	fbspec.width = 1920;
 	fbspec.height = 1000;
-	m_framebuffer.reset(new rl::Framebuffer(fbspec));
+	m_framebuffer = std::make_shared<rl::Framebuffer>(fbspec);
 }
 
 void EditorLayer::onDetach()
@@ -130,6 +129,3 @@ void EditorLayer::onEvent(rl::Event& event)
 }
 
 }
-
-
-
