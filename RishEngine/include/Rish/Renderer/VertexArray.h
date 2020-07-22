@@ -28,7 +28,7 @@ public:
 	const std::shared_ptr<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
 
 private:
-	uint32_t vao;
+	uint32_t vao = 0;
 	std::shared_ptr<VertexBuffer> m_vertexBuffer = nullptr;
 	std::shared_ptr<IndexBuffer> m_indexBuffer = nullptr;
 

@@ -1,16 +1,14 @@
+#include <Rish/rlpch.h>
+#include <Rish/Core/FileSystem.h>
+
 #include "EditorLayer.h"
-
-#include <filesystem>
-
-namespace fs = std::filesystem;
 
 namespace rl {
 
 EditorLayer::EditorLayer()
 : Layer("editorLayer")
 {
-
-	RL_TRACE("Current path is {}", fs::current_path());
+    RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
 	m_vertexArray.reset(new rl::VertexArray());
 
@@ -24,9 +22,9 @@ EditorLayer::EditorLayer()
 	vertexBuffer.reset(new rl::VertexBuffer(vertices, sizeof(vertices)));
 
 	rl::BufferLayout layout = {
-
 		{rl::ShaderDataType::Float3, "a_Position"},
-		{rl::ShaderDataType::Float4, "a_Color"}};
+		{rl::ShaderDataType::Float4, "a_Color"}
+	};
 
 	vertexBuffer->setLayout(layout);
 	m_vertexArray->addVertexBuffer(vertexBuffer);
@@ -62,11 +60,9 @@ EditorLayer::EditorLayer()
 
 	testVA->unbind();
 
-	m_shader.reset(new rl::Shader("Editor\\asset\\shader\\vertexShader\\vertexSrc.glsl", "Editor\\asset\\shader\\fragmentShader\\fragSrc.glsl"));
-
-	testShader.reset(new rl::Shader("Editor\\asset\\shader\\vertexShader\\blueVertSrc.glsl", "Editor\\asset\\shader\\fragmentShader\\blueFragSrc.glsl"));
-
-	m_texture.reset(new rl::Texture2D("Editor\\asset\\texture\\1.png"));
+	m_shader.reset(new rl::Shader("asset/shader/vertexShader/vertexSrc.glsl", """asset/shader/fragmentShader/fragSrc.glsl"));
+	testShader.reset(new rl::Shader("asset/shader/vertexShader/blueVertSrc.glsl", """asset/shader/fragmentShader/blueFragSrc.glsl"));
+	m_texture.reset(new rl::Texture2D("asset/texture/1.png"));
 
 	testShader->bind();
 	testShader->uploadUniformInt("u_Texture", 0);

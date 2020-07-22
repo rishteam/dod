@@ -121,12 +121,11 @@ if(APPLE)
     target_include_directories(RishEngine PUBLIC ${Boost_INCLUDE_DIRS})
     target_link_libraries(RishEngine ${Boost_LIBRARIES})
 elseif(MSYS)
-    set(SFML_STATIC_LIBRARIES True)
+    set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/mingw32/lib/cmake/SFML")
 else()
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/mingw32/lib/cmake/SFML")
-#    message(FATAL_ERROR "Not supported")
 endif()
 
 # Add SFML
@@ -187,17 +186,8 @@ target_link_libraries(RishEngine
     glad::glad
 )
 
-
-if(MSYS)
-    target_link_libraries(RishEngine
-        # -lwsock32 -lws2_32 -static-libgcc -static-libstdc++
-        # -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
-        # -mconsole / -mwindows
-    )
-endif()
-
 # Copy files
-# file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 # file(GLOB BINARY_DEP_DLLS
 #     "${CMAKE_SOURCE_DIR}/bin/*.dll"
 # )
