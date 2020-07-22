@@ -59,9 +59,9 @@ EditorLayer::EditorLayer()
 
 	testVA->unbind();
 
-	m_shader = std::make_shared<rl::Shader>("asset/shader/vertexShader/vertexSrc.glsl", "asset/shader/fragmentShader/fragSrc.glsl");
-    testShader = std::make_shared<rl::Shader>("asset/shader/vertexShader/blueVertSrc.glsl", "asset/shader/fragmentShader/blueFragSrc.glsl");
-	m_texture = std::make_shared<rl::Texture2D>("asset/texture/1.png");
+	m_shader = std::make_shared<rl::Shader>("assets/shader/vertexShader/vertexSrc.glsl", "assets/shader/fragmentShader/fragSrc.glsl");
+    testShader = std::make_shared<rl::Shader>("assets/shader/vertexShader/blueVertSrc.glsl", "assets/shader/fragmentShader/blueFragSrc.glsl");
+	m_texture = std::make_shared<rl::Texture2D>("assets/texture/1.png");
 
 	testShader->bind();
 	testShader->uploadUniformInt("u_Texture", 0);
