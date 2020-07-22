@@ -5,12 +5,12 @@
 
 namespace rl {
 
-Shader::Shader(const std::string &vertPath, const std::string &fragPath)
+Shader::Shader(const std::string &vertSrc, const std::string &fragSrc)
 {
-	const char *verSrc = m_vertSource.c_str();
-	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrc);
-	const char *fragSrc = m_fragSource.c_str();
-	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrc);
+	const char *verSrcc = m_vertSource.c_str();
+	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrcc);
+	const char *fragSrcc = m_fragSource.c_str();
+	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrcc);
 	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
 
 	program = LinkShaderProgram(vert, frag);
