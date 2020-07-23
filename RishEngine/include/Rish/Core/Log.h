@@ -45,6 +45,7 @@ public:
 
     /**
      * @brief Initialize the Logger
+     * @param type Logger type
      */
     static void Init(LoggerType type);
 
