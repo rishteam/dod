@@ -11,9 +11,6 @@
 
 namespace rl {
 
-#define PERMANENT -1
-#define ALL -1
-
 /**
  * @brief Time Class
  */
@@ -24,16 +21,17 @@ public:
      * @brief Construct a new Time object
      * @param time Time in seconds.
      */
-    Time(float time=0.0f) : m_time(time)
+    Time(float time=0.0f)
+        : m_time(time)
     {
     }
 
     /**
      * @brief The time from the application create until now
-     * 
-     * @return Time 
+     * @return Time
      */
     static Time Now();
+
     /**
      * @brief Cast the Time to float
      * @return float Cast in to float
@@ -42,7 +40,7 @@ public:
 
     /**
      * @brief Time operator+
-     * @code
+     * @code{.cpp}
      * Time a = 3.f, b = 7.f;
      * Time tmp = a + b;
      * // tmp = 10.f
@@ -78,16 +76,36 @@ public:
     }
 
     /**
+     * @brief Equality operator
+     * @param rhs other
+     * @return *this == rhs
+     */
+    bool operator==(const Time &rhs) const
+    {
+        return m_time == rhs.m_time;
+    }
+
+    /**
+     * @brief Inequality operator
+     * @param rhs other
+     * @return *this != rhs
+     */
+    bool operator!=(const Time &rhs) const
+    {
+        return !(rhs == *this);
+    }
+
+    /**
      * @brief Return the time as seconds.
      * @return float Time in seconds.
      */
     float asSeconds() const { return m_time; }
 
     /**
-     * @brief Return the time as miliseconds.
-     * @return float Time in miliseconds
+     * @brief Return the time as milliseconds.
+     * @return float Time in milliseconds
      */
-    float asMiliseconds() const { return m_time * 1000.0f; }
+    float asMilliseconds() const { return m_time * 1000.0f; }
 
     /**
      * @brief Return the time as microseconds.
@@ -96,8 +114,11 @@ public:
     float asMicroseconds() const { return m_time * 1000000.0f; }
 
 private:
+    /// The time value holds by rl::Time
     float m_time = 0.0f;
+    /// Start time_point since the application starts
     static std::chrono::steady_clock::time_point m_clock_start;
+
 public:
     friend std::ostream& operator<<(std::ostream& os, Time &t)
     {
@@ -121,6 +142,9 @@ public:
 class Clock
 {
 public:
+    /**
+     * @brief Ctor
+     */
     Clock()
         : m_startTime(Time::Now())
     {
@@ -128,19 +152,15 @@ public:
 
     /**
      * @brief Get the elapsed time
-     * 
      * @details This function returns the time elapsed since the last call to restart()
-     * 
-     * @return Time 
+     * @return Time
      */
     Time getElapsedTime();
 
     /**
      * @brief Restart the clock
-     * 
      * @details Puts the time counter to now. It also returns the time elapsed since the clock was started
-     * 
-     * @return Time 
+     * @return Time
      */
     Time restart();
 
@@ -148,48 +168,75 @@ private:
     Time m_startTime;
 };
 
-using TimerCallback = std::function<void()>;
-
 /**
  * @brief Timer class
- * @details A timer that binds function to a specific time, the function will not run until the times up.
+ * @details A timer that binds function to a specific time, the function will not run until the times up.<br/>
  * Timer have static timerList and static loopTimerList that stores the timer.
+ *
+ * <h4>Usage</h4>
+ * * Create a Timer
+ * @code{.cpp}
+ * Timer test(1.f, [](){
+ *      RL_TRACE("Task run");
+ * });
+ * @endcode
+ * * Register Timer
+ * @code{.cpp}
+ * Timer::AddLoopTimer(test, 3); // run for 3 times
+ * Timer::AddLoopTimer(test, Timer::TimerPermanent); // run for infinite times
+ * @endcode
+ *
+ * * Add timer on the fly
+ * @code{.cpp}
+ * Timer::AddTimer(Timer{3.f, [](){
+ *     static int a = 0;
+ *     RL_TRACE("aaaa = {}", a);
+ * }});
+ * @endcode
  */
 class Timer
 {
-
 public:
+    using TimerCallback = std::function<void()>;
 
+    enum TimerType
+    {
+        TimerNone=0, ///< None
+        TimerOnce=1, ///< Once
+        TimerTwice=2, ///< Twice
+        TimerPermanent=-1 ///< Infinite times
+    };
+
+    /**
+     * @brief Ctor
+     * @param t Time in seconds
+     * @param callback callback function that will be called when the times up
+     */
     Timer(Time t, TimerCallback callback);
 
     /**
      * @brief restart the timer
-     * 
      */
     void restart();
 
     /**
      * @brief Add the timer to the list
-     * 
      * @details The timer in the timer list only execute once. When the timer is added to the list, it will start timeing.
-     * 
      * @param t Timer that binds the time and function
      */
     static void AddTimer(Timer t);
 
     /**
      * @brief Add the timer to the loop list
-     * 
-     * @details The timer in the timer list execute quanity of times. When the timer is added to the list, it will start timing.
+     * @details The timer in the timer list execute quantity of times. When the timer is added to the list, it will start timing.
      * 
      * @param t Timer that binds the time and function
      * @param times Times that the timer will execute
      */
-    static void AddLoopTimer(Timer t, int times = PERMANENT);
+    static void AddLoopTimer(Timer t, int32_t times=TimerPermanent);
 
     /**
      * @brief Update method
-     * 
      * @details Update all the timers in the list
      * 
      */
@@ -197,7 +244,6 @@ public:
 
     /**
      * @brief Clear all the timer in the timer list
-     * 
      */
     static void Clear();
 
@@ -206,7 +252,7 @@ private:
     Time m_t;
     Time m_start;
     TimerCallback m_timerCallback;
-    int m_loopTimes;
+    int m_loopTimes = 0;
 
     static std::list<Timer> m_timerList;
     static std::list<Timer> m_loopTimerList;

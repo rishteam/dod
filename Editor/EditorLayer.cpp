@@ -6,15 +6,10 @@
 namespace rl {
 
 EditorLayer::EditorLayer()
-: Layer("editorLayer")
+    : Layer("editorLayer")
 {
 	VFS::Get()->Mount("shader", "Editor/assets/shader");
 	VFS::Get()->Mount("texture", "Editor/assets/texture");
-
-	if(VFS::Get()->FileExists("/shader/vertexShader/vertexSrc.glsl"))
-	    RL_TRACE("aaa");
-	else
-	    RL_TRACE("BBB");
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
@@ -101,7 +96,6 @@ void EditorLayer::onDetach()
 void EditorLayer::onUpdate(Time dt)
 {
 	// RL_TRACE("Test Editor Layer");
-
 	m_framebuffer->bind();
 
 	m_shader->bind();

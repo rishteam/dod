@@ -25,10 +25,10 @@ Time Clock::restart()
 }
 
 Timer::Timer(Time t, TimerCallback callback)
+    : m_timerCallback(callback)
 {
 	m_t = t;
-	m_timerCallback = callback;
-	m_loopTimes = PERMANENT;
+	m_loopTimes = Timer::TimerPermanent;
 }
 
 std::list<Timer> Timer::m_timerList;
@@ -45,7 +45,7 @@ void Timer::AddTimer(Timer t)
 	m_timerList.push_back(t);
 }
 
-void Timer::AddLoopTimer(Timer t, int times)
+void Timer::AddLoopTimer(Timer t, int32_t times)
 {
 	t.restart();
 	t.m_loopTimes = times;
@@ -54,8 +54,8 @@ void Timer::AddLoopTimer(Timer t, int times)
 
 void Timer::Update()
 {
+    // Iterater through the timerList and updates it
 	auto timer = m_timerList.begin();
-
 	while (timer != m_timerList.end())
 	{
 		if(Time::Now() - timer->m_start >= timer->m_t)
@@ -70,7 +70,6 @@ void Timer::Update()
 	}
 
 	auto loopTimer = m_loopTimerList.begin();
-
 	while (loopTimer != m_loopTimerList.end())
 	{
 		if(loopTimer->m_loopTimes)

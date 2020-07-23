@@ -104,6 +104,13 @@ public:
 	 * @param path Virtual Path
 	 * @return true Exists
 	 * @return false Not exists
+	 *
+	 * @code{.cpp}
+	 * if(VFS::Get()->FileExists("/virtualDir/path/to/the/file.ext"))
+	 * {
+	 *     // Do something
+	 * }
+	 * @endcode
 	 */
 	bool FileExists(const std::string &virtualPath);
 
