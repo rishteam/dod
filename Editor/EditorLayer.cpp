@@ -11,6 +11,11 @@ EditorLayer::EditorLayer()
 	VFS::Get()->Mount("shader", "Editor/assets/shader");
 	VFS::Get()->Mount("texture", "Editor/assets/texture");
 
+	if(VFS::Get()->FileExists("/shader/vertexShader/vertexSrc.glsl"))
+	    RL_TRACE("aaa");
+	else
+	    RL_TRACE("BBB");
+
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_vertexArray = std::make_shared<rl::VertexArray>();

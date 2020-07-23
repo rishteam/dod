@@ -4,14 +4,11 @@
  * @brief Virtual File System
  * @version 0.1
  * @date 2020-05-02
- *
- * @copyright Copyright (c) 2020
- *
  */
 #pragma once
 
-#include "Rish/rlpch.h"
-#include "Rish/Core/Core.h"
+#include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
 
 namespace rl {
 
@@ -22,14 +19,14 @@ class RL_API VFS
 {
 private:
 	/**
-     * @brief Instancce of VFS
+     * @brief Instance of VFS
      * @details The instance of VFS (singleton pattern)
      */
 	static VFS *vfs_Instance;
 
 	/**
      * @brief Mount points
-     * @details The mapping from virtual paths to physical pathss
+     * @details The mapping from virtual paths to physical paths
      */
 	std::unordered_map<std::string, std::vector<std::string>> m_MountPoints;
 	// TODO: not unmount whole virtual path: change std::vector to std::list
@@ -62,7 +59,7 @@ public:
      *
      * @include{'lineno'} snippet/mount_example.cpp
      *
-     * @note remeber to Get() the instance before using the function
+     * @note Remember to Get() the instance before using the function
      *
      */
 	void Mount(const std::string &virtualPath, const std::string &physicalPath);
@@ -99,7 +96,16 @@ public:
      * @return true Succeeded to resolve the physicalPath
      * @return false Failed to resolve the physicalPath
      */
+     // TODO: Remove the file existance check in ResolvePhysicalPath()
 	bool ResolvePhysicalPath(const std::string &path, std::string &outphysicalPath);
+
+	/**
+	 * @brief Check if the file exists
+	 * @param path Virtual Path
+	 * @return true Exists
+	 * @return false Not exists
+	 */
+	bool FileExists(const std::string &virtualPath);
 
 	/**
      * @brief Read the file in binary mode
@@ -149,4 +155,4 @@ public:
 	bool WriteTextFile(const std::string &path, const std::string &text, const int size);
 };
 
-} // namespace icejj
+} // namespace rl

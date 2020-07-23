@@ -8,7 +8,7 @@ VFS *VFS::vfs_Instance = nullptr;
 void VFS::Init()
 {
 	vfs_Instance = new VFS();
-	RL_CORE_INFO("VFS::Initialized");
+	RL_CORE_INFO("[VFS] Initialized");
 }
 
 void VFS::ShutDown()
@@ -54,24 +54,25 @@ bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalP
 		end = path.find_first_of('/', start);
 	}
 
+	// The Virtual Directory (first level). e.g. virtual = /shader/a/b/c/d, virtualDir = shader
 	const std::string &virtualDir = dirs.front();
 	// If the virtual directory doesn't exist
 	if (!m_MountPoints.count(virtualDir))
 	{
-		RL_CORE_ERROR("VFSError: Mapping entry is not found {}", virtualDir);
+		RL_CORE_ERROR("[VFS]: Mapping entry is not found {}", virtualDir);
 		return false;
 	}
 	// If the virtual directory doesn't have any mapping
 	if (m_MountPoints[virtualDir].empty())
 	{
-		RL_CORE_ERROR("VFSError: Mapping list is empty {}", virtualDir);
+		RL_CORE_ERROR("[VFS]: Mapping list is empty {}", virtualDir);
 	}
 	// e.g. Mount("res", "fuck/res")
 	// v: res/test.txt p:fuck/res/test.txt
 	// remainder = test.txt
 	std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
 	// RL_CORE_TRACE("{}", remainder);
-	//Search the file in the mapping list
+	// Search the file in the mapping list
 	for (const std::string &physicalPath : m_MountPoints[virtualDir])
 	{
 		std::string p = physicalPath + remainder;
@@ -82,7 +83,7 @@ bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalP
 		}
 	}
 
-	RL_CORE_ERROR("VFSError: File is not found {}", path);
+	RL_CORE_ERROR("[VFS]: File is not found {}", path);
 	return true;
 }
 
@@ -108,6 +109,19 @@ bool VFS::WriteTextFile(const std::string &path, const std::string &text, const 
 {
 	std::string physicalPath;
 	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::WriteTextFile(physicalPath, text, size) : false;
+}
+
+bool VFS::FileExists(const std::string &virtualPath)
+{
+    bool succ = false;
+    std::string physical;
+    if(ResolvePhysicalPath(virtualPath, physical))
+    {
+        succ = FileSystem::FileExists(physical);
+        if(!succ)
+            RL_CORE_ERROR("[VFS] The File is noe existed.");
+    }
+    return succ;
 }
 
 }
