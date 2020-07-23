@@ -37,10 +37,16 @@ namespace rl {
 class Logger
 {
 public:
+    enum LoggerType
+    {
+        Normal,    //!< Normal Logger
+        IgnoreDup  //!< Ignore Duplicate
+    };
+
     /**
      * @brief Initialize the Logger
      */
-    static void Init();
+    static void Init(LoggerType type);
 
     /**
      * @brief Get the Core Logger object
