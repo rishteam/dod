@@ -39,6 +39,7 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 add_subdirectory(deps/glad)
+add_subdirectory(deps/entt)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
@@ -184,6 +185,11 @@ target_link_libraries(RishEngine
 # Add glad
 target_link_libraries(RishEngine
     glad::glad
+)
+
+# Add EnTT
+target_link_libraries(RishEngine
+    EnTT::EnTT
 )
 
 # Copy files
