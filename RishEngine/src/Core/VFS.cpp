@@ -1,34 +1,41 @@
-#include "Rish/Core/VFS.h"
-#include "Rish/Core/fileSystem.h"
+#include <Rish/Core/Core.h>
+#include <Rish/Core/VFS.h>
+#include <Rish/Core/FileSystem.h>
 
 namespace rl {
 
-VFS *VFS::vfs_Instance = nullptr;
+VFS *VFS::instance = nullptr;
+
+std::unordered_map<std::string, std::vector<std::string>> VFS::m_MountPoints;
 
 void VFS::Init()
 {
-	vfs_Instance = new VFS();
+    instance = new VFS();
 	RL_CORE_INFO("[VFS] Initialized");
 }
 
 void VFS::ShutDown()
 {
-	delete vfs_Instance;
-	RL_CORE_INFO("VFS::Shutdown");
+    instance = nullptr;
+	delete instance;
+	RL_CORE_INFO("[VFS] Shutdown");
 }
 
 void VFS::Mount(const std::string &virtualPath, const std::string &physicalPath)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	m_MountPoints[virtualPath].push_back(physicalPath);
 }
 
 void VFS::Unmount(const std::string &path)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	m_MountPoints[path].clear();
 }
 
 bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalPath)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	// TODO: ???? WTF
 	if (path[0] != '/')
 	{
@@ -89,30 +96,35 @@ bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalP
 
 char *VFS::ReadFile(const std::string &path)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	std::string physicalPath;
 	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::ReadFile(physicalPath) : nullptr;
 }
 
 std::string VFS::ReadTextFile(const std::string &path)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	std::string physicalPath;
 	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::ReadTextFile(physicalPath) : nullptr;
 }
 
 bool VFS::WriteFile(const std::string &path, const char *buffer, const int size)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	std::string physicalPath;
 	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::WriteFile(physicalPath, buffer, size) : false;
 }
 
 bool VFS::WriteTextFile(const std::string &path, const std::string &text, const int size)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	std::string physicalPath;
 	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::WriteTextFile(physicalPath, text, size) : false;
 }
 
 bool VFS::FileExists(const std::string &virtualPath)
 {
+    RL_ASSERT(instance, "[VFS] The VFS is not initialized.");
     bool succ = false;
     std::string physical;
     if(ResolvePhysicalPath(virtualPath, physical))

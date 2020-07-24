@@ -8,8 +8,8 @@ namespace rl {
 EditorLayer::EditorLayer()
     : Layer("editorLayer")
 {
-	VFS::Get()->Mount("shader", "Editor/assets/shader");
-	VFS::Get()->Mount("texture", "Editor/assets/texture");
+	VFS::Mount("shader", "Editor/assets/shader");
+	VFS::Mount("texture", "Editor/assets/texture");
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
@@ -63,17 +63,17 @@ EditorLayer::EditorLayer()
 	testVA->unbind();
 
 	std::string vertPath, fragPath, texPath;
-	VFS::Get()->ResolvePhysicalPath("/shader/vertexShader/vertexSrc.glsl", vertPath);
-	VFS::Get()->ResolvePhysicalPath("/shader/fragmentShader/fragSrc.glsl", fragPath);
+	VFS::ResolvePhysicalPath("/shader/vertexShader/vertexSrc.glsl", vertPath);
+	VFS::ResolvePhysicalPath("/shader/fragmentShader/fragSrc.glsl", fragPath);
 
 	m_shader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
 
-	VFS::Get()->ResolvePhysicalPath("/shader/vertexShader/blueVertSrc.glsl", vertPath);
-	VFS::Get()->ResolvePhysicalPath("/shader/fragmentShader/blueFragSrc.glsl", fragPath);
+	VFS::ResolvePhysicalPath("/shader/vertexShader/blueVertSrc.glsl", vertPath);
+	VFS::ResolvePhysicalPath("/shader/fragmentShader/blueFragSrc.glsl", fragPath);
 
 	testShader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
 
-	VFS::Get()->ResolvePhysicalPath("/texture/1.png", texPath);
+	VFS::ResolvePhysicalPath("/texture/1.png", texPath);
 
 	m_texture = std::make_shared<rl::Texture2D>(texPath);
 
