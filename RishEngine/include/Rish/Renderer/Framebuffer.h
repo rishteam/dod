@@ -27,7 +27,15 @@ struct FramebufferSpecification
 class Framebuffer
 {
 public:
+    /**
+     * @brief ctor
+     * @param spec Framebuffer Settings
+     */
 	Framebuffer(const FramebufferSpecification &spec);
+
+	/**
+	 * @brief dtor
+	 */
 	~Framebuffer();
 
 	/**

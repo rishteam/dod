@@ -12,7 +12,7 @@ namespace rl {
 
 /**
  * @brief SFML Realtime Input class
- * @details Provide functionalities for keyboard and mouse polling
+ * @details Provide functionality for keyboard and mouse polling
  */
 class RL_API SFMLInput : public Input
 {

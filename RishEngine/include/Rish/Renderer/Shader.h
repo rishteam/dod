@@ -37,9 +37,9 @@ public:
 	void bind();
 	void unbind();
 
-	uint32_t getShaderID() const {return program; }
+	uint32_t getShaderID() const { return program; }
 
-	int getLocationByName(const std::string &name) const;
+	uint32_t getLocationByName(const std::string &name) const;
 
 	void setInt(const std::string &name, int value);
 	void setIntArray(const std::string &name, int *values, uint32_t count);

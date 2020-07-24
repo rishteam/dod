@@ -1,32 +1,36 @@
-#include "Rish/Renderer/Texture2D.h"
-#include "Rish/Core/Log.h"
+#include <Rish/Renderer/Texture2D.h>
+#include <Rish/Core/Log.h>
+#include <Rish/Core/ResHolder.h>
+//
+#include <fmt/format.h>
 #include <glad/glad.h>
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
 
 namespace rl {
 
 Texture2D::Texture2D(const std::string& path)
 	: m_path(path)
 {
-	sf::Image image;
-	if(!image.loadFromFile(path))
-	{
-		RL_CORE_ERROR("[Texture2D] Error on loading image");
-	}
+	glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
+	RL_ASSERT(m_textureID != 0, "Failed to create a texture");
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
 
-	// TODO maybe ImGui::Image's (0, 0) pos is different from openGL 
+	auto texName = fmt::format("texture_{}", m_textureID);
+    if(!ResHolder::Image().load(texName, path))
+    {
+        RL_ERROR("Failed to load texture {} from {}", texName, path);
+    }
+    auto &image = ResHolder::Image().get(texName);
+
+	// TODO maybe ImGui::Image's (0, 0) pos is different from openGL
 	// image.flipVertically();
 
 	m_width = image.getSize().x;
 	m_height = image.getSize().y;
 
-	glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
-	glBindTexture(GL_TEXTURE_2D, m_textureID);
 	glTextureStorage2D(m_textureID, 1, GL_RGB8, m_width, m_height);
 
 	glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)image.getPixelsPtr());
 	glBindTexture(GL_TEXTURE_2D, 0);

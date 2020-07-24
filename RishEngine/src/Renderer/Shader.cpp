@@ -1,7 +1,6 @@
+#include <Rish/Core/Core.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Core/FileSystem.h>
-
-#include "Rish/Core/FileSystem.h"
 
 namespace rl {
 
@@ -45,7 +44,7 @@ void Shader::bind()
 	glUseProgram(program);
 }
 
-void unbind()
+void Shader::unbind()
 {
 	glUseProgram(0);
 }
@@ -88,9 +87,9 @@ uint32_t Shader::LinkShaderProgram(uint32_t vertex, uint32_t fragment)
 	return program;
 }
 
-int Shader::getLocationByName(const std::string &name) const
+uint32_t Shader::getLocationByName(const std::string &name) const
 {
-	RL_CORE_ASSERT(program > 0, "Error on program");
+	RL_CORE_ASSERT(program > 0, "The shader is invalid");
 	int location = glGetUniformLocation(program, name.c_str());
 	return location;
 }
@@ -102,6 +101,7 @@ void Shader::setInt(const std::string &name, int value)
 
 void Shader::setIntArray(const std::string &name, int *values, uint32_t count)
 {
+    RL_CORE_ASSERT(values != nullptr, "int array is nullptr");
 	glUniform1iv(getLocationByName(name), count, values);
 }
 

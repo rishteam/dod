@@ -9,7 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include "Rish/Core/ResManager.h"
+#include <Rish/Core/ResManager.h>
 
 namespace rl {
 

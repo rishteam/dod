@@ -49,7 +49,7 @@ private:
 	/// index buffer
 	std::shared_ptr<IndexBuffer> m_indexBuffer = nullptr;
 
-	uint32_t m_vertexBufferIndex = 0;
+	uint32_t m_vertexAttribIndex = 0;
 };
 
 }

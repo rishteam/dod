@@ -51,16 +51,15 @@ void VertexArray::setVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuf
 	const auto &layout = vertexBuffer->getLayout();
 	for(const auto & element: layout)
 	{
-		glEnableVertexAttribArray(m_vertexBufferIndex);
+		glEnableVertexAttribArray(m_vertexAttribIndex);
 
-		glVertexAttribPointer(m_vertexBufferIndex,
-			element.getComponentCount(),
-			ShaderDataTypeToOpenGLBaseType(element.type),
+		glVertexAttribPointer(m_vertexAttribIndex,
+            element.getComponentCount(),
+            ShaderDataTypeToOpenGLBaseType(element.type),
 			element.normalized ? GL_TRUE : GL_FALSE,
 			layout.getStride(),
-			(const void*)element.offset
-		);
-		m_vertexBufferIndex++;
+			(const void*)element.offset);
+		m_vertexAttribIndex++;
 
 		m_vertexBuffer = vertexBuffer;
 	}

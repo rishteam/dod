@@ -135,8 +135,7 @@ void EditorLayer::onImGuiRender()
 	ImGui::Begin("TestFramebuffer");
 	uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
 
-	// TODO Actually should be (void*)textureID, but it went error on it, but this can work??
-	ImGui::Image((uintptr_t)textureID, ImVec2{1280, 720});
+	ImGui::Image((ImTextureID)textureID, ImVec2{1280, 720});
 	ImGui::End();
 
 	defaultLogWindow.onImGuiRender();
