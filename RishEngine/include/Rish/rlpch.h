@@ -20,9 +20,12 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <deque>
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+
+#include <mutex>
 
 #include <sys/stat.h>
 #include <iterator>

@@ -83,6 +83,7 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
+    RL_INFO("[EditorLayer] attach");
 	rl::FramebufferSpecification fbspec;
 	fbspec.width = 1920;
 	fbspec.height = 1000;
@@ -91,11 +92,11 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onDetach()
 {
+    RL_INFO("[EditorLayer] detach");
 }
 
 void EditorLayer::onUpdate(Time dt)
 {
-	// RL_TRACE("Test Editor Layer");
 	m_framebuffer->bind();
 
 	m_shader->bind();
@@ -116,7 +117,11 @@ void EditorLayer::onUpdate(Time dt)
 void EditorLayer::onImGuiRender()
 {
 	ImGui::Begin("aa");
-	ImGui::Text("This is Editor");
+	if(ImGui::Button("Touch me"))
+	{
+	    static int cnt = 0;
+        RL_INFO("You pressed the button for {} times", cnt++);
+    }
 	ImGui::End();
 
 	ImGui::Begin("bb");
@@ -133,6 +138,8 @@ void EditorLayer::onImGuiRender()
 	// TODO Actually should be (void*)textureID, but it went error on it, but this can work??
 	ImGui::Image((uintptr_t)textureID, ImVec2{1280, 720});
 	ImGui::End();
+
+	defaultLogWindow.onImGuiRender();
 }
 
 void EditorLayer::onEvent(rl::Event& event)

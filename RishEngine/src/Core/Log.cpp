@@ -1,5 +1,6 @@
-#include "Rish/Core/Log.h"
-#include "Rish/Config.h"
+#include <Rish/Core/Log.h>
+#include <Rish/Utils/ImGuiLogWindow.h>
+#include <Rish/Config.h>
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
@@ -19,10 +20,11 @@ void Logger::Init(LoggerType type)
     std::vector<spdlog::sink_ptr> logSinks;
     logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("dod.log", true));
+    logSinks.emplace_back(std::make_shared<ImGuiLogSink_mt>());
 
     // Set pattern: "[time] [cat] [level]: texts"
-    logSinks[0]->set_pattern("[%T] [%n/%^%l%$] %v");
-    logSinks[1]->set_pattern("[%T] [%n/%^%l%$] %v");
+    for(auto &i : logSinks)
+        i->set_pattern("[%T] [%n/%^%l%$] %v");
 
     if(type == IgnoreDup)
     {

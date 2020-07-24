@@ -28,6 +28,7 @@
 // Utils Module
 #include "Rish/Utils/debug-trap.h"
 #include "Rish/Utils/FileDialog.h"
+#include <Rish/Utils/ImGuiLogWindow.h>
 
 // Animation Module
 #include "Rish/Animation/Animation.h"

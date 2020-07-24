@@ -70,6 +70,7 @@ add_library(RishEngine
     src/Core/Log.cpp
     src/Core/FileSystem.cpp
     src/Core/VFS.cpp
+    src/Utils/ImGuiLogWindow.cpp
 
     # fs
     src/Utils/FileDialog.cpp
@@ -89,6 +90,7 @@ add_library(RishEngine
     src/Renderer/Texture2D.cpp
     src/Renderer/Framebuffer.cpp
 )
+
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
 target_include_directories(RishEngine
