@@ -8,6 +8,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
 #include <Rish/Core/Log.h>
 #include <glm/glm.hpp>
 
@@ -17,7 +18,7 @@ namespace rl {
 /**
  * @brief Shader
  */
-class Shader
+class RL_API Shader
 {
 public:
 	// For testing

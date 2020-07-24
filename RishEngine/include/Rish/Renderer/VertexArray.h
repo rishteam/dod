@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 //
 #include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
 #include <Rish/Renderer/Buffer.h>
 
 namespace rl {
@@ -18,7 +19,7 @@ namespace rl {
  * @brief Vertex Array Object
  * @details VertexArray contains a VertexBuffer and a IndexBuffer(Optional)
  */
-class VertexArray
+class RL_API VertexArray
 {
 public:
 	VertexArray();

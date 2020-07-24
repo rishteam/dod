@@ -73,7 +73,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
  * @brief Vertex Attribute Element
  * @details The class defines a vertex attribute with name and its data type
  */
-struct BufferElement
+struct RL_API BufferElement
 {
 	std::string name;
 	ShaderDataType type;
@@ -128,7 +128,7 @@ struct BufferElement
  * @details This class contains a series of BufferElement which defined by client. <br/>
  * It will calculate the stride and offset for the vertex attributes.
  */
-class BufferLayout
+class RL_API BufferLayout
 {
 public:
 	BufferLayout() {}
@@ -171,7 +171,7 @@ private:
  * @brief Vertex Buffer Object
  * @details It consists of a VBO id and a BufferLayout
  */
-class VertexBuffer
+class RL_API VertexBuffer
 {
 public:
 	VertexBuffer();
@@ -196,7 +196,7 @@ private:
  * @brief Index/Element Buffer Object
  * @details It consists of a EBO id and count
  */
-class IndexBuffer
+class RL_API IndexBuffer
 {
 public:
 	IndexBuffer(uint32_t *indices, uint32_t count);

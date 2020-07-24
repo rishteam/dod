@@ -6,8 +6,8 @@
  */
 #pragma once
 
-#include "Rish/Utils/debug-trap.h"
-#include "Rish/Core/Log.h"
+#include <Rish/Utils/debug-trap.h>
+#include <Rish/Core/Log.h>
 
 #define RL_DEBUG_DEFINE
 

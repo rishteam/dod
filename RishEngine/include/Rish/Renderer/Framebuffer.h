@@ -8,6 +8,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
 
 namespace rl {
 
@@ -24,7 +25,7 @@ struct FramebufferSpecification
 /**
  * @brief Frame Buffer Object
  */
-class Framebuffer
+class RL_API Framebuffer
 {
 public:
     /**

@@ -8,13 +8,14 @@
 #pragma once
 
 #include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
 
 namespace rl {
 
 /**
  * @brief 2D Texture class
  */
-class Texture2D
+class RL_API Texture2D
 {
 public:
     /**
