@@ -12,6 +12,8 @@
 #include <SFML/OpenGL.hpp>
 #include <imgui.h>
 
+#include "entt/entt.hpp"
+
 // #include "Rish/Renderer/Buffer.h"
 // #include "Rish/Renderer/VertexArray.h"
 
