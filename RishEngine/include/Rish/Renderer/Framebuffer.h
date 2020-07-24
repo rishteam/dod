@@ -7,7 +7,7 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
 namespace rl {
 
@@ -16,8 +16,8 @@ namespace rl {
  */
 struct FramebufferSpecification
 {
-	uint32_t width;
-	uint32_t height;
+	uint32_t width{};
+	uint32_t height{};
 	uint32_t sample = 1;
 };
 

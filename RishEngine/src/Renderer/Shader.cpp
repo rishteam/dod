@@ -1,3 +1,6 @@
+#include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <Rish/Core/Core.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Core/FileSystem.h>

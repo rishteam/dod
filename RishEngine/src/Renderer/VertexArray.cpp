@@ -1,8 +1,15 @@
-#include "Rish/Renderer/VertexArray.h"
+#include <glad/glad.h>
+
+#include <Rish/Renderer/VertexArray.h>
 
 namespace rl {
 
-GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+/**
+ * @brief Convert ShaderDataType to OpenGL enum
+ * @param type Shader Data Type
+ * @return GLenum
+ */
+static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 {
 	switch(type)
 	{

@@ -99,10 +99,12 @@ void EditorLayer::onUpdate(Time dt)
 {
 	m_framebuffer->bind();
 
+//	Renderer::BeginScene();
 	m_shader->bind();
 	m_vertexArray->bind();
 	glDrawElements(GL_TRIANGLES, m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	m_vertexArray->unbind();
+//	Renderer::EndScene();
 
 	m_texture->bind();
 	testShader->bind();

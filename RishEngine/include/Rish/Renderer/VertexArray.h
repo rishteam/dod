@@ -7,21 +7,12 @@
  */
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 //
 #include <Rish/rlpch.h>
-#include <Rish/Core/Log.h>
 #include <Rish/Renderer/Buffer.h>
 
 namespace rl {
-
-/**
- * @brief Convert ShaderDataType to OpenGL enum
- * @param type Shader Data Type
- * @return GLenum
- */
-GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type);
 
 /**
  * @brief Vertex Array Object

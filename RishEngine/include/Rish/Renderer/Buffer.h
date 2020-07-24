@@ -7,9 +7,8 @@
  */
 #pragma once
 
-#include <glad/glad.h>
 #include <Rish/rlpch.h>
-#include <Rish/Core/Log.h>
+#include <Rish/Core/Core.h>
 
 namespace rl
 {

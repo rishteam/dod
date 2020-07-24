@@ -40,7 +40,6 @@ Application::~Application()
 
 void Application::run()
 {
-    // static sf::Clock clk; // TODO(roy4801): make RishEngine clock in the future
     Clock clk;
     float lag = 0.0;
 

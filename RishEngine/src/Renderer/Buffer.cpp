@@ -1,4 +1,5 @@
-#include "Rish/Renderer/Buffer.h"
+#include <Rish/Renderer/Buffer.h>
+#include <glad/glad.h>
 
 namespace rl {
 
