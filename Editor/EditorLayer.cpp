@@ -1,5 +1,6 @@
 #include <Rish/rlpch.h>
 #include <Rish/Core/FileSystem.h>
+#include <Rish/Renderer/Renderer.h>
 
 #include "EditorLayer.h"
 
@@ -99,19 +100,18 @@ void EditorLayer::onUpdate(Time dt)
 {
 	m_framebuffer->bind();
 
-//	Renderer::BeginScene();
+	// Draw m_vertexArray
+	Renderer::BeginScene();
 	m_shader->bind();
-	m_vertexArray->bind();
-	glDrawElements(GL_TRIANGLES, m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-	m_vertexArray->unbind();
-//	Renderer::EndScene();
+    Renderer::Submit(m_vertexArray);
 
+    // Draw testVA
 	m_texture->bind();
 	testShader->bind();
-	testVA->bind();
-	glDrawElements(GL_TRIANGLES, testVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-	testVA->unbind();
+    Renderer::Submit(testVA);
 	m_texture->unbind();
+
+    Renderer::EndScene();
 
 	m_framebuffer->unbind();
 }

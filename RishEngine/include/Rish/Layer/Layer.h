@@ -31,7 +31,7 @@ public:
 	/// On Update
 	virtual void onUpdate(Time dt) { RL_CORE_TRACE("[{}] default onUpdate dt={}", m_DebugName, dt); };
 	/// On Imgui render
-	virtual void onImGuiRender() { /**RL_CORE_TRACE("[{}] default onImGuiRender", m_DebugName); **/}
+	virtual void onImGuiRender() { RL_CORE_TRACE("[{}] default onImGuiRender", m_DebugName); }
 	/// On Event
 	virtual void onEvent(Event &event) { RL_CORE_TRACE("[{}] default onEvent({})", m_DebugName, event.toString()); };
 	/// Get debug name
