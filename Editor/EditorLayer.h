@@ -2,6 +2,9 @@
 
 namespace rl {
 
+void BeginDockSpace();
+void EndDockSpace();
+
 class EditorLayer : public rl::Layer
 {
 public:
