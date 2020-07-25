@@ -89,6 +89,10 @@ add_library(RishEngine
     src/Renderer/Buffer.cpp
     src/Renderer/Texture2D.cpp
     src/Renderer/Framebuffer.cpp
+
+    # Scene
+    src/Scene/Scene.cpp
+    src/Scene/Entity.cpp
 )
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

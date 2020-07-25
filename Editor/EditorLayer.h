@@ -2,6 +2,8 @@
 
 namespace rl {
 
+#define MAXENTITES 1000
+
 class EditorLayer : public rl::Layer
 {
 public:
@@ -28,6 +30,10 @@ private:
 	std::shared_ptr<rl::Texture2D> m_texture;
 
 	std::shared_ptr<rl::Framebuffer> m_framebuffer;
+
+	std::shared_ptr<rl::Scene> m_scene;
+
+	std::vector<Entity> m_squareEntity;
 };
 
 }

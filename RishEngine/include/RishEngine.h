@@ -45,5 +45,10 @@
 #include "Rish/Renderer/Texture2D.h"
 #include "Rish/Renderer/Framebuffer.h"
 
+// Scene
+#include "Rish/Scene/Scene.h"
+#include "Rish/Scene/Entity.h"
+#include "Rish/Scene/Component.h"
+
 // Entry Point
 // #include "EntryPoint.h"
