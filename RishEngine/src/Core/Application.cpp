@@ -30,8 +30,7 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     m_running = true; // set the running flag
     // Push the imgui overlay
     m_imguiLayer = new ImGuiLayer();
-    pushOverlay(m_imguiLayer); 
-
+    pushOverlay(m_imguiLayer);
 }
 
 Application::~Application()
