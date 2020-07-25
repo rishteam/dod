@@ -46,9 +46,9 @@ public:
 
 	/**
      * @brief Get the Current Directory Path object
-     * @return std::filesystem::path Path
+     * @return fs::path Path
      */
-	static std::filesystem::path GetCurrentDirectoryPath();
+	static fs::path GetCurrentDirectoryPath();
 
 	/**
      * @brief Set the Current Directory by std::string
@@ -60,7 +60,7 @@ public:
      * @brief Set the Current Directory by Path object
      * @param path Path Object
      */
-	static void SetCurrentDirectoryPath(const std::filesystem::path &path);
+	static void SetCurrentDirectoryPath(const fs::path &path);
 
 	/**
      * @brief Create a File
