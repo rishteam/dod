@@ -1,4 +1,4 @@
-#include <Rish/Utils/ImGuiLogWindow.h>
+#include <Rish/Debug/ImGuiLogWindow.h>
 #include <imgui.h>
 
 ImGuiLogWindow defaultLogWindow;

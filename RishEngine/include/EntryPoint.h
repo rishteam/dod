@@ -9,6 +9,8 @@ extern rl::Application* rl::CreateApplication();
 
 int main(int argc, char **argv)
 {
+    RL_UNUSED(argc);
+    RL_UNUSED(argv);
     setvbuf(stdin, nullptr, _IONBF, 0);
     setvbuf(stdout, nullptr, _IONBF, 0);
     //

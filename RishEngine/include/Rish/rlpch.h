@@ -31,6 +31,8 @@
 #include <iterator>
 #include <fstream>
 
+#include <Rish/Core/Core.h>
+
 // filesystem
 #if defined(__clang__)
     #include <boost/filesystem/operations.hpp>

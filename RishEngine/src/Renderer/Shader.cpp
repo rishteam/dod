@@ -7,21 +7,6 @@
 
 namespace rl {
 
-Shader::Shader(const std::string &vertSrc, const std::string &fragSrc)
-{
-	const char *verSrcc = m_vertSource.c_str();
-	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrcc);
-	const char *fragSrcc = m_fragSource.c_str();
-	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrcc);
-	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
-
-	program = LinkShaderProgram(vert, frag);
-	RL_CORE_ASSERT(program, "");
-
-	glDeleteShader(vert);
-	glDeleteShader(frag);
-}
-
 Shader::Shader(const char *vertPath, const char *fragPath)
 {
 	m_vertSource = FileSystem::ReadTextFile(vertPath);
@@ -84,7 +69,7 @@ uint32_t Shader::LinkShaderProgram(uint32_t vertex, uint32_t fragment)
 	if(!success)
 	{
 		glGetProgramInfoLog(program, 512, nullptr, log);
-		RL_CORE_ERROR("Error Shader Linking error\n %s", log);
+		RL_CORE_ERROR("Error Shader Linking error\n {}", log);
 		return 0;
 	}
 	return program;

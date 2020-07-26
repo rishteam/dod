@@ -43,7 +43,6 @@ public:
     }
 
     EVENT_CLASS_TOSTRING("KeyPressEvent: keycode={} repeat={}", keyCode, repeat)
-
     EVENT_CLASS_TYPE(KeyPressed)
 
 public:

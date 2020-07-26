@@ -1,5 +1,5 @@
 #include <Rish/Core/Log.h>
-#include <Rish/Utils/ImGuiLogWindow.h>
+#include <Rish/Debug/ImGuiLogWindow.h>
 #include <Rish/Config.h>
 
 #include <spdlog/sinks/stdout_color_sinks.h>

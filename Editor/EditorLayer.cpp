@@ -104,6 +104,7 @@ void EditorLayer::onUpdate(Time dt)
 
 	// Draw m_vertexArray
 	Renderer::BeginScene();
+
 	m_shader->bind();
     Renderer::Submit(m_vertexArray);
 

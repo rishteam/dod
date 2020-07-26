@@ -1,7 +1,7 @@
 #include <RishEngine.h>
-#include "EditorLayer.h"
-
 #include <EntryPoint.h>
+
+#include "EditorLayer.h"
 
 namespace rl {
 

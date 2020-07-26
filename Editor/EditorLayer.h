@@ -8,13 +8,10 @@ void EndDockSpace();
 class EditorLayer : public rl::Layer
 {
 public:
-
 	EditorLayer();
 
 	virtual ~EditorLayer() = default;
-
 	virtual void onAttach() override;
-	
 	virtual void onDetach() override;
 
 	virtual void onUpdate(Time dt) override;
@@ -34,6 +31,3 @@ private:
 };
 
 }
-
-
-

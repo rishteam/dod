@@ -21,8 +21,6 @@ namespace rl {
 class RL_API Shader
 {
 public:
-	// For testing
-	Shader(const std::string &vertSrc, const std::string &fragSrc);
     /**
      * @brief ctor
      * @param vertPath Path to vertex shader source file
