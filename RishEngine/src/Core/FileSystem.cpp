@@ -1,7 +1,5 @@
 #include "Rish/Core/FileSystem.h"
 
-namespace fs = std::filesystem;
-
 namespace rl {
 
 File::File(const std::string &path) : m_path(path)
@@ -29,12 +27,12 @@ void FileSystem::SetCurrentDirectory(const std::string &path)
 		RL_CORE_ERROR("FileSystemError: Failed to set currrent directory {}", path);
 }
 
-void FileSystem::SetCurrentDirectoryPath(const std::filesystem::path &path)
+void FileSystem::SetCurrentDirectoryPath(const fs::path &path)
 {
 	if (fs::is_directory(path))
 		fs::current_path(path);
 	else
-		RL_CORE_ERROR("FileSystemError: Failed to set current directory {}", path.u8string());
+		RL_CORE_ERROR("FileSystemError: Failed to set current directory {}", path.string());
 }
 
 void FileSystem::CreateFile(const std::string &path)

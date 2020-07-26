@@ -36,8 +36,11 @@
 // filesystem
 #if defined(__clang__)
     #include <boost/filesystem/operations.hpp>
+    namespace fs = boost::filesystem;
 #elif defined(__GNUC__) || defined(__GNUG__)
     #include <filesystem>
+    namespace fs = std::filesystem;
 #elif defined(_MSC_VER)
     #include <filesystem>
+    namespace fs = std::filesystem;
 #endif
