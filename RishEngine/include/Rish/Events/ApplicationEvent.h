@@ -27,7 +27,6 @@ public:
     EVENT_CLASS_TYPE(WindowResize)
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 
-public:
     uint32_t m_width, m_height;
 };
 

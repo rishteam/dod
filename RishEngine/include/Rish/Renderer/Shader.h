@@ -8,10 +8,8 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
-#include <Rish/Core/Log.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
-
 
 namespace rl {
 

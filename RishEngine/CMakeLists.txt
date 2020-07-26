@@ -70,7 +70,7 @@ add_library(RishEngine
     src/Core/Log.cpp
     src/Core/FileSystem.cpp
     src/Core/VFS.cpp
-    src/Utils/ImGuiLogWindow.cpp
+        src/Debug/ImGuiLogWindow.cpp
 
     # fs
     src/Utils/FileDialog.cpp

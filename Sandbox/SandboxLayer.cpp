@@ -1,5 +1,8 @@
 #include "SandboxLayer.h"
 
+#include <Rish/Input/Input.h>
+#include <Rish/Utils/Math.h>
+
 #include <glm/gtc/type_ptr.hpp>
 
 ExampleSandboxLayer::ExampleSandboxLayer()
@@ -41,12 +44,38 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
-    rl::Renderer::BeginScene();
+    if(rl::Input::isKeyPressed(rl::Keyboard::W))
+    {
+        m_cameraPosition.y += m_cameraMoveSpeed * dt.asSeconds();
+    }
+    else if(rl::Input::isKeyPressed(rl::Keyboard::S))
+    {
+        m_cameraPosition.y -= m_cameraMoveSpeed * dt.asSeconds();
+    }
+    if(rl::Input::isKeyPressed(rl::Keyboard::A))
+    {
+        m_cameraPosition.x -= m_cameraMoveSpeed * dt.asSeconds();
+    }
+    else if(rl::Input::isKeyPressed(rl::Keyboard::D))
+    {
+        m_cameraPosition.x += m_cameraMoveSpeed * dt.asSeconds();
+    }
+    if(rl::Input::isKeyPressed(rl::Keyboard::Q))
+    {
+        m_cameraRotation -= m_cameraRotateSpeed * dt.asSeconds();
+    }
+    else if(rl::Input::isKeyPressed(rl::Keyboard::E))
+    {
+        m_cameraRotation += m_cameraRotateSpeed * dt.asSeconds();
+    }
 
-    m_testShader->bind();
-    m_testShader->setMat4("u_ViewProjection", m_camera.getViewProjectionMatrix());
-    rl::Renderer::Submit(m_testVA);
 
+
+    m_camera.setPosition(m_cameraPosition);
+    m_camera.setRotation(m_cameraRotation);
+
+    rl::Renderer::BeginScene(m_camera);
+    rl::Renderer::Submit(m_testShader, m_testVA);
     rl::Renderer::EndScene();
 }
 
@@ -60,12 +89,10 @@ void ExampleSandboxLayer::onImGuiRender()
     ImGui::Begin("Debug");
     ImGui::Text("Camera");
     auto pos = m_camera.getPosition();
-    ImGui::DragFloat3("Pos", glm::value_ptr(pos), 0.01f);
-    m_camera.setPosition(pos);
-
+    ImGui::Text("Position = %.2f %.2f %.2f", pos.x, pos.y, pos.z);
     auto rot = m_camera.getRotation();
-    ImGui::DragFloat("Rotation", &rot, 1.f);
-    m_camera.setRotation(rot);
+    ImGui::Text("Rotation = %.2f", rot);
+
     ImGui::Separator();
     ImGui::End();
 }

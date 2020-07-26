@@ -19,6 +19,8 @@ public:
 	virtual void onEvent(rl::Event& event) override;
 
 private:
+    OrthographicCamera m_camera;
+
 	std::shared_ptr<rl::Shader> m_shader;
 	std::shared_ptr<rl::VertexArray> m_vertexArray;
 

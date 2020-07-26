@@ -9,7 +9,8 @@
 namespace rl {
 
 EditorLayer::EditorLayer()
-    : Layer("editorLayer")
+    : Layer("editorLayer"),
+      m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {
 	VFS::Mount("shader", "Editor/assets/shader");
 	VFS::Mount("texture", "Editor/assets/texture");
@@ -103,15 +104,13 @@ void EditorLayer::onUpdate(Time dt)
 	m_framebuffer->bind();
 
 	// Draw m_vertexArray
-	Renderer::BeginScene();
+    Renderer::BeginScene(m_camera);
 
-	m_shader->bind();
-    Renderer::Submit(m_vertexArray);
+    Renderer::Submit(m_shader, m_vertexArray);
 
     // Draw testVA
 	m_texture->bind();
-	testShader->bind();
-    Renderer::Submit(testVA);
+    Renderer::Submit(testShader, testVA);
 	m_texture->unbind();
 
     Renderer::EndScene();

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
+//
+#include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/RendererCommand.h>
+//
+#include <Rish/Renderer/Camera/OrthographicCamera.h>
 
 namespace rl {
 
@@ -15,7 +18,7 @@ public:
     /**
      * @brief Begin Scene
      */
-    static void BeginScene();
+    static void BeginScene(OrthographicCamera &camera);
 
     /**
      * @brief End Scene
@@ -26,7 +29,7 @@ public:
      * @brief Submit Vertex Array
      * @param vertexArray Vertex Array
      */
-    static void Submit(const std::shared_ptr<VertexArray> &vertexArray);
+    static void Submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray);
 };
 
 } // end of namespace rl

@@ -8,7 +8,6 @@
 
 #include <Rish/rlpch.h>
 
-#include <Rish/Core/Core.h>
 #include <Rish/Input/KeyCode.h>
 #include <Rish/Input/MouseCode.h>
 
@@ -38,12 +37,12 @@ public:
     static float getMouseY() { return s_instance->getMouseYImpl(); }
 
 protected:
-    virtual bool isKeyPressedImpl(int keycode) = 0; //! @note Implement these in Platform
+    virtual bool isKeyPressedImpl(int keycode) = 0; ///< @note Implement these in Platform
 
-    virtual bool isMouseButtonPressedImpl(int mbutton) = 0; //! @note Implement these in Platform
-    virtual std::pair<float, float> getMousePositionImpl() = 0; //! @note Implement these in Platform
-    virtual float getMouseXImpl() = 0; //! @note Implement these in Platform
-    virtual float getMouseYImpl() = 0; //! @note Implement these in Platform
+    virtual bool isMouseButtonPressedImpl(int mbutton) = 0; ///< @note Implement these in Platform
+    virtual std::pair<float, float> getMousePositionImpl() = 0; ///< @note Implement these in Platform
+    virtual float getMouseXImpl() = 0; ///< @note Implement these in Platform
+    virtual float getMouseYImpl() = 0; ///< @note Implement these in Platform
 
 private:
     static Input *s_instance; //! Instance
