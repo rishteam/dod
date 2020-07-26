@@ -13,6 +13,8 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
+    bool onKeyPressed(rl::KeyPressedEvent &event);
+
     std::shared_ptr<rl::VertexArray> m_testVA;
     std::shared_ptr<rl::Shader> m_testShader;
 
@@ -24,5 +26,5 @@ private:
 
     //
     glm::vec4 clearColor{0.f};
-    bool m_showDebugImGuiWindow = false;
+    bool m_showDebugImGuiWindow = true;
 };

@@ -104,12 +104,14 @@ void ExampleSandboxLayer::onImGuiRender()
 
 void ExampleSandboxLayer::onEvent(rl::Event &event)
 {
-    if(event.getEventType() == rl::EventType::KeyPressed)
+    rl::EventDispatcher dispatcher(event);
+    dispatcher.dispatch<rl::KeyPressedEvent>(RL_BIND_EVENT_FUNC(ExampleSandboxLayer::onKeyPressed));
+}
+
+bool ExampleSandboxLayer::onKeyPressed(rl::KeyPressedEvent &event)
+{
+    if(event.keyCode == rl::Keyboard::Tilde)
     {
-        auto &keyEvent = dynamic_cast<rl::KeyPressedEvent&>(event);
-        if(keyEvent.keyCode == rl::Keyboard::Tilde)
-        {
-            m_showDebugImGuiWindow = !m_showDebugImGuiWindow;
-        }
+        m_showDebugImGuiWindow = !m_showDebugImGuiWindow;
     }
 }

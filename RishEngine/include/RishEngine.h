@@ -49,8 +49,5 @@
 #include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 
-// Entry Point
-//#ifndef RL_ENTRY_POINT
-//    #include "EntryPoint.h"
-//    #define RL_ENTRY_POINT
-//#endif
+/// @defgroup core Core Module
+/// Core functions

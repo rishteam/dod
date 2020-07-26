@@ -92,15 +92,41 @@ class RL_API Event
     friend class EventDispatcher;
 
 public:
-    virtual ~Event() {}
-    // implement by macro in a sub-class
+    /**
+     * @brief dtor
+     */
+    virtual ~Event() = default;
+    /**
+     * @brief Get event type
+     * @return event type
+     * @warning Implementing in subclass
+     */
     virtual EventType getEventType() const = 0;
+    /**
+     * @brief Get event name
+     * @return name
+     * @warning Implementing in subclass
+     */
     virtual const char *getName() const = 0;
+    /**
+     * @brief Get Category
+     * @return category flag
+     * @warning Implementing in subclass
+     */
     virtual int getCategoryFlags() const = 0;
     //
+    /**
+     * @brief Get event name in std::string
+     * @return name
+     */
     virtual std::string toString() const { return getName(); }
 
-    inline bool isInCategory(EventCategory category)
+    /**
+     * @brief Check if the event is in category
+     * @param category Event category
+     * @return true/false
+     */
+    bool isInCategory(EventCategory category)
     {
         return getCategoryFlags() & category;
     }
@@ -112,7 +138,7 @@ public:
 
 /**
  * @brief Event Dispatcher
- * @details Dispatch the RishEngine Event to it handle function e.g. `on???Event(??? &e)`
+ * @details Dispatch the Event to its handling function e.g. `onXXXEvent(XXXEvent &e)`
  */
 class EventDispatcher
 {
@@ -121,6 +147,10 @@ class EventDispatcher
     using EventFunc = std::function<bool(T &)>;
 
 public:
+    /**
+     * @brief ctor
+     * @param event event
+     */
     EventDispatcher(Event &event) : m_event(event)
     {
     }
@@ -163,3 +193,35 @@ inline std::ostream &operator<<(std::ostream &os, const Event &e)
 }
 
 }
+
+/**
+ * @class rl::Event
+ *
+ * RishEngine Events.
+ * @note Always dispatch your events with rl::EventDispatcher in your own layer which is inherited from rl::Layer in the overrided function `void onEvent(rl::Event &event)`
+ * @warning Use rl::EventDispatcher instead of using `if(event.getEventType() == rl::EventType::XXX)` to check the event type
+ */
+
+/**
+ * @class rl::EventDispatcher
+ * @code{.cpp}
+ * class ExampleLayer : public rl::Layer
+ * {
+ * public:
+ *     void onEvent(rl::Event &event) override
+ *     {
+ *         rl::EventDispatcher dispatcher(event);
+ *         dispatcher.dispatch<rl::KeyPressedEvent>(RL_BIND_EVENT_FUNC(ExampleLayer::onKeyPressedEvent));
+ *         dispatcher.dispatch<rl::KeyReleasedEvent>(RL_BIND_EVENT_FUNC(ExampleLayer::KeyReleasedEvent));
+ *     }
+ * private:
+ *     bool onKeyPressedEvent(rl::KeyPressedEvent &event)
+ *     {
+ *     }
+ *
+ *     bool onKeyReleasedEvent(rl::KeyReleasedEvent &event)
+ *     {
+ *     }
+ * };
+ * @endcode
+ */
