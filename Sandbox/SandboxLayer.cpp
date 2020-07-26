@@ -1,7 +1,7 @@
 #include "SandboxLayer.h"
 
 #include <Rish/Input/Input.h>
-#include <Rish/Utils/Math.h>
+#include <cmath>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -69,10 +69,14 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
         m_cameraRotation += m_cameraRotateSpeed * dt.asSeconds();
     }
 
-
+    if(m_cameraRotation > 360.f || m_cameraRotation < -360.f)
+        m_cameraRotation = std::fmod(m_cameraRotation, 360.f);
 
     m_camera.setPosition(m_cameraPosition);
     m_camera.setRotation(m_cameraRotation);
+
+    rl::RenderCommand::SetClearColor(clearColor);
+    rl::RenderCommand::Clear();
 
     rl::Renderer::BeginScene(m_camera);
     rl::Renderer::Submit(m_testShader, m_testVA);
@@ -94,6 +98,7 @@ void ExampleSandboxLayer::onImGuiRender()
     ImGui::Text("Rotation = %.2f", rot);
 
     ImGui::Separator();
+    ImGui::ColorEdit4("BG", glm::value_ptr(clearColor), ImGuiColorEditFlags_Float);
     ImGui::End();
 }
 
