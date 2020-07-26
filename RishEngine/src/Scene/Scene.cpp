@@ -45,16 +45,18 @@ void Scene::update(Time dt)
 	// System upadte
 	
 
-	// auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+	// auto group = m_registry.view<TextureComponent>();
 	// for(auto entity: group)
 	// {
 	// 	// auto &[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-	// 	auto& transform = group.get<TransformComponent>(entity);
-	// 	auto& sprite	= group.get<SpriteRendererComponent>(entity);
+	// 	auto& texture = group.get<TransformComponent>(entity);
+
 
 	// }
 
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	auto group2 = m_registry.group<TestQuadComponent, TransformComponent>(entt::get<SpriteRendererComponent>);
 	for(auto entity: group2)
 	{
@@ -65,8 +67,8 @@ void Scene::update(Time dt)
 		test.m_shader->bind();
 		test.m_shader->setFloat4("ourColor", sprite.color);
 		transform.transform = glm::translate(glm::mat4(1.0f), transform.translate);
-
-		RL_CORE_TRACE("translate : {} {}", transform.translate.x, transform.translate.y);
+		transform.transform = glm::scale(transform.transform, transform.scale);
+		// RL_CORE_TRACE("translate : {} {}", transform.translate.x, transform.translate.y);
 
 		test.m_shader->setMat4("transform", transform.transform);
 		test.m_vertexArray->bind();

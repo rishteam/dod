@@ -18,6 +18,7 @@ public:
 	~Scene();
 
 	Entity createEntity(const std::string& name = std::string());
+	void destroyEntity(const Entity& entity);
 
 	void update(Time dt);
 
