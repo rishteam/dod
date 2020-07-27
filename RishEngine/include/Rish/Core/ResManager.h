@@ -174,12 +174,29 @@ T& ResManager<T>::getDefaultResource()
 template <>
 inline sf::Texture &ResManager<sf::Texture>::getDefaultResource()
 {
-    RL_TRACE("load missing texture");
+//    RL_TRACE("load missing texture");
     if (!exists("default_texture"))
     {
         load("default_texture", "assets/missing_texture.png");
     }
     return get("default_texture");
+}
+
+/**
+ * @brief Default `sf::Image`
+ *
+ * @tparam
+ * @return T& default texture
+ */
+template <>
+inline sf::Image &ResManager<sf::Image>::getDefaultResource()
+{
+//    RL_TRACE("Load missing image");
+    if (!exists("default_image"))
+    {
+        load("default_image", "assets/missing_texture.png");
+    }
+    return get("default_image");
 }
 
 /**
