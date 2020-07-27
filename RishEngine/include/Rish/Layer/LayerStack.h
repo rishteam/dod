@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "Rish/Core/Core.h"
+#include <Rish/Core/Core.h>
 
-#include "Rish/Layer/Layer.h"
-#include "Rish/rlpch.h"
+#include <Rish/Layer/Layer.h>
+#include <Rish/rlpch.h>
 
 namespace rl {
 
@@ -20,7 +20,14 @@ namespace rl {
 class RL_API LayerStack
 {
 public:
+    /**
+     * @brief ctor
+     */
 	LayerStack();
+
+	/**
+	 * @brief dtor
+	 */
 	~LayerStack();
 
 	/// Push Layer from m_LayerInsertIndex
@@ -50,7 +57,7 @@ private:
 	/// a vector of layer*
 	std::vector<Layer*> m_Layers;
 	/// start index of inserting a layer
-	unsigned int m_LayerInsertIndex;
+	unsigned int m_LayerInsertIndex = 0;
 };
 
 }

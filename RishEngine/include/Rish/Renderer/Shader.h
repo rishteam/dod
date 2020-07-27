@@ -13,6 +13,8 @@
 
 namespace rl {
 
+// TODO: Support load shaders in one file
+
 /**
  * @brief Shader
  */

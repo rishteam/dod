@@ -33,7 +33,16 @@ public:
 
     Window& getWindow() { return *m_window; }
 
-    Application(const std::string &name = "Rish Engine", uint32_t width = 1280, uint32_t height = 720);
+    /**
+     * @brief Ctor of Application
+     * @param name Window Title
+     * @param width Window Width
+     * @param height Window Height
+     */
+    Application(const std::string &name="Rish Engine", uint32_t width=1280, uint32_t height=720);
+    /**
+     * @brief Dtor of Application
+     */
     virtual ~Application();
 
     void run();

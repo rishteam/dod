@@ -18,18 +18,18 @@ namespace rl
  */
 enum class ShaderDataType
 {
-	None = 0,
-	Float,
-	Float2,
-	Float3,
-	Float4,
-	Mat3,
-	Mat4,
-	Int,
-	Int2,
-	Int3,
-	Int4,
-	Bool
+	None = 0,  ///< None
+	Float,     ///< float
+	Float2,    ///< vec2
+	Float3,    ///< vec3
+	Float4,	   ///< vec4
+	Mat3,      ///< mat3
+	Mat4,      ///< mat4
+	Int,       ///< int
+	Int2,      ///< ivec2
+	Int3,      ///< ivec3
+	Int4,      ///< ive4
+	Bool       ///< bool
 };
 
 /**

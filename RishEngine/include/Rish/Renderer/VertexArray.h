@@ -45,3 +45,34 @@ private:
 };
 
 }
+
+/**
+ * @class rl::VertexArray
+ * How to create a VertexArray? First create a VertexBuffer and the BufferLayout. Remember to set the layout to the vertex buffer.<br/>
+ * And then create the IndexBuffer. Last set both vertex buffer and index buffer to the vertex array
+ * @code{.cpp}
+ * std::shared_ptr<rl::VertexArray> vertexArray = std::make_shared<rl::VertexArray>();
+ *
+ * float vertices[] = {
+ *     //   a_Position      a_TexCord
+ *     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+ *      0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+ *      0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+ *     -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+ * };
+ *
+ * // Vertex Buffer
+ * std::shared_ptr<<rl::VertexBuffer> vb = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
+ * rl::BufferLayout layout = {
+ *     {rl::ShaderDataType::Float3, "a_Position"},
+ *     {rl::ShaderDataType::Float2, "a_TexCord"}
+ * };
+ * vb->setLayout(layout); // Set the buffer layout to vertex buffer
+ * vertexArray->setVertexBuffer(vb); // Set the vertex buffer to a vertex array
+ *
+ * // Index Buffer
+ * uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+ * std::shared_ptr<rl::IndexBuffer> ib = std::make_shared<rl::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
+ * vertexArray->setIndexBuffer(ib); // Set the index/element buffer
+ * @endcode
+ */

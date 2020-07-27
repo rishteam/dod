@@ -89,21 +89,25 @@ void Application::onEvent(Event &e)
 
 void Application::pushLayer(Layer* layer)
 {
+    RL_CORE_ASSERT(layer != nullptr, "null layer");
     m_LayerStack.pushLayer(layer);
 }
 
 void Application::pushOverlay(Layer* overlay)
 {
+    RL_CORE_ASSERT(overlay != nullptr, "null overlay");
     m_LayerStack.pushOverlay(overlay);
 }
 
 void Application::popLayer(Layer* layer)
 {
+    RL_CORE_ASSERT(layer != nullptr, "null layer");
     m_LayerStack.popLayer(layer);
 }
 
 void Application::popOverlay(Layer* overlay)
 {
+    RL_CORE_ASSERT(overlay != nullptr, "null overlay");
     m_LayerStack.popOverlay(overlay);
 }
 

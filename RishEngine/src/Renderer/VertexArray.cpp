@@ -68,8 +68,8 @@ void VertexArray::setVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 			(const void*)element.offset);
 		m_vertexAttribIndex++;
 
-		m_vertexBuffer = vertexBuffer;
 	}
+    m_vertexBuffer = vertexBuffer;
 }
 
 void VertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuf)
