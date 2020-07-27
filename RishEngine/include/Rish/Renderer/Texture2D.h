@@ -33,7 +33,7 @@ public:
     void bind(uint32_t slot = 0) const;
 	void unbind() const;
 
-	static Ref<Texture2D> LoadTexture(const std::string &virtualPath, bool flip=true);
+	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip= true);
 
 private:
     /// Path to the image file

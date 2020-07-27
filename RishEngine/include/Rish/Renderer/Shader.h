@@ -25,16 +25,17 @@ public:
      * @param fragPath Path to fragment shader source file
      */
 	Shader(const char *vertPath, const char *fragPath);
-	~Shader()
-	{
-		glDeleteProgram(program);
-	}
+	/**
+	 * @brief dtor
+	 */
+	~Shader();
 
-	void bind();
-	void unbind();
+	static Ref<Shader> LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath);
+
+	void bind();   /// Bind
+	void unbind(); /// Unbind
 
 	uint32_t getShaderID() const { return program; }
-
 	uint32_t getLocationByName(const std::string &name) const;
 
 	void setInt(const std::string &name, int value);

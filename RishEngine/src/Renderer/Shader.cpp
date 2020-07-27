@@ -2,11 +2,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Rish/Core/Core.h>
-#include <Rish/Renderer/Shader.h>
 #include <Rish/Core/FileSystem.h>
+#include <Rish/Core/VFS.h>
+
+#include <Rish/Renderer/Shader.h>
 
 namespace rl {
 
+// TODO: When Failed to load the shader, roll back to engine default shader instead.
 Shader::Shader(const char *vertPath, const char *fragPath)
 {
 	m_vertSource = FileSystem::ReadTextFile(vertPath);
@@ -25,6 +28,11 @@ Shader::Shader(const char *vertPath, const char *fragPath)
 
 	glDeleteShader(vert);
 	glDeleteShader(frag);
+}
+
+Shader::~Shader()
+{
+    glDeleteProgram(program);
 }
 
 void Shader::bind()
@@ -126,6 +134,14 @@ void Shader::setMat3(const std::string &name, const glm::mat3 &matrix)
 void Shader::setMat4(const std::string &name, const glm::mat4 &matrix)
 {
 	glUniformMatrix4fv(getLocationByName(name), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+Ref<Shader> Shader::LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath)
+{
+    std::string vert, frag;
+    VFS::ResolvePhysicalPath(v_vertPath, vert);
+    VFS::ResolvePhysicalPath(v_fragPath, frag);
+    return std::make_shared<Shader>(vert.c_str(), frag.c_str());
 }
 
 }

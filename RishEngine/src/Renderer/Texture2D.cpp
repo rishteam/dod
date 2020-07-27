@@ -50,7 +50,7 @@ void Texture2D::unbind() const
 	glBindTextureUnit(0, 0);
 }
 
-Ref<Texture2D> Texture2D::LoadTexture(const std::string &virtualPath, bool flip)
+Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool flip)
 {
     std::string path;
     VFS::ResolvePhysicalPath(virtualPath, path);
