@@ -22,7 +22,7 @@ public:
      * @brief ctor
      * @param path Image file path
      */
-	Texture2D(const std::string& path);
+    Texture2D(const std::string &path, bool flip=true);
 	~Texture2D();
 
 	uint32_t getWidth() const { return m_width; }
@@ -30,6 +30,8 @@ public:
 
     void bind(uint32_t slot = 0) const;
 	void unbind() const;
+
+	static Ref<Texture2D> LoadTexture(const std::string &virtualPath, bool flip=true);
 
 private:
     /// Path to the image file

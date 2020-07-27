@@ -15,9 +15,12 @@ public:
 private:
     bool onKeyPressed(rl::KeyPressedEvent &event);
 
-    rl::Ref<rl::VertexArray> m_testSquare;
-    rl::Ref<rl::VertexArray> m_testVA;
+    rl::Ref<rl::VertexArray> m_smallSquare;
     rl::Ref<rl::Shader> m_testShader;
+    //
+    rl::Ref<rl::VertexArray> m_texturedSquare;
+    rl::Ref<rl::Shader> m_texturedShader;
+    rl::Ref<rl::Texture2D> m_squareTexture;
 
     // Camera
     rl::OrthographicCamera m_camera;

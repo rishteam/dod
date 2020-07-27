@@ -1,65 +1,90 @@
 #include "SandboxLayer.h"
 
 #include <Rish/Input/Input.h>
+#include <Rish/Renderer/Texture2D.h>
 #include <cmath>
-
 #include <glm/gtc/type_ptr.hpp>
 
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("example"),
       m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {
+    // For test only
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // For test only
+
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
-    m_testVA = std::make_shared<rl::VertexArray>();
+    std::string vertPath, fragPath, texPath;
 
-    // Vertex Buffer
-    float vertices[3 * 7] = {
-        0.0f,  0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-        -0.5f,  -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-        0.5f,  -0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
-    };
-    rl::Ref<rl::VertexBuffer> vb;
-    vb = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
-    rl::BufferLayout layout = {
-        {rl::ShaderDataType::Float3, "a_Position"},
-        {rl::ShaderDataType::Float4, "a_Color"}
-    };
-    vb->setLayout(layout);
-    m_testVA->setVertexBuffer(vb);
+    // Textured Square
+    {
+        m_texturedSquare = std::make_shared<rl::VertexArray>();
+        // Vertex Buffer
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
+        };
+        rl::Ref<rl::VertexBuffer> vb;
+        vb = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
+        rl::BufferLayout layout = {
+            {rl::ShaderDataType::Float3, "a_Position"},
+            {rl::ShaderDataType::Float2, "a_TexCord"}
+        };
+        vb->setLayout(layout);
+        m_texturedSquare->setVertexBuffer(vb);
 
-    // Index Buffer
-    uint32_t indices[3] = {0, 1, 2};
-    rl::Ref<rl::IndexBuffer> ib;
-    ib = std::make_shared<rl::IndexBuffer>(indices, 3);
-    m_testVA->setIndexBuffer(ib);
+        // Index Buffer
+        uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+        rl::Ref<rl::IndexBuffer> ib;
+        ib = std::make_shared<rl::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
+        m_texturedSquare->setIndexBuffer(ib);
 
-    // Load shader
-    std::string vertPath, fragPath;
-    rl::VFS::ResolvePhysicalPath("/shader/test.vert", vertPath);
-    rl::VFS::ResolvePhysicalPath("/shader/test.frag", fragPath);
-    m_testShader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
+        // Load texture
+        m_squareTexture = rl::Texture2D::LoadTexture("/texture/1.png");
 
-    // Square
-    m_testSquare = std::make_shared<rl::VertexArray>();
-    float square[] = {
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-         0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-    };
-    rl::Ref<rl::VertexBuffer> sq = std::make_shared<rl::VertexBuffer>(square, sizeof(square));
-    rl::BufferLayout sqlayout = {
-        {rl::ShaderDataType::Float3, "a_Position"},
-        {rl::ShaderDataType::Float4, "a_Color"}
-    };
-    sq->setLayout(sqlayout);
-    m_testSquare->setVertexBuffer(sq);
-    uint32_t a[] = {0, 1, 2, 1, 2, 3};
-    ib = std::make_shared<rl::IndexBuffer>(a, 6);
-    m_testSquare->setIndexBuffer(ib);
+        // Load Shader
+        rl::VFS::ResolvePhysicalPath("/shader/textured.vert", vertPath);
+        rl::VFS::ResolvePhysicalPath("/shader/textured.frag", fragPath);
+        m_texturedShader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
+        m_texturedShader->bind();
+        // TODO: Shader class should
+        m_texturedShader->setInt("u_Texture", 0);
+    }
 
+    // Small Square
+    {
+        m_smallSquare = std::make_shared<rl::VertexArray>();
+        float square[] = {
+            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        };
+
+        // Vertex Buffer
+        rl::Ref<rl::VertexBuffer> sq = std::make_shared<rl::VertexBuffer>(square, sizeof(square));
+        rl::BufferLayout layout = {
+            {rl::ShaderDataType::Float3, "a_Position"},
+            {rl::ShaderDataType::Float4, "a_Color"}
+        };
+        sq->setLayout(layout);
+        m_smallSquare->setVertexBuffer(sq);
+
+        // Index Buffer
+        uint32_t a[] = {0, 1, 2, 1, 2, 3};
+        rl::Ref<rl::IndexBuffer> ib = std::make_shared<rl::IndexBuffer>(a, 6);
+        m_smallSquare->setIndexBuffer(ib);
+
+        // Load shaders
+        rl::VFS::ResolvePhysicalPath("/shader/test.vert", vertPath);
+        rl::VFS::ResolvePhysicalPath("/shader/test.frag", fragPath);
+        m_testShader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
+    }
 }
 
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
@@ -99,16 +124,20 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
     rl::RenderCommand::Clear();
 
     rl::Renderer::BeginScene(m_camera);
-    rl::Renderer::Submit(m_testShader, m_testVA);
 
     glm::mat4 sacle = glm::scale(glm::mat4(1.f), glm::vec3(0.1f));
     for(int j = 0; j < 20; j++)
         for(int i = 0; i < 20; i++)
         {
-            glm::vec3 pos(i * 0.11f, j*0.11f, 0.0f);
+            glm::vec3 pos(i * 0.11f, j * 0.11f, 0.0f);
             glm::mat4 trans = glm::translate(glm::mat4(1.f), pos) * sacle;
-            rl::Renderer::Submit(m_testShader, m_testSquare, trans);
+            rl::Renderer::Submit(m_testShader, m_smallSquare, trans);
         }
+
+    m_squareTexture->bind();
+    rl::Renderer::Submit(m_texturedShader, m_texturedSquare);
+    m_squareTexture->unbind();
+
     rl::Renderer::EndScene();
 }
 
