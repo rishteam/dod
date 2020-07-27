@@ -25,7 +25,7 @@ EditorLayer::EditorLayer()
 		-0.4f,  0.1f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 	};
 
-	std::shared_ptr<rl::VertexBuffer> vertexBuffer;
+	rl::Ref<rl::VertexBuffer> vertexBuffer;
 	vertexBuffer = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
 
 	rl::BufferLayout layout = {
@@ -37,7 +37,7 @@ EditorLayer::EditorLayer()
     m_vertexArray->setVertexBuffer(vertexBuffer);
 
 	uint32_t indices[3] = {0, 1, 2};
-	std::shared_ptr<rl::IndexBuffer> indexBuffer;
+	rl::Ref<rl::IndexBuffer> indexBuffer;
 	indexBuffer = std::make_shared<rl::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
 	m_vertexArray->setIndexBuffer(indexBuffer);
 
@@ -52,7 +52,7 @@ EditorLayer::EditorLayer()
 		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 	};
 
-	std::shared_ptr<rl::VertexBuffer> squareVB;
+	rl::Ref<rl::VertexBuffer> squareVB;
 	squareVB.reset(new rl::VertexBuffer(square, sizeof(square)));
 	squareVB->setLayout({
 		{rl::ShaderDataType::Float3, "a_Position"},
@@ -61,7 +61,7 @@ EditorLayer::EditorLayer()
     testVA->setVertexBuffer(squareVB);
 
 	uint32_t squareIndices[6] = {0, 1, 2, 2, 0, 3};
-	std::shared_ptr<rl::IndexBuffer> squareIB =std::make_shared<rl::IndexBuffer>(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+	rl::Ref<rl::IndexBuffer> squareIB =std::make_shared<rl::IndexBuffer>(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 	testVA->setIndexBuffer(squareIB);
 
 	testVA->unbind();

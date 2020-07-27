@@ -15,9 +15,9 @@ public:
 private:
     bool onKeyPressed(rl::KeyPressedEvent &event);
 
-    std::shared_ptr<rl::VertexArray> m_testSquare;
-    std::shared_ptr<rl::VertexArray> m_testVA;
-    std::shared_ptr<rl::Shader> m_testShader;
+    rl::Ref<rl::VertexArray> m_testSquare;
+    rl::Ref<rl::VertexArray> m_testVA;
+    rl::Ref<rl::Shader> m_testShader;
 
     // Camera
     rl::OrthographicCamera m_camera;

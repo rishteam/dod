@@ -63,9 +63,11 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
 		return 4 * 4;
 	case ShaderDataType::Bool:
 		return 1;
-	}
 
-	RL_CORE_TRACE("Unknown ShaderDataType");
+	case ShaderDataType::None:
+	default:
+		RL_CORE_ASSERT(false, "Unknown ShaderDataType");
+	}
 	return 0;
 }
 

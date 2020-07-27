@@ -57,12 +57,6 @@ private:
     bool m_running = false;
     /// previous frame time
     float m_prevFrameTime = 0.0f;
-
-    std::shared_ptr<Shader> m_shader;
-    std::shared_ptr<VertexArray> m_vertexArray;
-
-    std::shared_ptr<Shader> testShader;
-    std::shared_ptr<VertexArray> testVA;
 };
 
 Application* CreateApplication();

@@ -20,7 +20,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         -0.5f,  -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
         0.5f,  -0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
     };
-    std::shared_ptr<rl::VertexBuffer> vb;
+    rl::Ref<rl::VertexBuffer> vb;
     vb = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
     rl::BufferLayout layout = {
         {rl::ShaderDataType::Float3, "a_Position"},
@@ -31,7 +31,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
     // Index Buffer
     uint32_t indices[3] = {0, 1, 2};
-    std::shared_ptr<rl::IndexBuffer> ib;
+    rl::Ref<rl::IndexBuffer> ib;
     ib = std::make_shared<rl::IndexBuffer>(indices, 3);
     m_testVA->setIndexBuffer(ib);
 
@@ -49,7 +49,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
     };
-    std::shared_ptr<rl::VertexBuffer> sq = std::make_shared<rl::VertexBuffer>(square, sizeof(square));
+    rl::Ref<rl::VertexBuffer> sq = std::make_shared<rl::VertexBuffer>(square, sizeof(square));
     rl::BufferLayout sqlayout = {
         {rl::ShaderDataType::Float3, "a_Position"},
         {rl::ShaderDataType::Float4, "a_Color"}
@@ -142,4 +142,5 @@ bool ExampleSandboxLayer::onKeyPressed(rl::KeyPressedEvent &event)
     {
         m_showDebugImGuiWindow = !m_showDebugImGuiWindow;
     }
+    return false;
 }

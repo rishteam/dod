@@ -28,18 +28,18 @@ public:
 	void bind() const;
 	void unbind() const;
 
-	void setVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
-	void setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuf);
+	void setVertexBuffer(const Ref<VertexBuffer>& vertexBuffer);
+	void setIndexBuffer(const Ref<IndexBuffer>& indexBuf);
 
-	const std::shared_ptr<VertexBuffer>& getVertexBuffer() const { return m_vertexBuffer; }
-	const std::shared_ptr<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
+	const Ref<VertexBuffer>& getVertexBuffer() const { return m_vertexBuffer; }
+	const Ref<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
 
 private:
 	uint32_t vao = 0;
 	/// vertex buffer
-	std::shared_ptr<VertexBuffer> m_vertexBuffer = nullptr;
+	Ref<VertexBuffer> m_vertexBuffer = nullptr;
 	/// index buffer
-	std::shared_ptr<IndexBuffer> m_indexBuffer = nullptr;
+	Ref<IndexBuffer> m_indexBuffer = nullptr;
 
 	uint32_t m_vertexAttribIndex = 0;
 };

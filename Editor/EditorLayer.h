@@ -21,15 +21,15 @@ public:
 private:
     OrthographicCamera m_camera;
 
-	std::shared_ptr<rl::Shader> m_shader;
-	std::shared_ptr<rl::VertexArray> m_vertexArray;
+	rl::Ref<rl::Shader> m_shader;
+	rl::Ref<rl::VertexArray> m_vertexArray;
 
-	std::shared_ptr<rl::Shader> testShader;
-	std::shared_ptr<rl::VertexArray> testVA;
+	rl::Ref<rl::Shader> testShader;
+	rl::Ref<rl::VertexArray> testVA;
 
-	std::shared_ptr<rl::Texture2D> m_texture;
+	rl::Ref<rl::Texture2D> m_texture;
 
-	std::shared_ptr<rl::Framebuffer> m_framebuffer;
+	rl::Ref<rl::Framebuffer> m_framebuffer;
 };
 
 }

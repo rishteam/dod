@@ -29,7 +29,7 @@ public:
      * @brief Draw By IndexBuffer
      * @param vertexArray Vertex Array
      */
-    static void DrawElement(const std::shared_ptr<VertexArray> &vertexArray);
+    static void DrawElement(const Ref<VertexArray> &vertexArray);
 };
 
 }
