@@ -17,6 +17,11 @@ class RL_API Renderer
 {
 public:
     /**
+     * @brief Initialize the Renderer
+     */
+    static void Init();
+
+    /**
      * @brief Begin Scene
      */
     static void BeginScene(OrthographicCamera &camera);

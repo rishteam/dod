@@ -15,6 +15,11 @@ class RL_API RenderCommand
 {
 public:
     /**
+     * @brief Init Command
+     */
+    static void Init();
+
+    /**
      * @brief Set Clear Color
      * @param color Color
      */

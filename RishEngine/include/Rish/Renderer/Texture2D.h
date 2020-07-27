@@ -12,6 +12,8 @@
 
 namespace rl {
 
+// TODO: Support other format (RGB, RGBA, ...) of textures
+
 /**
  * @brief 2D Texture class
  */

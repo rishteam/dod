@@ -9,11 +9,6 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("example"),
       m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {
-    // For test only
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // For test only
-
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");

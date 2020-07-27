@@ -1,13 +1,15 @@
 #include <Rish/Renderer/Renderer.h>
 
-#include <glm/glm.hpp>
-
 struct SceneData
 {
     glm::mat4 ViewProjectionMatrix{0.f};
 };
-
 static SceneData s_sceneData;
+
+void rl::Renderer::Init()
+{
+    RenderCommand::Init();
+}
 
 void rl::Renderer::BeginScene(OrthographicCamera &camera)
 {

@@ -1,33 +1,32 @@
-#include "Rish/Core/Core.h"
-#include "Rish/Core/Application.h"
-#include "Rish/Core/Time.h"
+#include <Rish/Core/Core.h>
+#include <Rish/Core/Application.h>
+#include <Rish/Core/Time.h>
 
-#include "Rish/Events/Event.h"
-#include "Rish/Events/ApplicationEvent.h"
+#include <Rish/Events/Event.h>
+#include <Rish/Events/ApplicationEvent.h>
+
+#include <Rish/Renderer/Renderer.h>
 
 #include <fmt/printf.h>
 #include <fmt/format.h>
 
-#include <SFML/System/Clock.hpp>
-#include <SFML/OpenGL.hpp>
-#include <imgui.h>
-
-// #include "Rish/Renderer/Buffer.h"
-// #include "Rish/Renderer/VertexArray.h"
-
 namespace rl {
-
-#define S_PER_UPDATE 0.01
 
 Application *Application::s_instance = nullptr;
 
 Application::Application(const std::string &name, uint32_t width, uint32_t height)
 {
     RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have ONE Application instance");
-    Application::s_instance = this; // set instance
+    // Set instance
+    Application::s_instance = this;
+    // Initialize the window
     m_window = std::unique_ptr<Window>(Window::Create(name, width, height));
     m_window->setEventCallback(RL_BIND_EVENT_FUNC(Application::onEvent));
-    m_running = true; // set the running flag
+
+    // Initialize the renderer
+    Renderer::Init();
+
+    m_running = true;
     // Push the imgui overlay
     m_imguiLayer = new ImGuiLayer();
     pushOverlay(m_imguiLayer);
@@ -35,6 +34,7 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
 
 Application::~Application()
 {
+    delete m_imguiLayer;
 }
 
 void Application::run()
