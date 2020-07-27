@@ -15,6 +15,7 @@ public:
 private:
     bool onKeyPressed(rl::KeyPressedEvent &event);
 
+    std::shared_ptr<rl::VertexArray> m_testSquare;
     std::shared_ptr<rl::VertexArray> m_testVA;
     std::shared_ptr<rl::Shader> m_testShader;
 

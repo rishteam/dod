@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
+#include <glm/glm.hpp>
 //
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/RendererCommand.h>
@@ -29,7 +30,7 @@ public:
      * @brief Submit Vertex Array
      * @param vertexArray Vertex Array
      */
-    static void Submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray);
+    static void Submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray, const glm::mat4 &transform=glm::mat4(1.f));
 };
 
 } // end of namespace rl

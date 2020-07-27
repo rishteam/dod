@@ -18,10 +18,11 @@ void rl::Renderer::EndScene()
 {
 }
 
-void rl::Renderer::Submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray)
+void rl::Renderer::Submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray, const glm::mat4 &transform)
 {
     shader->bind();
     shader->setMat4("u_ViewProjection", s_sceneData.ViewProjectionMatrix);
+    shader->setMat4("u_Model", transform);
     //
     vertexArray->bind();
     RenderCommand::DrawElement(vertexArray);
