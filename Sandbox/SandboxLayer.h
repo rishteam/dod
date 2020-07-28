@@ -21,6 +21,7 @@ private:
     rl::Ref<rl::VertexArray> m_texturedSquare;
     rl::Ref<rl::Shader> m_texturedShader;
     rl::Ref<rl::Texture2D> m_squareTexture;
+    rl::ShaderLibrary m_shaders;
 
     // Camera
     rl::OrthographicCamera m_camera;

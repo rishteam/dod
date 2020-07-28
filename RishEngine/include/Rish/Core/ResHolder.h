@@ -13,6 +13,8 @@
 
 namespace rl {
 
+class Shader;
+
 /**
  * @brief Resource Holder class
  */

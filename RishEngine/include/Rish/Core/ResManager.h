@@ -16,6 +16,7 @@
 
 #include <Rish/Core/Core.h>
 #include <Rish/Core/Log.h>
+#include <Rish/Renderer/Shader.h>
 
 namespace rl {
 
@@ -99,7 +100,6 @@ bool ResManager<T>::loadVFS(const std::string &resName, const std::string &vfsPa
     RL_TRACE("Load resource: {} {}", resName, vfsPath);
     std::string path;
     VFS::ResolvePhysicalPath(vfsPath, path);
-
     return load(resName, path);
 }
 

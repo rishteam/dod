@@ -40,12 +40,14 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         m_texturedSquare->setIndexBuffer(ib);
 
         // Load texture
-        auto m_testImage = rl::Image::LoadImageVFS("/texture/1.png");
         m_squareTexture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
+        //
+        auto m_testImage = rl::Image::LoadImageVFS("/texture/1.png");
         m_squareTexture = std::make_shared<rl::Texture2D>(m_testImage);
 
         // Load Shader
-        m_texturedShader = rl::Shader::LoadShaderVFS("/shader/textured.vert", "/shader/textured.frag");
+//        m_texturedShader = rl::Shader::LoadShaderVFS("/shader/textured.vert", "/shader/textured.frag");
+        m_texturedShader = m_shaders.load("textured", "/shader/textured");
         m_texturedShader->bind();
         // TODO: Shader class should
         m_texturedShader->setInt("u_Texture", 0);
@@ -76,7 +78,8 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         m_smallSquare->setIndexBuffer(ib);
 
         // Load shaders
-        m_testShader = rl::Shader::LoadShaderVFS("/shader/test.vert", "/shader/test.frag");
+//        m_testShader = rl::Shader::LoadShaderVFS("/shader/test.vert", "/shader/test.frag");
+        m_testShader = m_shaders.load("test", "/shader/test");
     }
 }
 

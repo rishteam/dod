@@ -70,6 +70,7 @@ add_library(RishEngine
     src/Core/FileSystem.cpp
     src/Core/VFS.cpp
     src/Debug/ImGuiLogWindow.cpp
+    src/Utils/uuid.cpp
 
     # fs
     src/Utils/FileDialog.cpp
@@ -92,7 +93,7 @@ add_library(RishEngine
     src/Renderer/Renderer.cpp
     # Camera
     src/Renderer/Camera/OrthographicCamera.cpp
-        src/Utils/uuid.cpp)
+        )
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

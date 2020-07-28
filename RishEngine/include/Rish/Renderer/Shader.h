@@ -23,15 +23,17 @@ class RL_API Shader
 public:
     /**
      * @brief ctor
-     * @param vertPath Path to vertex shader source file
-     * @param fragPath Path to fragment shader source file
+     * @param vertSrc Path to vertex shader source file
+     * @param fragSrc Path to fragment shader source file
      */
-	Shader(const char *vertPath, const char *fragPath);
+	Shader(const char *vertSrc, const char *fragSrc);
 	/**
 	 * @brief dtor
 	 */
 	~Shader();
 
+	static std::string s_vertSource, s_fragSource;
+	static Ref<Shader> LoadShader(const std::string &vertPath, const std::string &fragPath);
 	static Ref<Shader> LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath);
 
 	void bind();   /// Bind
@@ -60,4 +62,35 @@ private:
 	uint32_t program = 0;
 };
 
+/**
+ * @brief Shader Library
+ */
+class RL_API ShaderLibrary
+{
+public:
+    ShaderLibrary();
+
+    /**
+     * @brief Load a Shader and add to Library
+     * @param name Name of the Shader
+     * @param vpath Path for both vertex shader and fragment shader (without ext)
+     */
+    Ref<Shader> load(const std::string &name, const std::string &vpath);
+    Ref<Shader> get(const std::string &name);
+
+private:
+    std::unordered_map<std::string, Ref<Shader>> m_shader;
+    Ref<Shader> m_defaultShader;
+};
+
 }
+
+/**
+ * @class rl::ShaderLibrary
+ *
+ * @code{.cpp}
+ * rl::ShaderLibrary m_shaders;
+ * rl::Ref<rl::Shader> shader = m_shaders.load("textured", "/shader/textured");
+ * // Load "/shader/textured.vert" and "/shader/textured.frag" in VFS
+ * @endcode
+ */

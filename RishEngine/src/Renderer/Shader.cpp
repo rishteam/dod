@@ -9,17 +9,14 @@
 
 namespace rl {
 
-// TODO: When Failed to load the shader, roll back to engine default shader instead.
-Shader::Shader(const char *vertPath, const char *fragPath)
-{
-	m_vertSource = FileSystem::ReadTextFile(vertPath);
-	RL_CORE_ASSERT(m_vertSource != "", "[Shader] Failed to open File");
-	m_fragSource = FileSystem::ReadTextFile(fragPath);
-	RL_CORE_ASSERT(m_fragSource != "", "[Shader] Failed to open File");
+// Static variables
 
-	const char *verSrc = m_vertSource.c_str();
-	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &verSrc);
-	const char *fragSrc = m_fragSource.c_str();
+std::string Shader::s_vertSource;
+std::string Shader::s_fragSource;
+
+Shader::Shader(const char *vertSrc, const char *fragSrc)
+{
+	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertSrc);
 	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrc);
 	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
 
@@ -136,12 +133,81 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &matrix)
 	glUniformMatrix4fv(getLocationByName(name), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+Ref<Shader> Shader::LoadShader(const std::string &vertPath, const std::string &fragPath)
+{
+	s_vertSource = FileSystem::ReadTextFile(vertPath);
+	RL_CORE_ASSERT(s_vertSource != "", "[Shader] Failed to open File");
+	s_fragSource = FileSystem::ReadTextFile(fragPath);
+	RL_CORE_ASSERT(s_fragSource != "", "[Shader] Failed to open File");
+	return std::make_shared<Shader>(s_vertSource.c_str(), s_fragSource.c_str());
+}
+
 Ref<Shader> Shader::LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath)
 {
-    std::string vert, frag;
-    VFS::ResolvePhysicalPath(v_vertPath, vert);
-    VFS::ResolvePhysicalPath(v_fragPath, frag);
-    return std::make_shared<Shader>(vert.c_str(), frag.c_str());
+	s_vertSource = VFS::ReadTextFile(v_vertPath);
+	RL_CORE_ASSERT(s_vertSource != "", "[Shader] Failed to open File");
+	s_fragSource = VFS::ReadTextFile(v_fragPath);
+	RL_CORE_ASSERT(s_fragSource != "", "[Shader] Failed to open File");
+    return std::make_shared<Shader>(s_vertSource.c_str(), s_fragSource.c_str());
 }
+
+////////////////////////////////////////////////////////////////////////////
+// Shader Library
+
+ShaderLibrary::ShaderLibrary()
+{
+	const char *vert = R"glsl(
+#version 330 core
+
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec4 a_Color;
+
+uniform mat4 u_ViewProjection;
+uniform mat4 u_Model;
+
+out vec3 v_Position;
+out vec4 v_Color;
+
+void main()
+{
+    gl_Position = u_ViewProjection * u_Model * vec4(a_Position, 1.0);
+    // Pass to Frag
+    v_Position = a_Position;
+    v_Color = a_Color;
+}
+	)glsl";
+	const char *frag = R"glsl(
+#version 330 core
+
+in vec3 v_Position;
+in vec4 v_Color;
+
+out vec4 color;
+
+void main()
+{
+    color = vec4(1.0, 0.0, 0.0, 1.0);
+}
+	)glsl";
+	m_defaultShader = std::make_shared<Shader>(vert, frag);
+}
+
+Ref<Shader> ShaderLibrary::load(const std::string &name, const std::string &vpath)
+{
+	if(m_shader.count(name))
+		m_shader.erase(name);
+	// TODO: roll back to default shader when error?
+	auto newShader = Shader::LoadShaderVFS(vpath+".vert", vpath+".frag");
+	m_shader[name] = newShader;
+	RL_CORE_TRACE("[ShaderLibrary] Loaded {} from {}.vert/.frag", name, vpath);
+	return newShader;
+}
+
+Ref<Shader> ShaderLibrary::get(const std::string &name)
+{
+//    RL_CORE_ASSERT(m_shader.count(name), "Shader not found");
+    return m_shader.count(name) ? m_shader[name] : m_defaultShader;
+}
+
 
 }
