@@ -10,6 +10,8 @@
 #include <Rish/rlpch.h>
 #include <Rish/Core/Core.h>
 
+#include <Rish/Renderer/Image.h>
+
 namespace rl {
 
 // TODO: Support other format (RGB, RGBA, ...) of textures
@@ -25,6 +27,7 @@ public:
      * @param path Image file path
      */
     Texture2D(const std::string &path, bool flip=true);
+    Texture2D(Ref<Image> image);
 	~Texture2D();
 
 	uint32_t getWidth() const { return m_width; }
@@ -33,9 +36,13 @@ public:
     void bind(uint32_t slot = 0) const;
 	void unbind() const;
 
-	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip= true);
+	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false);
 
 private:
+    void createTexture();
+    void setSize(uint32_t width, uint32_t height);
+    void setTexture(const void * imagePtr);
+
     /// Path to the image file
 	std::string m_path;
     /// Width

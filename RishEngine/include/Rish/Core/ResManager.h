@@ -9,6 +9,8 @@
 
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/VFS.h>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
@@ -26,6 +28,7 @@ class ResManager
 {
 public:
     bool load(const std::string &resName, const std::string &path);
+    bool loadVFS(const std::string &resName, const std::string &vfsPath);
 
     bool release(const std::string &resName);
 
@@ -39,14 +42,14 @@ public:
     bool isDefaultResource(const T &res) { return getDefaultResource() == res; }
 
 private:
-    inline void deleteIfExists(const std::string &resName, const std::string &path)
+    void deleteIfExists(const std::string &resName, const std::string &path)
     {
         if (m_resMap.count(resName))
             m_resMap.erase(resName);
         if (m_resPath.count(path))
             m_resPath.erase(resName);
     }
-    inline void setResourcePath(const std::string &resName, const std::string &path)
+    void setResourcePath(const std::string &resName, const std::string &path)
     {
         m_resPath[resName] = path;
     }
@@ -88,6 +91,16 @@ bool ResManager<T>::load(const std::string &resName, const std::string &path)
     }
     setResourcePath(resName, path);
     return true;
+}
+
+template<typename T>
+bool ResManager<T>::loadVFS(const std::string &resName, const std::string &vfsPath)
+{
+    RL_TRACE("Load resource: {} {}", resName, vfsPath);
+    std::string path;
+    VFS::ResolvePhysicalPath(vfsPath, path);
+
+    return load(resName, path);
 }
 
 /**

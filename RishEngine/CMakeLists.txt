@@ -52,11 +52,10 @@ add_library(RishEngine
     # Application
     src/Core/Application.cpp
 
-    # Window
+    # Windows only
     src/Platform/SFMLWindow.cpp
-
-    # Input
     src/Platform/SFMLInput.cpp
+    src/Platform/SFMLImage.cpp
 
     # Animation
     src/Animation/Animation.cpp
@@ -70,7 +69,7 @@ add_library(RishEngine
     src/Core/Log.cpp
     src/Core/FileSystem.cpp
     src/Core/VFS.cpp
-        src/Debug/ImGuiLogWindow.cpp
+    src/Debug/ImGuiLogWindow.cpp
 
     # fs
     src/Utils/FileDialog.cpp
@@ -93,7 +92,7 @@ add_library(RishEngine
     src/Renderer/Renderer.cpp
     # Camera
     src/Renderer/Camera/OrthographicCamera.cpp
-)
+        src/Utils/uuid.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
