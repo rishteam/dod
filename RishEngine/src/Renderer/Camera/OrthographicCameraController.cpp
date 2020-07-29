@@ -61,7 +61,11 @@ void OrthographicCameraController::onEvent(Event &e)
 void OrthographicCameraController::onImGuiRender()
 {
     ImGui::Begin("Debug");
-    ImGui::Text("test");
+    ImGui::BeginGroup();
+    ImGui::Text("Camera");
+    ImGui::Text("Position %.2f %.2f %.2f", m_position.x, m_position.y, m_position.z);
+    ImGui::Text("Rotate %.2f", m_rotate);
+    ImGui::EndGroup();
     ImGui::End();
 }
 

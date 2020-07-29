@@ -22,3 +22,8 @@ void rl::RenderCommand::DrawElement(const Ref<VertexArray> &vertexArray)
 {
     glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 }
+
+void rl::RenderCommand::SetViewPort(float x, float y, float width, float height)
+{
+    glViewport(x, y, width, height);
+}

@@ -22,6 +22,13 @@ public:
     static void Init();
 
     /**
+     * @brief
+     * @param width
+     * @param height
+     */
+    static void OnWindowResize(uint32_t width, uint32_t height);
+
+    /**
      * @brief Begin Scene
      */
     static void BeginScene(OrthographicCamera &camera);

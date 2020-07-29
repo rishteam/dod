@@ -20,6 +20,16 @@ public:
     static void Init();
 
     /**
+     * @brief Set viewport
+     * @details https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glViewport.xhtml
+     * @param x lower left corner of the viewport rectangle
+     * @param y lower left corner of the viewport rectangle
+     * @param width
+     * @param height
+     */
+    static void SetViewPort(float x, float y, float width, float height);
+
+    /**
      * @brief Set Clear Color
      * @param color Color
      */

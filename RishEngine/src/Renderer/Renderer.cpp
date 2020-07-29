@@ -32,3 +32,8 @@ void rl::Renderer::Submit(const Ref<Shader> &shader, const Ref<VertexArray> &ver
     vertexArray->unbind();
     shader->unbind();
 }
+
+void rl::Renderer::OnWindowResize(uint32_t width, uint32_t height)
+{
+    RenderCommand::SetViewPort(0, 0, (float)width, (float)height);
+}

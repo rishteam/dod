@@ -28,13 +28,12 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
 
     m_running = true;
     // Push the imgui overlay
-    m_imguiLayer = new ImGuiLayer();
-    pushOverlay(m_imguiLayer);
+    m_imguiLayer = std::make_unique<ImGuiLayer>();
+    pushOverlay(m_imguiLayer.get());
 }
 
 Application::~Application()
 {
-    delete m_imguiLayer;
 }
 
 void Application::run()
@@ -121,7 +120,7 @@ bool Application::onWindowClose(WindowCloseEvent &e)
 bool Application::onWindowResize(WindowResizeEvent &e)
 {
     RL_CORE_TRACE("{}", e);
-    glViewport(0, 0, e.m_width, e.m_height);
+    Renderer::OnWindowResize(e.m_width, e.m_height);
     return false;
 }
 

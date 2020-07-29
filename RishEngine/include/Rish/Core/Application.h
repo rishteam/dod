@@ -59,7 +59,7 @@ private:
     /// Window
     std::unique_ptr<Window> m_window;
     /// ImGui Layer
-    ImGuiLayer *m_imguiLayer;
+    Scope<ImGuiLayer> m_imguiLayer;
     /// Layer container
     LayerStack m_LayerStack;
     /// Is the application still running
