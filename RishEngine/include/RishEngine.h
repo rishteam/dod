@@ -48,6 +48,7 @@
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
+#include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
 /// @defgroup core Core Module
 /// Core functions

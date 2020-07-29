@@ -159,12 +159,13 @@ public:
      * @brief Dispatch the event by its type to the function provided
      *
      * @tparam T Event Type
+     * @tparam F Function Type (Deduced by the compiler)
      * @param eventFunc The function that handle this event
      * @return true succeeded
      * @return false failed
      */
-    template <typename T>
-    bool dispatch(EventFunc<T> eventFunc)
+    template <typename T, typename F>
+    bool dispatch(const F& eventFunc)
     {
         // if the type matches, calling the handle function
         if (m_event.getEventType() == T::getStaticType())

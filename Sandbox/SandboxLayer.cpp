@@ -7,7 +7,7 @@
 
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("example"),
-      m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
+      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / rl::Application::Get().getWindow().getHeight(), true)
 {
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     rl::VFS::Mount("shader", "Sandbox/assets");
@@ -40,10 +40,10 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         m_texturedSquare->setIndexBuffer(ib);
 
         // Load texture
-        m_squareTexture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
+        m_squareTexture = rl::Texture2D::LoadTextureVFS("/texture/1.png", true);
         //
-        auto m_testImage = rl::Image::LoadImageVFS("/texture/1.png");
-        m_squareTexture = std::make_shared<rl::Texture2D>(m_testImage);
+//        auto m_testImage = rl::Image::LoadImageVFS("/texture/1.png");
+//        m_squareTexture = std::make_shared<rl::Texture2D>(m_testImage);
 
         // Load Shader
 //        m_texturedShader = rl::Shader::LoadShaderVFS("/shader/textured.vert", "/shader/textured.frag");
@@ -85,41 +85,14 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
-    if(rl::Input::isKeyPressed(rl::Keyboard::W))
-    {
-        m_cameraPosition.y += m_cameraMoveSpeed * dt.asSeconds();
-    }
-    else if(rl::Input::isKeyPressed(rl::Keyboard::S))
-    {
-        m_cameraPosition.y -= m_cameraMoveSpeed * dt.asSeconds();
-    }
-    if(rl::Input::isKeyPressed(rl::Keyboard::A))
-    {
-        m_cameraPosition.x -= m_cameraMoveSpeed * dt.asSeconds();
-    }
-    else if(rl::Input::isKeyPressed(rl::Keyboard::D))
-    {
-        m_cameraPosition.x += m_cameraMoveSpeed * dt.asSeconds();
-    }
-    if(rl::Input::isKeyPressed(rl::Keyboard::Q))
-    {
-        m_cameraRotation -= m_cameraRotateSpeed * dt.asSeconds();
-    }
-    else if(rl::Input::isKeyPressed(rl::Keyboard::E))
-    {
-        m_cameraRotation += m_cameraRotateSpeed * dt.asSeconds();
-    }
+    // Update
+    m_cameraController.onUpdate(dt);
 
-    if(m_cameraRotation > 360.f || m_cameraRotation < -360.f)
-        m_cameraRotation = std::fmod(m_cameraRotation, 360.f);
-
-    m_camera.setPosition(m_cameraPosition);
-    m_camera.setRotation(m_cameraRotation);
-
+    // Render
     rl::RenderCommand::SetClearColor(clearColor);
     rl::RenderCommand::Clear();
 
-    rl::Renderer::BeginScene(m_camera);
+    rl::Renderer::BeginScene(m_cameraController.getCamera());
 
     glm::mat4 sacle = glm::scale(glm::mat4(1.f), glm::vec3(0.1f));
     for(int j = 0; j < 20; j++)
@@ -143,15 +116,10 @@ void ExampleSandboxLayer::onImGuiRender()
     {
         defaultLogWindow.onImGuiRender();
         ImGui::Begin("Debug");
-        ImGui::Text("Camera");
-        auto pos = m_camera.getPosition();
-        ImGui::Text("Position = %.2f %.2f %.2f", pos.x, pos.y, pos.z);
-        auto rot = m_camera.getRotation();
-        ImGui::Text("Rotation = %.2f", rot);
-
         ImGui::Separator();
         ImGui::ColorEdit4("BG", glm::value_ptr(clearColor), ImGuiColorEditFlags_Float);
         ImGui::End();
+        m_cameraController.onImGuiRender();
     }
 }
 
@@ -159,6 +127,7 @@ void ExampleSandboxLayer::onEvent(rl::Event &event)
 {
     rl::EventDispatcher dispatcher(event);
     dispatcher.dispatch<rl::KeyPressedEvent>(RL_BIND_EVENT_FUNC(ExampleSandboxLayer::onKeyPressed));
+    m_cameraController.onEvent(event);
 }
 
 bool ExampleSandboxLayer::onKeyPressed(rl::KeyPressedEvent &event)

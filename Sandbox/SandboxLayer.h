@@ -23,11 +23,7 @@ private:
     rl::Ref<rl::Texture2D> m_squareTexture;
     rl::ShaderLibrary m_shaders;
 
-    // Camera
-    rl::OrthographicCamera m_camera;
-    float m_cameraMoveSpeed = 5.f, m_cameraRotateSpeed = 180.f;
-    glm::vec3 m_cameraPosition{0.f, 0.f, 0.f};
-    float m_cameraRotation = 0.f;
+    rl::OrthographicCameraController m_cameraController;
 
     //
     glm::vec4 clearColor{0.f};

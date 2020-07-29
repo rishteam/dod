@@ -93,7 +93,8 @@ add_library(RishEngine
     src/Renderer/Renderer.cpp
     # Camera
     src/Renderer/Camera/OrthographicCamera.cpp
-        )
+    src/Renderer/Camera/OrthographicCameraController.cpp
+)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
