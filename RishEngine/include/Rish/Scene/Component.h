@@ -43,36 +43,51 @@ struct SpriteRendererComponent
 		: color(color){}
 };
 
-// struct TextureComponent
-// {
-// 	std::shared_ptr<Texture2D> m_texture;
+struct ShaderComponent
+{
+	std::string vertPath = "/shader/vertexShader/vertexSrc.glsl";
+	std::string fragPath = "/shader/fragmentShader/fragSrc.glsl";
+	std::shared_ptr<rl::Shader> m_shader;
 
-// 	std::string path = "Editor/assets/texture/1.png";
+	bool reload = false;
 
-// 	TextureComponent() = default;
-// 	TextureComponent(const std::string& path)
-// 		: path(path)
-// 		{
-// 			m_texture = std::make_shared<Texture2D>(path);
-// 		}
-// };
+	ShaderComponent()
+	{
+		VFS::Get()->ResolvePhysicalPath(vertPath, vertPath);
+		VFS::Get()->ResolvePhysicalPath(fragPath, fragPath);
+
+		m_shader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
+	}
+	ShaderComponent(const std::shared_ptr<rl::Shader> shader): m_shader(shader){}
+	ShaderComponent(const std::string &vertexPath, const std::string &fragmentPath)
+		: vertPath(vertexPath), fragPath(fragmentPath)
+	{
+		VFS::Get()->ResolvePhysicalPath(vertexPath, vertPath);
+		VFS::Get()->ResolvePhysicalPath(fragmentPath, fragPath);
+
+		m_shader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
+	}
+};
 
 // For testing Component
 struct TestQuadComponent
 {
 	std::shared_ptr<VertexArray> m_vertexArray;
-	std::string vertPath, fragPath;
-	std::shared_ptr<rl::Shader> m_shader;
+	std::string path = "Editor/assets/texture/1.png";
+	std::shared_ptr<Texture2D> m_texture;
+
+	bool reload = true;
+
 	float vertices[5 * 4] = {
 		//     ---- 位置 ----
-	     0.1f,  0.1f, 0.0f, 0.0f, 0.0f,
+	     0.1f,  0.1f, 0.0f, 1.0f, 1.0f,
 		 0.1f, -0.1f, 0.0f, 1.0f, 0.0f,
-		-0.1f, -0.1f, 0.0f, 1.0f, 1.0f,
+		-0.1f, -0.1f, 0.0f, 0.0f, 0.0f,
 		-0.1f,  0.1f, 0.0f, 0.0f, 1.0f
 	};
 
 	TestQuadComponent() = default;
-	TestQuadComponent(const std::shared_ptr<VertexArray> vertexArray, const std::string& vertexPath, const std::string& fragmentPath)
+	TestQuadComponent(const std::shared_ptr<VertexArray> vertexArray)
 	{
 		RL_CORE_TRACE("[TestQuadComponent] Construct test quad component" );
 		m_vertexArray = vertexArray;
@@ -95,11 +110,6 @@ struct TestQuadComponent
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
 		m_vertexArray->unbind(); // Always remember to UNBIND if AMD
-
-		VFS::Get()->ResolvePhysicalPath(vertexPath, vertPath);
-		VFS::Get()->ResolvePhysicalPath(fragmentPath, fragPath);
-
-		m_shader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
 	}
 };
 

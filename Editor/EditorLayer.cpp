@@ -102,6 +102,54 @@ void EditorLayer::onImGuiRender()
 		{
 			if (ImGui::CollapsingHeader("TestQuadComponent"))
 			{
+				auto& test = m_squareEntity[selected].getComponent<TestQuadComponent>();
+				std::string path;
+				if(ImGui::Button("Select"))
+				{
+					if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+					{
+						test.path = path;
+						test.reload = true;
+					}
+				}
+				static char texturePath[150];
+				strcpy(texturePath, test.path.c_str());
+				ImGui::SameLine();
+				ImGui::InputText("", texturePath, IM_ARRAYSIZE(texturePath));
+			}
+		}
+
+		if(m_squareEntity[selected].hasComponent<ShaderComponent>())
+		{
+			if(ImGui::CollapsingHeader("ShaderComponent"))
+			{
+				auto& shader = m_squareEntity[selected].getComponent<ShaderComponent>();
+				std::string path;
+				if (ImGui::Button("Open Vert"))
+				{
+					if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+					{
+						shader.vertPath = path;
+						shader.reload = true;
+					}
+				}
+				static char vertPath[150];
+				strcpy(vertPath, shader.vertPath.c_str());
+				ImGui::SameLine();
+				ImGui::InputText("", vertPath, IM_ARRAYSIZE(vertPath));
+
+				if (ImGui::Button("Open Frag"))
+				{
+					if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+					{
+						shader.fragPath = path;
+						shader.reload = true;
+					}
+				}
+				static char fragPath[150];
+				strcpy(fragPath, shader.fragPath.c_str());
+				ImGui::SameLine();
+				ImGui::InputText("", fragPath, IM_ARRAYSIZE(fragPath));
 			}
 		}
 	}
@@ -133,7 +181,7 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Separator();
 
-	const char* components[] = {"TagComponent", "TransformComponent", "SpriteRendererComponent", "TestQuadComponent"};
+	const char *components[] = {"TagComponent", "TransformComponent", "SpriteRendererComponent", "TestQuadComponent", "ShaderComponent"};
 	static int selectedComponent = -1;
 	if(selected != -1)
 	{
@@ -175,7 +223,14 @@ void EditorLayer::onImGuiRender()
 						case 3:
 							if (!m_squareEntity[selected].hasComponent<TestQuadComponent>())
 							{
-								m_squareEntity[selected].addComponent<TestQuadComponent>(std::make_shared<rl::VertexArray>(), "/shader/vertexShader/vertexSrc.glsl", "/shader/fragmentShader/fragSrc.glsl");
+								m_squareEntity[selected].addComponent<TestQuadComponent>(std::make_shared<rl::VertexArray>());
+							}
+						break;
+
+						case 4:
+							if(!m_squareEntity[selected].hasComponent<ShaderComponent>())
+							{
+								m_squareEntity[selected].addComponent<ShaderComponent>();
 							}
 						break;
 					}
@@ -215,6 +270,11 @@ void EditorLayer::onImGuiRender()
 						case 3:
 							if (m_squareEntity[selected].hasComponent<TestQuadComponent>())
 								m_squareEntity[selected].removeComponent<TestQuadComponent>();
+						break;
+
+						case 4:
+							if(m_squareEntity[selected].hasComponent<ShaderComponent>())
+								m_squareEntity[selected].removeComponent<ShaderComponent>();
 						break;
 					}
 				}

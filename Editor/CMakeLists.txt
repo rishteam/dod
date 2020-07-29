@@ -11,4 +11,4 @@ target_link_libraries(Editor
 )
 
 file(COPY ${PROJECT_SOURCE_DIR}/assets DESTINATION ${PROJECT_BINARY_DIR})
-file(COPY ${PROJECT_SOURCE_DIR}/config/imgui.ini DESTINATION ${PROJECT_BINARY_DIR})
+# file(COPY ${PROJECT_SOURCE_DIR}/config/imgui.ini DESTINATION ${PROJECT_BINARY_DIR})
