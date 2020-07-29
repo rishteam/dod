@@ -38,8 +38,8 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         m_texturedSquare->setIndexBuffer(ib);
 
         // Load texture
-        m_squareTexture = rl::Texture2D::LoadTextureVFS("/texture/1.png", true);
         //
+        m_squareTexture = rl::Texture2D::LoadTextureVFS("/texture/1.png", true);
 //        auto m_testImage = rl::Image::LoadImageVFS("/texture/1.png");
 //        m_squareTexture = std::make_shared<rl::Texture2D>(m_testImage);
 

@@ -224,3 +224,58 @@ private:
 };
 
 } // namespace rl
+
+/**
+ * @class rl::BufferLayout
+ * Construct a buffer layout depending on the layout of your vertex data.
+ *
+ * @code{.cpp}
+ * float vertices[] = {
+ *      //   a_Position      a_TexCord
+ *      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+ *       0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+ *       0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+ *      -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+ *  };
+ * rl::BufferLayout layout = {
+ *     {rl::ShaderDataType::Float3, "a_Position"},
+ *     {rl::ShaderDataType::Float2, "a_TexCord"}
+ * };
+ * @endcode
+ * @code{.glsl}
+ * // In Shader
+ * layout(location = 0) in vec3 a_Position;
+ * layout(location = 1) in vec2 a_TexCord;
+ * @endcode
+ * @see rl::VertexArray rl::VertexBuffer rl::IndexBuffer rl::Shader
+ */
+
+/**
+ * @class rl::VertexBuffer
+ * @code{.cpp}
+ * float vertices[] = {
+ *      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+ *      0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+ *      0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+ *      -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
+ *  };
+ *  rl::Ref<rl::VertexBuffer> vb = rl::VertexBuffer::Create(vertices, sizeof(vertices));
+ *  rl::BufferLayout layout = {
+ *      {rl::ShaderDataType::Float3, "a_Position"},
+ *      {rl::ShaderDataType::Float2, "a_TexCord"}
+ *  };
+ *  vb->setLayout(layout);
+ *  m_texturedSquare->setVertexBuffer(vb);  // Reference: rl::VertexArray
+ * @endcode
+ * @see rl::VertexArray rl::BufferLayout rl::Shader
+ */
+
+/**
+ * @class rl::IndexBuffer
+ * @code{.cpp}
+ * uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+ * rl::Ref<rl::IndexBuffer> ib = rl::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+ * m_texturedSquare->setIndexBuffer(ib);
+ * @endcode
+ * @see rl::VertexArray rl::VertexBuffer
+ */

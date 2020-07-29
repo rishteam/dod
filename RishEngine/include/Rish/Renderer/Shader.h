@@ -33,11 +33,25 @@ public:
 	~Shader();
 
 	static std::string s_vertSource, s_fragSource;
+
+	/**
+	 * @brief Load a Shader using rl::FileSystem
+	 * @param vertPath Path to vertex shader
+	 * @param fragPath Path to fragment shader
+	 * @return Reference to the Shader
+	 */
 	static Ref<Shader> LoadShader(const std::string &vertPath, const std::string &fragPath);
+
+	/**
+	 * @brief Load a Shader using rl::VFS
+	 * @param vertPath Path to vertex shader
+	 * @param fragPath Path to fragment shader
+	 * @return Reference to the Shader
+	 */
 	static Ref<Shader> LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath);
 
-	void bind();   /// Bind
-	void unbind(); /// Unbind
+	void bind();   ///< Bind
+	void unbind(); ///< Unbind
 
 	uint32_t getShaderID() const { return program; }
 	uint32_t getLocationByName(const std::string &name) const;
@@ -54,10 +68,10 @@ public:
 	void setMat3(const std::string &name, const glm::mat3 &matrix);
 	void setMat4(const std::string &name, const glm::mat4 &matrix);
 	//
+private:
 	static uint32_t CompileShader(GLenum type, const char **src);
 	static uint32_t LinkShaderProgram(uint32_t vertex, uint32_t fragment);
 
-private:
 	std::string m_vertSource, m_fragSource;
 	uint32_t program = 0;
 };
@@ -74,13 +88,20 @@ public:
      * @brief Load a Shader and add to Library
      * @param name Name of the Shader
      * @param vpath Path for both vertex shader and fragment shader (without ext)
+     * @return Reference to the Shader
      */
     Ref<Shader> load(const std::string &name, const std::string &vpath);
+
+    /**
+     * @brief Get a Shader by name
+     * @param name Name
+     * @return Reference to the Shader
+     */
     Ref<Shader> get(const std::string &name);
 
 private:
-    std::unordered_map<std::string, Ref<Shader>> m_shader;
-    Ref<Shader> m_defaultShader;
+    std::unordered_map<std::string, Ref<Shader>> m_shader; ///< Shader mapping
+    Ref<Shader> m_defaultShader; ///< Default Shader
 };
 
 }

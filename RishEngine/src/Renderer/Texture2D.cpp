@@ -42,11 +42,16 @@ void Texture2D::unbind() const
 	glBindTextureUnit(0, 0);
 }
 
+Ref<Texture2D> Texture2D::LoadTexture(const std::string &path, bool flip)
+{
+    return MakeRef<Texture2D>(path, flip);
+}
+
 Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool flip)
 {
     std::string path;
     VFS::ResolvePhysicalPath(virtualPath, path);
-    return std::make_shared<Texture2D>(path, flip);
+    return MakeRef<Texture2D>(path, flip);
 }
 
 void Texture2D::createTexture()

@@ -27,6 +27,10 @@ public:
      * @param path Image file path
      */
     Texture2D(const std::string &path, bool flip=true);
+    /**
+     * @brief ctor
+     * @param image Image Ref
+     */
     Texture2D(Ref<Image> image);
 	~Texture2D();
 
@@ -36,6 +40,20 @@ public:
     void bind(uint32_t slot = 0) const;
 	void unbind() const;
 
+	/**
+	 * @brief Load a Texture with rl::FileSystem
+	 * @param path Path to the file
+	 * @param flip Flip the image?
+	 * @return Reference to the texture
+	 */
+	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=false);
+
+	/**
+	 * @brief Load a Texture with rl::VFS
+	 * @param path Path to the file
+	 * @param flip Flip the image?
+	 * @return Reference to the texture
+	 */
 	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false);
 
 private:
@@ -54,3 +72,22 @@ private:
 };
 
 }
+
+/**
+ * @class rl::Texture2D
+ * A 2D Texture. You can use rl::Texture2D::LoadTexture() or rl::Texture2D::LoadTextureVFS() to load a texture.
+ *
+ * @code{.cpp}
+ * // Load the texture with VFS
+ * auto texture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
+ * // Load the texture with FileSystem
+ * auto texture2 = rl::Texture2D::LoadTexture("C:/Users/Rish/Desktop/rish/dod/assets/1.png");
+ * @endcode
+ *
+ * Or you can load the image first and then construct a Texture2D with the image.
+ * @code{.cpp}
+ * auto image = rl::Image::LoadImageVFS("/texture/1.png");
+ * auto texture = rl::MakeRef<rl::Texture2D>(image);
+ * @endcode
+ *
+ */

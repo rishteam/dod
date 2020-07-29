@@ -10,6 +10,7 @@ public:
     {
         pushLayer(new ExampleSandboxLayer());
     }
+
     virtual ~Sandbox() override
     {
     }
