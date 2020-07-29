@@ -16,7 +16,7 @@ Application *Application::s_instance = nullptr;
 
 Application::Application(const std::string &name, uint32_t width, uint32_t height)
 {
-    RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have ONE Application instance");
+    RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have *ONE* Application instance");
     // Set instance
     Application::s_instance = this;
     // Initialize the window

@@ -313,8 +313,15 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
 
     if(!gladLoadGL())
     {
-        RL_CORE_ERROR("Error loading openGL function");
+        RL_ASSERT(false, "Error loading OpenGL function");
     }
+
+    int v_major, v_minor;
+    glGetIntegerv(GL_MAJOR_VERSION, &v_major);
+    glGetIntegerv(GL_MINOR_VERSION, &v_minor);
+    RL_CORE_INFO("OpenGL Version: {}.{}", v_major, v_minor);
+    RL_CORE_INFO("Vender: {} Video Device: {}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+    RL_CORE_ASSERT(v_major > 4 || (v_major == 4 && v_minor >= 5), "RishEngine requires at least OpenGL version 4.5!");
 }
 
 SFMLWindow::~SFMLWindow()

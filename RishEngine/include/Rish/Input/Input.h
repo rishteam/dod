@@ -45,7 +45,7 @@ protected:
     virtual float getMouseYImpl() = 0; ///< @note Implement these in Platform
 
 private:
-    static Input *s_instance; //! Instance
+    static Scope<Input> s_instance;
 };
 
 }
