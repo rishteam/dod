@@ -7,6 +7,10 @@
 
 namespace rl {
 
+/**
+ * @brief entity object
+ * @details Entity can add component or remove component through rl::Scene.
+ */
 class Entity
 {
 public:
@@ -59,5 +63,29 @@ private:
 	entt::entity m_entityHandle{entt::null};
 	Scene *m_scene = nullptr;
 };
+
+/**
+ * @class rl::Entity
+ * How to create an Entity and add/remove component? Use rl::Scene createEntity() function to create rl::Entity.<br/>
+ * And then you can manipulate your rl::Entity.
+ * 
+ * @code{.cpp}
+ * 
+ * std::shared_ptr<rl::Scene> scene = std::make_shared<rl::Scene>();
+ * 
+ * // Create rl::Entity
+ * auto entity = scene->createEntity();
+ * 
+ * // Add component
+ * if(!entity.hasComponent<YOUR_COMPONENT>())
+ *     entity.addComponent<YOUR_COMPONENT>();
+ * 
+ * // Remove component
+ * if(entity.hasCompoenent<YOUR_COMPONENT>())
+ *     entity.removeComponent<YOUR_COMPONENT>();
+ * 
+ * @endcode
+ */
+
 
 }
