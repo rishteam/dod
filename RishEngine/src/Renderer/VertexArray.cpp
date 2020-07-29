@@ -79,4 +79,9 @@ void VertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuf)
 	m_indexBuffer = indexBuf;
 }
 
+Ref<VertexArray> VertexArray::Create()
+{
+    return MakeRef<VertexArray>();
+}
+
 }

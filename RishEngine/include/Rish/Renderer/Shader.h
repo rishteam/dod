@@ -94,3 +94,19 @@ private:
  * // Load "/shader/textured.vert" and "/shader/textured.frag" in VFS
  * @endcode
  */
+
+/**
+ * @class rl::Shader
+ *
+ * @code{.cpp}
+ * // Load a shader
+ * rl::Ref<rl::Shader> shader = LoadShader("/shader/example.vert", "/shader/example.frag");
+ * // Bind
+ * shader->bind();
+ * // Upload uniforms
+ * shader->setInt("u_Texture", 0);
+ * shader->setMat4("u_ViewProjection", glm::mat4(1.f));
+ * // Unbind
+ * shader->unbind();
+ * @endcode
+ */

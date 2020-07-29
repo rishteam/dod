@@ -189,6 +189,10 @@ public:
 	const BufferLayout& getLayout() const { return m_layout; }
 	void setLayout(const BufferLayout& layout) { m_layout = layout; }
 
+	static Ref<VertexBuffer> Create(float *vertices, uint32_t size);
+	static Ref<VertexBuffer> Create(uint32_t size);
+	static Ref<VertexBuffer> Create();
+
 private:
 	uint32_t vbo;
 	BufferLayout m_layout;
@@ -212,6 +216,8 @@ public:
 	 * @return count
 	 */
 	uint32_t getCount() const { return m_count; }
+
+	static Ref<IndexBuffer> Create(uint32_t *indices, uint32_t count);
 private:
 	uint32_t ebo;
 	uint32_t m_count;

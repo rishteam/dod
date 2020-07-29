@@ -16,7 +16,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
     // Textured Square
     {
-        m_texturedSquare = std::make_shared<rl::VertexArray>();
+        m_texturedSquare = rl::VertexArray::Create();
         // Vertex Buffer
         float vertices[] = {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -24,8 +24,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
             0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
             -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
         };
-        rl::Ref<rl::VertexBuffer> vb;
-        vb = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
+        rl::Ref<rl::VertexBuffer> vb = rl::VertexBuffer::Create(vertices, sizeof(vertices));
         rl::BufferLayout layout = {
             {rl::ShaderDataType::Float3, "a_Position"},
             {rl::ShaderDataType::Float2, "a_TexCord"}
@@ -35,8 +34,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
         // Index Buffer
         uint32_t indices[] = {0, 1, 2, 2, 3, 0};
-        rl::Ref<rl::IndexBuffer> ib;
-        ib = std::make_shared<rl::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
+        rl::Ref<rl::IndexBuffer> ib = rl::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_texturedSquare->setIndexBuffer(ib);
 
         // Load texture
@@ -55,7 +53,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
     // Small Square
     {
-        m_smallSquare = std::make_shared<rl::VertexArray>();
+        m_smallSquare = rl::VertexArray::Create();
         float square[] = {
             -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -64,7 +62,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
         };
 
         // Vertex Buffer
-        rl::Ref<rl::VertexBuffer> sq = std::make_shared<rl::VertexBuffer>(square, sizeof(square));
+        rl::Ref<rl::VertexBuffer> sq = rl::VertexBuffer::Create(square, sizeof(square));
         rl::BufferLayout layout = {
             {rl::ShaderDataType::Float3, "a_Position"},
             {rl::ShaderDataType::Float4, "a_Color"}
@@ -74,7 +72,7 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
         // Index Buffer
         uint32_t a[] = {0, 1, 2, 1, 2, 3};
-        rl::Ref<rl::IndexBuffer> ib = std::make_shared<rl::IndexBuffer>(a, 6);
+        rl::Ref<rl::IndexBuffer> ib = rl::IndexBuffer::Create(a, 6);
         m_smallSquare->setIndexBuffer(ib);
 
         // Load shaders
