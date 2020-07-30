@@ -61,11 +61,11 @@ void VertexArray::setVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 		glEnableVertexAttribArray(m_vertexAttribIndex);
 
 		glVertexAttribPointer(m_vertexAttribIndex,
-            element.getComponentCount(),
-            ShaderDataTypeToOpenGLBaseType(element.type),
-			element.normalized ? GL_TRUE : GL_FALSE,
-			layout.getStride(),
-			(const void*)element.offset);
+            element.getComponentCount(),                  // Number of Components
+            ShaderDataTypeToOpenGLBaseType(element.type), // Data type
+			element.normalized ? GL_TRUE : GL_FALSE,      // Normalize
+			layout.getStride(),                           // Stride
+			(const void*)element.offset);                 // Offset
 		m_vertexAttribIndex++;
 
 	}

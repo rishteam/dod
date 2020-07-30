@@ -22,14 +22,20 @@ public:
     static void Init();
 
     /**
-     * @brief
-     * @param width
-     * @param height
+     * @brief Shutdown
+     */
+    static void Shutdown();
+
+    /**
+     * @brief Window Resize
+     * @param width Width
+     * @param height Height
      */
     static void OnWindowResize(uint32_t width, uint32_t height);
 
     /**
      * @brief Begin Scene
+     * @param camera Camera
      */
     static void BeginScene(OrthographicCamera &camera);
 
@@ -40,7 +46,9 @@ public:
 
     /**
      * @brief Submit Vertex Array
-     * @param vertexArray Vertex Array
+     * @param shader
+     * @param vertexArray
+     * @param transform
      */
     static void Submit(const Ref<Shader> &shader, const Ref<VertexArray> &vertexArray, const glm::mat4 &transform=glm::mat4(1.f));
 };

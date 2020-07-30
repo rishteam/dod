@@ -77,11 +77,11 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
  */
 struct RL_API BufferElement
 {
-	std::string name;
-	ShaderDataType type;
-	uint32_t size;
-	size_t offset;
-	bool normalized;
+	std::string name;    ///< Name
+	ShaderDataType type; ///< Shader Data Type
+	uint32_t size;       ///< Size in bytes
+	size_t offset;       ///< Offset
+	bool normalized;     ///< Is normalized
 
 	BufferElement() = default;
 	BufferElement(ShaderDataType type_, const std::string &name_, bool normalized_ = false)
@@ -134,6 +134,11 @@ class RL_API BufferLayout
 {
 public:
 	BufferLayout() {}
+
+	/**
+	 * @brief ctor
+	 * @param elements List of buffer elements
+	 */
 	BufferLayout(const std::initializer_list<BufferElement> &elements)
 		: m_elements(elements)
 	{
@@ -152,7 +157,7 @@ public:
 	const_iterator end() const { return m_elements.end(); }
 
 private:
-
+    /// Calculate offset and stride
 	void calculateOffsetAndStride()
 	{
 		size_t offset = 0;
