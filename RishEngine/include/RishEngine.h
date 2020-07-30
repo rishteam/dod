@@ -46,6 +46,7 @@
 #include <Rish/Renderer/Texture2D.h>
 #include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/Renderer.h>
+#include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>

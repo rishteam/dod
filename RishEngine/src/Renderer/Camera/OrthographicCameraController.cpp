@@ -65,6 +65,19 @@ void OrthographicCameraController::onImGuiRender()
     ImGui::Text("Camera");
     ImGui::Text("Position %.2f %.2f %.2f", m_position.x, m_position.y, m_position.z);
     ImGui::Text("Rotate %.2f", m_rotate);
+
+    auto &cam = m_camera.getViewProjectionMatrix();
+    ImGui::Text("View Projection Matrix");
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            ImGui::PushID(&cam[i][j]);
+            ImGui::Text("%.2f", static_cast<double>(cam[i][j])); ImGui::SameLine();
+            ImGui::PopID();
+        }
+        ImGui::NewLine();
+    }
     ImGui::EndGroup();
     ImGui::End();
 }

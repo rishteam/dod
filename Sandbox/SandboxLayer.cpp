@@ -7,7 +7,7 @@
 
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("example"),
-      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / rl::Application::Get().getWindow().getHeight(), true)
+      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true)
 {
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     rl::VFS::Mount("shader", "Sandbox/assets");

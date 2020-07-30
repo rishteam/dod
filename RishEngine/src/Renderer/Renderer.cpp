@@ -1,4 +1,7 @@
 #include <Rish/Renderer/Renderer.h>
+#include <Rish/Renderer/Renderer2D.h>
+
+namespace rl {
 
 struct SceneData
 {
@@ -6,21 +9,27 @@ struct SceneData
 };
 static SceneData s_sceneData;
 
-void rl::Renderer::Init()
+void Renderer::Init()
 {
     RenderCommand::Init();
+    Renderer2D::Init();
 }
 
-void rl::Renderer::BeginScene(OrthographicCamera &camera)
+void Renderer::Shutdown()
+{
+    Renderer2D::Shutdown();
+}
+
+void Renderer::BeginScene(OrthographicCamera &camera)
 {
     s_sceneData.ViewProjectionMatrix = camera.getViewProjectionMatrix();
 }
 
-void rl::Renderer::EndScene()
+void Renderer::EndScene()
 {
 }
 
-void rl::Renderer::Submit(const Ref<Shader> &shader, const Ref<VertexArray> &vertexArray, const glm::mat4 &transform)
+void Renderer::Submit(const Ref<Shader> &shader, const Ref<VertexArray> &vertexArray, const glm::mat4 &transform)
 {
     shader->bind();
     shader->setMat4("u_ViewProjection", s_sceneData.ViewProjectionMatrix);
@@ -33,7 +42,9 @@ void rl::Renderer::Submit(const Ref<Shader> &shader, const Ref<VertexArray> &ver
     shader->unbind();
 }
 
-void rl::Renderer::OnWindowResize(uint32_t width, uint32_t height)
+void Renderer::OnWindowResize(uint32_t width, uint32_t height)
 {
-    RenderCommand::SetViewPort(0, 0, (float)width, (float)height);
+    RenderCommand::SetViewPort(0, 0, (float) width, (float) height);
 }
+
+} // namespace rl

@@ -19,21 +19,32 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have *ONE* Application instance");
     // Set instance
     Application::s_instance = this;
+
     // Initialize the window
-    m_window = std::unique_ptr<Window>(Window::Create(name, width, height));
+    m_window = Scope<Window>(Window::Create(name, width, height));
     m_window->setEventCallback(RL_BIND_EVENT_FUNC(Application::onEvent));
 
     // Initialize the renderer
     Renderer::Init();
 
+    // imgui overlay
+    m_imguiLayer = new ImGuiLayer();
+
+    // Initialize Layer Stack
+    m_LayerStack = MakeScope<LayerStack>();
+    m_LayerStack->pushOverlay(m_imguiLayer);
+
     m_running = true;
-    // Push the imgui overlay
-    m_imguiLayer = std::make_unique<ImGuiLayer>();
-    pushOverlay(m_imguiLayer.get());
 }
 
 Application::~Application()
 {
+    // pop all layers
+    m_LayerStack.reset(nullptr);
+    //
+    Renderer::Shutdown();
+    //
+    m_window.reset(nullptr);
 }
 
 void Application::run()
@@ -56,12 +67,12 @@ void Application::run()
         Timer::Update();
 
         // Update layers
-        for(Layer* layer: m_LayerStack)
+        for(Layer* layer: *m_LayerStack)
             layer->onUpdate(dt);
 
         // Update ImGui
         m_imguiLayer->begin();
-        for(Layer* layer : m_LayerStack)
+        for(Layer* layer : *m_LayerStack)
             layer->onImGuiRender();
         m_imguiLayer->end();
 
@@ -77,7 +88,7 @@ void Application::onEvent(Event &e)
     dispatcher.dispatch<WindowCloseEvent>(RL_BIND_EVENT_FUNC(Application::onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(RL_BIND_EVENT_FUNC(Application::onWindowResize));
 
-    for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
+    for(auto it = m_LayerStack->rbegin(); it != m_LayerStack->rend(); it++)
     {
         (*it)->onEvent(e);
         // if event is handled then break
@@ -89,25 +100,25 @@ void Application::onEvent(Event &e)
 void Application::pushLayer(Layer* layer)
 {
     RL_CORE_ASSERT(layer != nullptr, "null layer");
-    m_LayerStack.pushLayer(layer);
+    m_LayerStack->pushLayer(layer);
 }
 
 void Application::pushOverlay(Layer* overlay)
 {
     RL_CORE_ASSERT(overlay != nullptr, "null overlay");
-    m_LayerStack.pushOverlay(overlay);
+    m_LayerStack->pushOverlay(overlay);
 }
 
 void Application::popLayer(Layer* layer)
 {
     RL_CORE_ASSERT(layer != nullptr, "null layer");
-    m_LayerStack.popLayer(layer);
+    m_LayerStack->popLayer(layer);
 }
 
 void Application::popOverlay(Layer* overlay)
 {
     RL_CORE_ASSERT(overlay != nullptr, "null overlay");
-    m_LayerStack.popOverlay(overlay);
+    m_LayerStack->popOverlay(overlay);
 }
 
 bool Application::onWindowClose(WindowCloseEvent &e)

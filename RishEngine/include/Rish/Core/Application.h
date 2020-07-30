@@ -6,18 +6,17 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
-
-#include "Rish/Core/Core.h"
-#include "Rish/Core/Window.h"
-#include "Rish/Events/ApplicationEvent.h"
-#include "Rish/Layer/LayerStack.h"
-#include "Rish/Layer/ImGuiLayer.h"
 #include <glad/glad.h>
-#include "Rish/Renderer/Buffer.h"
-#include "Rish/Renderer/VertexArray.h"
-#include "Rish/Renderer/Shader.h"
 
+#include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
+#include <Rish/Core/Window.h>
+#include <Rish/Events/ApplicationEvent.h>
+#include <Rish/Layer/LayerStack.h>
+#include <Rish/Layer/ImGuiLayer.h>
+#include <Rish/Renderer/Buffer.h>
+#include <Rish/Renderer/VertexArray.h>
+#include <Rish/Renderer/Shader.h>
 
 namespace rl {
 
@@ -57,11 +56,11 @@ private:
     bool onWindowResize(WindowResizeEvent &e);
 
     /// Window
-    std::unique_ptr<Window> m_window;
+    Scope<Window> m_window;
     /// ImGui Layer
-    Scope<ImGuiLayer> m_imguiLayer;
+    ImGuiLayer *m_imguiLayer=nullptr;
     /// Layer container
-    LayerStack m_LayerStack;
+    Scope<LayerStack> m_LayerStack;
     /// Is the application still running
     bool m_running = false;
     /// previous frame time
