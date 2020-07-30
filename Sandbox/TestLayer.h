@@ -17,6 +17,10 @@ public:
 private:
     rl::OrthographicCameraController m_cameraController;
 
+    glm::vec3 m_squarePosition{0.f, 0.f, 0.f};
+    glm::vec2 m_squareScale{1.f, 1.f};
+    rl::Ref<rl::Texture2D> m_texture;
+
     glm::vec4 m_squareColor{1.f, 0.f, 0.f, 1.f};
     glm::vec4 m_clearColor{0.f, 0.f, 0.f, 1.f};
 };

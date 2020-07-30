@@ -6,6 +6,8 @@ void rl::RenderCommand::Init()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void rl::RenderCommand::SetClearColor(const glm::vec4 &color)
@@ -25,5 +27,5 @@ void rl::RenderCommand::DrawElement(const Ref<VertexArray> &vertexArray)
 
 void rl::RenderCommand::SetViewPort(float x, float y, float width, float height)
 {
-    glViewport(x, y, width, height);
+    glViewport((GLint)x, (GLint)y, (GLsizei)width, (GLsizei)height);
 }

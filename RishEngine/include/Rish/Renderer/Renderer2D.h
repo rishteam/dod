@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <Rish/Core/Core.h>
 
+#include <Rish/Renderer/Texture2D.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 
 namespace rl {
@@ -18,6 +19,9 @@ public:
 
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+
+    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture);
+    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> &texture);
 };
 
 } // namespace of rl

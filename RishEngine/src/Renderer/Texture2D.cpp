@@ -62,6 +62,9 @@ void Texture2D::createTexture()
     //
     glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 void Texture2D::setSize(uint32_t width, uint32_t height)

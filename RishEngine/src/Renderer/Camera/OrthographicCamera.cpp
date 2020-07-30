@@ -6,7 +6,7 @@ namespace rl {
 
 OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
     : m_viewMatrix(1.f),
-      m_projectionMatrix(glm::ortho(left, right, bottom, top, -1.f, 1.f)),
+      m_projectionMatrix(glm::ortho(left, right, bottom, top, -10.f, 10.f)),
       m_vpMatrix(m_projectionMatrix * m_viewMatrix)
 {
 }
@@ -22,7 +22,7 @@ void OrthographicCamera::recalculateMatrix()
 
 void OrthographicCamera::resizeCamera(float left, float right, float bottom, float top)
 {
-    m_projectionMatrix = glm::ortho(left, right, bottom, top, -1.f, 1.f);
+    m_projectionMatrix = glm::ortho(left, right, bottom, top, -10.f, 10.f);
     recalculateMatrix();
 }
 
