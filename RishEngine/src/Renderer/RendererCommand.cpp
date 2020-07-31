@@ -8,6 +8,7 @@ void rl::RenderCommand::Init()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_DEPTH_TEST);
+//    glDepthFunc(GL_LESS);
 }
 
 void rl::RenderCommand::SetClearColor(const glm::vec4 &color)
@@ -17,7 +18,7 @@ void rl::RenderCommand::SetClearColor(const glm::vec4 &color)
 
 void rl::RenderCommand::Clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }
 
 void rl::RenderCommand::DrawElement(const Ref<VertexArray> &vertexArray)

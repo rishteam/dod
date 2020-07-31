@@ -218,8 +218,10 @@ Window* Window::Create(const std::string &title, uint32_t width, uint32_t height
 
 SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uint32_t height)
     : Window(title, width, height),
-    m_SFMLWindow(sf::VideoMode(width, height), title)
+      m_SFMLWindow() // Construct the window in the main SFMLWindow constructor
 {
+    m_SFMLWindow.create(sf::VideoMode(width, height), title, sf::Style::Default, sf::ContextSettings(24, 8, 4, 4, 5));
+
     // Add SFML Event mapping
     SFML_EVENT_CALLBACK(closeEvent) = [&](const sf::Event &e) {
         RL_UNUSED(e);
@@ -320,8 +322,13 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     glGetIntegerv(GL_MAJOR_VERSION, &v_major);
     glGetIntegerv(GL_MINOR_VERSION, &v_minor);
     RL_CORE_INFO("OpenGL Version: {}.{}", v_major, v_minor);
-    RL_CORE_INFO("Vender: {} Video Device: {}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+    RL_CORE_INFO("Vender: {}. Video Device: {}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
     RL_CORE_ASSERT(v_major > 4 || (v_major == 4 && v_minor >= 5), "RishEngine requires at least OpenGL version 4.5!");
+
+    // DEBUG
+    auto sett = m_SFMLWindow.getSettings();
+    RL_CORE_CRITICAL("depth bit={} stencil bit={} antialiasing={}", sett.depthBits, sett.stencilBits, sett.antialiasingLevel);
+
 }
 
 SFMLWindow::~SFMLWindow()

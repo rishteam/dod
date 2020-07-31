@@ -152,6 +152,7 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
+    RL_CORE_WARN("[Renderer2D] draw tex ({},{},{})", position.x, position.y, position.z);
     glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
                           glm::scale(glm::mat4(1.f), glm::vec3(size.x, size.y, 1.f));
     s_data->textureShader->bind();

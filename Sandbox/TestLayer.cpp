@@ -31,9 +31,9 @@ void TestLayer::onUpdate(rl::Time dt)
     // Render
     rl::Renderer2D::BeginScene(m_cameraController.getCamera());
     rl::Renderer2D::DrawQuad(m_squarePosition, m_squareScale, m_squareColor);
-    rl::Renderer2D::DrawQuad({-0.9f, 0.5f, 0.f}, {0.5f, 0.5f}, {0.f, 1.f, 0.f, 1.f});
-    rl::Renderer2D::DrawQuad({0.3f, -0.5f, 0.f}, {0.5f, 0.5f}, {0.f, 0.f, 1.f, 1.f});
-//    rl::Renderer2D::DrawQuad({0.0f, 0.0f, 0.1}, {1.f, 1.f}, m_texture);
+    rl::Renderer2D::DrawQuad({-0.9f, 0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 1.f, 0.f, 1.f});
+    rl::Renderer2D::DrawQuad({0.3f, -0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 0.f, 1.f, 1.f});
+    rl::Renderer2D::DrawQuad({0.8f, 0.6f, 0.5}, {1.f, 1.f}, m_texture);
     rl::Renderer2D::EndScene();
 }
 
