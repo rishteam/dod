@@ -10,6 +10,7 @@
 #include <Rish/Core/Log.h>
 
 #define RL_DEBUG_DEFINE
+#define RL_ATTACH 0
 
 #ifdef RL_DEBUG_DEFINE
     #define RL_ENABLE_ASSERT

@@ -14,7 +14,12 @@ int main(int argc, char **argv)
     setvbuf(stdin, nullptr, _IONBF, 0);
     setvbuf(stdout, nullptr, _IONBF, 0);
     //
-    rl::Logger::Init(rl::Logger::LoggerType::Normal);
+#if RL_ATTACH
+    puts("Attach?");
+    getchar();
+#endif
+    //
+    rl::Logger::Init(rl::Logger::LoggerType::IgnoreDup);
     rl::VFS::Init();
 
     RL_CORE_INFO("Initializating the RishEngine");
