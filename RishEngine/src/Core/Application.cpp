@@ -32,7 +32,7 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
 
     // Initialize Layer Stack
     m_LayerStack = MakeScope<LayerStack>();
-    m_LayerStack->pushOverlay(m_imguiLayer);
+    m_LayerStack->pushOverlay(m_imguiLayer); // Gives the ownership of m_imguiLayer layer to m_LayerStack
 
     m_running = true;
 }

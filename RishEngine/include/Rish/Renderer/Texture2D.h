@@ -7,6 +7,8 @@
  */
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include <Rish/rlpch.h>
 #include <Rish/Core/Core.h>
 
@@ -14,7 +16,7 @@
 
 namespace rl {
 
-// TODO: Support other format (RGB, RGBA, ...) of textures
+// TODO: Support other format (RGB, RGBA, ...) of textures. Now only support RGBA format
 
 /**
  * @brief 2D Texture class
@@ -22,6 +24,12 @@ namespace rl {
 class RL_API Texture2D
 {
 public:
+    /**
+     * @brief Create a empty texture
+     * @param width Width
+     * @param height Height
+     */
+    Texture2D(uint32_t width, uint32_t height);
     /**
      * @brief ctor
      * @param path Image file path
@@ -34,10 +42,14 @@ public:
     Texture2D(Ref<Image> image);
 	~Texture2D();
 
+	void setData(void *data, uint32_t size);
+	// TODO: void setRegion() ?
+	void setPixel(uint32_t x, uint32_t y, const glm::vec4 &color);
+
 	uint32_t getWidth() const { return m_width; }
     uint32_t getHeight() const { return m_height;}
 
-    void bind(uint32_t slot = 0) const;
+    void bind(uint32_t slot=0) const;
 	void unbind() const;
 
 	/**
@@ -47,7 +59,6 @@ public:
 	 * @return Reference to the texture
 	 */
 	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=false);
-
 	/**
 	 * @brief Load a Texture with rl::VFS
 	 * @param path Path to the file
@@ -55,6 +66,13 @@ public:
 	 * @return Reference to the texture
 	 */
 	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false);
+    /**
+     * @brief
+     * @param width
+     * @param height
+     * @return
+     */
+	static Ref<Texture2D> Create(uint32_t width, uint32_t height);
 
 private:
     void createTexture();

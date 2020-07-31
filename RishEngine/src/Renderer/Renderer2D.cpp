@@ -9,33 +9,6 @@
 
 namespace rl {
 
-const char * flatColorVS = R"glsl(
-#version 330 core
-
-layout(location = 0) in vec3 a_Position;
-
-uniform mat4 u_ViewProjection;
-uniform mat4 u_Transform;
-
-void main()
-{
-	gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-}
-)glsl";
-
-const char *flatColorFS = R"glsl(
-#version 330 core
-
-out vec4 color;
-
-uniform vec4 u_Color;
-
-void main()
-{
-    color = u_Color;
-}
-)glsl";
-
 const char * texturedVS = R"glsl(
 #version 330 core
 
@@ -62,18 +35,20 @@ in vec2 v_TexCoord;
 out vec4 color;
 
 uniform sampler2D u_Texture;
+uniform vec4 u_Color;
 
 void main()
 {
-    color = texture(u_Texture, v_TexCoord);
+    vec4 texColor = texture(u_Texture, v_TexCoord);
+    color = texColor * u_Color;
 }
 )glsl";
 
 struct Renderer2DStorage
 {
     Ref<VertexArray> quadVertexArray;
-    Ref<Shader> flatColorShader;
     Ref<Shader> textureShader;
+    Ref<Texture2D> whiteTexture;
 };
 
 static Scope<Renderer2DStorage> s_data;
@@ -99,8 +74,10 @@ void Renderer2D::Init()
     uint32_t squareIndex[] = {0, 1, 2, 2, 3, 0};
     Ref<IndexBuffer> squareIB = IndexBuffer::Create(squareIndex, 6);
     s_data->quadVertexArray->setIndexBuffer(squareIB);
-    // flat color shader
-    s_data->flatColorShader = MakeRef<Shader>(flatColorVS, flatColorFS);
+
+    s_data->whiteTexture = rl::Texture2D::Create(1, 1);
+    s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
+
     // texture shader
     s_data->textureShader = MakeRef<Shader>(texturedVS, texturedFS);
     s_data->textureShader->bind();
@@ -114,9 +91,6 @@ void Renderer2D::Shutdown()
 
 void Renderer2D::BeginScene(const OrthographicCamera &camera)
 {
-    s_data->flatColorShader->bind();
-    s_data->flatColorShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
-
     s_data->textureShader->bind();
     s_data->textureShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
 }
@@ -127,37 +101,39 @@ void Renderer2D::EndScene()
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, color);
+    DrawQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color);
 }
 
-// TODO: implement position
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    s_data->flatColorShader->bind();
-    s_data->flatColorShader->setFloat4("u_Color", color);
-
-    glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
-            glm::scale(glm::mat4(1.f), glm::vec3(size.x, size.y, 1.f));
-    s_data->flatColorShader->setMat4("u_Transform", transform);
-
-    s_data->quadVertexArray->bind();
-    RenderCommand::DrawElement(s_data->quadVertexArray);
-    s_data->quadVertexArray->unbind();
+    DrawQuad(position, size, s_data->whiteTexture, color);
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture);
+    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f));
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
-    RL_CORE_WARN("[Renderer2D] draw tex ({},{},{})", position.x, position.y, position.z);
+    DrawQuad(position, size, texture, glm::vec4(1.f));
+}
+
+void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
+                          const glm::vec4 &color)
+{
+    DrawQuad({position.x, position.y, 0.0}, size, texture, color);
+}
+
+void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
+                          const glm::vec4 &color)
+{
     glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
                           glm::scale(glm::mat4(1.f), glm::vec3(size.x, size.y, 1.f));
     s_data->textureShader->bind();
     s_data->textureShader->setMat4("u_Transform", transform);
-
+    s_data->textureShader->setFloat4("u_Color", color);
+    s_data->textureShader->setInt("u_Texture", 0);
     texture->bind();
 
     s_data->quadVertexArray->bind();

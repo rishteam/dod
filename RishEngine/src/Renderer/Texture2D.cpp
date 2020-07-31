@@ -9,6 +9,13 @@
 
 namespace rl {
 
+Texture2D::Texture2D(uint32_t width, uint32_t height)
+{
+    createTexture();
+    setSize(width, height);
+
+}
+
 Texture2D::Texture2D(const std::string &path, bool flip)
 	: m_path(path)
 {
@@ -20,16 +27,44 @@ Texture2D::Texture2D(const std::string &path, bool flip)
     setTexture(image->getPixelPtr());
 }
 
-Texture2D::~Texture2D()
-{
-	glDeleteTextures(1, &m_textureID);
-}
-
 Texture2D::Texture2D(Ref<Image> image)
 {
     createTexture();
     setSize(image->getWidth(), image->getHeight());
     setTexture(image->getPixelPtr());
+}
+
+Texture2D::~Texture2D()
+{
+	glDeleteTextures(1, &m_textureID);
+}
+
+////////////////////////////////////////////////////
+
+void Texture2D::setData(void *data, uint32_t size)
+{
+    RL_ASSERT(size == m_width * m_height * 4, "data must be entire texture");
+    glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+}
+
+void Texture2D::setPixel(uint32_t x, uint32_t y, const glm::vec4 &color)
+{
+    RL_ASSERT(x <= m_width && y <= m_height, "Pixel must inside the texture");
+
+    union Pixel
+    {
+        struct pixel
+        {
+            uint8_t r, g, b, a;
+        }p;
+        uint32_t data;
+    };
+    Pixel p{};
+    p.p.r = (uint8_t)roundf(color.r * 0xff);
+    p.p.g = (uint8_t)roundf(color.g * 0xff);
+    p.p.b = (uint8_t)roundf(color.b * 0xff);
+    p.p.a = (uint8_t)roundf(color.a * 0xff);
+    glTextureSubImage2D(m_textureID, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &p);
 }
 
 void Texture2D::bind(uint32_t slot) const
@@ -42,6 +77,9 @@ void Texture2D::unbind() const
 	glBindTextureUnit(0, 0);
 }
 
+////////////////////////////////////////////////////
+// static function for Texture2D
+
 Ref<Texture2D> Texture2D::LoadTexture(const std::string &path, bool flip)
 {
     return MakeRef<Texture2D>(path, flip);
@@ -53,6 +91,13 @@ Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool fl
     VFS::ResolvePhysicalPath(virtualPath, path);
     return MakeRef<Texture2D>(path, flip);
 }
+
+Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
+{
+    return MakeRef<Texture2D>(width, height);
+}
+
+////////////////////////////////////////////////////
 
 void Texture2D::createTexture()
 {
@@ -74,7 +119,7 @@ void Texture2D::setSize(uint32_t width, uint32_t height)
     m_height = height;
 }
 
-void Texture2D::setTexture(const void * imagePtr)
+void Texture2D::setTexture(const void *imagePtr)
 {
     glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, imagePtr);
     glBindTexture(GL_TEXTURE_2D, 0);
