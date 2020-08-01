@@ -327,7 +327,7 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
 
     // DEBUG
     auto sett = m_SFMLWindow.getSettings();
-    RL_CORE_CRITICAL("depth bit={} stencil bit={} antialiasing={}", sett.depthBits, sett.stencilBits, sett.antialiasingLevel);
+    RL_CORE_INFO("Depth={} Stencil={} Antialiasing={}", sett.depthBits, sett.stencilBits, sett.antialiasingLevel);
 
 }
 

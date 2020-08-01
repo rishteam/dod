@@ -14,8 +14,13 @@ namespace rl {
 std::shared_ptr<spdlog::logger> Logger::CoreLogger;
 std::shared_ptr<spdlog::logger> Logger::ClientLogger;
 
-void Logger::Init(LoggerType type)
+uint32_t Logger::s_type = Logger::Default;
+std::string Logger::s_pattern = "[%T] [%n/%^%l%$] %v";
+
+void Logger::Init(uint32_t type)
 {
+    s_type = type;
+
     // Create sinks (stdout, file)
     std::vector<spdlog::sink_ptr> logSinks;
     logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
@@ -24,9 +29,9 @@ void Logger::Init(LoggerType type)
 
     // Set pattern: "[time] [cat] [level]: texts"
     for(auto &i : logSinks)
-        i->set_pattern("[%T] [%n/%^%l%$] %v");
+        i->set_pattern(s_pattern);
 
-    if(type == IgnoreDup)
+    if(type & IgnoreDup)
     {
         // Add duplicate filter based on time
         auto duplicateFilter = std::make_shared<spdlog::sinks::dup_filter_sink_mt>(std::chrono::seconds(5));
@@ -35,7 +40,7 @@ void Logger::Init(LoggerType type)
         CoreLogger = std::make_shared<spdlog::logger>("Engine", duplicateFilter);
         ClientLogger = std::make_shared<spdlog::logger>("App", duplicateFilter);
     }
-    else if(type == Normal)
+    else
     {
         CoreLogger = std::make_shared<spdlog::logger>("Engine", logSinks.begin(), logSinks.end());
         ClientLogger = std::make_shared<spdlog::logger>("App", logSinks.begin(), logSinks.end());

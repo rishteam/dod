@@ -5,6 +5,8 @@
  */
 #pragma once
 
+#define LOG_VERBOSE 0
+
 extern rl::Application* rl::CreateApplication();
 
 int main(int argc, char **argv)
@@ -19,7 +21,12 @@ int main(int argc, char **argv)
     getchar();
 #endif
     //
-    rl::Logger::Init(rl::Logger::LoggerType::IgnoreDup);
+#if LOG_VERBOSE
+    auto LoggerSetting = rl::Logger::LoggerType::IgnoreDup | rl::Logger::LoggerType::FileInfo | rl::Logger::LoggerType::FunctionInfo;
+#else
+    auto LoggerSetting = rl::Logger::LoggerType::IgnoreDup;
+#endif
+    rl::Logger::Init(LoggerSetting);
     rl::VFS::Init();
 
     RL_CORE_INFO("Initializating the RishEngine");
