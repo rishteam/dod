@@ -6,6 +6,7 @@ TestLayer::TestLayer()
     : Layer("TestLayer"),
       m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true)
 {
+    RL_PROFILE_FUNCTION();
     RL_INFO("Current = {}", rl::FileSystem::GetCurrentDirectory());
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
@@ -13,6 +14,7 @@ TestLayer::TestLayer()
 
 void TestLayer::onAttach()
 {
+    RL_PROFILE_FUNCTION();
     m_texture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
 }
 
@@ -22,6 +24,7 @@ void TestLayer::onDetach()
 
 void TestLayer::onUpdate(rl::Time dt)
 {
+    RL_PROFILE_FUNCTION();
     // Update
     m_cameraController.onUpdate(dt);
 
@@ -39,6 +42,7 @@ void TestLayer::onUpdate(rl::Time dt)
 
 void TestLayer::onImGuiRender()
 {
+    RL_PROFILE_FUNCTION();
     m_cameraController.onImGuiRender();
 
     ImGui::Begin("Debug");
@@ -53,5 +57,6 @@ void TestLayer::onImGuiRender()
 
 void TestLayer::onEvent(rl::Event &e)
 {
+    RL_PROFILE_FUNCTION();
     m_cameraController.onEvent(e);
 }

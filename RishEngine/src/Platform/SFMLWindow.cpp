@@ -220,6 +220,7 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     : Window(title, width, height),
       m_SFMLWindow() // Construct the window in the main SFMLWindow constructor
 {
+    RL_PROFILE_FUNCTION();
     m_SFMLWindow.create(sf::VideoMode(width, height), title, sf::Style::Default, sf::ContextSettings(24, 8, 4, 4, 5));
 
     // Add SFML Event mapping
@@ -337,6 +338,7 @@ SFMLWindow::~SFMLWindow()
 
 void SFMLWindow::onUpdate()
 {
+    RL_PROFILE_FUNCTION();
     RL_CORE_ASSERT(m_eventCallback, "Event Callback is not ready");
 
     m_SFMLWindow.clear(m_clearColor);
@@ -350,6 +352,7 @@ void SFMLWindow::onUpdate()
 
 void SFMLWindow::onDraw()
 {
+    RL_PROFILE_FUNCTION();
     m_SFMLWindow.display();
 }
 

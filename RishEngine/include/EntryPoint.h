@@ -30,14 +30,19 @@ int main(int argc, char **argv)
     rl::VFS::Init();
 
     RL_CORE_INFO("Initializating the RishEngine");
+    RL_PROFILE_BEGIN_SESSION("Create", "rl-create.json");
     auto app = rl::CreateApplication();
+    RL_PROFILE_END_SESSION();
 
     RL_CORE_INFO("RishEngine is running");
+    RL_PROFILE_BEGIN_SESSION("Running", "rl-running.json");
     app->run();
+    RL_PROFILE_END_SESSION();
 
     RL_CORE_INFO("Shutdowning the RishEngine");
+    RL_PROFILE_BEGIN_SESSION("Delete", "rl-delete.json");
     delete app;
-
     rl::VFS::ShutDown();
+    RL_PROFILE_END_SESSION();
     RL_CORE_INFO("Goodbye");
 }

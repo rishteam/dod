@@ -17,6 +17,7 @@
 
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <list>
 #include <vector>
 #include <map>
@@ -27,6 +28,7 @@
 #include <random>
 
 #include <mutex>
+#include <thread>
 
 #include <sys/stat.h>
 #include <iterator>

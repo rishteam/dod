@@ -43,6 +43,8 @@ config.h
 build/
 */build
 
+rl-*.json
+
 imgui.ini
 .DS_Store
 /cmake-build-debug/

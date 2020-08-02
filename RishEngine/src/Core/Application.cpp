@@ -16,6 +16,7 @@ Application *Application::s_instance = nullptr;
 
 Application::Application(const std::string &name, uint32_t width, uint32_t height)
 {
+    RL_PROFILE_FUNCTION();
     RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have *ONE* Application instance");
     // Set instance
     Application::s_instance = this;
@@ -39,6 +40,7 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
 
 Application::~Application()
 {
+    RL_PROFILE_FUNCTION();
     // pop all layers
     m_LayerStack.reset(nullptr);
     //
@@ -49,11 +51,13 @@ Application::~Application()
 
 void Application::run()
 {
+    RL_PROFILE_FUNCTION();
     Clock clk;
     float lag = 0.0;
 
     while(m_running)
     {
+        RL_PROFILE_SCOPE("Main Loop");
         // Update time
         float now = clk.getElapsedTime().asSeconds();
         Time dt = now - m_prevFrameTime;

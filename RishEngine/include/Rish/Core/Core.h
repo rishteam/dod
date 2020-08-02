@@ -11,6 +11,7 @@
 
 #define RL_DEBUG_DEFINE
 #define RL_ATTACH 0
+#define RL_PROFILE
 
 #ifdef RL_DEBUG_DEFINE
     #define RL_ENABLE_ASSERT
@@ -85,3 +86,5 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 }
 
 }
+
+#include <Rish/Debug/Instrumentor.h>

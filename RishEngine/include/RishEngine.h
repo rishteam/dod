@@ -51,5 +51,8 @@
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
+// Debug
+#include <Rish/Debug/Instrumentor.h>
+
 /// @defgroup core Core Module
 /// Core functions
