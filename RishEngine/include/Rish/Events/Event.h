@@ -9,7 +9,7 @@
 #include "Rish/rlpch.h"
 #include "Rish/Core/Core.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/bundled/format.h>
 
 namespace rl {
 

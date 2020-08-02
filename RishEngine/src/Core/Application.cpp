@@ -7,8 +7,8 @@
 
 #include <Rish/Renderer/Renderer.h>
 
-#include <fmt/printf.h>
-#include <fmt/format.h>
+#include <spdlog/fmt/bundled/printf.h>
+#include <spdlog/fmt/bundled/format.h>
 
 namespace rl {
 

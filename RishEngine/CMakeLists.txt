@@ -39,6 +39,7 @@ include(cmake/StaticAnalyzers.cmake)
 # Dependencies
 add_subdirectory(deps/nativefiledialog)
 add_subdirectory(deps/glad)
+add_subdirectory(deps/spdlog)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
@@ -163,25 +164,15 @@ target_link_libraries(RishEngine
     ${OPENGL_LIBRARIES}
 )
 
-# Add fmt
-find_package(fmt REQUIRED)
-if(NOT fmt_FOUND)
-    message(FATAL_ERROR "fmt not found")
-endif()
+# Add spdlog
 target_link_libraries(RishEngine
-    fmt::fmt
+    spdlog::spdlog
 )
 
 # Add nlohmann_json
 find_package(nlohmann_json 3.2.0 REQUIRED)
 target_link_libraries(RishEngine
     nlohmann_json::nlohmann_json
-)
-
-# Add spdlog
-find_package(spdlog REQUIRED)
-target_link_libraries(RishEngine
-    spdlog::spdlog
 )
 
 # Add nativefiledialog

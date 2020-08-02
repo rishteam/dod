@@ -9,7 +9,7 @@
 #include <vector>
 #include <fstream>
 
-#include <fmt/format.h>
+#include <spdlog/fmt/bundled/format.h>
 
 #include "Rish/Core/Core.h"
 #include "Rish/Core/Log.h"

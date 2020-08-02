@@ -8,8 +8,8 @@
 #include "Rish/rlpch.h"
 
 #include <SFML/Graphics.hpp>
-#include <fmt/core.h>
-#include <fmt/printf.h>
+#include <spdlog/fmt/bundled/core.h>
+#include <spdlog/fmt/bundled/printf.h>
 #include <imgui.h>
 
 #include "Rish/Core/Core.h"
