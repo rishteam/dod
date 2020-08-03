@@ -6,4 +6,4 @@ mingw-w64-i686-qt5
 mingw-w64-i686-sfml
 mingw-w64-i686-fmt
 mingw-w64-i686-nlohmann-json
-mingw-w64-i686-spdlog
+mingw-w64-i686-glm
