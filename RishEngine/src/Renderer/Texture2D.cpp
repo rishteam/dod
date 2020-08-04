@@ -11,14 +11,17 @@ namespace rl {
 
 Texture2D::Texture2D(uint32_t width, uint32_t height)
 {
+    RL_PROFILE_FUNCTION();
+
     createTexture();
     setSize(width, height);
-
 }
 
 Texture2D::Texture2D(const std::string &path, bool flip)
 	: m_path(path)
 {
+    RL_PROFILE_FUNCTION();
+
 	createTexture();
 
 	auto image = Image::LoadImage(path, flip);
@@ -29,6 +32,8 @@ Texture2D::Texture2D(const std::string &path, bool flip)
 
 Texture2D::Texture2D(Ref<Image> image)
 {
+    RL_PROFILE_FUNCTION();
+
     createTexture();
     setSize(image->getWidth(), image->getHeight());
     setTexture(image->getPixelPtr());
@@ -36,6 +41,8 @@ Texture2D::Texture2D(Ref<Image> image)
 
 Texture2D::~Texture2D()
 {
+    RL_PROFILE_FUNCTION();
+
 	glDeleteTextures(1, &m_textureID);
 }
 
@@ -43,12 +50,16 @@ Texture2D::~Texture2D()
 
 void Texture2D::setData(void *data, uint32_t size)
 {
+    RL_PROFILE_FUNCTION();
+
     RL_ASSERT(size == m_width * m_height * 4, "data must be entire texture");
     glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
 void Texture2D::setPixel(uint32_t x, uint32_t y, const glm::vec4 &color)
 {
+    RL_PROFILE_FUNCTION();
+
     RL_ASSERT(x <= m_width && y <= m_height, "Pixel must inside the texture");
 
     union Pixel
@@ -69,11 +80,15 @@ void Texture2D::setPixel(uint32_t x, uint32_t y, const glm::vec4 &color)
 
 void Texture2D::bind(uint32_t slot) const
 {
+    RL_PROFILE_FUNCTION();
+
 	glBindTextureUnit(slot, m_textureID);
 }
 
 void Texture2D::unbind() const
 {
+    RL_PROFILE_FUNCTION();
+
 	glBindTextureUnit(0, 0);
 }
 
@@ -82,11 +97,15 @@ void Texture2D::unbind() const
 
 Ref<Texture2D> Texture2D::LoadTexture(const std::string &path, bool flip)
 {
+    RL_PROFILE_FUNCTION();
+
     return MakeRef<Texture2D>(path, flip);
 }
 
 Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool flip)
 {
+    RL_PROFILE_FUNCTION();
+
     std::string path;
     VFS::ResolvePhysicalPath(virtualPath, path);
     return MakeRef<Texture2D>(path, flip);

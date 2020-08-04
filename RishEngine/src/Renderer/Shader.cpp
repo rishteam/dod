@@ -16,7 +16,9 @@ std::string Shader::s_fragSource;
 
 Shader::Shader(const char *vertSrc, const char *fragSrc)
 {
-	uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertSrc);
+    RL_PROFILE_FUNCTION();
+
+    uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertSrc);
 	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrc);
 	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
 
@@ -29,16 +31,22 @@ Shader::Shader(const char *vertSrc, const char *fragSrc)
 
 Shader::~Shader()
 {
+    RL_PROFILE_FUNCTION();
+
     glDeleteProgram(program);
 }
 
 void Shader::bind()
 {
+    RL_PROFILE_FUNCTION();
+
 	glUseProgram(program);
 }
 
 void Shader::unbind()
 {
+    RL_PROFILE_FUNCTION();
+
 	glUseProgram(0);
 }
 
@@ -135,7 +143,9 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &matrix)
 
 Ref<Shader> Shader::LoadShader(const std::string &vertPath, const std::string &fragPath)
 {
-	s_vertSource = FileSystem::ReadTextFile(vertPath);
+    RL_PROFILE_FUNCTION();
+
+    s_vertSource = FileSystem::ReadTextFile(vertPath);
 	RL_CORE_ASSERT(s_vertSource != "", "[Shader] Failed to open File");
 	s_fragSource = FileSystem::ReadTextFile(fragPath);
 	RL_CORE_ASSERT(s_fragSource != "", "[Shader] Failed to open File");
@@ -144,7 +154,9 @@ Ref<Shader> Shader::LoadShader(const std::string &vertPath, const std::string &f
 
 Ref<Shader> Shader::LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath)
 {
-	s_vertSource = VFS::ReadTextFile(v_vertPath);
+    RL_PROFILE_FUNCTION();
+
+    s_vertSource = VFS::ReadTextFile(v_vertPath);
 	RL_CORE_ASSERT(s_vertSource != "", "[Shader] Failed to open File");
 	s_fragSource = VFS::ReadTextFile(v_fragPath);
 	RL_CORE_ASSERT(s_fragSource != "", "[Shader] Failed to open File");
@@ -194,7 +206,9 @@ void main()
 
 Ref<Shader> ShaderLibrary::load(const std::string &name, const std::string &vpath)
 {
-	if(m_shader.count(name))
+    RL_PROFILE_FUNCTION();
+
+    if(m_shader.count(name))
 		m_shader.erase(name);
 	// TODO: roll back to default shader when error?
 	auto newShader = Shader::LoadShaderVFS(vpath+".vert", vpath+".frag");

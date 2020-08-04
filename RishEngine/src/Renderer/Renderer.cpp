@@ -11,12 +11,16 @@ static SceneData s_sceneData;
 
 void Renderer::Init()
 {
+    RL_PROFILE_FUNCTION();
+
     RenderCommand::Init();
     Renderer2D::Init();
 }
 
 void Renderer::Shutdown()
 {
+    RL_PROFILE_FUNCTION();
+
     Renderer2D::Shutdown();
 }
 

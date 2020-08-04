@@ -11,6 +11,17 @@ namespace rl {
 class RL_API Renderer2D
 {
 public:
+    // TODO: Use settings instead?
+    struct RL_API QuadSettings
+    {
+        glm::vec3 position = glm::vec3(0.f);
+        glm::vec2 size     = glm::vec2(1.f);
+        glm::vec4 color    = glm::vec4(1.f);
+        Ref<Texture2D> texture;
+        float textureTiling = 1.f;
+        float rotate = 0.f;
+    };
+public:
     static void Init();
     static void Shutdown();
 
@@ -23,8 +34,8 @@ public:
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> &texture);
 
-    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture, const glm::vec4& color);
-    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> &texture, const glm::vec4& color);
+    static void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture, const glm::vec4 &color, float rotate);
+    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> &texture, const glm::vec4& color, float rotate);
 };
 
 } // namespace of rl

@@ -36,10 +36,11 @@ out vec4 color;
 
 uniform sampler2D u_Texture;
 uniform vec4 u_Color;
+uniform float u_Tiling;
 
 void main()
 {
-    vec4 texColor = texture(u_Texture, v_TexCoord);
+    vec4 texColor = texture(u_Texture, v_TexCoord * u_Tiling);
     color = texColor * u_Color;
 }
 )glsl";
@@ -55,6 +56,8 @@ static Scope<Renderer2DStorage> s_data;
 
 void Renderer2D::Init()
 {
+    RL_PROFILE_FUNCTION();
+
     s_data = MakeScope<Renderer2DStorage>();
     s_data->quadVertexArray = VertexArray::Create();
     // vertex
@@ -86,53 +89,65 @@ void Renderer2D::Init()
 
 void Renderer2D::Shutdown()
 {
+    RL_PROFILE_FUNCTION();
+
     s_data.reset(nullptr);
 }
 
 void Renderer2D::BeginScene(const OrthographicCamera &camera)
 {
+    RL_PROFILE_FUNCTION();
+
     s_data->textureShader->bind();
     s_data->textureShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
 }
 
 void Renderer2D::EndScene()
 {
+    RL_PROFILE_FUNCTION();
+
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color);
+    DrawQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color, 0.f);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad(position, size, s_data->whiteTexture, color);
+    DrawQuad(position, size, s_data->whiteTexture, color, 0.f);
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f));
+    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f), 0.f);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
-    DrawQuad(position, size, texture, glm::vec4(1.f));
+    DrawQuad(position, size, texture, glm::vec4(1.f), 0.f);
 }
 
-void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
-                          const glm::vec4 &color)
+void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
+                          const glm::vec4 &color,
+                          float rotate)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture, color);
+    DrawQuad({position.x, position.y, 0.0}, size, texture, color, rotate);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
-                          const glm::vec4 &color)
+                          const glm::vec4 &color,
+                          float rotate)
 {
+    RL_PROFILE_FUNCTION();
+
     glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
+                          glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
                           glm::scale(glm::mat4(1.f), glm::vec3(size.x, size.y, 1.f));
     s_data->textureShader->bind();
     s_data->textureShader->setMat4("u_Transform", transform);
     s_data->textureShader->setFloat4("u_Color", color);
+    s_data->textureShader->setFloat("u_Tiling", 10.0f);
     s_data->textureShader->setInt("u_Texture", 0);
     texture->bind();
 

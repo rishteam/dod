@@ -17,6 +17,7 @@ Application *Application::s_instance = nullptr;
 Application::Application(const std::string &name, uint32_t width, uint32_t height)
 {
     RL_PROFILE_FUNCTION();
+
     RL_CORE_ASSERT(s_instance == nullptr, "RishEngine should only have *ONE* Application instance");
     // Set instance
     Application::s_instance = this;
@@ -52,6 +53,7 @@ Application::~Application()
 void Application::run()
 {
     RL_PROFILE_FUNCTION();
+
     Clock clk;
     float lag = 0.0;
 
@@ -65,29 +67,43 @@ void Application::run()
         lag += dt;
 
         // Update window
-        m_window->onUpdate();
+        {
+            RL_PROFILE_SCOPE("Window Update");
+            m_window->onUpdate();
+        }
 
         // Update Timer
         Timer::Update();
 
         // Update layers
-        for(Layer* layer: *m_LayerStack)
-            layer->onUpdate(dt);
+        {
+            RL_PROFILE_SCOPE("Layer Update");
+            for(Layer* layer: *m_LayerStack)
+                layer->onUpdate(dt);
+        }
 
         // Update ImGui
-        m_imguiLayer->begin();
-        for(Layer* layer : *m_LayerStack)
-            layer->onImGuiRender();
-        m_imguiLayer->end();
+        {
+            RL_PROFILE_SCOPE("ImGui Update");
+            m_imguiLayer->begin();
+            for (Layer *layer : *m_LayerStack)
+                layer->onImGuiRender();
+            m_imguiLayer->end();
+        }
 
         // Draw window
-        if(m_window)
-            m_window->onDraw();
+        {
+            RL_PROFILE_SCOPE("Draw");
+            if (m_window)
+                m_window->onDraw();
+        }
     }
 }
 
 void Application::onEvent(Event &e)
 {
+    RL_PROFILE_FUNCTION();
+
     EventDispatcher dispatcher(e);
     dispatcher.dispatch<WindowCloseEvent>(RL_BIND_EVENT_FUNC(Application::onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(RL_BIND_EVENT_FUNC(Application::onWindowResize));

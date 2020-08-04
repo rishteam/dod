@@ -125,6 +125,10 @@ private:
 
 }
 
+// TODO: support multithreading
+
+// https://stackoverflow.com/questions/1597007/creating-c-macro-with-and-line-token-concatenation-with-positioning-macr
+// https://stackoverflow.com/questions/1489932/how-to-concatenate-twice-with-the-c-preprocessor-and-expand-a-macro-as-in-arg
 #define TOKENPASTE(x, y) x ## y
 #define TOKENPASTE2(x, y) TOKENPASTE(x, y)
 
@@ -134,8 +138,8 @@ private:
     #define RL_PROFILE_SCOPE(name) rl::InstrumentationTimer TOKENPASTE2(time, __LINE__)(name)
     #define RL_PROFILE_FUNCTION() RL_PROFILE_SCOPE(__PRETTY_FUNCTION__)
 #else
-    #define RL_PROFILE_BEGIN_SESSION(x)
+    #define RL_PROFILE_BEGIN_SESSION(name, filepath)
     #define RL_PROFILE_END_SESSION()
-    #define RL_PROFILE_SCOPE()
+    #define RL_PROFILE_SCOPE(name)
     #define RL_PROFILE_FUNCTION()
 #endif

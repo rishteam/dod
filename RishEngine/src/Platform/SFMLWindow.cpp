@@ -221,6 +221,7 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
       m_SFMLWindow() // Construct the window in the main SFMLWindow constructor
 {
     RL_PROFILE_FUNCTION();
+
     m_SFMLWindow.create(sf::VideoMode(width, height), title, sf::Style::Default, sf::ContextSettings(24, 8, 4, 4, 5));
 
     // Add SFML Event mapping
@@ -339,6 +340,7 @@ SFMLWindow::~SFMLWindow()
 void SFMLWindow::onUpdate()
 {
     RL_PROFILE_FUNCTION();
+
     RL_CORE_ASSERT(m_eventCallback, "Event Callback is not ready");
 
     m_SFMLWindow.clear(m_clearColor);
@@ -353,12 +355,15 @@ void SFMLWindow::onUpdate()
 void SFMLWindow::onDraw()
 {
     RL_PROFILE_FUNCTION();
+
     m_SFMLWindow.display();
 }
 
 // Adapt from imgui-SFML
 void SFMLWindow::initImGui()
 {
+    RL_PROFILE_FUNCTION();
+
     // ImGui::SFML::Init(m_SFMLWindow);
     ImGuiContext *ctx = ImGui::CreateContext();
     ImGui::SetCurrentContext(ctx);
@@ -442,6 +447,8 @@ void SFMLWindow::initImGui()
 
 void SFMLWindow::shutdownImGui()
 {
+    RL_PROFILE_FUNCTION();
+
     // ImGui::SFML::Shutdown();
     ImGui::GetIO().Fonts->TexID = (ImTextureID)NULL;
 
@@ -468,6 +475,8 @@ void SFMLWindow::shutdownImGui()
 
 void SFMLWindow::updateImGui()
 {
+    RL_PROFILE_FUNCTION();
+
     // ImGui::SFML::Update(m_SFMLWindow, m_clock.restart());
 
     // Update OS/hardware mouse cursor if imgui isn't drawing a software cursor
@@ -538,6 +547,8 @@ void SFMLWindow::updateImGui()
 
 void SFMLWindow::renderImGui()
 {
+    RL_PROFILE_FUNCTION();
+
     ImGui::EndFrame();
     //
     m_SFMLWindow.pushGLStates();

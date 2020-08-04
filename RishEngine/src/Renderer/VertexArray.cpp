@@ -31,21 +31,29 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 
 VertexArray::VertexArray()
 {
+    RL_PROFILE_FUNCTION();
+
 	glGenVertexArrays(1, &vao);
 }
 
 VertexArray::~VertexArray()
 {
+    RL_PROFILE_FUNCTION();
+
 	glDeleteVertexArrays(1, &vao);
 }
 
 void VertexArray::bind() const
 {
+    RL_PROFILE_FUNCTION();
+
 	glBindVertexArray(vao);
 }
 
 void VertexArray::unbind() const
 {
+    RL_PROFILE_FUNCTION();
+
 	glBindVertexArray(0);
 }
 

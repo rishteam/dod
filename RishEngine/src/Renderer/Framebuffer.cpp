@@ -8,19 +8,25 @@ namespace rl {
 Framebuffer::Framebuffer(const FramebufferSpecification &spec)
 	: m_spec(spec)
 {
-	invalidate();
+    RL_PROFILE_FUNCTION();
+
+    invalidate();
 }
 
 Framebuffer::~Framebuffer()
 {
-	glDeleteFramebuffers(1, &m_frameBufferID);
+    RL_PROFILE_FUNCTION();
+
+    glDeleteFramebuffers(1, &m_frameBufferID);
 	glDeleteTextures(1, &m_colorAttachment);
 	glDeleteTextures(1, &m_depthAttachment);
 }
 
 void Framebuffer::invalidate()
 {
-	if(m_frameBufferID)
+    RL_PROFILE_FUNCTION();
+
+    if(m_frameBufferID)
 	{
 		glDeleteFramebuffers(1, &m_frameBufferID);
 		glDeleteTextures(1, &m_colorAttachment);
@@ -57,13 +63,17 @@ void Framebuffer::invalidate()
 
 void Framebuffer::bind()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferID);
+    RL_PROFILE_FUNCTION();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferID);
 	glViewport(0, 0, m_spec.width, m_spec.height);
 }
 
 void Framebuffer::unbind()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    RL_PROFILE_FUNCTION();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Framebuffer::resize(uint32_t width, uint32_t height)

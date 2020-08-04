@@ -12,26 +12,36 @@ ImGuiLayer::ImGuiLayer()
     : Layer("ImGuiLayer"),
     m_window(Application::Get().getWindow())
 {
+    RL_PROFILE_FUNCTION();
+
 }
 
 ImGuiLayer::~ImGuiLayer()
 {
+    RL_PROFILE_FUNCTION();
+
 }
 
 void ImGuiLayer::onAttach()
 {
+    RL_PROFILE_FUNCTION();
+
     RL_CORE_TRACE("[{}] onAttach", GetName());
     Application::Get().getWindow().initImGui();
 }
 
 void ImGuiLayer::onDetach()
 {
+    RL_PROFILE_FUNCTION();
+
     RL_CORE_TRACE("[{}] onDetach", GetName());
     Application::Get().getWindow().shutdownImGui();
 }
 
 void ImGuiLayer::begin()
 {
+    RL_PROFILE_FUNCTION();
+
     RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
     //
     ImGuiIO &io = ImGui::GetIO();
@@ -43,6 +53,8 @@ void ImGuiLayer::begin()
 
 void ImGuiLayer::end()
 {
+    RL_PROFILE_FUNCTION();
+
     RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
     //
     Application::Get().getWindow().renderImGui();
@@ -50,6 +62,8 @@ void ImGuiLayer::end()
 
 void ImGuiLayer::onEvent(Event &event)
 {
+    RL_PROFILE_FUNCTION();
+
     RL_CORE_ASSERT(ImGui::GetCurrentContext(), "ImGui has no context");
     //
     EventDispatcher dispatcher(event);
