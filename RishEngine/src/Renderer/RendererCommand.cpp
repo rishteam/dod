@@ -21,9 +21,10 @@ void rl::RenderCommand::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void rl::RenderCommand::DrawElement(const Ref<VertexArray> &vertexArray)
+void rl::RenderCommand::DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount)
 {
-    glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+    indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 }
 
 void rl::RenderCommand::SetViewPort(float x, float y, float width, float height)

@@ -144,4 +144,14 @@ void Texture2D::setTexture(const void *imagePtr)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+bool Texture2D::operator==(const Texture2D &rhs) const
+{
+    return m_textureID == rhs.m_textureID;
+}
+
+bool Texture2D::operator!=(const Texture2D &rhs) const
+{
+    return !(rhs == *this);
+}
+
 }

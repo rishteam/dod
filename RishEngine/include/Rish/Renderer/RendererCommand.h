@@ -44,7 +44,7 @@ public:
      * @brief Draw By IndexBuffer
      * @param vertexArray Vertex Array
      */
-    static void DrawElement(const Ref<VertexArray> &vertexArray);
+    static void DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount=0);
 };
 
 }

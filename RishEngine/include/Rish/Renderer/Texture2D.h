@@ -58,14 +58,14 @@ public:
 	 * @param flip Flip the image?
 	 * @return Reference to the texture
 	 */
-	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=false);
+	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=true);
 	/**
 	 * @brief Load a Texture with rl::VFS
 	 * @param path Path to the file
 	 * @param flip Flip the image?
 	 * @return Reference to the texture
 	 */
-	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false);
+	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=true);
     /**
      * @brief
      * @param width
@@ -73,6 +73,9 @@ public:
      * @return
      */
 	static Ref<Texture2D> Create(uint32_t width, uint32_t height);
+
+    bool operator==(const Texture2D &rhs) const;
+    bool operator!=(const Texture2D &rhs) const;
 
 private:
     void createTexture();

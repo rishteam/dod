@@ -12,6 +12,7 @@ namespace rl {
 class RL_API OrthographicCamera
 {
 public:
+    OrthographicCamera() = default;
     /**
      * @brief Ctor
      * @details ![](https://i.imgur.com/QzARlUo.png)

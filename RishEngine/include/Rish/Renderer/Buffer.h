@@ -199,7 +199,7 @@ public:
 	static Ref<VertexBuffer> Create();
 
 private:
-	uint32_t vbo;
+	uint32_t vbo = 0;
 	BufferLayout m_layout;
 };
 
