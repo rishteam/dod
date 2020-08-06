@@ -16,10 +16,12 @@ layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in float a_TexIndex;
+layout(location = 4) in float a_Tiling;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
 out float v_TexIndex;
+out float v_Tiling;
 
 uniform mat4 u_ViewProjection;
 
@@ -30,6 +32,7 @@ void main()
     v_Color = a_Color;
     v_TexCoord = a_TexCoord;
     v_TexIndex = a_TexIndex;
+    v_Tiling = a_Tiling;
 }
 )glsl";
 const char *texturedFS = R"glsl(
@@ -38,16 +41,16 @@ const char *texturedFS = R"glsl(
 in vec4 v_Color;
 in vec2 v_TexCoord;
 in float v_TexIndex;
+in float v_Tiling;
 
 out vec4 color;
 
 uniform sampler2D u_Textures[32];
-uniform float u_Tiling;
 
 void main()
 {
     int index = int(v_TexIndex);
-    vec4 texColor = texture(u_Textures[index], v_TexCoord * u_Tiling);
+    vec4 texColor = texture(u_Textures[index], v_TexCoord * v_Tiling);
     color = texColor * v_Color;
 }
 )glsl";
@@ -58,6 +61,7 @@ struct QuadVertex
     glm::vec4 color;
     glm::vec2 texCoord;
     float texIndex;
+    float texTiling;
 };
 
 const size_t MaxTextures = 32;
@@ -79,6 +83,8 @@ struct Renderer2DData
     QuadVertex *quadBuffer = nullptr;
     QuadVertex *quadBufferPtr = nullptr;
     uint32_t quadIndexCount = 0;
+
+    glm::vec4 quadVertexPosition[4]{};
 
     // TODO: Use asset handle to uniquely identify a asset
     // (slot -> textureID)
@@ -109,7 +115,8 @@ void Renderer2D::Init()
         {ShaderDataType::Float3, "a_Position"},
         {ShaderDataType::Float4, "a_Color"},
         {ShaderDataType::Float2, "a_TexCoord"},
-        {ShaderDataType::Float, "a_TexIndex"}
+        {ShaderDataType::Float, "a_TexIndex"},
+        {ShaderDataType::Float, "a_Tiling"}
     });
     s_data->quadVertexArray->setVertexBuffer(s_data->quadVertexBuffer);
 
@@ -140,6 +147,12 @@ void Renderer2D::Init()
     for(int i = 0; i < MaxTextures; i++)
         sampler[i] = i;
     s_data->textureShader->setIntArray("u_Textures", sampler, MaxTextures);
+
+    // template for quad vertex
+    s_data->quadVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
+    s_data->quadVertexPosition[1] = { 0.5f, -0.5f, 0.0f, 1.0f};
+    s_data->quadVertexPosition[2] = {-0.5f,  0.5f, 0.0f, 1.0f};
+    s_data->quadVertexPosition[3] = { 0.5f,  0.5f, 0.0f, 1.0f};
 }
 
 void Renderer2D::Shutdown()
@@ -157,7 +170,6 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera)
 
     s_data->textureShader->bind();
     s_data->textureShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
-    s_data->textureShader->setFloat("u_Tiling", 10.0f);
 
     // Reset
     s_data->quadBufferPtr = s_data->quadBuffer;
@@ -196,34 +208,30 @@ void Renderer2D::EndScene()
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color, 0.f);
+    DrawQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad(position, size, s_data->whiteTexture, color, 0.f);
+    DrawQuad(position, size, s_data->whiteTexture, color);
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f), 0.f);
+    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f));
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
 {
-    DrawQuad(position, size, texture, glm::vec4(1.f), 0.f);
+    DrawQuad(position, size, texture, glm::vec4(1.f));
 }
 
-void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
-                          const glm::vec4 &color,
-                          float rotate)
+void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture, const glm::vec4 &color)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture, color, rotate);
+    DrawQuad({position.x, position.y, 0.0}, size, texture, color);
 }
 
-void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
-                          const glm::vec4 &color,
-                          float rotate)
+void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &color)
 {
     RL_PROFILE_FUNCTION();
 
@@ -234,46 +242,138 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
         BeginScene(s_data->camera);
     }
 
+    // Check if the texture is in slots
     float textureIndex = 0.f;
     for (int i = 1; i < s_data->textureSlotAddIndex; i++)
-        if (*s_data->textureSlots[i] == *texture)
+        if (*(s_data->textureSlots[i]) == *texture)
         {
             textureIndex = (float) i;
             break;
         }
-    if (textureIndex == 0.f)
+    if (textureIndex == 0.f) // if not then add it
     {
         textureIndex = (float)s_data->textureSlotAddIndex;
         s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
         s_data->textureSlotAddIndex++;
     }
 
-//    glm::mat4 transform = glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
-    glm::mat4 transform = glm::mat4(1.f);
-    // TODO: implement rotate
-
-    s_data->quadBufferPtr->position = transform * glm::vec4{ position.x, position.y, position.z, 1.f };
+    s_data->quadBufferPtr->position =glm::vec4{ position.x, position.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 0.0f, 0.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
-    s_data->quadBufferPtr->position =  transform * glm::vec4{ position.x + size.x, position.y, position.z, 1.f };
+    s_data->quadBufferPtr->position = glm::vec4{ position.x + size.x, position.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 1.0f, 0.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
-    s_data->quadBufferPtr->position =  transform * glm::vec4{ position.x, position.y + size.y, position.z, 1.f };
+    s_data->quadBufferPtr->position = glm::vec4{ position.x, position.y + size.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 0.0f, 1.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
-    s_data->quadBufferPtr->position =  transform * glm::vec4{ position.x + size.x, position.y + size.y, position.z, 1.f };
+    s_data->quadBufferPtr->position = glm::vec4{ position.x + size.x, position.y + size.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 1.0f, 1.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
+    s_data->quadBufferPtr++;
+
+    s_data->quadIndexCount += 6;
+    s_data->renderStats.QuadCount++;
+}
+
+void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    DrawRotatedQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color, rotate);
+}
+
+void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    DrawRotatedQuad(position, size, s_data->whiteTexture, color, rotate);
+}
+
+void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
+                                 float rotate)
+{
+    DrawRotatedQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f), rotate);
+}
+
+void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
+                                 float rotate)
+{
+    DrawRotatedQuad(position, size, texture, glm::vec4(1.f), rotate);
+}
+
+void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
+                                 const glm::vec4 &color, float rotate)
+{
+    DrawRotatedQuad({position.x, position.y, 0.f}, size, texture, color, rotate);
+}
+
+void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
+                                 const glm::vec4 &color, float rotate)
+{
+    RL_PROFILE_FUNCTION();
+
+    // Split draw call if it exceeds the limits
+    if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
+    {
+        EndScene();
+        BeginScene(s_data->camera);
+    }
+
+    // Check if the texture is in slots
+    float textureIndex = 0.f;
+    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
+        if (*(s_data->textureSlots[i]) == *texture)
+        {
+            textureIndex = (float) i;
+            break;
+        }
+    if (textureIndex == 0.f) // if not then add it
+    {
+        textureIndex = (float)s_data->textureSlotAddIndex;
+        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
+        s_data->textureSlotAddIndex++;
+    }
+
+    glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
+            glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+            glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+
+    s_data->quadBufferPtr->position = transform * s_data->quadVertexPosition[0];
+    s_data->quadBufferPtr->color = color;
+    s_data->quadBufferPtr->texCoord = { 0.0f, 0.0f };
+    s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
+    s_data->quadBufferPtr++;
+
+    s_data->quadBufferPtr->position = transform * s_data->quadVertexPosition[1];
+    s_data->quadBufferPtr->color = color;
+    s_data->quadBufferPtr->texCoord = { 1.0f, 0.0f };
+    s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
+    s_data->quadBufferPtr++;
+
+    s_data->quadBufferPtr->position = transform * s_data->quadVertexPosition[2];
+    s_data->quadBufferPtr->color = color;
+    s_data->quadBufferPtr->texCoord = { 0.0f, 1.0f };
+    s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
+    s_data->quadBufferPtr++;
+
+    s_data->quadBufferPtr->position = transform * s_data->quadVertexPosition[3];
+    s_data->quadBufferPtr->color = color;
+    s_data->quadBufferPtr->texCoord = { 1.0f, 1.0f };
+    s_data->quadBufferPtr->texIndex = textureIndex;
+    s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
     s_data->quadIndexCount += 6;
