@@ -66,6 +66,13 @@ void Application::run()
         m_prevFrameTime = now;
         lag += dt;
 
+        if(lag >= 1.f)
+        {
+            m_fps = m_frameCount;
+            m_frameCount = 0;
+            lag -= 1.f;
+        }
+
         // Update window
         {
             RL_PROFILE_SCOPE("Window Update");
@@ -97,6 +104,8 @@ void Application::run()
             if (m_window)
                 m_window->onDraw();
         }
+
+        m_frameCount++;
     }
 }
 

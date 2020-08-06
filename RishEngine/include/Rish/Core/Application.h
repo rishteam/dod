@@ -51,6 +51,9 @@ public:
     void pushOverlay(Layer* overlay);
     void popLayer(Layer* layer);
     void popOverlay(Layer* overlay);
+
+    uint32_t getFrameCount() const { return m_frameCount; }
+    uint32_t getFps() const { return m_fps; }
 private:
     bool onWindowClose(WindowCloseEvent &e);
     bool onWindowResize(WindowResizeEvent &e);
@@ -65,6 +68,10 @@ private:
     bool m_running = false;
     /// previous frame time
     float m_prevFrameTime = 0.0f;
+    /// frame count
+    uint32_t m_frameCount = 0;
+    /// fps count
+    uint32_t m_fps = 0;
 };
 
 Application* CreateApplication();

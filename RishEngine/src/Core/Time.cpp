@@ -11,6 +11,9 @@ Time Time::Now()
 	return Time(time_span.count());
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// Clock
+
 Time Clock::getElapsedTime()
 {
 	return Time::Now() - m_startTime;
@@ -23,6 +26,9 @@ Time Clock::restart()
 	m_startTime = now;
 	return elapsed;
 }
+
+/////////////////////////////////////////////////////////////////////////////
+// Timer
 
 Timer::Timer(Time t, TimerCallback callback)
     : m_timerCallback(callback)
