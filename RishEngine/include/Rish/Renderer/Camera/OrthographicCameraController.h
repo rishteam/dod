@@ -13,6 +13,23 @@
 
 namespace rl {
 
+struct OrthographicCameraBounds
+{
+    OrthographicCameraBounds(float Left, float Right, float Bottom, float Top)
+    {
+        left = Left;
+        right = Right;
+        bottom = Bottom;
+        top = Top;
+    }
+
+    float left, right;
+    float top, bottom;
+
+    float getWidth() const { return right - left; }
+    float getHeight() const { return top - bottom; }
+};
+
 class RL_API OrthographicCameraController
 {
 public:
@@ -24,19 +41,21 @@ public:
 
     OrthographicCamera& getCamera() { return m_camera; }
     const OrthographicCamera& getCamera() const { return m_camera; }
+    const OrthographicCameraBounds& getBounds() const { return m_bounds; }
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
 private:
     float m_aspect = 1280.f / 720.f;
     float m_zoom = 1.f;
+    OrthographicCameraBounds m_bounds;
     OrthographicCamera m_camera;
 
     float m_translateSpeed = 5.f;
     float m_rotateSpeed = 180.f;
 
     bool m_isAbleToRotate;
-    float m_rotate = 0.f;
+    float m_rotate = 0.f;  // degrees, counter-clock wise
     glm::vec3 m_position{0.f, 0.f, 0.f};
 };
 

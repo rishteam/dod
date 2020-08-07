@@ -53,6 +53,7 @@ public:
     void popOverlay(Layer* overlay);
 
     uint32_t getFrameCount() const { return m_frameCount; }
+    float getFrameTime() const { return m_prevFrameTime; }
     uint32_t getFps() const { return m_fps; }
 private:
     bool onWindowClose(WindowCloseEvent &e);

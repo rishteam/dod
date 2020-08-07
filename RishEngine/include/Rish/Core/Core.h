@@ -11,10 +11,10 @@
 
 #define RL_DEBUG
 #define RL_ATTACH 0
-//#define RL_PROFILE
 
 #ifdef RL_DEBUG
     #define RL_ENABLE_ASSERT
+//    #define RL_PROFILE
 #endif
 
 #ifdef RL_ENABLE_ASSERT

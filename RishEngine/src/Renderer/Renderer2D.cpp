@@ -180,6 +180,9 @@ void Renderer2D::EndScene()
 {
     RL_PROFILE_FUNCTION();
 
+    if(s_data->quadIndexCount == 0)
+        return;
+
     // Bind texture slots
     for(int i = 0; i < s_data->textureSlotAddIndex; i++)
         s_data->textureSlots[i]->bind(i);

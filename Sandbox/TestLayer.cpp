@@ -4,13 +4,22 @@
 
 TestLayer::TestLayer()
     : Layer("TestLayer"),
-      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true)
+      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true),
+      m_particleSystem(10000)
 {
     RL_PROFILE_FUNCTION();
 
     RL_INFO("Current = {}", rl::FileSystem::GetCurrentDirectory());
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
+
+    m_particle.colorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
+    m_particle.colorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
+    m_particle.sizeBegin = 0.5f, m_particle.sizeVar = 0.3f, m_particle.sizeEnd = 0.0f;
+    m_particle.lifeTime = 1.0f;
+    m_particle.velocity = { 0.0f, 0.0f };
+    m_particle.velocityVar = { 3.0f, 1.0f };
+    m_particle.position = { 0.0f, 0.0f };
 }
 
 void TestLayer::onAttach()
@@ -63,6 +72,25 @@ void TestLayer::onUpdate(rl::Time dt)
 
         rl::Renderer2D::EndScene();
     }
+
+    // TODO: bug and figure out
+    if (rl::Input::isMouseButtonPressed(rl::Mouse::Left))
+    {
+        auto [x, y] = rl::Input::getMousePosition();
+        auto width = rl::Application::Get().getWindow().getWidth();
+        auto height = rl::Application::Get().getWindow().getHeight();
+
+        auto bounds = m_cameraController.getBounds();
+        auto pos = m_cameraController.getCamera().getPosition();
+        x = (x / width) * bounds.getWidth() - bounds.getWidth() * 0.5f;
+        y = bounds.getHeight() * 0.5f - (y / height) * bounds.getHeight();
+        m_particle.position = { x + pos.x, y + pos.y };
+        for (int i = 0; i < 5; i++)
+            m_particleSystem.emit(m_particle);
+    }
+
+    m_particleSystem.onUpdate(dt);
+    m_particleSystem.onRender(m_cameraController.getCamera());
 }
 
 void TestLayer::onImGuiRender()

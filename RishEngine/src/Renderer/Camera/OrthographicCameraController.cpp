@@ -9,7 +9,8 @@ namespace rl {
 OrthographicCameraController::OrthographicCameraController(float aspect, bool rotate)
     : m_aspect(aspect),
       m_zoom(1.f),
-      m_camera(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom)
+      m_bounds(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom),
+      m_camera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top)
 {
     m_isAbleToRotate = rotate;
 }
