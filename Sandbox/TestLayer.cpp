@@ -54,7 +54,10 @@ void TestLayer::onUpdate(rl::Time dt)
         for(int i = 0; i < m_gridWidth; i++)
             for(int j = 0; j < m_gridHeight; j++)
             {
-                rl::Renderer2D::DrawQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f});
+                if((i+j) % 2)
+                    rl::Renderer2D::DrawRotatedQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f}, m_objectRotate);
+                else
+                    rl::Renderer2D::DrawQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f});
             }
         rl::Renderer2D::DrawQuad({0.3f, 0.9f, 0.f}, {1.f, 1.f}, m_texture);
 

@@ -9,11 +9,11 @@
 #include <Rish/Debug/debug-trap.h>
 #include <Rish/Core/Log.h>
 
-#define RL_DEBUG_DEFINE
+#define RL_DEBUG
 #define RL_ATTACH 0
 //#define RL_PROFILE
 
-#ifdef RL_DEBUG_DEFINE
+#ifdef RL_DEBUG
     #define RL_ENABLE_ASSERT
 #endif
 

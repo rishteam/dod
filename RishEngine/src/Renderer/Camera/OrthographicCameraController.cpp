@@ -87,12 +87,14 @@ bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
     m_zoom -= e.yOffset * 0.25f;
     m_zoom = std::max(m_zoom, 0.25f);
     m_camera.resizeCamera(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom);
+    return false;
 }
 
 bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e)
 {
     m_aspect = (float)e.m_width / (float)e.m_height;
     m_camera.resizeCamera(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom);
+    return false;
 }
 
 }

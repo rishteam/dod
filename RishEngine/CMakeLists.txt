@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 project(RishEngine)
 
-set(CMAKE_BUILD_TYPE Debug)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose Release or Debug" FORCE)
+endif()
 
 include(cmake/StandardProjectSettings.cmake)
 # Project option

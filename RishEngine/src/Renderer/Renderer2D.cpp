@@ -257,28 +257,29 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
         s_data->textureSlotAddIndex++;
     }
 
-    s_data->quadBufferPtr->position =glm::vec4{ position.x, position.y, position.z, 1.f };
+    glm::vec2 siz = size / 2.f;
+    s_data->quadBufferPtr->position =glm::vec4{ position.x - siz.x, position.y + siz.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 0.0f, 0.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
     s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
-    s_data->quadBufferPtr->position = glm::vec4{ position.x + size.x, position.y, position.z, 1.f };
+    s_data->quadBufferPtr->position = glm::vec4{ position.x + siz.x, position.y + siz.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 1.0f, 0.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
     s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
-    s_data->quadBufferPtr->position = glm::vec4{ position.x, position.y + size.y, position.z, 1.f };
+    s_data->quadBufferPtr->position = glm::vec4{ position.x - siz.x, position.y - siz.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 0.0f, 1.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
     s_data->quadBufferPtr->texTiling = 1.f;
     s_data->quadBufferPtr++;
 
-    s_data->quadBufferPtr->position = glm::vec4{ position.x + size.x, position.y + size.y, position.z, 1.f };
+    s_data->quadBufferPtr->position = glm::vec4{ position.x + siz.x, position.y - siz.y, position.z, 1.f };
     s_data->quadBufferPtr->color = color;
     s_data->quadBufferPtr->texCoord = { 1.0f, 1.0f };
     s_data->quadBufferPtr->texIndex = textureIndex;
