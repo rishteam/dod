@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Rish/Scene/Scene.h"
 #include "Rish/Scene/Entity.h"
 #include "Rish/Scene/Component.h"
@@ -40,6 +42,16 @@ Entity Scene::createEntity(const std::string& name)
 	return entity;	
 }
 
+std::vector<Entity> Scene::getAllEntites()
+{
+	std::vector<Entity> tmp;
+	m_registry.each([&](auto entity){
+
+		tmp.push_back({entity, this});
+	});
+	return tmp;
+}
+
 void Scene::update(Time dt)
 {
 	// System upadte
@@ -61,41 +73,66 @@ void Scene::update(Time dt)
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	auto group2 = m_registry.group<TestQuadComponent, TransformComponent, ShaderComponent>(entt::get<SpriteRendererComponent>);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	auto group2 = m_registry.group<TransformComponent>(entt::get<RenderComponent>);
 	for(auto entity: group2)
 	{
-		auto &test = group2.get<TestQuadComponent>(entity);
-		auto &sprite = group2.get<SpriteRendererComponent>(entity);
+		// auto &test = group2.get<TestQuadComponent>(entity);
+		// auto &sprite = group2.get<SpriteRendererComponent>(entity);
 		auto &transform = group2.get<TransformComponent>(entity);
-		auto &shader = group2.get<ShaderComponent>(entity);
+		auto &render = group2.get<RenderComponent>(entity);
 
-		if(shader.reload)
+		if(render.init)
 		{
-			shader.m_shader = std::make_shared<rl::Shader>(shader.vertPath.c_str(), shader.fragPath.c_str());
+			std::shared_ptr<rl::VertexBuffer> vertexBuffer;
+			vertexBuffer = std::make_shared<rl::VertexBuffer>(render.vertices, sizeof(render.vertices));
+			rl::BufferLayout layout = {
+				{rl::ShaderDataType::Float3, "a_Position"},
+				{rl::ShaderDataType::Float2, "a_TexCoord"}};
+
+			vertexBuffer->setLayout(layout);
+			render.m_vertexArray->setVertexBuffer(vertexBuffer);
+			std::shared_ptr<rl::IndexBuffer> indexBuffer;
+			indexBuffer = std::make_shared<rl::IndexBuffer>(render.indices, sizeof(render.indices) / sizeof(uint32_t));
+			render.m_vertexArray->setIndexBuffer(indexBuffer);
+
+			render.m_vertexArray->unbind(); // Always remember to UNBIND if AMD
+
+			render.init = false;
+		}
+
+		if(render.reload)
+		{
+			VFS::Get()->ResolvePhysicalPath(render.vertPath, render.vertPath);
+			VFS::Get()->ResolvePhysicalPath(render.fragPath, render.fragPath);
+			render.m_shader = std::make_shared<rl::Shader>(render.vertPath.c_str(), render.fragPath.c_str());
 			RL_CORE_TRACE("Reload Shader");
-			shader.reload = false;
+			render.reload = false;
 		}
 
-		if(test.reload)
+		if(render.reloadTexture)
 		{
-			test.m_texture = std::make_shared<rl::Texture2D>(test.path);
-			test.reload = false;
+			VFS::Get()->ResolvePhysicalPath(render.path, render.path);
+			render.m_texture = std::make_shared<rl::Texture2D>(render.path);
+			render.reloadTexture = false;
 		}
 
-		test.m_texture->bind();
+		render.m_texture->bind();
 
-		shader.m_shader->bind();
-		shader.m_shader->setFloat4("ourColor", sprite.color);
+		render.m_shader->bind();
+		render.m_shader->setFloat4("ourColor", render.color);
 		transform.transform = glm::translate(glm::mat4(1.0f), transform.translate);
 		transform.transform = glm::scale(transform.transform, transform.scale);
 		// RL_CORE_TRACE("translate : {} {}", transform.translate.x, transform.translate.y);
 
-		shader.m_shader->setMat4("transform", transform.transform);
-		test.m_vertexArray->bind();
-		glDrawElements(GL_TRIANGLES, test.m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-		test.m_vertexArray->unbind();
+		render.m_shader->setMat4("transform", transform.transform);
+		render.m_vertexArray->bind();
+		glDrawElements(GL_TRIANGLES, render.m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+		render.m_vertexArray->unbind();
 
-		test.m_texture->unbind();
+		render.m_texture->unbind();
 	}
 }
 

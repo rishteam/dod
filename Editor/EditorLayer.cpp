@@ -2,14 +2,26 @@
 #include <Rish/Core/FileSystem.h>
 
 #include "EditorLayer.h"
+#include "cereal/cereal.hpp"
+#include <cereal/archives/json.hpp>
 
 namespace rl {
 
 EditorLayer::EditorLayer()
     : Layer("editorLayer")
 {
-	VFS::Get()->Mount("shader", "Editor/assets/shader");
-	VFS::Get()->Mount("texture", "Editor/assets/texture");
+	VFS::Get()->Mount("shader", "assets/shader");
+	VFS::Get()->Mount("texture", "assets/texture");
+
+	RL_TRACE("{}", rl::FileSystem::GetCurrentDirectoryPath());
+	std::string tmp = rl::FileSystem::GetCurrentDirectoryPath().u8string();
+
+	std::vector<rl::File> v;
+	rl::FileSystem::List(tmp, v);
+
+	for(auto &i : v)
+		RL_TRACE("{}", i.getPath().c_str());
+
 
 	m_scene = std::make_shared<rl::Scene>();
 }
@@ -44,6 +56,41 @@ void EditorLayer::onUpdate(Time dt)
 
 void EditorLayer::onImGuiRender()
 {
+
+	if(ImGui::BeginMenuBar())
+	{
+		if(ImGui::BeginMenu("Menu"))
+		{
+			if (ImGui::MenuItem("Save"))
+			{
+				// TODO Maybe implement a function return ofstream from rl::FileSystem 
+				std::ofstream os("Scene.json");
+				cereal::JSONOutputArchive oar(os);
+
+				oar(cereal::make_nvp("Scene", m_scene));
+			}
+
+			if (ImGui::MenuItem("Open"))
+			{
+				std::string str = rl::FileSystem::ReadTextFile("Scene.json");
+				RL_TRACE("{}", str);
+				std::stringstream oos(str);
+				cereal::JSONInputArchive ar(oos);
+				ar( cereal::make_nvp("Scene", m_scene));
+
+				m_squareEntity = m_scene->getAllEntites();
+				std::reverse(m_squareEntity.begin(), m_squareEntity.end());
+			}
+
+			ImGui::EndMenu();
+		}
+
+
+		ImGui::EndMenuBar();
+	}
+
+
+
 	ImGui::Begin("Entity");
 	// RL_CORE_TRACE("Number of Entities: {}", m_squareEntity.size());
 	ImGui::ListBoxHeader("Entity", ImVec2(250, 600));
@@ -58,7 +105,6 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::ListBoxFooter();
 	
-
 	ImGui::Separator();
 
 	if(selected != -1)
@@ -89,65 +135,56 @@ void EditorLayer::onImGuiRender()
 			}
 		}
 
-		if (m_squareEntity[selected].hasComponent<SpriteRendererComponent>())
-		{
-			if (ImGui::CollapsingHeader("SpriteRendererComponent"))
-			{
-				auto &color = m_squareEntity[selected].getComponent<SpriteRendererComponent>().color;
-				ImGui::ColorEdit4("Color", glm::value_ptr(color));
-			}
-		}
 
-		if (m_squareEntity[selected].hasComponent<TestQuadComponent>())
-		{
-			if (ImGui::CollapsingHeader("TestQuadComponent"))
-			{
-				auto& test = m_squareEntity[selected].getComponent<TestQuadComponent>();
-				std::string path;
-				if(ImGui::Button("Select"))
-				{
-					if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
-					{
-						test.path = path;
-						test.reload = true;
-					}
-				}
-				static char texturePath[150];
-				strcpy(texturePath, test.path.c_str());
-				ImGui::SameLine();
-				ImGui::InputText("", texturePath, IM_ARRAYSIZE(texturePath));
-			}
-		}
-
-		if(m_squareEntity[selected].hasComponent<ShaderComponent>())
+		if (m_squareEntity[selected].hasComponent<RenderComponent>())
 		{
 			if(ImGui::CollapsingHeader("ShaderComponent"))
 			{
-				auto& shader = m_squareEntity[selected].getComponent<ShaderComponent>();
+				auto &color = m_squareEntity[selected].getComponent<RenderComponent>().color;
+				ImGui::ColorEdit4("Color", glm::value_ptr(color));
+				auto &render = m_squareEntity[selected].getComponent<RenderComponent>();
+
+				ImGui::Text("Texture");
+				std::string tPath;
+				if(ImGui::Button("Select"))
+				{
+					if(FileDialog::SelectSingleFile(nullptr, nullptr, tPath))
+					{
+						render.path = tPath;
+						render.reloadTexture = true;
+					}
+				}
+				
+				static char texPath[150];
+				strcpy(texPath, render.path.c_str());
+				ImGui::SameLine();
+				ImGui::InputText("", texPath, IM_ARRAYSIZE(texPath));
+
+				ImGui::Text("Shader");
 				std::string path;
-				if (ImGui::Button("Open Vert"))
+				if (ImGui::Button("Select##Vert"))
 				{
 					if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
 					{
-						shader.vertPath = path;
-						shader.reload = true;
+						render.vertPath = path;
+						render.reload = true;
 					}
 				}
 				static char vertPath[150];
-				strcpy(vertPath, shader.vertPath.c_str());
+				strcpy(vertPath, render.vertPath.c_str());
 				ImGui::SameLine();
 				ImGui::InputText("", vertPath, IM_ARRAYSIZE(vertPath));
 
-				if (ImGui::Button("Open Frag"))
+				if (ImGui::Button("Select##Frag"))
 				{
 					if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
 					{
-						shader.fragPath = path;
-						shader.reload = true;
+						render.fragPath = path;
+						render.reload = true;
 					}
 				}
 				static char fragPath[150];
-				strcpy(fragPath, shader.fragPath.c_str());
+				strcpy(fragPath, render.fragPath.c_str());
 				ImGui::SameLine();
 				ImGui::InputText("", fragPath, IM_ARRAYSIZE(fragPath));
 			}
@@ -181,7 +218,7 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Separator();
 
-	const char *components[] = {"TagComponent", "TransformComponent", "SpriteRendererComponent", "TestQuadComponent", "ShaderComponent"};
+	const char *components[] = {"TagComponent", "TransformComponent", "RenderComponent"};
 	static int selectedComponent = -1;
 	if(selected != -1)
 	{
@@ -205,7 +242,6 @@ void EditorLayer::onImGuiRender()
 								m_squareEntity[selected].addComponent<TagComponent>();
 							}
 						break;
-
 						case 1:
 							if (!m_squareEntity[selected].hasComponent<TransformComponent>())
 							{
@@ -214,23 +250,9 @@ void EditorLayer::onImGuiRender()
 						break;
 						
 						case 2:
-							if (!m_squareEntity[selected].hasComponent<SpriteRendererComponent>())
+							if(!m_squareEntity[selected].hasComponent<RenderComponent>())
 							{
-								m_squareEntity[selected].addComponent<SpriteRendererComponent>();
-							}
-						break;
-
-						case 3:
-							if (!m_squareEntity[selected].hasComponent<TestQuadComponent>())
-							{
-								m_squareEntity[selected].addComponent<TestQuadComponent>(std::make_shared<rl::VertexArray>());
-							}
-						break;
-
-						case 4:
-							if(!m_squareEntity[selected].hasComponent<ShaderComponent>())
-							{
-								m_squareEntity[selected].addComponent<ShaderComponent>();
+								m_squareEntity[selected].addComponent<RenderComponent>();
 							}
 						break;
 					}
@@ -263,18 +285,8 @@ void EditorLayer::onImGuiRender()
 						break;
 
 						case 2:
-							if (m_squareEntity[selected].hasComponent<SpriteRendererComponent>())
-								m_squareEntity[selected].removeComponent<SpriteRendererComponent>();
-						break;
-
-						case 3:
-							if (m_squareEntity[selected].hasComponent<TestQuadComponent>())
-								m_squareEntity[selected].removeComponent<TestQuadComponent>();
-						break;
-
-						case 4:
-							if(m_squareEntity[selected].hasComponent<ShaderComponent>())
-								m_squareEntity[selected].removeComponent<ShaderComponent>();
+							if (m_squareEntity[selected].hasComponent<RenderComponent>())
+								m_squareEntity[selected].removeComponent<RenderComponent>();
 						break;
 					}
 				}

@@ -28,6 +28,12 @@
 #include <iterator>
 #include <fstream>
 
+#include <cereal/types/string.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/complex.hpp>
+#include <cereal/types/base_class.hpp>
+
 // filesystem
 #if defined(__clang__)
     #include <boost/filesystem/operations.hpp>

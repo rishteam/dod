@@ -40,6 +40,7 @@ include(cmake/StaticAnalyzers.cmake)
 add_subdirectory(deps/nativefiledialog)
 add_subdirectory(deps/glad)
 add_subdirectory(deps/entt)
+add_subdirectory(deps/cereal)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
@@ -194,6 +195,11 @@ target_link_libraries(RishEngine
 # Add EnTT
 target_link_libraries(RishEngine
     EnTT::EnTT
+)
+
+# Add cereal
+target_link_libraries(RishEngine
+    cereal::cereal
 )
 
 # Copy files
