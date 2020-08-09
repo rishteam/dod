@@ -18,21 +18,13 @@ OrthographicCameraController::OrthographicCameraController(float aspect, bool ro
 void OrthographicCameraController::onUpdate(Time dt)
 {
     if(rl::Input::isKeyPressed(rl::Keyboard::W))
-    {
         m_position.y += m_translateSpeed * dt.asSeconds();
-    }
     else if(rl::Input::isKeyPressed(rl::Keyboard::S))
-    {
         m_position.y -= m_translateSpeed * dt.asSeconds();
-    }
     if(rl::Input::isKeyPressed(rl::Keyboard::A))
-    {
         m_position.x -= m_translateSpeed * dt.asSeconds();
-    }
     else if(rl::Input::isKeyPressed(rl::Keyboard::D))
-    {
         m_position.x += m_translateSpeed * dt.asSeconds();
-    }
     m_camera.setPosition(m_position);
 
     if(!m_isAbleToRotate)
@@ -87,14 +79,18 @@ bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 {
     m_zoom -= e.yOffset * 0.25f;
     m_zoom = std::max(m_zoom, 0.25f);
-    m_camera.resizeCamera(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom);
+    //
+    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
+    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
     return false;
 }
 
 bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e)
 {
     m_aspect = (float)e.m_width / (float)e.m_height;
-    m_camera.resizeCamera(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom);
+    //
+    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
+    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
     return false;
 }
 

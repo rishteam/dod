@@ -5,7 +5,7 @@
 TestLayer::TestLayer()
     : Layer("TestLayer"),
       m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true),
-      m_particleSystem(10000)
+      m_particleSystem(1000)
 {
     RL_PROFILE_FUNCTION();
 
@@ -73,18 +73,23 @@ void TestLayer::onUpdate(rl::Time dt)
         rl::Renderer2D::EndScene();
     }
 
-    // TODO: bug and figure out
     if (rl::Input::isMouseButtonPressed(rl::Mouse::Left))
     {
         auto [x, y] = rl::Input::getMousePosition();
-        auto width = rl::Application::Get().getWindow().getWidth();
-        auto height = rl::Application::Get().getWindow().getHeight();
+        auto winW = rl::Application::Get().getWindow().getWidth();
+        auto winH = rl::Application::Get().getWindow().getHeight();
 
-        auto bounds = m_cameraController.getBounds();
-        auto pos = m_cameraController.getCamera().getPosition();
-        x = (x / width) * bounds.getWidth() - bounds.getWidth() * 0.5f;
-        y = bounds.getHeight() * 0.5f - (y / height) * bounds.getHeight();
-        m_particle.position = { x + pos.x, y + pos.y };
+        auto camBounds = m_cameraController.getBounds();
+        auto camPos = m_cameraController.getCamera().getPosition();
+        //
+        x = (x / winW) * camBounds.getWidth() - camBounds.getWidth() * 0.5f;
+        y = camBounds.getHeight() * 0.5f - (y / winH) * camBounds.getHeight();
+        //
+        m_particle.position = {x + camPos.x, y + camPos.y };
+
+        // TODO: handle rotate
+        //
+        RL_INFO("Add particle ({}, {})", m_particle.position.x, m_particle.position.y);
         for (int i = 0; i < 5; i++)
             m_particleSystem.emit(m_particle);
     }
@@ -97,19 +102,38 @@ void TestLayer::onImGuiRender()
 {
     RL_PROFILE_FUNCTION();
 
+    ImGui::Begin("info");
+    {
+        auto [x, y] = rl::Input::getMousePosition();
+        auto winW = rl::Application::Get().getWindow().getWidth();
+        auto winH = rl::Application::Get().getWindow().getHeight();
+        auto camBounds = m_cameraController.getBounds();
+        auto camPos = m_cameraController.getCamera().getPosition();
+
+        ImGui::Text("Mouse Pos  = %.2f %.2f", x, y);
+        ImGui::Text("Windows    = %d %d", winW, winH);
+        ImGui::Text("cam pos    = %.2f %.2f %.2f", camPos.x, camPos.y, camPos.z);
+        ImGui::Text("cam bounds = %.2f %.2f %.2f %.2f", camBounds.left, camBounds.right, camBounds.top, camBounds.bottom);
+    }
+    ImGui::End();
+
     ImGui::Begin("Debug");
         ImGui::Text("FPS = %d", rl::Application::Get().getFps());
         ImGui::Text("Draw = %d Quad count = %d", rl::Renderer2D::GetStats().DrawCount, rl::Renderer2D::GetStats().QuadCount);
         ImGui::DragInt("W", &m_gridWidth);
         ImGui::DragInt("H", &m_gridHeight);
         ImGui::Separator();
-        ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_clearColor), ImGuiColorEditFlags_Float);
-        ImGui::ColorEdit4("Square Color", glm::value_ptr(m_squareColor), ImGuiColorEditFlags_Float);
-        ImGui::Separator();
-        ImGui::Text("Square");
-        ImGui::DragFloat3("Position", glm::value_ptr(m_squarePosition), 0.1f);
-        ImGui::DragFloat2("Scale", glm::value_ptr(m_squareScale), 0.1f);
-        ImGui::DragFloat("Rotate", &m_objectRotate, 0.1f);
+        if(ImGui::TreeNode("Attribute"))
+        {
+            ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_clearColor), ImGuiColorEditFlags_Float);
+            ImGui::ColorEdit4("Square Color", glm::value_ptr(m_squareColor), ImGuiColorEditFlags_Float);
+            ImGui::Separator();
+            ImGui::Text("Square");
+            ImGui::DragFloat3("Position", glm::value_ptr(m_squarePosition), 0.1f);
+            ImGui::DragFloat2("Scale", glm::value_ptr(m_squareScale), 0.1f);
+            ImGui::DragFloat("Rotate", &m_objectRotate, 0.1f);
+            ImGui::TreePop();
+        }
     ImGui::End();
     m_cameraController.onImGuiRender();
 }

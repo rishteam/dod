@@ -42,6 +42,8 @@ public:
     OrthographicCamera& getCamera() { return m_camera; }
     const OrthographicCamera& getCamera() const { return m_camera; }
     const OrthographicCameraBounds& getBounds() const { return m_bounds; }
+
+    float getRotate() const { return m_rotate; }
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);

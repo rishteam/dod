@@ -1,5 +1,6 @@
 #include <Rish/rlpch.h>
 
+#include <SFML/Window.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 
@@ -26,7 +27,8 @@ bool SFMLInput::isMouseButtonPressedImpl(int mbutton)
 
 std::pair<float, float> SFMLInput::getMousePositionImpl()
 {
-    sf::Vector2i pos = sf::Mouse::getPosition();
+    sf::Window *ptr = static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
+    sf::Vector2i pos = sf::Mouse::getPosition(*ptr);
     return std::make_pair((float)pos.x, (float)pos.y);
 }
 
