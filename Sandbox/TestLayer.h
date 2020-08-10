@@ -24,6 +24,8 @@ private:
     rl::Ref<rl::Texture2D> m_texture;
     float m_objectRotate = 0.f;
 
+    rl::Ref<rl::Texture2D> m_spriteSheet;
+
     int m_gridWidth = 100, m_gridHeight = 100;
 
     glm::vec4 m_squareColor{1.f, 0.f, 0.f, 1.f};

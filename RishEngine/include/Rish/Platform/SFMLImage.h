@@ -11,7 +11,7 @@ namespace rl {
 class RL_API SFMLImage : public Image
 {
 public:
-    SFMLImage(const std::string &pat, bool flip);
+    SFMLImage(const std::string &pat, bool flip=true);
     ~SFMLImage();
 
     virtual const void* getPixelPtr() override;

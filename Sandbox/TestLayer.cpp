@@ -27,6 +27,8 @@ void TestLayer::onAttach()
     RL_PROFILE_FUNCTION();
 
     m_texture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
+    m_spriteSheet = rl::Texture2D::LoadTextureVFS("/texture/rs.png");
+    RL_INFO("load sprite sheet {}x{}", m_spriteSheet->getWidth(), m_spriteSheet->getHeight());
 }
 
 void TestLayer::onDetach()
@@ -68,7 +70,9 @@ void TestLayer::onUpdate(rl::Time dt)
                 else
                     rl::Renderer2D::DrawQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f});
             }
-        rl::Renderer2D::DrawQuad({0.3f, 0.9f, 0.f}, {1.f, 1.f}, m_texture);
+        rl::Renderer2D::DrawQuad({-10.f, 2.f, 0.f}, {1.f, 1.f}, m_texture);
+
+        rl::Renderer2D::DrawQuad({-10.0, 0.f}, {1.f*m_spriteSheet->getAspectRatio(), 1.f}, m_spriteSheet);
 
         rl::Renderer2D::EndScene();
     }
