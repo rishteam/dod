@@ -31,6 +31,7 @@ public:
 
     void setRotation(float r) { m_rotation = r; recalculateMatrix(); }
     float getRotation() const { return m_rotation; }
+    float getRotationRadians() const { return glm::radians(m_rotation); }
 
     const glm::mat4 getViewMatrix() const { return m_viewMatrix; }
     const glm::mat4 getProjectionMatrix() const { return m_projectionMatrix; }

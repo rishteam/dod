@@ -87,7 +87,6 @@ void TestLayer::onUpdate(rl::Time dt)
         //
         m_particle.position = {x + camPos.x, y + camPos.y };
 
-        // TODO: handle rotate
         //
         RL_INFO("Add particle ({}, {})", m_particle.position.x, m_particle.position.y);
         for (int i = 0; i < 5; i++)
@@ -109,6 +108,11 @@ void TestLayer::onImGuiRender()
         auto winH = rl::Application::Get().getWindow().getHeight();
         auto camBounds = m_cameraController.getBounds();
         auto camPos = m_cameraController.getCamera().getPosition();
+        x = (x / winW) * camBounds.getWidth() - camBounds.getWidth() * 0.5f;
+        y = camBounds.getHeight() * 0.5f - (y / winH) * camBounds.getHeight();
+        ImGui::Begin("info");
+        ImGui::Text("tx = %.2f ty = %.2f", x, y);
+        ImGui::End();
 
         ImGui::Text("Mouse Pos  = %.2f %.2f", x, y);
         ImGui::Text("Windows    = %d %d", winW, winH);

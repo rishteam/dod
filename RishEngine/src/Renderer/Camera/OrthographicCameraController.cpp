@@ -17,14 +17,30 @@ OrthographicCameraController::OrthographicCameraController(float aspect, bool ro
 
 void OrthographicCameraController::onUpdate(Time dt)
 {
+    glm::mat2 rot = {
+        std::cos(m_camera.getRotationRadians()), std::sin(m_camera.getRotationRadians()),
+        -std::sin(m_camera.getRotationRadians()), std::cos(m_camera.getRotationRadians())
+    };
+    glm::vec2 dir[4] = {
+        {0.f,  1.f},  // W
+        {0.f, -1.f},  // S
+        {-1.f, 0.f},  // A
+        {1.f,  0.f}   // D
+    };
+    for(int i = 0; i < 4; i++)
+    {
+        dir[i] = rot * dir[i];
+        dir[i] *= m_translateSpeed;
+    }
+
     if(rl::Input::isKeyPressed(rl::Keyboard::W))
-        m_position.y += m_translateSpeed * dt.asSeconds();
+        m_position += glm::vec3(dir[0], 0.f) * dt.asSeconds();
     else if(rl::Input::isKeyPressed(rl::Keyboard::S))
-        m_position.y -= m_translateSpeed * dt.asSeconds();
+        m_position += glm::vec3(dir[1], 0.f) * dt.asSeconds();
     if(rl::Input::isKeyPressed(rl::Keyboard::A))
-        m_position.x -= m_translateSpeed * dt.asSeconds();
+        m_position += glm::vec3(dir[2], 0.f) * dt.asSeconds();
     else if(rl::Input::isKeyPressed(rl::Keyboard::D))
-        m_position.x += m_translateSpeed * dt.asSeconds();
+        m_position += glm::vec3(dir[3], 0.f) * dt.asSeconds();
     m_camera.setPosition(m_position);
 
     if(!m_isAbleToRotate)
