@@ -113,7 +113,7 @@ struct RenderComponent
 	bool reload = true;
 
 	// vao
-	std::shared_ptr<VertexArray> m_vertexArray = std::make_shared<VertexArray>();
+	std::shared_ptr<VertexArray> m_vertexArray;
 	std::string path = "assets/texture/1.png";
 	std::shared_ptr<Texture2D> m_texture;
 

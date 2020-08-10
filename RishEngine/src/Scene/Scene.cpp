@@ -86,6 +86,7 @@ void Scene::update(Time dt)
 
 		if(render.init)
 		{
+			render.m_vertexArray = std::make_shared<VertexArray>();
 			std::shared_ptr<rl::VertexBuffer> vertexBuffer;
 			vertexBuffer = std::make_shared<rl::VertexBuffer>(render.vertices, sizeof(render.vertices));
 			rl::BufferLayout layout = {

@@ -66,31 +66,6 @@ private:
 	entt::entity m_entityHandle{entt::null};
 	Scene *m_scene = nullptr;
 
-	// template<class Archive>
-	// void save(Archive &ar) const
-	// {
-	// 	ar(CEREAL_NVP(m_entityHandle));
-	// 	if (has<TagComponent>())
-	// 	{
-	// 		ar(cereal::make_nvp("TagComponent", get<TagComponent>()));
-	// 	}
-	// 	if (has<TransformComponent>())
-	// 	{
-	// 		ar(cereal::make_nvp("TransformComponent", get<TransformComponent>()));
-	// 	}
-	// 	if (has<RenderComponent>())
-	// 	{
-	// 		ar(cereal::make_nvp("RenderComponent", get<RenderComponent>()));
-	// 	}
-	// }
-
-	// template<class Archive>
-	// void load(Archive &ar)
-	// {
-	// 	ar(CEREAL_NVP(m_entityHandle));
-	// 	entt::snapshot
-	// }
-
 };
 
 /**
