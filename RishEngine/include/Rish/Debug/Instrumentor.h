@@ -9,7 +9,7 @@ struct ProfileResult
 {
     std::string Name;
     long long Start, End;
-    uint32_t ThreadID;
+    std::thread::id ThreadID;
 };
 
 struct InstrumentationSession
@@ -22,17 +22,21 @@ using InstrumentorClock=std::chrono::steady_clock;
 class Instrumentor
 {
 private:
+    std::mutex m_Mutex;
     InstrumentationSession *m_CurrentSession;
     std::ofstream m_OutputStream;
-    int m_ProfileCount;
 public:
     Instrumentor()
-        : m_CurrentSession(nullptr), m_ProfileCount(0)
+        : m_CurrentSession(nullptr)
     {
     }
 
     void BeginSession(const std::string &name, const std::string &filepath="results.json")
     {
+        std::lock_guard lock(m_Mutex);
+
+        RL_CORE_ASSERT(m_CurrentSession == nullptr, "Instrumentor::BeginSession(): already has a session.");
+
         m_OutputStream.open(filepath);
         WriteHeader();
         m_CurrentSession = new InstrumentationSession{name};
@@ -40,37 +44,42 @@ public:
 
     void EndSession()
     {
+        std::lock_guard lock(m_Mutex);
+        //
         WriteFooter();
         m_OutputStream.close();
+        // delete session
         delete m_CurrentSession;
         m_CurrentSession = nullptr;
-        m_ProfileCount = 0;
     }
 
     void WriteProfile(const ProfileResult &result)
     {
-        if (m_ProfileCount++ > 0)
-            m_OutputStream << ",";
-
         std::string name = result.Name;
         std::replace(name.begin(), name.end(), '"', '\'');
+        std::stringstream profileRec;
 
-        m_OutputStream << "{";
-        m_OutputStream << "\"cat\":\"function\",";
-        m_OutputStream << "\"dur\":" << (result.End - result.Start) << ',';
-        m_OutputStream << "\"name\":\"" << name << "\",";
-        m_OutputStream << "\"ph\":\"X\",";
-        m_OutputStream << "\"pid\":0,";
-        m_OutputStream << "\"tid\":" << result.ThreadID << ",";
-        m_OutputStream << "\"ts\":" << result.Start;
-        m_OutputStream << "}";
+        profileRec << ",{";
+        profileRec << "\"cat\":\"function\",";
+        profileRec << "\"dur\":" << (result.End - result.Start) << ',';
+        profileRec << "\"name\":\"" << name << "\",";
+        profileRec << "\"ph\":\"X\",";
+        profileRec << "\"pid\":0,";
+        profileRec << "\"tid\":" << result.ThreadID << ",";
+        profileRec << "\"ts\":" << result.Start;
+        profileRec << "}";
 
-        m_OutputStream.flush();
+        std::lock_guard lock(m_Mutex);
+        if(m_CurrentSession)
+        {
+            m_OutputStream << profileRec.str();
+            m_OutputStream.flush();
+        }
     }
 
     void WriteHeader()
     {
-        m_OutputStream << "{\"otherData\": {},\"traceEvents\":[";
+        m_OutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
         m_OutputStream.flush();
     }
 
@@ -111,8 +120,8 @@ public:
         long long end = std::chrono::time_point_cast<std::chrono::microseconds>(
                 endTimepoint).time_since_epoch().count();
 
-        uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-        Instrumentor::Get().WriteProfile({m_Name, start, end, threadID});
+//        uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
+        Instrumentor::Get().WriteProfile({m_Name, start, end, std::this_thread::get_id()});
 
         m_Stopped = true;
     }
