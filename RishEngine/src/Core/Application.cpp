@@ -53,13 +53,16 @@ Application::~Application()
 void Application::run()
 {
     RL_PROFILE_FUNCTION();
-
+    
     Clock clk;
     float lag = 0.0;
 
     while(m_running)
     {
-        RL_PROFILE_SCOPE("Main Loop");
+        static int loopCnt = 0;
+        static std::string loopLabel = "Main Loop ";
+        RL_PROFILE_SCOPE((loopLabel + std::to_string(loopCnt++)).c_str());
+
         // Update time
         float now = clk.getElapsedTime().asSeconds();
         Time dt = now - m_prevFrameTime;
