@@ -164,6 +164,14 @@ private:
     #define RL_PROFILE_END_SESSION() rl::Instrumentor::Get().EndSession()
     #define RL_PROFILE_SCOPE(name) rl::InstrumentationTimer TOKENPASTE2(time, __LINE__)(name)
     #define RL_PROFILE_FUNCTION() RL_PROFILE_SCOPE(RL_FUNC_SIG)
+
+    #if RL_PROFILE_RENDERER
+        #define RL_PROFILE_RENDERER_FUNCTION() RL_PROFILE_FUNCTION()
+        #define RL_PROFILE_RENDERER_SCOPE(name) RL_PROFILE_SCOPE(name)
+    #else
+        #define RL_PROFILE_RENDERER_FUNCTION()
+        #define RL_PROFILE_RENDERER_SCOPE(name)
+    #endif
 #else
     #define RL_PROFILE_BEGIN_SESSION(name, filepath)
     #define RL_PROFILE_END_SESSION()

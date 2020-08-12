@@ -165,7 +165,7 @@ void Renderer2D::Shutdown()
 
 void Renderer2D::BeginScene(const OrthographicCamera &camera)
 {
-    RL_PROFILE_FUNCTION();
+    RL_PROFILE_RENDERER_FUNCTION();
 
     s_data->camera = camera;
 
@@ -179,7 +179,7 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera)
 
 void Renderer2D::EndScene()
 {
-    RL_PROFILE_FUNCTION();
+    RL_PROFILE_RENDERER_FUNCTION();
 
     if(s_data->quadIndexCount == 0)
         return;
@@ -190,14 +190,14 @@ void Renderer2D::EndScene()
 
     // flush
     {
-        RL_PROFILE_SCOPE("Upload VB");
+        RL_PROFILE_RENDERER_SCOPE("Upload VB");
         size_t quadBufferCurrentSize = (s_data->quadBufferPtr - s_data->quadBuffer) * sizeof(QuadVertex);
         s_data->quadVertexBuffer->setData(s_data->quadBuffer, quadBufferCurrentSize);
     }
 
     // Draw
     {
-        RL_PROFILE_SCOPE("Draw");
+        RL_PROFILE_RENDERER_SCOPE("Draw");
         s_data->quadVertexArray->bind();
         RenderCommand::DrawElement(s_data->quadVertexArray, s_data->quadIndexCount);
         s_data->quadVertexArray->unbind();
@@ -237,7 +237,7 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &color)
 {
-    RL_PROFILE_FUNCTION();
+    RL_PROFILE_RENDERER_FUNCTION();
 
     // Split draw call if it exceeds the limits
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
@@ -268,11 +268,20 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
         {position.x - siz.x, position.y + siz.y}, // top left
         {position.x + siz.x, position.y + siz.y}  // top right
     };
+//    glm::vec2 texCoords[4] = {
+//        { 0.0f, 0.0f }, // bottom left
+//        { 1.0f, 0.0f }, // bottom right
+//        { 0.0f, 1.0f }, // top left
+//        { 1.0f, 1.0f }  // top right
+//    };
+    float x = 0, y = 0;
+    float spriteW = 16, spriteH = 16;
+    float W = 968, H = 526;
     glm::vec2 texCoords[4] = {
-        { 0.0f, 0.0f }, // bottom left
-        { 1.0f, 0.0f }, // bottom right
-        { 0.0f, 1.0f }, // top left
-        { 1.0f, 1.0f }  // top right
+        {(x*spriteW)/W, (y*spriteH)/H},
+        {((x+1)*spriteW)/W, (y*spriteH)/H},
+        {(x*spriteW)/W, ((y+1)*spriteH)/H},
+        {((x+1)*spriteW)/W, ((y+1)*spriteH)/H}
     };
 
     for(int i = 0; i < 4; i++)
@@ -320,7 +329,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &siz
 void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
                                  const glm::vec4 &color, float rotate)
 {
-    RL_PROFILE_FUNCTION();
+    RL_PROFILE_RENDERER_FUNCTION();
 
     // Split draw call if it exceeds the limits
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)

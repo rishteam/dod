@@ -14,7 +14,12 @@
 
 #ifdef RL_DEBUG
     #define RL_ENABLE_ASSERT
-//    #define RL_PROFILE
+    #define RL_PROFILE
+#endif
+
+// Profile options
+#ifdef RL_PROFILE
+    #define RL_PROFILE_RENDERER 0
 #endif
 
 #ifdef RL_ENABLE_ASSERT
