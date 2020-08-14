@@ -44,6 +44,7 @@
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Texture2D.h>
+#include <Rish/Renderer/SubTexture2D.h>
 #include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>

@@ -98,7 +98,7 @@ add_library(RishEngine
     # Camera
     src/Renderer/Camera/OrthographicCamera.cpp
     src/Renderer/Camera/OrthographicCameraController.cpp
-)
+        src/Renderer/SubTexture2D.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

@@ -68,10 +68,10 @@ public:
 	 */
 	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=true);
     /**
-     * @brief
-     * @param width
-     * @param height
-     * @return
+     * @brief Create a empty Texture
+     * @param width Width
+     * @param height Height
+     * @return Reference to the texture
      */
 	static Ref<Texture2D> Create(uint32_t width, uint32_t height);
 

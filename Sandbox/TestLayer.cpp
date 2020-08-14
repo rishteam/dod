@@ -29,6 +29,7 @@ void TestLayer::onAttach()
     m_texture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
     m_spriteSheet = rl::Texture2D::LoadTextureVFS("/texture/rs.png");
     RL_INFO("load sprite sheet {}x{}", m_spriteSheet->getWidth(), m_spriteSheet->getHeight());
+    m_sprite = rl::SubTexture2D::CreateFromSheet(m_spriteSheet, {0, 0}, {17, 17}, {2, 2});
 }
 
 void TestLayer::onDetach()
@@ -72,7 +73,8 @@ void TestLayer::onUpdate(rl::Time dt)
             }
         rl::Renderer2D::DrawQuad({-10.f, 2.f, 0.f}, {1.f, 1.f}, m_texture);
 
-        rl::Renderer2D::DrawQuad({-10.0, 0.f}, {1.f*m_spriteSheet->getAspectRatio(), 1.f}, m_spriteSheet);
+        rl::Renderer2D::DrawQuad({-10.0, 0.f}, {1.f, 1.f}, m_spriteSheet);
+        rl::Renderer2D::DrawQuad({-10.0, -3.f}, {1.f, 1.f}, m_sprite, glm::vec4{1.f});
 
         rl::Renderer2D::EndScene();
     }
@@ -126,6 +128,8 @@ void TestLayer::onImGuiRender()
     ImGui::End();
 
     ImGui::Begin("Debug");
+        static char tmp[128];
+        ImGui::InputText("aaa", tmp, 128);
         ImGui::Text("FPS = %d", rl::Application::Get().getFps());
         ImGui::Text("Draw = %d Quad count = %d", rl::Renderer2D::GetStats().DrawCount, rl::Renderer2D::GetStats().QuadCount);
         ImGui::DragInt("W", &m_gridWidth);

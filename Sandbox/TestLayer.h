@@ -25,6 +25,7 @@ private:
     float m_objectRotate = 0.f;
 
     rl::Ref<rl::Texture2D> m_spriteSheet;
+    rl::Ref<rl::SubTexture2D> m_sprite;
 
     int m_gridWidth = 100, m_gridHeight = 100;
 
