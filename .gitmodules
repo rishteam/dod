@@ -4,3 +4,6 @@
 [submodule "RishEngine/deps/entt"]
 	path = RishEngine/deps/entt
 	url = https://github.com/rishteam/entt.git
+[submodule "RishEngine/deps/spdlog"]
+	path = RishEngine/deps/spdlog
+	url = https://github.com/rishteam/spdlog.git
