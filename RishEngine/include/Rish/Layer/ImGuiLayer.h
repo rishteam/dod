@@ -39,10 +39,6 @@ public:
 
     void onUpdate(Time dt) override {}
 
-    // TODO: maybe remove these?
-    void beginDockspace();
-    void endDockspacce();
-
 private:
     bool onMouseButtonPressed(MouseButtonPressedEvent &event);
     bool onMouseButtonReleased(MouseButtonReleasedEvent &event);

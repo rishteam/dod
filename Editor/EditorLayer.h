@@ -18,6 +18,9 @@ public:
 	virtual void onImGuiRender() override;
 	virtual void onEvent(rl::Event& event) override;
 
+	static void BeginDockspace();
+	static void EndDockspace();
+
 private:
 	std::shared_ptr<rl::Framebuffer> m_framebuffer;
 	std::shared_ptr<rl::Scene> m_scene;
