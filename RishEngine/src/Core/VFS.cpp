@@ -81,6 +81,7 @@ bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalP
 			outphysicalPath = p;
 			return true;
 		}
+		RL_CORE_TRACE("{}", p);
 	}
 
 	RL_CORE_ERROR("[VFS]: File is not found {}", path);

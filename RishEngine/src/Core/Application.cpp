@@ -5,14 +5,13 @@
 #include "Rish/Events/Event.h"
 #include "Rish/Events/ApplicationEvent.h"
 
-#include <fmt/printf.h>
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/OpenGL.hpp>
 #include <imgui.h>
 
-#include "entt/entt.hpp"
+#include <entt/entt.hpp>
 
 // #include "Rish/Renderer/Buffer.h"
 // #include "Rish/Renderer/VertexArray.h"
@@ -112,14 +111,14 @@ void Application::popOverlay(Layer* overlay)
 
 bool Application::onWindowClose(WindowCloseEvent &e)
 {
-    RL_CORE_TRACE("{}", e);
+    RL_CORE_TRACE("{}", e.toString());
     m_running = false;
     return true;
 }
 
 bool Application::onWindowResize(WindowResizeEvent &e)
 {
-    RL_CORE_TRACE("{}", e);
+    RL_CORE_TRACE("{}", e.toString());
     glViewport(0, 0, e.m_width, e.m_height);
     return false;
 }
