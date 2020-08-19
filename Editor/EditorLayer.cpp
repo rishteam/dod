@@ -12,8 +12,8 @@ EditorLayer::EditorLayer()
     : Layer("editorLayer"),
       m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {
-	VFS::Mount("shader", "Editor/assets/shader");
-	VFS::Mount("texture", "Editor/assets/texture");
+	VFS::Mount("shader", "assets/shader");
+	VFS::Mount("texture", "assets/texture");
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
@@ -66,20 +66,10 @@ EditorLayer::EditorLayer()
 
 	testVA->unbind();
 
-	std::string vertPath, fragPath, texPath;
-	VFS::ResolvePhysicalPath("/shader/vertexShader/vertexSrc.glsl", vertPath);
-	VFS::ResolvePhysicalPath("/shader/fragmentShader/fragSrc.glsl", fragPath);
+	m_shader = rl::Shader::LoadShaderVFS("/shader/vertexShader/vertexSrc.glsl", "/shader/fragmentShader/fragSrc.glsl");
+    testShader = rl::Shader::LoadShaderVFS("/shader/vertexShader/blueVertSrc.glsl", "/shader/fragmentShader/blueFragSrc.glsl");
 
-	m_shader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
-
-	VFS::ResolvePhysicalPath("/shader/vertexShader/blueVertSrc.glsl", vertPath);
-	VFS::ResolvePhysicalPath("/shader/fragmentShader/blueFragSrc.glsl", fragPath);
-
-	testShader = std::make_shared<rl::Shader>(vertPath.c_str(), fragPath.c_str());
-
-	VFS::ResolvePhysicalPath("/texture/1.png", texPath);
-
-	m_texture = std::make_shared<rl::Texture2D>(texPath);
+	m_texture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
 
 	testShader->bind();
 	testShader->setInt("u_Texture", 0);
@@ -121,36 +111,30 @@ void EditorLayer::onUpdate(Time dt)
 void EditorLayer::onImGuiRender()
 {
     BeginDockSpace();
-	ImGui::Begin("aa");
-	if(ImGui::Button("Touch me"))
-	{
-	    static int cnt = 0;
-        RL_INFO("You pressed the button for {} times", cnt++);
+    {
+        ImGui::Begin("DummyA");
+        ImGui::End();
+
+        ImGui::Begin("DummyB");
+        ImGui::End();
+
+        ImGui::Begin("DummyC");
+        ImGui::End();
+
+        ImGui::Begin("TestFramebuffer");
+        {
+            uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
+            ImGui::Image((ImTextureID) textureID, ImVec2{1280, 720});
+        }
+        ImGui::End();
+
+        defaultLogWindow.onImGuiRender();
     }
-	ImGui::End();
-
-	ImGui::Begin("bb");
-	ImGui::Text("456");
-	ImGui::End();
-
-	ImGui::Begin("cc");
-	ImGui::Text("789");
-	ImGui::End();
-
-	ImGui::Begin("TestFramebuffer");
-	uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-
-	ImGui::Image((ImTextureID)textureID, ImVec2{1280, 720});
-	ImGui::End();
-
-	defaultLogWindow.onImGuiRender();
-
 	EndDockSpace();
 }
 
 void EditorLayer::onEvent(rl::Event& event)
 {
-
 }
 
 void BeginDockSpace()
@@ -195,4 +179,5 @@ void EndDockSpace()
 {
     ImGui::End();
 }
+
 }

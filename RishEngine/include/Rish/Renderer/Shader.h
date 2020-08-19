@@ -21,12 +21,18 @@ namespace rl {
 class RL_API Shader
 {
 public:
+    struct ShaderFile
+    {
+        std::string path;
+        const char *source;
+    };
+
     /**
      * @brief ctor
-     * @param vertSrc Path to vertex shader source file
-     * @param fragSrc Path to fragment shader source file
+     * @param vertFile Path to vertex shader source file
+     * @param fragFile Path to fragment shader source file
      */
-	Shader(const char *vertSrc, const char *fragSrc);
+	Shader(ShaderFile vertFile, ShaderFile fragFile);
 	/**
 	 * @brief dtor
 	 */

@@ -10,17 +10,18 @@
 namespace rl {
 
 // Static variables
-
 std::string Shader::s_vertSource;
 std::string Shader::s_fragSource;
 
-Shader::Shader(const char *vertSrc, const char *fragSrc)
+Shader::Shader(ShaderFile vertFile, ShaderFile fragFile)
 {
     RL_PROFILE_FUNCTION();
 
-    uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertSrc);
-	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragSrc);
-	RL_CORE_ASSERT(vert && frag, "Compiler Error on Shader");
+    uint32_t vert = CompileShader(GL_VERTEX_SHADER, &vertFile.source);
+	RL_CORE_ASSERT(vert, "Compiler Error on Vertex Shader: {}", vertFile.path);
+
+	uint32_t frag = CompileShader(GL_FRAGMENT_SHADER, &fragFile.source);
+	RL_CORE_ASSERT(frag, "Compiler Error on Fragment Shader: {}", fragFile.path);
 
 	program = LinkShaderProgram(vert, frag);
 	RL_CORE_ASSERT(program, "Failed to link shader");
@@ -149,7 +150,8 @@ Ref<Shader> Shader::LoadShader(const std::string &vertPath, const std::string &f
 	RL_CORE_ASSERT(s_vertSource != "", "[Shader] Failed to open File");
 	s_fragSource = FileSystem::ReadTextFile(fragPath);
 	RL_CORE_ASSERT(s_fragSource != "", "[Shader] Failed to open File");
-	return std::make_shared<Shader>(s_vertSource.c_str(), s_fragSource.c_str());
+	return std::make_shared<Shader>(ShaderFile{vertPath, s_vertSource.c_str()},
+                                    ShaderFile{fragPath, s_fragSource.c_str()});
 }
 
 Ref<Shader> Shader::LoadShaderVFS(const std::string &v_vertPath, const std::string &v_fragPath)
@@ -160,12 +162,19 @@ Ref<Shader> Shader::LoadShaderVFS(const std::string &v_vertPath, const std::stri
 	RL_CORE_ASSERT(s_vertSource != "", "[Shader] Failed to open File");
 	s_fragSource = VFS::ReadTextFile(v_fragPath);
 	RL_CORE_ASSERT(s_fragSource != "", "[Shader] Failed to open File");
-    return std::make_shared<Shader>(s_vertSource.c_str(), s_fragSource.c_str());
+
+	std::string vertPath, fragPath;
+	VFS::ResolvePhysicalPath(v_vertPath, vertPath);
+    VFS::ResolvePhysicalPath(v_fragPath, fragPath);
+
+    return std::make_shared<Shader>(ShaderFile{vertPath, s_vertSource.c_str()},
+                                    ShaderFile{fragPath, s_fragSource.c_str()});
 }
 
 ////////////////////////////////////////////////////////////////////////////
 // Shader Library
 
+// TODO: make default shader file?
 ShaderLibrary::ShaderLibrary()
 {
 	const char *vert = R"glsl(
@@ -201,7 +210,8 @@ void main()
     color = vec4(1.0, 0.0, 0.0, 1.0);
 }
 	)glsl";
-	m_defaultShader = std::make_shared<Shader>(vert, frag);
+	m_defaultShader = MakeRef<Shader>(Shader::ShaderFile{"ShaderLibrary_DefaultShader", vert},
+                                      Shader::ShaderFile{"ShaderLibrary_DefaultShader", frag});
 }
 
 Ref<Shader> ShaderLibrary::load(const std::string &name, const std::string &vpath)

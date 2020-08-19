@@ -93,7 +93,7 @@ public:
      * @return false Failed to resolve the physicalPath
      */
      // TODO: Remove the file existance check in ResolvePhysicalPath()
-     static bool ResolvePhysicalPath(const std::string &path, std::string &outphysicalPath);
+     static bool ResolvePhysicalPath(const std::string path, std::string &outphysicalPath);
 
 	/**
 	 * @brief Check if the file exists

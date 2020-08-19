@@ -140,7 +140,8 @@ void Renderer2D::Init()
     s_data->textureSlots[0] = s_data->whiteTexture;
 
     // texture shader
-    s_data->textureShader = MakeRef<Shader>(texturedVS, texturedFS);
+    s_data->textureShader = MakeRef<Shader>(Shader::ShaderFile{"DefaultRenderer2D_Shader", texturedVS},
+                                            Shader::ShaderFile{"DefaultRenderer2D_Shader", texturedFS});
     s_data->textureShader->bind();
     //
     int sampler[MaxTextures];

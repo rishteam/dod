@@ -33,7 +33,7 @@ void VFS::Unmount(const std::string &path)
 	m_MountPoints[path].clear();
 }
 
-bool VFS::ResolvePhysicalPath(const std::string &path, std::string &outphysicalPath)
+bool VFS::ResolvePhysicalPath(const std::string path, std::string &outphysicalPath)
 {
     RL_CORE_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	// TODO: ???? WTF
