@@ -9,13 +9,13 @@
 #include <vector>
 #include <fstream>
 
-#include <fmt/format.h>
+#include <spdlog/fmt/bundled/format.h>
 
-#include "Rish/Core/Core.h"
-#include "Rish/Core/Log.h"
-#include "Rish/Core/ResHolder.h"
-#include "Rish/Animation/Animation.h"
-#include "Rish/Animation/Loader.h"
+#include <Rish/Core/Core.h>
+#include <Rish/Core/Log.h>
+#include <Rish/Core/ResHolder.h>
+#include <Rish/Animation/Animation.h>
+#include <Rish/Animation/Loader.h>
 
 /**
  * @TODO change animation loader to serialization library

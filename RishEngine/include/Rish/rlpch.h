@@ -28,6 +28,13 @@
 #include <iterator>
 #include <fstream>
 
+#include <spdlog/fmt/fmt.h>
+
+#include <glm/glm.hpp>
+
+// For current state, we put serialization related things here for convenience
+#include <cereal/cereal.hpp>
+#include <cereal/archives/json.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/memory.hpp>

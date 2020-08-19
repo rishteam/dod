@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Rish/Scene/Scene.h"
-#include "Rish/Scene/Entity.h"
-#include "Rish/Scene/Component.h"
+#include <Rish/rlpch.h>
 
+#include <Rish/Scene/Scene.h>
+#include <Rish/Scene/Entity.h>
+#include <Rish/Scene/Component.h>
 
 namespace rl{
 
@@ -11,9 +12,6 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
-	entt::registry test;
-	test.create();
-	RL_CORE_TRACE("test");
 }
 
 Scene::~Scene()
@@ -28,9 +26,7 @@ Entity Scene::createEntity(const std::string& name)
 	
 	if(name.empty())
 	{
-		char num[20];
-		itoa(entityNumber, num, 10);
-		tag.tag = "Entity " + (std::string)num;
+		tag.tag = fmt::format("Entity {}", entityNumber);
 	}
 	else
 	{
@@ -42,11 +38,11 @@ Entity Scene::createEntity(const std::string& name)
 	return entity;	
 }
 
-std::vector<Entity> Scene::getAllEntites()
+std::vector<Entity> Scene::getAllEntities()
 {
 	std::vector<Entity> tmp;
-	m_registry.each([&](auto entity){
-
+	m_registry.each([&](auto entity)
+	{
 		tmp.push_back({entity, this});
 	});
 	return tmp;
@@ -55,7 +51,6 @@ std::vector<Entity> Scene::getAllEntites()
 void Scene::update(Time dt)
 {
 	// System upadte
-	
 
 	// auto group = m_registry.view<TextureComponent>();
 	// for(auto entity: group)
@@ -71,18 +66,17 @@ void Scene::update(Time dt)
 	// 	}
 	// }
 
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	auto group2 = m_registry.group<TransformComponent>(entt::get<RenderComponent>);
-	for(auto entity: group2)
+	auto transGroup = m_registry.group<TransformComponent>(entt::get<RenderComponent>);
+	for(auto entity: transGroup)
 	{
-		// auto &test = group2.get<TestQuadComponent>(entity);
-		// auto &sprite = group2.get<SpriteRendererComponent>(entity);
-		auto &transform = group2.get<TransformComponent>(entity);
-		auto &render = group2.get<RenderComponent>(entity);
+		// auto &test = transGroup.get<TestQuadComponent>(entity);
+		// auto &sprite = transGroup.get<SpriteRendererComponent>(entity);
+		auto &transform = transGroup.get<TransformComponent>(entity);
+		auto &render = transGroup.get<RenderComponent>(entity);
 
 		if(render.init)
 		{

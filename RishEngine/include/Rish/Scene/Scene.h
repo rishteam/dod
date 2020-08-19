@@ -1,24 +1,23 @@
 #pragma once
 
-#include "Rish/rlpch.h"
-#include "Rish/Core/Time.h"
+#include <Rish/rlpch.h>
+#include <Rish/Core/Time.h>
 
-#include "entt/entt.hpp"
-#include "cereal/cereal.hpp"
+#include <Rish/Scene/Component.h>
 
-// for test
-#include "Rish/Scene/Component.h"
+#include <entt/entt.hpp>
+#include <cereal/cereal.hpp>
 
 namespace rl
 {
 
+// Forward declaration
 class Entity;
 
 /**
  * @brief Scene object
  * @details A Scene is used to create and destroy entity, also update system
  */
-
 class Scene
 {
 
@@ -36,14 +35,12 @@ public:
 
 	/**
 	 * @brief Update Entity behavior
-	 * 
-	 * @param dt 
+	 * @param dt
 	 */
-
 	void update(Time dt);
 
 	// Test
-	std::vector<Entity> getAllEntites();
+	std::vector<Entity> getAllEntities();
 
 private:
 
@@ -51,10 +48,10 @@ private:
 
 	entt::registry m_registry;
 
-
 	friend class Entity;
 	friend class cereal::access;
 
+	// TODO: Auto reflect the components of a entity?
 	template <class Archive>
 	void save(Archive &ar) const
 	{
@@ -73,7 +70,6 @@ private:
 		entt::snapshot_loader{m_registry}
 			.component<TagComponent, TransformComponent, RenderComponent>(ar);
 	}
-
 };
 
 } // namespace rl

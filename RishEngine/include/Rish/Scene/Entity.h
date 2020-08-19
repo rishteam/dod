@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Rish/rlpch.h"
-#include "Rish/Scene/Scene.h"
-#include "Rish/Scene/Component.h"
+#include <Rish/rlpch.h>
+#include <Rish/Scene/Scene.h>
+#include <Rish/Scene/Component.h>
 
-#include "entt/entt.hpp"
-
-#include "cereal/cereal.hpp"
+#include <entt/entt.hpp>
 
 namespace rl {
 
@@ -17,10 +15,9 @@ namespace rl {
 class Entity
 {
 public:
-
 	Entity() = default;
-	Entity(entt::entity handle, Scene *scene);
 	Entity(const Entity &other) = default;
+	Entity(entt::entity handle, Scene *scene);
 
 	template<typename T, typename... Args>
 	T& addComponent(Args&&... args)
@@ -55,14 +52,12 @@ public:
 		m_scene = nullptr;
 	}
 
-	operator bool() const { return (uint32_t)m_entityHandle != 0; }
+	operator bool() const { return (uint32_t)m_entityHandle != entt::null; }
 
     bool operator==(const Entity &rhs) const;
-
     bool operator!=(const Entity &rhs) const;
 
 private:
-
 	entt::entity m_entityHandle{entt::null};
 	Scene *m_scene = nullptr;
 

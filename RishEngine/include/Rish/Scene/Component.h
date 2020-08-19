@@ -1,16 +1,14 @@
 #pragma once
 
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
-#include "glm/glm.hpp"
+#include <Rish/Renderer/Buffer.h>
+#include <Rish/Renderer/VertexArray.h>
+#include <Rish/Renderer/Shader.h>
+#include <Rish/Renderer/Texture2D.h>
+#include <Rish/Core/VFS.h>
 
-// For testing
-#include "Rish/Renderer/Buffer.h"
-#include "Rish/Renderer/VertexArray.h"
-#include "Rish/Renderer/Shader.h"
-#include "Rish/Renderer/Texture2D.h"
-#include "Rish/Core/VFS.h"
-#include "cereal/cereal.hpp"
+#include <cereal/cereal.hpp>
 
 namespace glm
 {
@@ -27,7 +25,6 @@ namespace glm
 		); 
 	}
 	
-	
 	template<class Archive> void serialize(Archive& archive, glm::ivec2& v) { archive(v.x, v.y); }
 	template<class Archive> void serialize(Archive& archive, glm::ivec3& v) { archive(v.x, v.y, v.z); }
 	template<class Archive> void serialize(Archive& archive, glm::ivec4& v) { archive(v.x, v.y, v.z, v.w); }
@@ -42,7 +39,7 @@ namespace glm
 	template<class Archive> void serialize(Archive& archive, glm::mat2& m) { archive(m[0], m[1]); }
 	template<class Archive> void serialize(Archive& archive, glm::dmat2& m) { archive(m[0], m[1]); }
 	template<class Archive> void serialize(Archive& archive, glm::mat3& m) { archive(m[0], m[1], m[2]); }
-	template <class Archive> void serialize(Archive &archive, glm::mat4 &m) { archive(cereal::make_nvp("mat4 0", m[0]), cereal::make_nvp("mat4 1", m[1]), cereal::make_nvp("mat4 2", m[2]), cereal::make_nvp("mat4 3", m[3])); }
+	template<class Archive> void serialize(Archive &archive, glm::mat4 &m) { archive(cereal::make_nvp("col0", m[0]), cereal::make_nvp("col1", m[1]), cereal::make_nvp("col2", m[2]), cereal::make_nvp("col3", m[3])); }
 	template<class Archive> void serialize(Archive& archive, glm::dmat4& m) { archive(m[0], m[1], m[2], m[3]); }
 
 	template<class Archive> void serialize(Archive& archive, glm::quat& q) { archive(q.x, q.y, q.z, q.w); }
@@ -56,13 +53,11 @@ struct TagComponent
 {
 	std::string tag;
 
-	int test = 0;
-
 	TagComponent() = default;
-	TagComponent(const std::string& tag_)
-		: tag(tag_){}
-
-
+	TagComponent(const std::string& t)
+		: tag(t)
+    {
+    }
 
 private:
 	friend class cereal::access;
@@ -77,14 +72,13 @@ private:
 struct TransformComponent
 {
 	glm::mat4 transform {1.0f};
-	glm::vec3 translate {0.5f, 0.1f, 0.0f};
+	glm::vec3 translate {0.0f, 0.0f, 0.0f};
 	glm::vec3 scale {1.f, 1.f, 1.f};
 
-	int test = 1;
-
 	TransformComponent() = default;
-	TransformComponent(const glm::mat4& transform)
-		: transform(transform){}
+	TransformComponent(const glm::mat4& t)
+		: transform(t)
+    {}
 
 private:
 	friend class cereal::access;
@@ -100,15 +94,11 @@ private:
 
 struct RenderComponent
 {
-
-	int test = 2;
-
-	// color
-	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
-
 	std::string vertPath = "/shader/vertexShader/vertexSrc.glsl";
 	std::string fragPath = "/shader/fragmentShader/fragSrc.glsl";
 	std::shared_ptr<rl::Shader> m_shader;
+
+	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
 
 	bool reload = true;
 
@@ -120,6 +110,7 @@ struct RenderComponent
 	bool reloadTexture = true;
 	bool init = true;
 
+	// TODO: remove
 	float vertices[5 * 4] = {
 		//     ---- 位置 ----
 	     0.1f,  0.1f, 0.0f, 1.0f, 1.0f,
@@ -127,16 +118,17 @@ struct RenderComponent
 		-0.1f, -0.1f, 0.0f, 0.0f, 0.0f,
 		-0.1f,  0.1f, 0.0f, 0.0f, 1.0f
 	};
-
 	uint32_t indices[2*3] = {
 		0, 1, 3, 
 		1, 2, 3	 
 	};
 
 	RenderComponent() = default;
-	RenderComponent(const std::shared_ptr<rl::Shader> shader) : m_shader(shader) {}
-	RenderComponent(const std::string &vertexPath, const std::string &fragmentPath, const glm::vec4 &color)
-		: vertPath(vertexPath), fragPath(fragmentPath), color(color)
+	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s)
+	{
+	}
+	RenderComponent(const std::string &vp, const std::string &fp, const glm::vec4 &c)
+		: vertPath(vp), fragPath(fp), color(c)
 	{
 	}
 
@@ -154,7 +146,4 @@ private:
 
 };
 
-}
-
-
-
+} // end of rl

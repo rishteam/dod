@@ -7,14 +7,11 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
-#ifndef SPDLOG_FMT_EXTERNAL
-    #define SPDLOG_FMT_EXTERNAL
-#endif
 #include <spdlog/spdlog.h>
 
-#include "Rish/Core/Core.h"
+#include <Rish/Core/Core.h>
 
 namespace rl {
 
