@@ -17,55 +17,6 @@ EditorLayer::EditorLayer()
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-    m_vertexArray = std::make_shared<rl::VertexArray>();
-
-	float vertices[3 * 7] = {
-		-0.9f,  0.9f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-		 0.1f,  0.9f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-		-0.4f,  0.1f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
-	};
-
-	rl::Ref<rl::VertexBuffer> vertexBuffer;
-	vertexBuffer = std::make_shared<rl::VertexBuffer>(vertices, sizeof(vertices));
-
-	rl::BufferLayout layout = {
-		{rl::ShaderDataType::Float3, "a_Position"},
-		{rl::ShaderDataType::Float4, "a_Color"}
-	};
-
-	vertexBuffer->setLayout(layout);
-    m_vertexArray->setVertexBuffer(vertexBuffer);
-
-	uint32_t indices[3] = {0, 1, 2};
-	rl::Ref<rl::IndexBuffer> indexBuffer;
-	indexBuffer = std::make_shared<rl::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
-	m_vertexArray->setIndexBuffer(indexBuffer);
-
-	m_vertexArray->unbind(); // Always remember to UNBIND if AMD
-
-	testVA.reset(new rl::VertexArray());
-
-	float square[5 * 4] = {
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
-	};
-
-	rl::Ref<rl::VertexBuffer> squareVB;
-	squareVB.reset(new rl::VertexBuffer(square, sizeof(square)));
-	squareVB->setLayout({
-		{rl::ShaderDataType::Float3, "a_Position"},
-		{rl::ShaderDataType::Float2, "a_TexCoord"}
-	});
-    testVA->setVertexBuffer(squareVB);
-
-	uint32_t squareIndices[6] = {0, 1, 2, 2, 0, 3};
-	rl::Ref<rl::IndexBuffer> squareIB =std::make_shared<rl::IndexBuffer>(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-	testVA->setIndexBuffer(squareIB);
-
-	testVA->unbind();
-
 	m_shader = rl::Shader::LoadShaderVFS("/shader/vertexShader/vertexSrc.glsl", "/shader/fragmentShader/fragSrc.glsl");
     testShader = rl::Shader::LoadShaderVFS("/shader/vertexShader/blueVertSrc.glsl", "/shader/fragmentShader/blueFragSrc.glsl");
 
@@ -91,19 +42,16 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
+    static float rotate = 0.f;
+    rotate += 10 * dt.asSeconds();
+
 	m_framebuffer->bind();
 
-	// Draw m_vertexArray
-    Renderer::BeginScene(m_camera);
+    Renderer2D::BeginScene(m_camera);
+    Renderer2D::DrawQuad({0.f, 0.f}, {1.f, 1.f}, m_texture);
 
-    Renderer::Submit(m_shader, m_vertexArray);
-
-    // Draw testVA
-	m_texture->bind();
-    Renderer::Submit(testShader, testVA);
-	m_texture->unbind();
-
-    Renderer::EndScene();
+    Renderer2D::DrawRotatedQuad({-1.f, 0.f}, {0.8f, 0.8f}, m_texture, rotate);
+    Renderer2D::EndScene();
 
 	m_framebuffer->unbind();
 }

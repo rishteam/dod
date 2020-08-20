@@ -240,54 +240,26 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    // Split draw call if it exceeds the limits
-    if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
-    {
-        EndScene();
-        BeginScene(s_data->camera);
-    }
+    FlushStatesIfExceeds();
 
     // Check if the texture is in slots
-    float textureIndex = 0.f;
-    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
-        if (*(s_data->textureSlots[i]) == *texture)
-        {
-            textureIndex = (float) i;
-            break;
-        }
-    if (textureIndex == 0.f) // if not then add it
-    {
-        textureIndex = (float)s_data->textureSlotAddIndex;
-        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
-        s_data->textureSlotAddIndex++;
-    }
+    float textureIndex = GetTextureIndex(texture);
 
     glm::vec2 siz = size / 2.f;
-    glm::vec2 posi[4] = {
-        {position.x - siz.x, position.y - siz.y}, // bottom left
-        {position.x + siz.x, position.y - siz.y}, // bottom right
-        {position.x - siz.x, position.y + siz.y}, // top left
-        {position.x + siz.x, position.y + siz.y}  // top right
+    glm::vec4 posi[4] = {
+        {position.x - siz.x, position.y - siz.y, position.z, 1.f}, // bottom left
+        {position.x + siz.x, position.y - siz.y, position.z, 1.f}, // bottom right
+        {position.x - siz.x, position.y + siz.y, position.z, 1.f}, // top left
+        {position.x + siz.x, position.y + siz.y, position.z, 1.f}  // top right
     };
     glm::vec2 texCoords[4] = {
-        { 0.0f, 0.0f }, // bottom left
-        { 1.0f, 0.0f }, // bottom right
-        { 0.0f, 1.0f }, // top left
-        { 1.0f, 1.0f }  // top right
+        { 0.0f, 0.0f },  // bottom left
+        { 1.0f, 0.0f },  // bottom right
+        { 0.0f, 1.0f },  // top left
+        { 1.0f, 1.0f }   // top right
     };
 
-    for(int i = 0; i < 4; i++)
-    {
-        s_data->quadBufferPtr->position = glm::vec4(posi[i], position.z, 1.f);
-        s_data->quadBufferPtr->color = color;
-        s_data->quadBufferPtr->texCoord = texCoords[i];
-        s_data->quadBufferPtr->texIndex = textureIndex;
-        s_data->quadBufferPtr->texTiling = 1.f;
-        s_data->quadBufferPtr++;
-    }
-
-    s_data->quadIndexCount += 6;
-    s_data->renderStats.QuadCount++;
+    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -323,31 +295,17 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    // Split draw call if it exceeds the limits
-    if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
-    {
-        EndScene();
-        BeginScene(s_data->camera);
-    }
+    FlushStatesIfExceeds();
 
     // Check if the texture is in slots
-    float textureIndex = 0.f;
-    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
-        if (*(s_data->textureSlots[i]) == *texture)
-        {
-            textureIndex = (float) i;
-            break;
-        }
-    if (textureIndex == 0.f) // if not then add it
-    {
-        textureIndex = (float)s_data->textureSlotAddIndex;
-        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
-        s_data->textureSlotAddIndex++;
-    }
+    float textureIndex = GetTextureIndex(texture);
 
     glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
             glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
             glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+    glm::vec4 posi[4];
+    for(int i = 0; i < 4; i++)
+        posi[i] = transform * s_data->quadVertexPosition[i];
 
     glm::vec2 texCoords[4] = {
         { 0.0f, 0.0f }, // bottom left
@@ -356,18 +314,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
         { 1.0f, 1.0f }  // top right
     };
 
-    for(int i = 0; i < 4; i++)
-    {
-        s_data->quadBufferPtr->position = transform * s_data->quadVertexPosition[i];
-        s_data->quadBufferPtr->color = color;
-        s_data->quadBufferPtr->texCoord = texCoords[i];
-        s_data->quadBufferPtr->texIndex = textureIndex;
-        s_data->quadBufferPtr->texTiling = 1.f;
-        s_data->quadBufferPtr++;
-    }
-
-    s_data->quadIndexCount += 6;
-    s_data->renderStats.QuadCount++;
+    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
 }
 
 Renderer2D::Stats &Renderer2D::GetStats()
@@ -395,51 +342,23 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    // Split draw call if it exceeds the limits
-    if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
-    {
-        EndScene();
-        BeginScene(s_data->camera);
-    }
+    FlushStatesIfExceeds();
 
     const Ref<Texture2D> texture = subtexture->getTexture();
 
     // Check if the texture is in slots
-    float textureIndex = 0.f;
-    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
-        if (*(s_data->textureSlots[i]) == *texture)
-        {
-            textureIndex = (float) i;
-            break;
-        }
-    if (textureIndex == 0.f) // if not then add it
-    {
-        textureIndex = (float)s_data->textureSlotAddIndex;
-        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
-        s_data->textureSlotAddIndex++;
-    }
+    float textureIndex = GetTextureIndex(texture);
 
     glm::vec2 siz = size / 2.f;
-    glm::vec2 posi[4] = {
-            {position.x - siz.x, position.y - siz.y}, // bottom left
-            {position.x + siz.x, position.y - siz.y}, // bottom right
-            {position.x - siz.x, position.y + siz.y}, // top left
-            {position.x + siz.x, position.y + siz.y}  // top right
+    glm::vec4 posi[4] = {
+        {position.x - siz.x, position.y - siz.y, position.z, 1.f}, // bottom left
+        {position.x + siz.x, position.y - siz.y, position.z, 1.f}, // bottom right
+        {position.x - siz.x, position.y + siz.y, position.z, 1.f}, // top left
+        {position.x + siz.x, position.y + siz.y, position.z, 1.f}  // top right
     };
     const glm::vec2 *texCoords = subtexture->getTextureCoords();
 
-    for(int i = 0; i < 4; i++)
-    {
-        s_data->quadBufferPtr->position = glm::vec4(posi[i], position.z, 1.f);
-        s_data->quadBufferPtr->color = color;
-        s_data->quadBufferPtr->texCoord = texCoords[i];
-        s_data->quadBufferPtr->texIndex = textureIndex;
-        s_data->quadBufferPtr->texTiling = 1.f;
-        s_data->quadBufferPtr++;
-    }
-
-    s_data->quadIndexCount += 6;
-    s_data->renderStats.QuadCount++;
+    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <SubTexture2D> &subtexture,
@@ -454,46 +373,70 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
+    FlushStatesIfExceeds();
+
+    const Ref<Texture2D> texture = subtexture->getTexture();
+    const glm::vec2 *texCoords = subtexture->getTextureCoords();
+
+    // Check if the texture is in slots
+    float textureIndex = GetTextureIndex(texture);
+
+    // prepare position
+    glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
+                          glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+                          glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+    glm::vec4 posi[4];
+    for(int i = 0; i < 4; i++)
+        posi[i] = transform * s_data->quadVertexPosition[i];
+
+    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+}
+
+float Renderer2D::GetTextureIndex(const Ref<Texture2D>& texture)
+{
+    float textureIndex = 0.f;
+    // Search texture
+    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
+        if (*(s_data->textureSlots[i]) == *texture)
+        {
+            textureIndex = (float)i;
+            break;
+        }
+    // if not found then add it to the slot
+    if (textureIndex == 0.f)
+    {
+        textureIndex = (float)s_data->textureSlotAddIndex;
+        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
+        s_data->textureSlotAddIndex++;
+    }
+    return textureIndex;
+}
+
+void Renderer2D::FlushStatesIfExceeds()
+{
     // Split draw call if it exceeds the limits
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
         BeginScene(s_data->camera);
     }
+}
 
-    const Ref<Texture2D> texture = subtexture->getTexture();
-
-    // Check if the texture is in slots
-    float textureIndex = 0.f;
-    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
-        if (*(s_data->textureSlots[i]) == *texture)
-        {
-            textureIndex = (float) i;
-            break;
-        }
-    if (textureIndex == 0.f) // if not then add it
-    {
-        textureIndex = (float)s_data->textureSlotAddIndex;
-        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
-        s_data->textureSlotAddIndex++;
-    }
-
-    glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
-                          glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
-                          glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
-
-    const glm::vec2 *texCoords = subtexture->getTextureCoords();
-
+void Renderer2D::SubmitQuad(const glm::vec4 *position, const glm::vec4 &color,
+                            const glm::vec2 *texCoords, float texIndex,
+                            float texTiling)
+{
+    // Add vertices of a quad to buffer
     for(int i = 0; i < 4; i++)
     {
-        s_data->quadBufferPtr->position = transform * s_data->quadVertexPosition[i];
+        s_data->quadBufferPtr->position = position[i];
         s_data->quadBufferPtr->color = color;
         s_data->quadBufferPtr->texCoord = texCoords[i];
-        s_data->quadBufferPtr->texIndex = textureIndex;
-        s_data->quadBufferPtr->texTiling = 1.f;
+        s_data->quadBufferPtr->texIndex = texIndex;
+        s_data->quadBufferPtr->texTiling = texTiling;
         s_data->quadBufferPtr++;
     }
-
+    //
     s_data->quadIndexCount += 6;
     s_data->renderStats.QuadCount++;
 }

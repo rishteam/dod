@@ -22,10 +22,7 @@ private:
     OrthographicCamera m_camera;
 
 	rl::Ref<rl::Shader> m_shader;
-	rl::Ref<rl::VertexArray> m_vertexArray;
-
 	rl::Ref<rl::Shader> testShader;
-	rl::Ref<rl::VertexArray> testVA;
 
 	rl::Ref<rl::Texture2D> m_texture;
 

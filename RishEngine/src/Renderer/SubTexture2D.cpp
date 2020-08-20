@@ -12,15 +12,20 @@ SubTexture2D::SubTexture2D(const rl::Ref<rl::Texture2D> &texture, const glm::vec
     m_texCoords[3] = {topRight.x ,topRight.y};
 }
 
-Ref <SubTexture2D> SubTexture2D::CreateFromSheet(const Ref <Texture2D> &texture, const glm::vec2 pos, const glm::vec2 cellSize, const glm::vec2 spriteSize)
+Ref <SubTexture2D> SubTexture2D::CreateFromSheet(const Ref <Texture2D> &texture, const glm::vec2 pos, const glm::vec2 cellSize, const glm::vec2 spriteGridSize)
 {
     float x = pos.x, y = pos.y;
-    float spriteW = cellSize.x, spriteH = cellSize.y;
-    float W = (float)texture->getWidth(), H = (float)texture->getHeight();
     glm::vec2 texCoords[2] = {
-        {(x*spriteW)/W, (y*spriteH)/H},
-        {((x+spriteSize.x)*spriteW)/W, ((y+spriteSize.y)*spriteH)/H}
+        {x,                    y},                   // bottom left
+        {x + spriteGridSize.x, y + spriteGridSize.y} // top right
     };
+
+    for(auto & texCoord : texCoords)
+    {
+        texCoord.x = (texCoord.x * cellSize.x) / (float)texture->getWidth();
+        texCoord.y = (texCoord.y * cellSize.y) / (float)texture->getHeight();
+    }
+
     return MakeRef<SubTexture2D>(texture, texCoords[0], texCoords[1]);
 }
 

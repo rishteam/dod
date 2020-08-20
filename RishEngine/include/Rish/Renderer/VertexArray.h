@@ -7,7 +7,7 @@
  */
 #pragma once
 
-#include <glm/glm.hpp>
+
 //
 #include <Rish/rlpch.h>
 #include <Rish/Core/Core.h>

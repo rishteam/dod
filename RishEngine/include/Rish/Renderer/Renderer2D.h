@@ -12,17 +12,6 @@ namespace rl {
 class RL_API Renderer2D
 {
 public:
-    // TODO: Use settings instead?
-    struct RL_API QuadSettings
-    {
-        glm::vec3 position = glm::vec3(0.f);
-        glm::vec2 size     = glm::vec2(1.f);
-        glm::vec4 color    = glm::vec4(1.f);
-        Ref<Texture2D> texture;
-        float textureTiling = 1.f;
-        float rotate = 0.f;
-    };
-public:
     static void Init();
     static void Shutdown();
 
@@ -43,9 +32,9 @@ public:
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, float rotate);
     static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture, float rotate);
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> &texture, float rotate);
-    static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture, const glm::vec4 &color, float rotate);
+    static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &color, float rotate);
     static void DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &color, float rotate);
-    static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <SubTexture2D> &subtexture, const glm::vec4 &color, float rotate);
+    static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<SubTexture2D> &subtexture, const glm::vec4 &color, float rotate);
     static void DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<SubTexture2D> &subtexture, const glm::vec4 &color, float rotate);
 
     struct Stats
@@ -58,6 +47,10 @@ public:
     static void ResetStats();
 
 private:
+    static void FlushStatesIfExceeds();
+    static float GetTextureIndex(const Ref<Texture2D>& texture);
+    static void SubmitQuad(const glm::vec4 position[4], const glm::vec4 &color, const glm::vec2 texCoords[4], float texIndex, float texTiling);
+
     static size_t MaxQuadCount, MaxVertexCount, MaxIndexCount;
 };
 

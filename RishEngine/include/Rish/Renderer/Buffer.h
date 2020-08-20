@@ -194,7 +194,9 @@ public:
 	const BufferLayout& getLayout() const { return m_layout; }
 	void setLayout(const BufferLayout& layout) { m_layout = layout; }
 
+	// Static
 	static Ref<VertexBuffer> Create(float *vertices, uint32_t size);
+	// Dynamic
 	static Ref<VertexBuffer> Create(uint32_t size);
 	static Ref<VertexBuffer> Create();
 

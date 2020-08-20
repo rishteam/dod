@@ -34,7 +34,7 @@ public:
      * @brief ctor
      * @param path Image file path
      */
-    Texture2D(const std::string &path, bool flip=true);
+    Texture2D(const std::string &path, bool flip);
     /**
      * @brief ctor
      * @param image Image Ref
@@ -59,14 +59,14 @@ public:
 	 * @param flip Flip the image?
 	 * @return Reference to the texture
 	 */
-	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=true);
+	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=false);
 	/**
 	 * @brief Load a Texture with rl::VFS
 	 * @param path Path to the file
 	 * @param flip Flip the image?
 	 * @return Reference to the texture
 	 */
-	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=true);
+	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false);
     /**
      * @brief Create a empty Texture
      * @param width Width
