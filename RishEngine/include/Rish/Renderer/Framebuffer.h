@@ -52,6 +52,7 @@ public:
 	uint32_t getColorAttachmentRendererID() const { return m_colorAttachment; }
 	const FramebufferSpecification& getSpecification() const { return m_spec; }
 
+	static Ref<Framebuffer> Create(const FramebufferSpecification &spec);
 private:
 	uint32_t m_frameBufferID = 0;
 	uint32_t m_colorAttachment = 0;

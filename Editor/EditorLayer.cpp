@@ -28,16 +28,14 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
-    RL_INFO("[EditorLayer] attach");
 	rl::FramebufferSpecification fbspec;
 	fbspec.width = 1920;
 	fbspec.height = 1000;
-	m_framebuffer = std::make_shared<rl::Framebuffer>(fbspec);
+	m_framebuffer = Framebuffer::Create(fbspec);
 }
 
 void EditorLayer::onDetach()
 {
-    RL_INFO("[EditorLayer] detach");
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -57,6 +55,16 @@ void EditorLayer::onUpdate(Time dt)
     Renderer2D::DrawQuad({0.f, 0.f}, {1.f, 1.f}, m_texture);
 
     Renderer2D::DrawRotatedQuad({-1.f, 0.f}, {0.8f, 0.8f}, m_texture, rotate);
+
+    int gridWidth = 10, gridHeight = 10;
+    for(int i = 0; i < gridWidth; i++)
+        for(int j = 0; j < gridHeight; j++)
+        {
+            if((i+j) % 2)
+                rl::Renderer2D::DrawRotatedQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f}, rotate);
+            else
+                rl::Renderer2D::DrawQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f});
+        }
     Renderer2D::EndScene();
 
 	m_framebuffer->unbind();
