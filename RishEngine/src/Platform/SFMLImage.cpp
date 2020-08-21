@@ -24,7 +24,7 @@ SFMLImage::SFMLImage(const std::string &path, bool flip)
     ResHolder::Image().load(m_id, path);
     m_image = &ResHolder::Image().get(m_id);
 
-    if(flip)
+    if(!flip)
         m_image->flipVertically();
 
     m_width = m_image->getSize().x;

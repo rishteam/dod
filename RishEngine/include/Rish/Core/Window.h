@@ -37,6 +37,7 @@ public:
     virtual std::string getTitle() const { return m_title; }
     virtual uint32_t getWidth() const { return m_width; }
     virtual uint32_t getHeight() const { return m_height; }
+    virtual float getAspectRatio() const { return (float)m_width / (float)m_height; }
 
     /// implement this in inherited class
     static Window *Create(const std::string &title, uint32_t width, uint32_t height);

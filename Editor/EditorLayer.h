@@ -19,7 +19,7 @@ public:
 	virtual void onEvent(rl::Event& event) override;
 
 private:
-    OrthographicCamera m_camera;
+    OrthographicCameraController m_cameraController;
 
 	rl::Ref<rl::Shader> m_shader;
 	rl::Ref<rl::Shader> testShader;

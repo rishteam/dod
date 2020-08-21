@@ -17,9 +17,10 @@ OrthographicCameraController::OrthographicCameraController(float aspect, bool ro
 
 void OrthographicCameraController::onUpdate(Time dt)
 {
-    glm::mat2 rot = {
-        std::cos(m_camera.getRotationRadians()), std::sin(m_camera.getRotationRadians()),
-        -std::sin(m_camera.getRotationRadians()), std::cos(m_camera.getRotationRadians())
+    float rads = m_camera.getRotationRadians();
+    glm::mat2 rotationMatrix = {
+        std::cos(rads), std::sin(rads),
+        -std::sin(rads), std::cos(rads)
     };
     glm::vec2 dir[4] = {
         {0.f,  1.f},  // W
@@ -29,7 +30,7 @@ void OrthographicCameraController::onUpdate(Time dt)
     };
     for(int i = 0; i < 4; i++)
     {
-        dir[i] = rot * dir[i];
+        dir[i] = rotationMatrix * dir[i];
         dir[i] *= m_translateSpeed;
     }
 

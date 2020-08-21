@@ -10,7 +10,7 @@ namespace rl {
 
 EditorLayer::EditorLayer()
     : Layer("editorLayer"),
-      m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
+      m_cameraController(Application::Get().getWindow().getAspectRatio(), true)
 {
 	VFS::Mount("shader", "assets/shader");
 	VFS::Mount("texture", "assets/texture");
@@ -45,9 +45,15 @@ void EditorLayer::onUpdate(Time dt)
     static float rotate = 0.f;
     rotate += 10 * dt.asSeconds();
 
+    m_cameraController.onUpdate(dt);
+
 	m_framebuffer->bind();
 
-    Renderer2D::BeginScene(m_camera);
+	Renderer2D::ResetStats();
+	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+	RenderCommand::Clear();
+
+    Renderer2D::BeginScene(m_cameraController.getCamera());
     Renderer2D::DrawQuad({0.f, 0.f}, {1.f, 1.f}, m_texture);
 
     Renderer2D::DrawRotatedQuad({-1.f, 0.f}, {0.8f, 0.8f}, m_texture, rotate);
@@ -63,16 +69,17 @@ void EditorLayer::onImGuiRender()
         ImGui::Begin("DummyA");
         ImGui::End();
 
-        ImGui::Begin("DummyB");
-        ImGui::End();
-
-        ImGui::Begin("DummyC");
+        ImGui::Begin("Settings");
+        {
+            auto stats = Renderer2D::GetStats();
+            ImGui::Text("Renderer2D Stats: draw call = %d, quads = %d", stats.DrawCount, stats.QuadCount);
+        }
         ImGui::End();
 
         ImGui::Begin("TestFramebuffer");
         {
             uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-            ImGui::Image((ImTextureID) textureID, ImVec2{1280, 720});
+            ImGui::Image((ImTextureID) textureID, ImVec2{1280, 720}, {0, 0}, {1, -1});
         }
         ImGui::End();
 
@@ -83,6 +90,7 @@ void EditorLayer::onImGuiRender()
 
 void EditorLayer::onEvent(rl::Event& event)
 {
+    m_cameraController.onEvent(event);
 }
 
 void BeginDockSpace()
