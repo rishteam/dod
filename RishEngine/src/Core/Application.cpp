@@ -6,9 +6,7 @@
 #include <Rish/Events/ApplicationEvent.h>
 
 #include <Rish/Renderer/Renderer.h>
-
-#include <spdlog/fmt/bundled/printf.h>
-#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/fmt.h>
 
 namespace rl {
 
@@ -155,14 +153,13 @@ void Application::popOverlay(Layer* overlay)
 
 bool Application::onWindowClose(WindowCloseEvent &e)
 {
-    RL_CORE_TRACE("{}", e);
     m_running = false;
     return true;
 }
 
 bool Application::onWindowResize(WindowResizeEvent &e)
 {
-    RL_CORE_TRACE("{}", e);
+    RL_CORE_TRACE("{}", e.toString());
     Renderer::OnWindowResize(e.m_width, e.m_height);
     return false;
 }

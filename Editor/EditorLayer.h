@@ -2,8 +2,7 @@
 
 namespace rl {
 
-void BeginDockSpace();
-void EndDockSpace();
+#define MAXENTITES 1000
 
 class EditorLayer : public rl::Layer
 {
@@ -18,15 +17,21 @@ public:
 	virtual void onImGuiRender() override;
 	virtual void onEvent(rl::Event& event) override;
 
+	static void BeginDockspace();
+	static void EndDockspace();
+
 private:
-    OrthographicCameraController m_cameraController;
+	OrthographicCameraController m_cameraController;
 
 	rl::Ref<rl::Shader> m_shader;
 	rl::Ref<rl::Shader> testShader;
 
 	rl::Ref<rl::Texture2D> m_texture;
 
-	rl::Ref<rl::Framebuffer> m_framebuffer;
+	std::shared_ptr<rl::Framebuffer> m_framebuffer;
+	std::shared_ptr<rl::Scene> m_scene;
+
+	std::vector<Entity> m_entityList;
 };
 
 }

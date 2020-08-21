@@ -42,6 +42,7 @@ include(cmake/StaticAnalyzers.cmake)
 add_subdirectory(deps/nativefiledialog)
 add_subdirectory(deps/glad)
 add_subdirectory(deps/spdlog)
+add_subdirectory(deps/entt)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
@@ -91,14 +92,20 @@ add_library(RishEngine
     src/Renderer/VertexArray.cpp
     src/Renderer/Buffer.cpp
     src/Renderer/Texture2D.cpp
+    src/Renderer/SubTexture2D.cpp
     src/Renderer/Framebuffer.cpp
     src/Renderer/RendererCommand.cpp
     src/Renderer/Renderer.cpp
     src/Renderer/Renderer2D.cpp
+
     # Camera
     src/Renderer/Camera/OrthographicCamera.cpp
     src/Renderer/Camera/OrthographicCameraController.cpp
-        src/Renderer/SubTexture2D.cpp)
+
+    # Scene
+    src/Scene/Scene.cpp
+    src/Scene/Entity.cpp
+)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
@@ -166,15 +173,15 @@ target_link_libraries(RishEngine
     ${OPENGL_LIBRARIES}
 )
 
-# Add spdlog
-target_link_libraries(RishEngine
-    spdlog::spdlog
-)
-
 # Add nlohmann_json
 find_package(nlohmann_json 3.2.0 REQUIRED)
 target_link_libraries(RishEngine
     nlohmann_json::nlohmann_json
+)
+
+# Add spdlog
+target_link_libraries(RishEngine
+    spdlog::spdlog
 )
 
 # Add nativefiledialog
@@ -185,6 +192,17 @@ target_link_libraries(RishEngine
 # Add glad
 target_link_libraries(RishEngine
     glad::glad
+)
+
+# Add EnTT
+target_link_libraries(RishEngine
+    EnTT::EnTT
+)
+
+# Add cereal
+find_package(cereal REQUIRED)
+target_link_libraries(RishEngine
+    cereal
 )
 
 # Copy files

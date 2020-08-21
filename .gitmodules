@@ -1,6 +1,9 @@
 [submodule "RishEngine/deps/nativefiledialog"]
 	path = RishEngine/deps/nativefiledialog
 	url = https://github.com/roy4801/nativefiledialog.git
+[submodule "RishEngine/deps/entt"]
+	path = RishEngine/deps/entt
+	url = https://github.com/rishteam/entt.git
 [submodule "RishEngine/deps/spdlog"]
 	path = RishEngine/deps/spdlog
 	url = https://github.com/rishteam/spdlog.git

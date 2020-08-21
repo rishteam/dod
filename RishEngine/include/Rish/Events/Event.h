@@ -6,8 +6,8 @@
  */
 #pragma once
 
-#include "Rish/rlpch.h"
-#include "Rish/Core/Core.h"
+#include <Rish/rlpch.h>
+#include <Rish/Core/Core.h>
 
 #include <spdlog/fmt/bundled/format.h>
 

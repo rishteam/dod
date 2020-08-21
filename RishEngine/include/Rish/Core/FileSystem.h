@@ -21,6 +21,7 @@ class RL_API File
 public:
 	File(const std::string &path);
 
+	// TODO: getName(): get the name of file (last entry of path)
 	std::string getPath() { return m_path; }
 	bool isFile() { return m_file; }
 	bool isDir() { return m_dir; }
