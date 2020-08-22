@@ -177,4 +177,6 @@ private:
     #define RL_PROFILE_END_SESSION()
     #define RL_PROFILE_SCOPE(name)
     #define RL_PROFILE_FUNCTION()
+    #define RL_PROFILE_RENDERER_FUNCTION()
+    #define RL_PROFILE_RENDERER_SCOPE(name)
 #endif

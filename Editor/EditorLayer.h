@@ -23,11 +23,6 @@ public:
 private:
 	OrthographicCameraController m_cameraController;
 
-	rl::Ref<rl::Shader> m_shader;
-	rl::Ref<rl::Shader> testShader;
-
-	rl::Ref<rl::Texture2D> m_texture;
-
 	std::shared_ptr<rl::Framebuffer> m_framebuffer;
 	std::shared_ptr<rl::Scene> m_scene;
 

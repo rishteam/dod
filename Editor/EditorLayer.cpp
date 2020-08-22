@@ -18,19 +18,12 @@ EditorLayer::EditorLayer()
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-	m_shader = rl::Shader::LoadShaderVFS("/shader/vertexShader/vertexSrc.glsl", "/shader/fragmentShader/fragSrc.glsl");
-    testShader = rl::Shader::LoadShaderVFS("/shader/vertexShader/blueVertSrc.glsl", "/shader/fragmentShader/blueFragSrc.glsl");
-
-	m_texture = rl::Texture2D::LoadTextureVFS("/texture/1.png");
-
-	testShader->bind();
-	testShader->setInt("u_Texture", 0);
-
     m_scene = std::make_shared<rl::Scene>();
 }
 
 void EditorLayer::onAttach()
 {
+    RL_CORE_INFO("[EditorLayer] onAttach");
 	rl::FramebufferSpecification fbspec;
 	fbspec.width = 1280;
 	fbspec.height = 720;
@@ -39,6 +32,7 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onDetach()
 {
+    RL_CORE_INFO("[EditorLayer] onDetach");
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -49,7 +43,6 @@ void EditorLayer::onUpdate(Time dt)
     m_cameraController.onUpdate(dt);
 
 	m_framebuffer->bind();
-
 
 	Renderer2D::ResetStats();
 	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
@@ -92,6 +85,13 @@ void EditorLayer::onImGuiRender()
                 outputArchive(cereal::make_nvp("Scene", m_scene));
             }
 
+            ImGui::Separator();
+
+            if(ImGui::MenuItem("Exit"))
+            {
+                Application::Get().close();
+            }
+
 			ImGui::EndMenu();
 		}
 
@@ -116,7 +116,8 @@ void EditorLayer::onImGuiRender()
 
         ImGui::Separator();
 
-        if (selected != -1) {
+        if (selected != -1)
+        {
             if (m_entityList[selected].hasComponent<TagComponent>()) {
                 if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
                     std::string tmp = m_entityList[selected].getComponent<TagComponent>().tag.c_str();
@@ -139,50 +140,57 @@ void EditorLayer::onImGuiRender()
                 }
             }
 
-
-            if (m_entityList[selected].hasComponent<RenderComponent>()) {
-                if (ImGui::CollapsingHeader("ShaderComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    auto &color = m_entityList[selected].getComponent<RenderComponent>().color;
-                    ImGui::ColorEdit4("Color", glm::value_ptr(color));
-                    auto &render = m_entityList[selected].getComponent<RenderComponent>();
+            if (m_entityList[selected].hasComponent<RenderComponent>())
+            {
+                if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    auto &renderCp = m_entityList[selected].getComponent<RenderComponent>();
+                    ImGui::ColorEdit4("Color", glm::value_ptr(renderCp.color));
 
                     ImGui::Text("Texture");
-                    std::string tPath;
-                    if (ImGui::Button("Select")) {
-                        if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
-                            render.texturePath = tPath;
-                            render.reloadTexture = true;
+                    {
+                        std::string tPath;
+                        if (ImGui::Button("Select")) {
+                            if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
+                                renderCp.texturePath = tPath;
+                                renderCp.reloadTexture = true;
+                            }
                         }
-                    }
 
-                    static char texPath[150];
-                    strcpy(texPath, render.texturePath.c_str());
-                    ImGui::SameLine();
-                    ImGui::InputText("", texPath, IM_ARRAYSIZE(texPath));
+                        ImGui::SameLine();
+                        ImGui::InputText("##texturePath", const_cast<char *>(renderCp.texturePath.c_str()),
+                                         renderCp.texturePath.size(), ImGuiInputTextFlags_ReadOnly);
+
+                        ImGui::Image(renderCp.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
+                    }
 
                     ImGui::Text("Shader");
-                    std::string path;
-                    if (ImGui::Button("Select##Vert")) {
-                        if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-                            render.vertPath = path;
-                            render.reloadShader = true;
+                    {
+                        std::string path;
+                        auto &vertPath = renderCp.vertPath;
+                        if (ImGui::Button("Select##Vert")) {
+                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
+                                vertPath = path;
+                                renderCp.reloadShader = true;
+                            }
                         }
-                    }
-                    static char vertPath[150];
-                    strcpy(vertPath, render.vertPath.c_str());
-                    ImGui::SameLine();
-                    ImGui::InputText("", vertPath, IM_ARRAYSIZE(vertPath));
+                        ImGui::SameLine();
+                        ImGui::InputText("##VertexShaderPath", const_cast<char *>(vertPath.c_str()),
+                                         vertPath.size(), ImGuiInputTextFlags_ReadOnly);
 
-                    if (ImGui::Button("Select##Frag")) {
-                        if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-                            render.fragPath = path;
-                            render.reloadShader = true;
+                        auto &fragPath = renderCp.fragPath;
+                        if (ImGui::Button("Select##Frag"))
+                        {
+                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
+                            {
+                                fragPath = path;
+                                renderCp.reloadShader = true;
+                            }
                         }
+                        ImGui::SameLine();
+                        ImGui::InputText("##FragmentShaderPath", const_cast<char *>(fragPath.c_str()),
+                                         fragPath.size(), ImGuiInputTextFlags_ReadOnly);
                     }
-                    static char fragPath[150];
-                    strcpy(fragPath, render.fragPath.c_str());
-                    ImGui::SameLine();
-                    ImGui::InputText("", fragPath, IM_ARRAYSIZE(fragPath));
                 }
             }
         }
@@ -191,17 +199,17 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("Entity Manager");
     {
-        if (ImGui::Button("Create Entity")) {
-            // RL_CORE_TRACE("{}", tag);
-            auto square = m_scene->createEntity();
-            // square.addComponent<TestQuadComponent>(std::make_shared<rl::VertexArray>(), "/shader/vertexShader/vertexSrc.glsl", "/shader/fragmentShader/fragSrc.glsl");
-            // square.addComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-            m_entityList.push_back(square);
+        if (ImGui::Button("Create Entity"))
+        {
+            auto ent = m_scene->createEntity();
+            m_entityList.push_back(ent);
             RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
         }
 
-        if (selected != -1) {
-            if (ImGui::Button("Delete Entity")) {
+        if (selected != -1)
+        {
+            if (ImGui::Button("Delete Entity"))
+            {
                 m_entityList[selected].destroy();
                 auto it = std::find(m_entityList.begin(), m_entityList.end(), m_entityList[selected]);
                 m_entityList.erase(it);

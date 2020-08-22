@@ -45,6 +45,7 @@ public:
     virtual ~Application();
 
     void run();
+    void close() { WindowCloseEvent e; onWindowClose(e); }
     void onEvent(Event &e);
 
     void pushLayer(Layer* layer);

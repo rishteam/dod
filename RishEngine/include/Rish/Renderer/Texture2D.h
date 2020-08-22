@@ -50,6 +50,8 @@ public:
     uint32_t getHeight() const { return m_height;}
     float getAspectRatio() const { return (float)m_width / (float)m_height; }
 
+    uint32_t getTextureID() const { return m_textureID; }
+
     void bind(uint32_t slot=0) const;
 	void unbind() const;
 

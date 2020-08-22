@@ -14,7 +14,7 @@
 
 #ifdef RL_DEBUG
     #define RL_ENABLE_ASSERT
-    #define RL_PROFILE
+//    #define RL_PROFILE
 #endif
 
 // Profile options
