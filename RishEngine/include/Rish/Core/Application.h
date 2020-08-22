@@ -58,6 +58,8 @@ public:
 private:
     bool onWindowClose(WindowCloseEvent &e);
     bool onWindowResize(WindowResizeEvent &e);
+    bool onWindowFocus(WindowFocusEvent &e);
+    bool onWindowLostFocus(WindowLostFocusEvent &e);
 
     /// Window
     Scope<Window> m_window;
@@ -67,6 +69,8 @@ private:
     Scope<LayerStack> m_LayerStack;
     /// Is the application still running
     bool m_running = false;
+    /// Is the application window focused
+    bool m_isWindowFocus = true;
     /// previous frame time
     float m_prevFrameTime = 0.0f;
     /// frame count

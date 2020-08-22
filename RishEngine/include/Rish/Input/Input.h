@@ -25,16 +25,22 @@ public:
     virtual ~Input() = default;
     // Key
     /// Get Key pressed
-    static bool isKeyPressed(int keycode) { return s_instance->isKeyPressedImpl(keycode); }
+    static bool IsKeyPressed(int keycode) { return s_keyboardState && s_instance->isKeyPressedImpl(keycode); }
     // Mouse
     /// Get Mouse button pressed
-    static bool isMouseButtonPressed(int mbutton) { return s_instance->isMouseButtonPressedImpl(mbutton); }
+    static bool IsMouseButtonPressed(int mbutton) { return s_mouseState && s_instance->isMouseButtonPressedImpl(mbutton); }
     /// Get Mouse Posistion
-    static std::pair<float, float> getMousePosition() { return s_instance->getMousePositionImpl(); }
+    static std::pair<float, float> GetMousePosition() { return s_instance->getMousePositionImpl(); }
     /// Get Mouse X
-    static float getMouseX() { return s_instance->getMouseXImpl(); }
+    static float GetMouseX() { return s_instance->getMouseXImpl(); }
     /// Get Mouse Y
-    static float getMouseY() { return s_instance->getMouseYImpl(); }
+    static float GetMouseY() { return s_instance->getMouseYImpl(); }
+    /// Enable/Disable Input
+    static void SetInputState(bool state) { SetKeyboardState(state); SetMouseState(state); }
+    /// Enable/Disable Keyboard
+    static void SetKeyboardState(bool state) { s_keyboardState = state; }
+    /// Enable/Disable Mouse
+    static void SetMouseState(bool state) { s_mouseState = state; }
 
 protected:
     virtual bool isKeyPressedImpl(int keycode) = 0; ///< @note Implement these in Platform
@@ -46,6 +52,8 @@ protected:
 
 private:
     static Scope<Input> s_instance;
+    static bool s_keyboardState;
+    static bool s_mouseState;
 };
 
 }
@@ -55,19 +63,19 @@ private:
  *
  * Usage example for realtime Keyboard polling
  * @code
- * if(rl::Input::isKeyPressed(rl::Keyboard::A))
+ * if(rl::Input::IsKeyPressed(rl::Keyboard::A))
  *     // Key A pressed
  * @endcode
  * Usage example for realtime Mouse polling
  * @code
- * if(rl::Input::isMouseButtonPressed(sf::Mouse::Left))
+ * if(rl::Input::IsMouseButtonPressed(sf::Mouse::Left))
  * {
  *     // pressed left mouse button
  * }
  * // Mouse position
- * auto [x, y] = rl::Input::getMousePosition();
+ * auto [x, y] = rl::Input::GetMousePosition();
  * // Get single axis only
- * float x = rl::Input::getMouseX();
+ * float x = rl::Input::GetMouseX();
  * @endcode
  *
  */

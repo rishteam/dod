@@ -81,9 +81,9 @@ void TestLayer::onUpdate(rl::Time dt)
         rl::Renderer2D::EndScene();
     }
 
-    if (rl::Input::isMouseButtonPressed(rl::Mouse::Left))
+    if (rl::Input::IsMouseButtonPressed(rl::Mouse::Left))
     {
-        auto [x, y] = rl::Input::getMousePosition();
+        auto [x, y] = rl::Input::GetMousePosition();
         auto winW = rl::Application::Get().getWindow().getWidth();
         auto winH = rl::Application::Get().getWindow().getHeight();
 
@@ -111,7 +111,7 @@ void TestLayer::onImGuiRender()
 
     ImGui::Begin("info");
     {
-        auto [x, y] = rl::Input::getMousePosition();
+        auto [x, y] = rl::Input::GetMousePosition();
         auto winW = rl::Application::Get().getWindow().getWidth();
         auto winH = rl::Application::Get().getWindow().getHeight();
         auto camBounds = m_cameraController.getBounds();

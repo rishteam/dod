@@ -1,12 +1,12 @@
-#include <Rish/Core/Core.h>
 #include <Rish/Core/Application.h>
+#include <Rish/Core/Core.h>
+#include <Rish/Input/Input.h>
 #include <Rish/Core/Time.h>
 
 #include <Rish/Events/Event.h>
 #include <Rish/Events/ApplicationEvent.h>
 
 #include <Rish/Renderer/Renderer.h>
-#include <spdlog/fmt/fmt.h>
 
 namespace rl {
 
@@ -121,13 +121,21 @@ void Application::onEvent(Event &e)
     EventDispatcher dispatcher(e);
     dispatcher.dispatch<WindowCloseEvent>(RL_BIND_EVENT_FUNC(Application::onWindowClose));
     dispatcher.dispatch<WindowResizeEvent>(RL_BIND_EVENT_FUNC(Application::onWindowResize));
+    dispatcher.dispatch<WindowFocusEvent>(RL_BIND_EVENT_FUNC(Application::onWindowFocus));
+    dispatcher.dispatch<WindowLostFocusEvent>(RL_BIND_EVENT_FUNC(Application::onWindowLostFocus));
+
+    if(!m_isWindowFocus)
+    {
+        if(e.isInCategory(EventCategoryInput))
+            e.handled = true;
+    }
 
     for(auto it = m_LayerStack->rbegin(); it != m_LayerStack->rend(); it++)
     {
-        (*it)->onEvent(e);
         // if event is handled then break
         if(e.handled)
             break;
+        (*it)->onEvent(e);
     }
 }
 
@@ -155,6 +163,10 @@ void Application::popOverlay(Layer* overlay)
     m_LayerStack->popOverlay(overlay);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Application Event Handlers
+////////////////////////////////////////////////////////////////////////////////
+
 bool Application::onWindowClose(WindowCloseEvent &e)
 {
     m_running = false;
@@ -165,6 +177,22 @@ bool Application::onWindowResize(WindowResizeEvent &e)
 {
     RL_CORE_TRACE("{}", e.toString());
     Renderer::OnWindowResize(e.m_width, e.m_height);
+    return false;
+}
+
+bool Application::onWindowFocus(WindowFocusEvent &e)
+{
+    RL_UNUSED(e);
+    m_isWindowFocus = true;
+    Input::SetInputState(true);
+    return false;
+}
+
+bool Application::onWindowLostFocus(WindowLostFocusEvent &e)
+{
+    RL_UNUSED(e);
+    m_isWindowFocus = false;
+    Input::SetInputState(false);
     return false;
 }
 

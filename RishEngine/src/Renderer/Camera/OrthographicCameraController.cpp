@@ -34,24 +34,24 @@ void OrthographicCameraController::onUpdate(Time dt)
         dir[i] *= m_translateSpeed;
     }
 
-    if(rl::Input::isKeyPressed(rl::Keyboard::W))
+    if(rl::Input::IsKeyPressed(rl::Keyboard::W))
         m_position += glm::vec3(dir[0], 0.f) * dt.asSeconds();
-    else if(rl::Input::isKeyPressed(rl::Keyboard::S))
+    else if(rl::Input::IsKeyPressed(rl::Keyboard::S))
         m_position += glm::vec3(dir[1], 0.f) * dt.asSeconds();
-    if(rl::Input::isKeyPressed(rl::Keyboard::A))
+    if(rl::Input::IsKeyPressed(rl::Keyboard::A))
         m_position += glm::vec3(dir[2], 0.f) * dt.asSeconds();
-    else if(rl::Input::isKeyPressed(rl::Keyboard::D))
+    else if(rl::Input::IsKeyPressed(rl::Keyboard::D))
         m_position += glm::vec3(dir[3], 0.f) * dt.asSeconds();
     m_camera.setPosition(m_position);
 
     if(!m_isAbleToRotate)
         return;
 
-    if(rl::Input::isKeyPressed(rl::Keyboard::Q))
+    if(rl::Input::IsKeyPressed(rl::Keyboard::Q))
     {
         m_rotate -= m_rotateSpeed * dt.asSeconds();
     }
-    else if(rl::Input::isKeyPressed(rl::Keyboard::E))
+    else if(rl::Input::IsKeyPressed(rl::Keyboard::E))
     {
         m_rotate += m_rotateSpeed * dt.asSeconds();
     }

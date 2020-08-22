@@ -176,7 +176,7 @@ public:
             }
             catch (const std::bad_cast &e)
             {
-                RL_ASSERT(false, "{}", e.what()); // crash the application
+                RL_CORE_ASSERT(false, "{}", e.what()); // crash the application
             }
             return true;
         }

@@ -15,6 +15,9 @@ namespace rl {
 // We don't bother to delete it
 Scope<Input> Input::s_instance = MakeScope<SFMLInput>();
 
+bool Input::s_keyboardState = true;
+bool Input::s_mouseState = true;
+
 bool SFMLInput::isKeyPressedImpl(int keycode)
 {
     return sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keycode);
