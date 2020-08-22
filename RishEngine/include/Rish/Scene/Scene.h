@@ -3,6 +3,7 @@
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
 
+#include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Scene/Component.h>
 
 #include <entt/entt.hpp>
@@ -37,7 +38,7 @@ public:
 	 * @brief Update Entity behavior
 	 * @param dt
 	 */
-	void update(Time dt);
+	void update(const OrthographicCamera &camera, Time dt);
 
 	// Test
 	std::vector<Entity> getAllEntities();

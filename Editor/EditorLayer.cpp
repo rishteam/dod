@@ -11,7 +11,7 @@ namespace rl {
 
 EditorLayer::EditorLayer()
     : Layer("editorLayer"),
-      m_cameraController(Application::Get().getWindow().getAspectRatio(), true)
+      m_cameraController(Application::Get().getWindow().getAspectRatio())
 {
 	VFS::Mount("shader", "assets/shader");
 	VFS::Mount("texture", "assets/texture");
@@ -55,23 +55,7 @@ void EditorLayer::onUpdate(Time dt)
 	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
 	RenderCommand::Clear();
 
-    Renderer2D::BeginScene(m_cameraController.getCamera());
-    Renderer2D::DrawQuad({0.f, 0.f}, {1.f, 1.f}, m_texture);
-
-    Renderer2D::DrawRotatedQuad({-1.f, 0.f}, {0.8f, 0.8f}, m_texture, rotate);
-
-    int gridWidth = 10, gridHeight = 10;
-    for(int i = 0; i < gridWidth; i++)
-        for(int j = 0; j < gridHeight; j++)
-        {
-            if((i+j) % 2)
-                rl::Renderer2D::DrawRotatedQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f}, rotate);
-            else
-                rl::Renderer2D::DrawQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f});
-        }
-    Renderer2D::EndScene();
-
-    m_scene->update(dt);
+    m_scene->update(m_cameraController.getCamera(), dt);
 
 	m_framebuffer->unbind();
 }
@@ -166,13 +150,13 @@ void EditorLayer::onImGuiRender()
                     std::string tPath;
                     if (ImGui::Button("Select")) {
                         if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
-                            render.path = tPath;
+                            render.texturePath = tPath;
                             render.reloadTexture = true;
                         }
                     }
 
                     static char texPath[150];
-                    strcpy(texPath, render.path.c_str());
+                    strcpy(texPath, render.texturePath.c_str());
                     ImGui::SameLine();
                     ImGui::InputText("", texPath, IM_ARRAYSIZE(texPath));
 
@@ -181,7 +165,7 @@ void EditorLayer::onImGuiRender()
                     if (ImGui::Button("Select##Vert")) {
                         if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
                             render.vertPath = path;
-                            render.reload = true;
+                            render.reloadShader = true;
                         }
                     }
                     static char vertPath[150];
@@ -192,7 +176,7 @@ void EditorLayer::onImGuiRender()
                     if (ImGui::Button("Select##Frag")) {
                         if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
                             render.fragPath = path;
-                            render.reload = true;
+                            render.reloadShader = true;
                         }
                     }
                     static char fragPath[150];

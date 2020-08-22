@@ -99,29 +99,13 @@ struct RenderComponent
 	std::shared_ptr<rl::Shader> m_shader;
 
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
-
-	bool reload = true;
-
-	// vao
-	std::shared_ptr<VertexArray> m_vertexArray;
-	std::string path = "assets/texture/1.png";
+	std::string texturePath = "assets/texture/1.png";
 	std::shared_ptr<Texture2D> m_texture;
 
+	// states
+	bool reloadShader = true;
 	bool reloadTexture = true;
 	bool init = true;
-
-	// TODO: remove
-	float vertices[5 * 4] = {
-		//     ---- 位置 ----
-	     0.1f,  0.1f, 0.0f, 1.0f, 1.0f,
-		 0.1f, -0.1f, 0.0f, 1.0f, 0.0f,
-		-0.1f, -0.1f, 0.0f, 0.0f, 0.0f,
-		-0.1f,  0.1f, 0.0f, 0.0f, 1.0f
-	};
-	uint32_t indices[2*3] = {
-		0, 1, 3, 
-		1, 2, 3	 
-	};
 
 	RenderComponent() = default;
 	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s)
@@ -140,7 +124,7 @@ private:
 		ar(cereal::make_nvp("Color", color),
 		   cereal::make_nvp("Vertex Shader", vertPath),
 		   cereal::make_nvp("Fragment Shader", fragPath),
-		   cereal::make_nvp("Texture", path)
+		   cereal::make_nvp("Texture", texturePath)
 		);
 	}
 

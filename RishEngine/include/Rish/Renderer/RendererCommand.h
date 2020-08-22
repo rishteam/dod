@@ -45,6 +45,8 @@ public:
      * @param vertexArray Vertex Array
      */
     static void DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount=0);
+
+    static void ClearStates();
 };
 
 }

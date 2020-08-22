@@ -53,3 +53,10 @@ void rl::RenderCommand::SetViewPort(float x, float y, float width, float height)
 {
     glViewport((GLint)x, (GLint)y, (GLsizei)width, (GLsizei)height);
 }
+
+void rl::RenderCommand::ClearStates()
+{
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}

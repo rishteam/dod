@@ -3,29 +3,29 @@
         "ptr_wrapper": {
             "id": 2147483649,
             "data": {
-                "entityNumber": 18,
+                "entityNumber": 2,
                 "value0": 2,
-                "value1": 1048590,
+                "value1": 0,
                 "value2": {
-                    "Tag": "a"
+                    "Tag": "A"
                 },
-                "value3": 2097164,
+                "value3": 1,
                 "value4": {
-                    "Tag": "b"
+                    "Tag": "B"
                 },
                 "value5": 2,
-                "value6": 1048590,
+                "value6": 0,
                 "value7": {
                     "Transform": {
                         "col0": {
-                            "x": 2.299999952316284,
+                            "x": 1.0,
                             "y": 0.0,
                             "z": 0.0,
                             "w": 0.0
                         },
                         "col1": {
                             "x": 0.0,
-                            "y": 4.099999904632568,
+                            "y": 1.0,
                             "z": 0.0,
                             "w": 0.0
                         },
@@ -36,35 +36,35 @@
                             "w": 0.0
                         },
                         "col3": {
-                            "x": -0.1599999964237213,
-                            "y": 0.1599999964237213,
+                            "x": 0.0,
+                            "y": 0.0,
                             "z": 0.0,
                             "w": 1.0
                         }
                     },
                     "Translate": {
-                        "x": -0.1599999964237213,
-                        "y": 0.1599999964237213,
+                        "x": -0.7699999809265137,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "Scale": {
-                        "x": 2.299999952316284,
-                        "y": 4.099999904632568,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     }
                 },
-                "value8": 2097164,
+                "value8": 1,
                 "value9": {
                     "Transform": {
                         "col0": {
-                            "x": 1.7999999523162842,
+                            "x": 1.0,
                             "y": 0.0,
                             "z": 0.0,
                             "w": 0.0
                         },
                         "col1": {
                             "x": 0.0,
-                            "y": 3.9000000953674318,
+                            "y": 1.0,
                             "z": 0.0,
                             "w": 0.0
                         },
@@ -75,25 +75,25 @@
                             "w": 0.0
                         },
                         "col3": {
-                            "x": 0.30000001192092898,
-                            "y": 0.4000000059604645,
+                            "x": 0.0,
+                            "y": 0.0,
                             "z": 0.0,
                             "w": 1.0
                         }
                     },
                     "Translate": {
-                        "x": 0.30000001192092898,
-                        "y": 0.4000000059604645,
+                        "x": 0.5400000214576721,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "Scale": {
-                        "x": 1.7999999523162842,
-                        "y": 3.9000000953674318,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     }
                 },
                 "value10": 2,
-                "value11": 1048590,
+                "value11": 0,
                 "value12": {
                     "Color": {
                         "x": 1.0,
@@ -101,11 +101,11 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "assets/shader/vertexShader/vertexSrc.glsl",
-                    "Fragment Shader": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\shader\\fragmentShader\\blueFragSrc.glsl",
-                    "Texture": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\texture\\1.png"
+                    "Vertex Shader": "/shader/vertexShader/vertexSrc.glsl",
+                    "Fragment Shader": "/shader/fragmentShader/fragSrc.glsl",
+                    "Texture": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\texture\\2.png"
                 },
-                "value13": 2097164,
+                "value13": 1,
                 "value14": {
                     "Color": {
                         "x": 1.0,
@@ -113,9 +113,9 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "assets/shader/vertexShader/vertexSrc.glsl",
-                    "Fragment Shader": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\shader\\fragmentShader\\blueFragSrc.glsl",
-                    "Texture": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\texture\\2.png"
+                    "Vertex Shader": "/shader/vertexShader/vertexSrc.glsl",
+                    "Fragment Shader": "/shader/fragmentShader/fragSrc.glsl",
+                    "Texture": "assets/texture/1.png"
                 }
             }
         }

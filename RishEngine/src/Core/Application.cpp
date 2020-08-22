@@ -90,6 +90,10 @@ void Application::run()
                 layer->onUpdate(dt);
         }
 
+        // TODO: Due to some random fucking OpenGL shit states and SFML shits
+        // so we need this here
+        RenderCommand::ClearStates();
+
         // Update ImGui
         {
             RL_PROFILE_SCOPE("ImGui Update");

@@ -65,7 +65,7 @@ void Framebuffer::bind()
     RL_PROFILE_FUNCTION();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferID);
-//	glViewport(0, 0, m_spec.width, m_spec.height);
+	glViewport(0, 0, m_spec.width, m_spec.height);
 }
 
 void Framebuffer::unbind()
