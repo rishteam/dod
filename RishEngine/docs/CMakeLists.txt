@@ -13,4 +13,4 @@ set(DOXYGEN_INLINE_SOURCES NO)
 set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/../../README.md)
 
 find_package(Doxygen REQUIRED dot)
-doxygen_add_docs(doxygen-docs ${PROJECT_SOURCE_DIR}/../ ${PROJECT_SOURCE_DIR}/../../README.md)
+doxygen_add_docs(doxygen-docs ${PROJECT_SOURCE_DIR}/../include ${PROJECT_SOURCE_DIR}/../src ${PROJECT_SOURCE_DIR}/../../README.md)
