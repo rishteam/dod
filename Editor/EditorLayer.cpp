@@ -98,39 +98,64 @@ void EditorLayer::onImGuiRender()
 		ImGui::EndMenuBar();
 	}
 
-    static int selected = -1;
+    static int selectedEntity = -1;
 
 	ImGui::Begin("Entity");
     {
         // RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
         ImGui::Text("Entity List");
-        ImGui::ListBoxHeader("##EntityList", ImVec2(-1, 500));
-
-        for (int i = 0; i < m_entityList.size(); i++) {
-            // RL_TRACE("{}", m_entityList[i].getComponent<TagComponent>().tag.c_str());
-            if (ImGui::Selectable(m_entityList[i].getComponent<TagComponent>().tag.c_str()))
-                selected = i;
+        {
+            static std::vector<bool> s_selectableStates;
+            s_selectableStates.resize(m_entityList.size());
+            // Multiple select
+            ImGui::ListBoxHeader("##EntityList", ImVec2(-1, 500));
+            for (int i = 0; i < m_entityList.size(); i++)
+            {
+                if (ImGui::Selectable(m_entityList[i].getComponent<TagComponent>().tag.c_str(), s_selectableStates[i]))
+                {
+                    // Not press ctrl
+                    if (!ImGui::GetIO().KeyCtrl)
+                    {
+                        std::fill(s_selectableStates.begin(), s_selectableStates.end(), false);
+                    }
+                    s_selectableStates[i] = !s_selectableStates[i];
+                    selectedEntity = i;
+                }
+            }
+            ImGui::ListBoxFooter();
+            // Count the selected entities
+            int cnt = 0;
+            for(int i = 0; i < s_selectableStates.size(); i++)
+            {
+                if(s_selectableStates[i])
+                {
+                    cnt++;
+                    selectedEntity = i;
+                }
+            }
+            // If the selectedCnt > 2 then not showing the settings
+            if(cnt >= 2)
+                selectedEntity = -1;
         }
-
-        ImGui::ListBoxFooter();
 
         ImGui::Separator();
 
-        if (selected != -1)
+        // Settings
+        if (selectedEntity != -1)
         {
-            if (m_entityList[selected].hasComponent<TagComponent>()) {
+            if (m_entityList[selectedEntity].hasComponent<TagComponent>()) {
                 if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    std::string tmp = m_entityList[selected].getComponent<TagComponent>().tag.c_str();
+                    std::string tmp = m_entityList[selectedEntity].getComponent<TagComponent>().tag.c_str();
                     static char tag[32];
                     strcpy(tag, tmp.c_str());
                     ImGui::InputText("Tag", tag, IM_ARRAYSIZE(tag));
-                    m_entityList[selected].getComponent<TagComponent>().tag = tag;
+                    m_entityList[selectedEntity].getComponent<TagComponent>().tag = tag;
                 }
             }
 
-            if (m_entityList[selected].hasComponent<TransformComponent>()) {
+            if (m_entityList[selectedEntity].hasComponent<TransformComponent>()) {
                 if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    auto &transform = m_entityList[selected].getComponent<TransformComponent>();
+                    auto &transform = m_entityList[selectedEntity].getComponent<TransformComponent>();
                     ImGui::SliderFloat("TranslateX", &transform.translate.x, -1.f, 1.f, "%.2f");
                     ImGui::SliderFloat("TranslateY", &transform.translate.y, -1.f, 1.f, "%.2f");
                     // ImGui::SliderFloat("Z", &transform.z, -10, 10, "%.2f");`x
@@ -140,11 +165,11 @@ void EditorLayer::onImGuiRender()
                 }
             }
 
-            if (m_entityList[selected].hasComponent<RenderComponent>())
+            if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
             {
                 if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
                 {
-                    auto &renderCp = m_entityList[selected].getComponent<RenderComponent>();
+                    auto &renderCp = m_entityList[selectedEntity].getComponent<RenderComponent>();
                     ImGui::ColorEdit4("Color", glm::value_ptr(renderCp.color));
 
                     ImGui::Text("Texture");
@@ -206,14 +231,14 @@ void EditorLayer::onImGuiRender()
             RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
         }
 
-        if (selected != -1)
+        if (selectedEntity != -1)
         {
             if (ImGui::Button("Delete Entity"))
             {
-                m_entityList[selected].destroy();
-                auto it = std::find(m_entityList.begin(), m_entityList.end(), m_entityList[selected]);
+                m_entityList[selectedEntity].destroy();
+                auto it = std::find(m_entityList.begin(), m_entityList.end(), m_entityList[selectedEntity]);
                 m_entityList.erase(it);
-                selected = -1;
+                selectedEntity = -1;
             }
         }
 
@@ -221,7 +246,7 @@ void EditorLayer::onImGuiRender()
 
         const char *components[] = {"TagComponent", "TransformComponent", "RenderComponent"};
         static int selectedComponent = -1;
-        if (selected != -1) {
+        if (selectedEntity != -1) {
             if (ImGui::Button("Add Component")) {
                 ImGui::OpenPopup("Components");
             }
@@ -232,19 +257,19 @@ void EditorLayer::onImGuiRender()
                         selectedComponent = i;
                         switch (i) {
                             case 0:
-                                if (!m_entityList[selected].hasComponent<TagComponent>()) {
-                                    m_entityList[selected].addComponent<TagComponent>();
+                                if (!m_entityList[selectedEntity].hasComponent<TagComponent>()) {
+                                    m_entityList[selectedEntity].addComponent<TagComponent>();
                                 }
                                 break;
                             case 1:
-                                if (!m_entityList[selected].hasComponent<TransformComponent>()) {
-                                    m_entityList[selected].addComponent<TransformComponent>();
+                                if (!m_entityList[selectedEntity].hasComponent<TransformComponent>()) {
+                                    m_entityList[selectedEntity].addComponent<TransformComponent>();
                                 }
                                 break;
 
                             case 2:
-                                if (!m_entityList[selected].hasComponent<RenderComponent>()) {
-                                    m_entityList[selected].addComponent<RenderComponent>();
+                                if (!m_entityList[selectedEntity].hasComponent<RenderComponent>()) {
+                                    m_entityList[selectedEntity].addComponent<RenderComponent>();
                                 }
                                 break;
                         }
@@ -267,13 +292,13 @@ void EditorLayer::onImGuiRender()
                                 break;
 
                             case 1:
-                                if (m_entityList[selected].hasComponent<TransformComponent>())
-                                    m_entityList[selected].removeComponent<TransformComponent>();
+                                if (m_entityList[selectedEntity].hasComponent<TransformComponent>())
+                                    m_entityList[selectedEntity].removeComponent<TransformComponent>();
                                 break;
 
                             case 2:
-                                if (m_entityList[selected].hasComponent<RenderComponent>())
-                                    m_entityList[selected].removeComponent<RenderComponent>();
+                                if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
+                                    m_entityList[selectedEntity].removeComponent<RenderComponent>();
                                 break;
                         }
                     }

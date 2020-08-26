@@ -115,7 +115,7 @@
                     },
                     "Vertex Shader": "/shader/vertexShader/vertexSrc.glsl",
                     "Fragment Shader": "/shader/fragmentShader/fragSrc.glsl",
-                    "Texture": "assets/texture/1.png"
+                    "Texture": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\texture\\2.png"
                 }
             }
         }
