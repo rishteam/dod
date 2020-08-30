@@ -18,16 +18,18 @@ EditorLayer::EditorLayer()
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-    m_scene = std::make_shared<rl::Scene>();
+    m_scene = MakeRef<Scene>();
 }
 
 void EditorLayer::onAttach()
 {
     RL_CORE_INFO("[EditorLayer] onAttach");
-	rl::FramebufferSpecification fbspec;
+	FramebufferSpecification fbspec;
 	fbspec.width = 1280;
 	fbspec.height = 720;
 	m_framebuffer = Framebuffer::Create(fbspec);
+
+    m_sceneHierarchyPanel.setScene(m_scene);
 }
 
 void EditorLayer::onDetach()
@@ -37,19 +39,16 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
-    static float rotate = 0.f;
-    rotate += 10 * dt.asSeconds();
-
     m_cameraController.onUpdate(dt);
 
 	m_framebuffer->bind();
+    {
+        Renderer2D::ResetStats();
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear();
 
-	Renderer2D::ResetStats();
-	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-	RenderCommand::Clear();
-
-    m_scene->update(m_cameraController.getCamera(), dt);
-
+        m_scene->update(m_cameraController.getCamera(), dt);
+    }
 	m_framebuffer->unbind();
 }
 
@@ -102,123 +101,91 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("Entity");
     {
-        // RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
-        ImGui::Text("Entity List");
-        {
-            static std::vector<bool> s_selectableStates;
-            s_selectableStates.resize(m_entityList.size());
-            // Multiple select
-            ImGui::ListBoxHeader("##EntityList", ImVec2(-1, 500));
-            for (int i = 0; i < m_entityList.size(); i++)
-            {
-                if (ImGui::Selectable(m_entityList[i].getComponent<TagComponent>().tag.c_str(), s_selectableStates[i]))
-                {
-                    // Not press ctrl
-                    if (!ImGui::GetIO().KeyCtrl)
-                    {
-                        std::fill(s_selectableStates.begin(), s_selectableStates.end(), false);
-                    }
-                    s_selectableStates[i] = !s_selectableStates[i];
-                    selectedEntity = i;
-                }
-            }
-            ImGui::ListBoxFooter();
-            // Count the selected entities
-            int cnt = 0;
-            for(int i = 0; i < s_selectableStates.size(); i++)
-            {
-                if(s_selectableStates[i])
-                {
-                    cnt++;
-                    selectedEntity = i;
-                }
-            }
-            // If the selectedCnt > 2 then not showing the settings
-            if(cnt >= 2)
-                selectedEntity = -1;
-        }
+        m_sceneHierarchyPanel.onImGuiRender();
 
         ImGui::Separator();
 
         // Settings
-        if (selectedEntity != -1)
-        {
-            if (m_entityList[selectedEntity].hasComponent<TagComponent>()) {
-                if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    std::string tmp = m_entityList[selectedEntity].getComponent<TagComponent>().tag.c_str();
-                    static char tag[32];
-                    strcpy(tag, tmp.c_str());
-                    ImGui::InputText("Tag", tag, IM_ARRAYSIZE(tag));
-                    m_entityList[selectedEntity].getComponent<TagComponent>().tag = tag;
-                }
-            }
-
-            if (m_entityList[selectedEntity].hasComponent<TransformComponent>()) {
-                if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    auto &transform = m_entityList[selectedEntity].getComponent<TransformComponent>();
-                    ImGui::SliderFloat("TranslateX", &transform.translate.x, -1.f, 1.f, "%.2f");
-                    ImGui::SliderFloat("TranslateY", &transform.translate.y, -1.f, 1.f, "%.2f");
-                    // ImGui::SliderFloat("Z", &transform.z, -10, 10, "%.2f");`x
-                    ImGui::Separator();
-                    ImGui::DragFloat("ScaleX", &transform.scale.x, 0.1f, 0.f);
-                    ImGui::DragFloat("ScaleY", &transform.scale.y, 0.1f, 0.f);
-                }
-            }
-
-            if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
-            {
-                if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
-                {
-                    auto &renderCp = m_entityList[selectedEntity].getComponent<RenderComponent>();
-                    ImGui::ColorEdit4("Color", glm::value_ptr(renderCp.color));
-
-                    ImGui::Text("Texture");
-                    {
-                        std::string tPath;
-                        if (ImGui::Button("Select")) {
-                            if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
-                                renderCp.texturePath = tPath;
-                                renderCp.reloadTexture = true;
-                            }
-                        }
-
-                        ImGui::SameLine();
-                        ImGui::InputText("##texturePath", const_cast<char *>(renderCp.texturePath.c_str()),
-                                         renderCp.texturePath.size(), ImGuiInputTextFlags_ReadOnly);
-
-                        ImGui::Image(renderCp.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
-                    }
-
-                    ImGui::Text("Shader");
-                    {
-                        std::string path;
-                        auto &vertPath = renderCp.vertPath;
-                        if (ImGui::Button("Select##Vert")) {
-                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-                                vertPath = path;
-                                renderCp.reloadShader = true;
-                            }
-                        }
-                        ImGui::SameLine();
-                        ImGui::InputText("##VertexShaderPath", const_cast<char *>(vertPath.c_str()),
-                                         vertPath.size(), ImGuiInputTextFlags_ReadOnly);
-
-                        auto &fragPath = renderCp.fragPath;
-                        if (ImGui::Button("Select##Frag"))
-                        {
-                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
-                            {
-                                fragPath = path;
-                                renderCp.reloadShader = true;
-                            }
-                        }
-                        ImGui::SameLine();
-                        ImGui::InputText("##FragmentShaderPath", const_cast<char *>(fragPath.c_str()),
-                                         fragPath.size(), ImGuiInputTextFlags_ReadOnly);
-                    }
-                }
-            }
-        }
+//        if (selectedEntity != -1)
+//        {
+//            if (m_entityList[selectedEntity].hasComponent<TagComponent>())
+//            {
+//                if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
+//                    std::string tmp = m_entityList[selectedEntity].getComponent<TagComponent>().tag.c_str();
+//                    static char tag[32];
+//                    strcpy(tag, tmp.c_str());
+//                    ImGui::InputText("Tag", tag, IM_ARRAYSIZE(tag));
+//                    m_entityList[selectedEntity].getComponent<TagComponent>().tag = tag;
+//                }
+//            }
+//
+//            if (m_entityList[selectedEntity].hasComponent<TransformComponent>())
+//            {
+//                if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
+//                    auto &transform = m_entityList[selectedEntity].getComponent<TransformComponent>();
+//                    ImGui::SliderFloat("TranslateX", &transform.translate.x, -1.f, 1.f, "%.2f");
+//                    ImGui::SliderFloat("TranslateY", &transform.translate.y, -1.f, 1.f, "%.2f");
+//                    // ImGui::SliderFloat("Z", &transform.z, -10, 10, "%.2f");`x
+//                    ImGui::Separator();
+//                    ImGui::DragFloat("ScaleX", &transform.scale.x, 0.1f, 0.f);
+//                    ImGui::DragFloat("ScaleY", &transform.scale.y, 0.1f, 0.f);
+//                }
+//            }
+//
+//            if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
+//            {
+//                if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
+//                {
+//                    auto &renderCp = m_entityList[selectedEntity].getComponent<RenderComponent>();
+//                    ImGui::ColorEdit4("Color", glm::value_ptr(renderCp.color));
+//
+//                    ImGui::Text("Texture");
+//                    {
+//                        std::string tPath;
+//                        if (ImGui::Button("Select")) {
+//                            if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
+//                                renderCp.texturePath = tPath;
+//                                renderCp.reloadTexture = true;
+//                            }
+//                        }
+//
+//                        ImGui::SameLine();
+//                        ImGui::InputText("##texturePath", const_cast<char *>(renderCp.texturePath.c_str()),
+//                                         renderCp.texturePath.size(), ImGuiInputTextFlags_ReadOnly);
+//
+//                        ImGui::Image(renderCp.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
+//                    }
+//
+//                    ImGui::Text("Shader");
+//                    {
+//                        std::string path;
+//                        auto &vertPath = renderCp.vertPath;
+//                        if (ImGui::Button("Select##Vert")) {
+//                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
+//                                vertPath = path;
+//                                renderCp.reloadShader = true;
+//                            }
+//                        }
+//                        ImGui::SameLine();
+//                        ImGui::InputText("##VertexShaderPath", const_cast<char *>(vertPath.c_str()),
+//                                         vertPath.size(), ImGuiInputTextFlags_ReadOnly);
+//
+//                        auto &fragPath = renderCp.fragPath;
+//                        if (ImGui::Button("Select##Frag"))
+//                        {
+//                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
+//                            {
+//                                fragPath = path;
+//                                renderCp.reloadShader = true;
+//                            }
+//                        }
+//                        ImGui::SameLine();
+//                        ImGui::InputText("##FragmentShaderPath", const_cast<char *>(fragPath.c_str()),
+//                                         fragPath.size(), ImGuiInputTextFlags_ReadOnly);
+//                    }
+//                }
+//            }
+//        }
     }
 	ImGui::End();
 
@@ -227,18 +194,14 @@ void EditorLayer::onImGuiRender()
         if (ImGui::Button("Create Entity"))
         {
             auto ent = m_scene->createEntity();
-            m_entityList.push_back(ent);
-            RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
         }
 
-        if (selectedEntity != -1)
+        if (m_sceneHierarchyPanel.isSelected())
         {
             if (ImGui::Button("Delete Entity"))
             {
-                m_entityList[selectedEntity].destroy();
-                auto it = std::find(m_entityList.begin(), m_entityList.end(), m_entityList[selectedEntity]);
-                m_entityList.erase(it);
-                selectedEntity = -1;
+                m_sceneHierarchyPanel.getSelectedEntity().destroy();
+                m_sceneHierarchyPanel.resetSelected();
             }
         }
 

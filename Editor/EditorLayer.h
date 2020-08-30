@@ -1,8 +1,8 @@
 #include <RishEngine.h>
 
-namespace rl {
+#include "Panels/SceneHierarchyPanel.h"
 
-#define MAXENTITES 1000
+namespace rl {
 
 class EditorLayer : public rl::Layer
 {
@@ -23,10 +23,12 @@ public:
 private:
 	OrthographicCameraController m_cameraController;
 
-	std::shared_ptr<rl::Framebuffer> m_framebuffer;
-	std::shared_ptr<rl::Scene> m_scene;
+	Ref<rl::Framebuffer> m_framebuffer;
+	Ref<rl::Scene> m_scene;
 
 	std::vector<Entity> m_entityList;
+
+	SceneHierarchyPanel m_sceneHierarchyPanel;
 };
 
 }

@@ -49,9 +49,11 @@ private:
 
 	entt::registry m_registry;
 
-	friend class Entity;
-	friend class cereal::access;
+	// friend class
+    friend class Entity;
+    friend class SceneHierarchyPanel;
 
+	friend class cereal::access;
 	// TODO: Auto reflect the components of a entity?
 	template <class Archive>
 	void save(Archive &ar) const

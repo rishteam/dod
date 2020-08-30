@@ -1,5 +1,3 @@
-#pragma once
-
 #include <Rish/rlpch.h>
 
 #include <Rish/Renderer/Renderer2D.h>
@@ -24,20 +22,25 @@ Entity Scene::createEntity(const std::string& name)
 {
 	Entity entity = { m_registry.create(), this };
 	entity.addComponent<TransformComponent>();
-	auto& tag = entity.addComponent<TagComponent>();
+	auto& tag = entity.addComponent<TagComponent>().tag;
 	
 	if(name.empty())
 	{
-		tag.tag = fmt::format("Entity {}", entityNumber);
+		tag = fmt::format("Entity {}", entityNumber);
 	}
 	else
 	{
-		tag.tag = name;
+		tag = name;
 	}
 	entityNumber++;
 
-	RL_CORE_TRACE("[Scene] In");
+	RL_CORE_TRACE("[Scene] Created entity {}", tag);
 	return entity;	
+}
+
+void Scene::destroyEntity(const Entity &entity)
+{
+    m_registry.destroy(entity.getEntityID());
 }
 
 std::vector<Entity> Scene::getAllEntities()

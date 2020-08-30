@@ -49,10 +49,14 @@ public:
 	void destroy()
 	{
 		m_scene->m_registry.destroy(m_entityHandle);
+        m_entityHandle = entt::null;
 		m_scene = nullptr;
 	}
 
-	operator bool() const { return (uint32_t)m_entityHandle != entt::null; }
+	operator bool() const { return m_entityHandle != entt::null; }
+	operator uint32_t() const { return (uint32_t)m_entityHandle; }
+
+	entt::entity getEntityID() const { return m_entityHandle; }
 
     bool operator==(const Entity &rhs) const;
     bool operator!=(const Entity &rhs) const;

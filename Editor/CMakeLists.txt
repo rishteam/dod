@@ -5,7 +5,10 @@ project(Editor)
 add_executable(Editor
     EditorLayer.cpp
     Editor.cpp
+    Panels/SceneHierarchyPanel.cpp
 )
+
+target_include_directories(Editor PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(Editor
     Rish::Engine project_options project_warnings
 )
