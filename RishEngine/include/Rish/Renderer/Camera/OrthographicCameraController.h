@@ -39,6 +39,8 @@ public:
     void onEvent(Event &e);
     void onImGuiRender();
 
+    void setState(bool state) { m_enableState = state; }
+
     OrthographicCamera& getCamera() { return m_camera; }
     const OrthographicCamera& getCamera() const { return m_camera; }
     const OrthographicCameraBounds& getBounds() const { return m_bounds; }
@@ -48,6 +50,7 @@ private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
 private:
+    bool m_enableState = true;
     float m_aspect = 1280.f / 720.f;
     float m_zoom = 1.f;
     OrthographicCameraBounds m_bounds;

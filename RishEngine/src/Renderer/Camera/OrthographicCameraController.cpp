@@ -34,6 +34,10 @@ void OrthographicCameraController::onUpdate(Time dt)
         dir[i] *= m_translateSpeed;
     }
 
+    // Early out if it is not enabled
+    if(!m_enableState)
+        return;
+
     if(rl::Input::IsKeyPressed(rl::Keyboard::W))
         m_position += glm::vec3(dir[0], 0.f) * dt.asSeconds();
     else if(rl::Input::IsKeyPressed(rl::Keyboard::S))

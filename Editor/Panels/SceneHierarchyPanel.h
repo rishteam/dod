@@ -14,11 +14,11 @@ public:
     SceneHierarchyPanel(const Ref<Scene> &scene);
     ~SceneHierarchyPanel();
 
-    void setScene(const Ref<Scene> &scene);
+    void setContext(const Ref<Scene> &scene);
 
     void onImGuiRender();
 
-    bool isSelected();
+    bool isSelected() const { return m_isSelected; }
 
     Entity getSelectedEntity() const { return m_selectedEntity; }
     void resetSelected() { m_isSelected = false; m_selectedEntity = Entity();}

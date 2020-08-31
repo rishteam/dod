@@ -29,7 +29,8 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
 	m_framebuffer = Framebuffer::Create(fbspec);
 
-    m_sceneHierarchyPanel.setScene(m_scene);
+    m_sceneHierarchyPanel.setContext(m_scene);
+    m_componentEditPanel.setContext(m_scene);
 }
 
 void EditorLayer::onDetach()
@@ -39,6 +40,7 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
+    m_cameraController.setState(m_sceneWindowFocused);
     m_cameraController.onUpdate(dt);
 
 	m_framebuffer->bind();
@@ -105,96 +107,16 @@ void EditorLayer::onImGuiRender()
 
         ImGui::Separator();
 
-        // Settings
-//        if (selectedEntity != -1)
-//        {
-//            if (m_entityList[selectedEntity].hasComponent<TagComponent>())
-//            {
-//                if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-//                    std::string tmp = m_entityList[selectedEntity].getComponent<TagComponent>().tag.c_str();
-//                    static char tag[32];
-//                    strcpy(tag, tmp.c_str());
-//                    ImGui::InputText("Tag", tag, IM_ARRAYSIZE(tag));
-//                    m_entityList[selectedEntity].getComponent<TagComponent>().tag = tag;
-//                }
-//            }
-//
-//            if (m_entityList[selectedEntity].hasComponent<TransformComponent>())
-//            {
-//                if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-//                    auto &transform = m_entityList[selectedEntity].getComponent<TransformComponent>();
-//                    ImGui::SliderFloat("TranslateX", &transform.translate.x, -1.f, 1.f, "%.2f");
-//                    ImGui::SliderFloat("TranslateY", &transform.translate.y, -1.f, 1.f, "%.2f");
-//                    // ImGui::SliderFloat("Z", &transform.z, -10, 10, "%.2f");`x
-//                    ImGui::Separator();
-//                    ImGui::DragFloat("ScaleX", &transform.scale.x, 0.1f, 0.f);
-//                    ImGui::DragFloat("ScaleY", &transform.scale.y, 0.1f, 0.f);
-//                }
-//            }
-//
-//            if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
-//            {
-//                if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
-//                {
-//                    auto &renderCp = m_entityList[selectedEntity].getComponent<RenderComponent>();
-//                    ImGui::ColorEdit4("Color", glm::value_ptr(renderCp.color));
-//
-//                    ImGui::Text("Texture");
-//                    {
-//                        std::string tPath;
-//                        if (ImGui::Button("Select")) {
-//                            if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
-//                                renderCp.texturePath = tPath;
-//                                renderCp.reloadTexture = true;
-//                            }
-//                        }
-//
-//                        ImGui::SameLine();
-//                        ImGui::InputText("##texturePath", const_cast<char *>(renderCp.texturePath.c_str()),
-//                                         renderCp.texturePath.size(), ImGuiInputTextFlags_ReadOnly);
-//
-//                        ImGui::Image(renderCp.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
-//                    }
-//
-//                    ImGui::Text("Shader");
-//                    {
-//                        std::string path;
-//                        auto &vertPath = renderCp.vertPath;
-//                        if (ImGui::Button("Select##Vert")) {
-//                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-//                                vertPath = path;
-//                                renderCp.reloadShader = true;
-//                            }
-//                        }
-//                        ImGui::SameLine();
-//                        ImGui::InputText("##VertexShaderPath", const_cast<char *>(vertPath.c_str()),
-//                                         vertPath.size(), ImGuiInputTextFlags_ReadOnly);
-//
-//                        auto &fragPath = renderCp.fragPath;
-//                        if (ImGui::Button("Select##Frag"))
-//                        {
-//                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
-//                            {
-//                                fragPath = path;
-//                                renderCp.reloadShader = true;
-//                            }
-//                        }
-//                        ImGui::SameLine();
-//                        ImGui::InputText("##FragmentShaderPath", const_cast<char *>(fragPath.c_str()),
-//                                         fragPath.size(), ImGuiInputTextFlags_ReadOnly);
-//                    }
-//                }
-//            }
-//        }
+        if (m_sceneHierarchyPanel.isSelected())
+        {
+            m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
+        }
+        m_componentEditPanel.onImGuiRender();
     }
 	ImGui::End();
 
 	ImGui::Begin("Entity Manager");
     {
-        if (ImGui::Button("Create Entity"))
-        {
-            auto ent = m_scene->createEntity();
-        }
 
         if (m_sceneHierarchyPanel.isSelected())
         {
@@ -276,9 +198,9 @@ void EditorLayer::onImGuiRender()
 	ImGui::Begin("Scene");
     {
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-
-        // TODO Actually should be (void*)textureID, but it went error on it, but this can work??
         ImGui::Image((uintptr_t) textureID, ImVec2{1280, 720}, {0, 0}, {1, -1});
+        m_sceneWindowFocused = ImGui::IsWindowFocused();
+        m_sceneWindowHovered = ImGui::IsWindowHovered();
     }
 	ImGui::End();
 
@@ -289,7 +211,8 @@ void EditorLayer::onImGuiRender()
 
 void EditorLayer::onEvent(rl::Event& event)
 {
-    m_cameraController.onEvent(event);
+    if(m_sceneWindowFocused)
+        m_cameraController.onEvent(event);
 }
 
 void EditorLayer::BeginDockspace()

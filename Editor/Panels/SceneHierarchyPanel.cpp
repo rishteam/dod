@@ -8,7 +8,7 @@ SceneHierarchyPanel::SceneHierarchyPanel() = default;
 
 SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene> &scene)
 {
-    setScene(scene);
+    setContext(scene);
 }
 
 SceneHierarchyPanel::~SceneHierarchyPanel() = default;
@@ -16,21 +16,30 @@ SceneHierarchyPanel::~SceneHierarchyPanel() = default;
 void SceneHierarchyPanel::onImGuiRender()
 {
     ImGui::Text("Entity List");
+
+    ImGuiWindowFlags window_flags = 0;
+    ImGui::BeginChild("EntityListWindow", ImVec2(0, 300), true, window_flags);
     m_currentScene->m_registry.each([&](auto entityID)
     {
         Entity entity(entityID, m_currentScene.get());
         drawEntityNode(entity);
     });
+
+    if(ImGui::BeginPopupContextWindow())
+    {
+        if(ImGui::MenuItem("Create Entity"))
+        {
+            m_currentScene->createEntity();
+        }
+        ImGui::MenuItem("B");
+        ImGui::EndPopup();
+    }
+    ImGui::EndChild();
 }
 
-void SceneHierarchyPanel::setScene(const Ref<Scene> &scene)
+void SceneHierarchyPanel::setContext(const Ref<Scene> &scene)
 {
     m_currentScene = scene;
-}
-
-bool SceneHierarchyPanel::isSelected()
-{
-    return m_isSelected;
 }
 
 void SceneHierarchyPanel::drawEntityNode(Entity entity)
@@ -57,4 +66,4 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
     }
 }
 
-}
+} // end of namespace rl
