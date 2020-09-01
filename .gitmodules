@@ -7,3 +7,6 @@
 [submodule "RishEngine/deps/spdlog"]
 	path = RishEngine/deps/spdlog
 	url = https://github.com/rishteam/spdlog.git
+[submodule "RishEngine\\deps\\IconFontCppHeaders"]
+	path = RishEngine\\deps\\IconFontCppHeaders
+	url = https://github.com/rishteam/IconFontCppHeaders.git

@@ -50,6 +50,9 @@
 
 #include <Rish/Core/Core.h>
 
+// font
+#include <IconsFontAwesome5.h>
+
 // filesystem
 #if defined(__clang__)
     #include <boost/filesystem/operations.hpp>

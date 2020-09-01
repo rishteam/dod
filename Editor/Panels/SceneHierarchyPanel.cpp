@@ -4,15 +4,6 @@
 
 namespace rl {
 
-SceneHierarchyPanel::SceneHierarchyPanel() = default;
-
-SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene> &scene)
-{
-    setContext(scene);
-}
-
-SceneHierarchyPanel::~SceneHierarchyPanel() = default;
-
 void SceneHierarchyPanel::onImGuiRender()
 {
     ImGui::Text("Entity List");
@@ -24,22 +15,22 @@ void SceneHierarchyPanel::onImGuiRender()
         Entity entity(entityID, m_currentScene.get());
         drawEntityNode(entity);
     });
-
+    // Right click menu
     if(ImGui::BeginPopupContextWindow())
     {
         if(ImGui::MenuItem("Create Entity"))
         {
             m_currentScene->createEntity();
         }
-        ImGui::MenuItem("B");
+        if(isSelected() && ImGui::MenuItem("Delete Entity"))
+        {
+            auto ent = getSelectedEntity();
+            ent.destroy();
+            resetSelected();
+        }
         ImGui::EndPopup();
     }
     ImGui::EndChild();
-}
-
-void SceneHierarchyPanel::setContext(const Ref<Scene> &scene)
-{
-    m_currentScene = scene;
 }
 
 void SceneHierarchyPanel::drawEntityNode(Entity entity)

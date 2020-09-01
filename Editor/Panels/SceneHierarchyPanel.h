@@ -5,28 +5,25 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
 
+#include "ScenePanel.h"
+
 namespace rl {
 
-class RL_API SceneHierarchyPanel
+class RL_API SceneHierarchyPanel : public ScenePanel
 {
 public:
-    SceneHierarchyPanel();
-    SceneHierarchyPanel(const Ref<Scene> &scene);
-    ~SceneHierarchyPanel();
+    SceneHierarchyPanel() = default;
+    SceneHierarchyPanel(const Ref<Scene> &scene) : ScenePanel(scene) {}
+    ~SceneHierarchyPanel() override = default;
 
-    void setContext(const Ref<Scene> &scene);
-
-    void onImGuiRender();
-
-    bool isSelected() const { return m_isSelected; }
+    void onImGuiRender() override;
 
     Entity getSelectedEntity() const { return m_selectedEntity; }
+    bool isSelected() const { return m_isSelected; }
     void resetSelected() { m_isSelected = false; m_selectedEntity = Entity();}
 
 private:
     void drawEntityNode(Entity entity);
-
-    Ref<Scene> m_currentScene;
     Entity m_selectedEntity;
     bool m_isSelected = false;
 };

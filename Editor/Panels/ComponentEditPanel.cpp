@@ -6,10 +6,17 @@
 
 namespace rl {
 
+void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
+{
+    SceneTargetPanel::onAttach(scene);
+    m_componentSelectionPanel.onAttach(scene);
+}
+
 void ComponentEditPanel::onImGuiRender()
 {
     if(!m_targetEntity)
         return;
+    m_componentSelectionPanel.setTarget(m_targetEntity);
 
     ImGui::BeginChild("EntityComponentEdit");
     if (m_targetEntity.hasComponent<TagComponent>())
@@ -89,7 +96,20 @@ void ComponentEditPanel::onImGuiRender()
             }
         }
     }
+
+    // Popup
+    if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+    {
+        ImGui::OpenPopup("ComponentSelectionPanel");
+    }
+    if(ImGui::BeginPopup("ComponentSelectionPanel"))
+    {
+        m_componentSelectionPanel.onImGuiRender();
+        ImGui::EndPopup();
+    }
+
     ImGui::EndChild();
 }
+
 
 } // end of namespace rl

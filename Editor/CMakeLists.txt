@@ -9,7 +9,9 @@ add_executable(Editor
 
     # Panels
     Panels/SceneHierarchyPanel.cpp
-    Panels/ComponentEditPanel.cpp)
+    Panels/ComponentEditPanel.cpp
+    Panels/ComponentSelectionPanel.cpp
+)
 
 target_include_directories(Editor PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(Editor

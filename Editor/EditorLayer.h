@@ -2,6 +2,7 @@
 
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ComponentEditPanel.h"
+#include "Panels/ComponentSelectionPanel.h"
 
 namespace rl {
 

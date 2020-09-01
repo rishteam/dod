@@ -5,32 +5,24 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
 
+#include "SceneTargetPanel.h"
+
+#include "ComponentSelectionPanel.h"
+
 namespace rl {
 
-class RL_API ComponentEditPanel
+class RL_API ComponentEditPanel : public SceneTargetPanel
 {
 public:
     ComponentEditPanel() = default;
-    ComponentEditPanel(const Ref<Scene> &scene)
-    {
-        setContext(scene);
-    }
-    ~ComponentEditPanel() = default;
+    ComponentEditPanel(const Ref<Scene> &scene) : SceneTargetPanel(scene) {}
+    ~ComponentEditPanel() override = default;
 
-    void setContext(const Ref<Scene> &scene)
-    {
-        m_currentScene = scene;
-    }
-    void setTarget(const Entity targetEntity)
-    {
-        m_targetEntity = targetEntity;
-    }
-
-    void onImGuiRender();
+    void onAttach(const Ref<Scene> &scene) override;
+    void onImGuiRender() override;
 
 private:
-    Ref<Scene> m_currentScene;
-    Entity m_targetEntity;
+    ComponentSelectionPanel m_componentSelectionPanel;
 };
 
 } // end of namespace rl

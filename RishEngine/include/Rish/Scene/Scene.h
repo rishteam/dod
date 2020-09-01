@@ -21,7 +21,6 @@ class Entity;
  */
 class Scene
 {
-
 public:
 	Scene();
 	~Scene();
@@ -44,15 +43,19 @@ public:
 	std::vector<Entity> getAllEntities();
 
 private:
-
 	static int entityNumber;
-
 	entt::registry m_registry;
 
+    ////////////////////////////////////////////////////////////////
 	// friend class
+    ////////////////////////////////////////////////////////////////
     friend class Entity;
     friend class SceneHierarchyPanel;
+    friend class ComponentSelectionPanel;
 
+    ////////////////////////////////////////////////////////////////
+    // Serialization functions
+    ////////////////////////////////////////////////////////////////
 	friend class cereal::access;
 	// TODO: Auto reflect the components of a entity?
 	template <class Archive>

@@ -29,13 +29,15 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
 	m_framebuffer = Framebuffer::Create(fbspec);
 
-    m_sceneHierarchyPanel.setContext(m_scene);
-    m_componentEditPanel.setContext(m_scene);
+    m_sceneHierarchyPanel.onAttach(m_scene);
+    m_componentEditPanel.onAttach(m_scene);
 }
 
 void EditorLayer::onDetach()
 {
     RL_CORE_INFO("[EditorLayer] onDetach");
+    m_sceneHierarchyPanel.onDetach();
+    m_componentEditPanel.onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -118,50 +120,11 @@ void EditorLayer::onImGuiRender()
 	ImGui::Begin("Entity Manager");
     {
 
-        if (m_sceneHierarchyPanel.isSelected())
-        {
-            if (ImGui::Button("Delete Entity"))
-            {
-                m_sceneHierarchyPanel.getSelectedEntity().destroy();
-                m_sceneHierarchyPanel.resetSelected();
-            }
-        }
-
         ImGui::Separator();
 
         const char *components[] = {"TagComponent", "TransformComponent", "RenderComponent"};
         static int selectedComponent = -1;
         if (selectedEntity != -1) {
-            if (ImGui::Button("Add Component")) {
-                ImGui::OpenPopup("Components");
-            }
-
-            if (ImGui::BeginPopup("Components")) {
-                for (int i = 0; i < IM_ARRAYSIZE(components); i++) {
-                    if (ImGui::Selectable(components[i])) {
-                        selectedComponent = i;
-                        switch (i) {
-                            case 0:
-                                if (!m_entityList[selectedEntity].hasComponent<TagComponent>()) {
-                                    m_entityList[selectedEntity].addComponent<TagComponent>();
-                                }
-                                break;
-                            case 1:
-                                if (!m_entityList[selectedEntity].hasComponent<TransformComponent>()) {
-                                    m_entityList[selectedEntity].addComponent<TransformComponent>();
-                                }
-                                break;
-
-                            case 2:
-                                if (!m_entityList[selectedEntity].hasComponent<RenderComponent>()) {
-                                    m_entityList[selectedEntity].addComponent<RenderComponent>();
-                                }
-                                break;
-                        }
-                    }
-                }
-                ImGui::EndPopup();
-            }
 
             static int selectedDeleteComponent = -1;
             if (ImGui::Button("Delete Component")) {
