@@ -27,6 +27,13 @@ private:
 
 	Ref<rl::Framebuffer> m_framebuffer;
 	Ref<rl::Scene> m_scene;
+	std::string m_scenePath;
+	bool m_sceneLoaded = false;
+
+	//
+	bool m_showErrorModal = false;
+	std::string m_showErrorModalErrorMessage;
+
 	bool m_sceneWindowHovered = false;
 	bool m_sceneWindowFocused = false;
 

@@ -12,10 +12,12 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
+    RL_CORE_INFO("Construct Scene");
 }
 
 Scene::~Scene()
 {
+    RL_CORE_INFO("Destruct Scene");
 }
 
 Entity Scene::createEntity(const std::string& name)
@@ -41,16 +43,6 @@ Entity Scene::createEntity(const std::string& name)
 void Scene::destroyEntity(const Entity &entity)
 {
     m_registry.destroy(entity.getEntityID());
-}
-
-std::vector<Entity> Scene::getAllEntities()
-{
-	std::vector<Entity> tmp;
-	m_registry.each([&](auto entity)
-	{
-		tmp.push_back({entity, this});
-	});
-	return tmp;
 }
 
 void Scene::update(const OrthographicCamera &camera, Time dt)

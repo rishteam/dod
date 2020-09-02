@@ -2,6 +2,7 @@
 
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Renderer/Renderer.h>
+#include <Rish/Utils/FileDialog.h>
 
 #include <imgui.h>
 
@@ -64,33 +65,79 @@ void EditorLayer::onImGuiRender()
 	{
 		if(ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Open"))
+		    if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
+            {
+            }
+
+			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-			    // open file
-				std::string filename = rl::FileSystem::ReadTextFile("Scene.json");
-				RL_TRACE("Scene file = {}", filename);
+			    // Open File
+				std::string path, content;
+				if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+                {
+                    content = FileSystem::ReadTextFile(path);
+                    m_scenePath = path;
+                }
 
-				// deserialize
-				std::stringstream oos(filename);
-				cereal::JSONInputArchive inputArchive(oos);
-				inputArchive(cereal::make_nvp("Scene", m_scene));
+				// Deserialize
+				std::stringstream oos(content);
+				bool failLoad = false;
+				try
+				{
+				    cereal::JSONInputArchive inputArchive(oos);
+                    inputArchive(cereal::make_nvp("Scene", m_scene));
+                }
+                catch (cereal::RapidJSONException &e)
+                {
+                    RL_CORE_ERROR("Failed to load scene: {}", e.what());
+                    failLoad = true;
+                }
 
-                m_entityList = m_scene->getAllEntities();
-				std::reverse(m_entityList.begin(), m_entityList.end());
+                if(!failLoad)
+                {
+                    m_sceneLoaded = true;
+
+                    // Because the panels are now holding strong ref to the scene
+                    // We need to reset the context
+                    m_sceneHierarchyPanel.setContext(m_scene);
+                    m_componentEditPanel.setContext(m_scene);
+                }
+                else
+                {
+                    m_sceneLoaded = false;
+
+                    // TODO: Refactor this
+                    m_showErrorModal = true;
+                    m_showErrorModalErrorMessage = fmt::format("Failed to load scene {}.", m_scenePath);
+                }
 			}
 
-            if (ImGui::MenuItem("Save"))
+			ImGui::Separator();
+
+			// TODO: hot reload?
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S", false, m_sceneLoaded))
             {
                 // TODO: Maybe implement a function return ofstream from rl::FileSystem
-                std::ofstream os("Scene.json");
+                std::ofstream os(m_scenePath);
                 cereal::JSONOutputArchive outputArchive(os);
-
                 outputArchive(cereal::make_nvp("Scene", m_scene));
+            }
+
+            if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
+            {
+                std::string path;
+                if(FileDialog::SelectSaveFile(nullptr, nullptr, path))
+                {
+                    // TODO: Maybe implement a function return ofstream from rl::FileSystem
+                    std::ofstream os(path);
+                    cereal::JSONOutputArchive outputArchive(os);
+                    outputArchive(cereal::make_nvp("Scene", m_scene));
+                }
             }
 
             ImGui::Separator();
 
-            if(ImGui::MenuItem("Exit"))
+            if(ImGui::MenuItem("Exit", "Ctrl+W"))
             {
                 Application::Get().close();
             }
@@ -101,7 +148,23 @@ void EditorLayer::onImGuiRender()
 		ImGui::EndMenuBar();
 	}
 
-    static int selectedEntity = -1;
+	if(m_showErrorModal)
+	{
+        if (!ImGui::IsPopupOpen("Something bad happened"))
+            ImGui::OpenPopup("Something bad happened");
+        // TODO: improve imgui modal data communication
+
+        m_showErrorModal = false;
+    }
+    if (ImGui::BeginPopupModal("Something bad happened",
+           nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+        ImGui::Text("%s", m_showErrorModalErrorMessage.c_str());
+        if (ImGui::Button("Ok")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
 
 	ImGui::Begin("Entity");
     {
@@ -136,7 +199,7 @@ void EditorLayer::onImGuiRender()
 
 void EditorLayer::onEvent(rl::Event& event)
 {
-    if(m_sceneWindowFocused)
+    if(m_sceneWindowFocused && m_sceneWindowHovered)
         m_cameraController.onEvent(event);
 }
 
