@@ -110,51 +110,13 @@ void EditorLayer::onImGuiRender()
         ImGui::Separator();
 
         if (m_sceneHierarchyPanel.isSelected())
-        {
             m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
-        }
         m_componentEditPanel.onImGuiRender();
     }
 	ImGui::End();
 
 	ImGui::Begin("Entity Manager");
     {
-
-        ImGui::Separator();
-
-        const char *components[] = {"TagComponent", "TransformComponent", "RenderComponent"};
-        static int selectedComponent = -1;
-        if (selectedEntity != -1) {
-
-            static int selectedDeleteComponent = -1;
-            if (ImGui::Button("Delete Component")) {
-                ImGui::OpenPopup("Delete_Component");
-            }
-
-            if (ImGui::BeginPopup("Delete_Component")) {
-                for (int i = 0; i < IM_ARRAYSIZE(components); i++) {
-                    if (ImGui::Selectable(components[i])) {
-                        switch (i) {
-                            case 0:
-                                ImGui::Text("Cannot Delete TagComponent!!!!");
-                                break;
-
-                            case 1:
-                                if (m_entityList[selectedEntity].hasComponent<TransformComponent>())
-                                    m_entityList[selectedEntity].removeComponent<TransformComponent>();
-                                break;
-
-                            case 2:
-                                if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
-                                    m_entityList[selectedEntity].removeComponent<RenderComponent>();
-                                break;
-                        }
-                    }
-                }
-                ImGui::EndPopup();
-            }
-
-        }
     }
 	ImGui::End();
 
