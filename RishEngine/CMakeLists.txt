@@ -106,6 +106,7 @@ add_library(RishEngine
     # Scene
     src/Scene/Scene.cpp
     src/Scene/Entity.cpp
+    src/Scene/ComponentManager.cpp
 )
 
 # alias

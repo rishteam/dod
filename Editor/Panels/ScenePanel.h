@@ -11,10 +11,7 @@ class RL_API ScenePanel
 {
 public:
     ScenePanel() = default;
-    ScenePanel(const Ref<Scene> &scene)
-        : m_currentScene(scene)
-    {
-    }
+    ScenePanel(const Ref<Scene> &scene) : m_currentScene(scene) {}
     virtual ~ScenePanel() = default;
 
     virtual void onAttach(const Ref <Scene> &scene) { setContext(scene); }
