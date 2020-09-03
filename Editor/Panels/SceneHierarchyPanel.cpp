@@ -1,29 +1,27 @@
 #include "SceneHierarchyPanel.h"
 
+#include <IconsFontAwesome5.h>
 #include <imgui.h>
 
 namespace rl {
 
 void SceneHierarchyPanel::onImGuiRender()
 {
+    ImGui::Begin(ICON_FA_LIST " Hierarchy");
     ImGui::Text("Entity List");
 
     ImGuiWindowFlags window_flags = 0;
-    ImGui::BeginChild("EntityListWindow", ImVec2(0, 300), true, window_flags);
-    m_currentScene->m_registry.each([&](auto entityID)
-    {
+    ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
+    m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
         drawEntityNode(entity);
     });
     // Right click menu
-    if(ImGui::BeginPopupContextWindow())
-    {
-        if(ImGui::MenuItem("Create Entity"))
-        {
+    if (ImGui::BeginPopupContextWindow()) {
+        if (ImGui::MenuItem("Create Entity")) {
             m_currentScene->createEntity();
         }
-        if(isSelected() && ImGui::MenuItem("Delete Entity"))
-        {
+        if (isSelected() && ImGui::MenuItem("Delete Entity")) {
             auto ent = getSelectedEntity();
             ent.destroy();
             resetSelected();
@@ -31,6 +29,7 @@ void SceneHierarchyPanel::onImGuiRender()
         ImGui::EndPopup();
     }
     ImGui::EndChild();
+    ImGui::End();
 }
 
 void SceneHierarchyPanel::drawEntityNode(Entity entity)

@@ -450,7 +450,7 @@ void SFMLWindow::initImGui()
     ImFontConfig icons_config;
     icons_config.MergeMode = true;
     icons_config.PixelSnapH = true;
-    ImFont *font = io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "assets/" FONT_ICON_FILE_NAME_FAS, 16.0f, &icons_config, icons_ranges );
+    ImFont *font = io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "assets/" FONT_ICON_FILE_NAME_FAS, 14.0f, &icons_config, icons_ranges );
     UpdateFontTexture();
 
     s_windowHasFocus = m_SFMLWindow.hasFocus();

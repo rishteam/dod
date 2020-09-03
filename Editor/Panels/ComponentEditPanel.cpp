@@ -2,6 +2,7 @@
 
 #include <Rish/Utils/FileDialog.h>
 
+#include <IconsFontAwesome5.h>
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
@@ -106,7 +107,12 @@ void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 
 void ComponentEditPanel::onImGuiRender()
 {
-    if(!m_targetEntity) return;
+    ImGui::Begin(ICON_FA_INFO_CIRCLE " Inspector");
+    if(!m_targetEntity)
+    {
+        ImGui::End();
+        return;
+    }
     m_componentSelectionPanel.setTarget(m_targetEntity);
 
     ImGui::BeginChild("EntityComponentEdit");
@@ -127,6 +133,7 @@ void ComponentEditPanel::onImGuiRender()
     }
 
     ImGui::EndChild();
+    ImGui::End();
 }
 
 } // end of namespace rl

@@ -2,8 +2,10 @@
 
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Renderer/Renderer.h>
+#include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Utils/FileDialog.h>
 
+#include <IconsFontAwesome5.h>
 #include <imgui.h>
 
 #include "EditorLayer.h"
@@ -61,31 +63,66 @@ void EditorLayer::onImGuiRender()
 {
     BeginDockspace();
     // Menu Bar
-	if(ImGui::BeginMenuBar())
-	{
-		if(ImGui::BeginMenu("File"))
-		{
-		    if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
+    onImGuiMainMenuRender();
+
+    m_sceneHierarchyPanel.onImGuiRender();
+
+    // TODO: should these code exist?
+    if (m_sceneHierarchyPanel.isSelected())
+        m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
+    m_componentEditPanel.onImGuiRender();
+
+	ImGui::Begin("Entity Manager");
+    {
+    }
+	ImGui::End();
+
+	ImGui::Begin("Scene");
+    {
+        uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
+        ImGui::Image((uintptr_t) textureID, ImVec2{1280, 720}, {0, 0}, {1, -1});
+        m_sceneWindowFocused = ImGui::IsWindowFocused();
+        m_sceneWindowHovered = ImGui::IsWindowHovered();
+    }
+	ImGui::End();
+
+    ImGui::Begin(ICON_FA_TERMINAL " Console");
+    ImGui::End();
+
+    defaultLogWindow.onImGuiRender();
+
+	EndDockspace();
+
+	m_errorModal.onImGuiRender();
+}
+
+void EditorLayer::onImGuiMainMenuRender()
+{
+    if(ImGui::BeginMenuBar())
+    {
+        if(ImGui::BeginMenu("File"))
+        {
+            if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
             {
-		        RL_ERROR("Not implemented");
+                RL_ERROR("Not implemented");
             }
 
-			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
-			{
-			    // Open File
-				std::string path, content;
-				if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+            if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
+            {
+                // Open File
+                std::string path, content;
+                if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
                 {
                     content = FileSystem::ReadTextFile(path);
                     m_scenePath = path;
                 }
 
-				// Deserialize
-				std::stringstream oos(content);
-				bool failLoad = false;
-				try
-				{
-				    cereal::JSONInputArchive inputArchive(oos);
+                // Deserialize
+                std::stringstream oos(content);
+                bool failLoad = false;
+                try
+                {
+                    cereal::JSONInputArchive inputArchive(oos);
                     inputArchive(cereal::make_nvp("Scene", m_scene));
                 }
                 catch (cereal::RapidJSONException &e)
@@ -109,11 +146,11 @@ void EditorLayer::onImGuiRender()
 
                     m_errorModal.setMessage(fmt::format("Failed to load scene {}.", m_scenePath));
                 }
-			}
+            }
 
-			ImGui::Separator();
+            ImGui::Separator();
 
-			// TODO: hot reload?
+            // TODO: hot reload?
             if (ImGui::MenuItem("Save Scene", "Ctrl+S", false, m_sceneLoaded))
             {
                 // TODO: Maybe implement a function return ofstream from rl::FileSystem
@@ -141,43 +178,23 @@ void EditorLayer::onImGuiRender()
                 Application::Get().close();
             }
 
-			ImGui::EndMenu();
-		}
+            ImGui::EndMenu();
+        }
 
-		ImGui::EndMenuBar();
-	}
+        if(ImGui::BeginMenu("Tools"))
+        {
+            if(ImGui::MenuItem("Renderer Statistics"))
+            {
+                // TODO: Use overlay
+                auto stat = Renderer2D::GetStats();
+                RL_INFO("Renderer2D: quad = {}, draw = {}", stat.QuadCount, stat.DrawCount);
+            }
 
-	ImGui::Begin("Entity");
-    {
-        m_sceneHierarchyPanel.onImGuiRender();
+            ImGui::EndMenu();
+        }
 
-        ImGui::Separator();
-
-        if (m_sceneHierarchyPanel.isSelected())
-            m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
-        m_componentEditPanel.onImGuiRender();
+        ImGui::EndMenuBar();
     }
-	ImGui::End();
-
-	ImGui::Begin("Entity Manager");
-    {
-    }
-	ImGui::End();
-
-	ImGui::Begin("Scene");
-    {
-        uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-        ImGui::Image((uintptr_t) textureID, ImVec2{1280, 720}, {0, 0}, {1, -1});
-        m_sceneWindowFocused = ImGui::IsWindowFocused();
-        m_sceneWindowHovered = ImGui::IsWindowHovered();
-    }
-	ImGui::End();
-
-    defaultLogWindow.onImGuiRender();
-
-	EndDockspace();
-
-	m_errorModal.onImGuiRender();
 }
 
 void EditorLayer::onEvent(rl::Event& event)

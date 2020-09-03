@@ -8,7 +8,7 @@
 
 namespace rl {
 
-class EditorLayer : public rl::Layer
+class EditorLayer : public Layer
 {
 public:
 	EditorLayer();
@@ -25,17 +25,17 @@ public:
 	static void EndDockspace();
 
 private:
-	OrthographicCameraController m_cameraController;
+    void onImGuiMainMenuRender();
 
-	Ref<rl::Framebuffer> m_framebuffer;
-	Ref<rl::Scene> m_scene;
+	Ref<Framebuffer> m_framebuffer;
+	Ref<Scene> m_scene;
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
 	//
 	bool m_sceneWindowHovered = false;
 	bool m_sceneWindowFocused = false;
-
-	std::vector<Entity> m_entityList;
+	// Scene window camera
+	OrthographicCameraController m_cameraController;
 
 	SceneHierarchyPanel m_sceneHierarchyPanel;
 	ComponentEditPanel m_componentEditPanel;
