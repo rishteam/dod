@@ -27,10 +27,14 @@ public:
 private:
     void onImGuiMainMenuRender();
 
+    //////////////////////////////////////////
+    // Scene
+    //////////////////////////////////////////
 	Ref<Framebuffer> m_framebuffer;
 	Ref<Scene> m_scene;
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
+    glm::vec2 m_sceneViewportPanelSize;
 	//
 	bool m_sceneWindowHovered = false;
 	bool m_sceneWindowFocused = false;

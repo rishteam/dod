@@ -49,7 +49,7 @@ public:
 	void resize(uint32_t width, uint32_t height);
 
 	uint32_t getColorAttachmentRendererID() const { return m_colorAttachment; }
-	const FramebufferSpecification& getSpecification() const { return m_spec; }
+	FramebufferSpecification getSpecification() const { return m_spec; }
 
 	static Ref<Framebuffer> Create(const FramebufferSpecification &spec);
 private:

@@ -79,8 +79,18 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("Scene");
     {
+        // if resize
+        auto size = ImGui::GetContentRegionAvail();
+        glm::vec2 viewportSize{size.x, size.y};
+        if(m_sceneViewportPanelSize != viewportSize)
+        {
+            m_sceneViewportPanelSize = viewportSize;
+            m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        }
+        // show
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-        ImGui::Image((uintptr_t) textureID, ImVec2{1280, 720}, {0, 0}, {1, -1});
+        ImGui::Image((ImTextureID)textureID, size, {0, 0}, {1, -1});
+        // states
         m_sceneWindowFocused = ImGui::IsWindowFocused();
         m_sceneWindowHovered = ImGui::IsWindowHovered();
     }
