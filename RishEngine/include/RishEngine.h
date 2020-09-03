@@ -1,6 +1,6 @@
 /**
  * @file RishEngine.h
- * @author roy4801 (roy@rish.com.tw), icejj (icejj@rish.com.tw)
+ * @author roy4801 (me@roy4801.tw), icejj (icejj@rish.com.tw)
  * @brief This header should only be include by the CLIENT code
  * @date 2020-05-21
  */

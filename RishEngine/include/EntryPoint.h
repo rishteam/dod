@@ -1,7 +1,7 @@
 /**
  * @file EntryPoint.h
  * @brief The Entry Point of RishEngine Applications
- * @author roy4801 (roy@rish.com.tw)
+ * @author roy4801 (me@roy4801.tw)
  */
 #pragma once
 

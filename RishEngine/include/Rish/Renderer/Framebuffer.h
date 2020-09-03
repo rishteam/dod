@@ -1,6 +1,6 @@
 /**
  * @file Framebuffer.h
- * @author icejj (lpc0503@gmail.com), roy4801 (roy@nisra.net)
+ * @author icejj (lpc0503@gmail.com), roy4801 (me@roy4801.tw)
  * @brief Header of framebuffer
  * @version 0.1
  * @date 2020-07-22
@@ -8,7 +8,6 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
 
 namespace rl {
 

@@ -1,6 +1,6 @@
 /**
  * @file LayerStack.h
- * @author icejj (icejj@rish.com.tw), roy4801 (roy@rish.com.tw)
+ * @author icejj (icejj@rish.com.tw), roy4801 (me@roy4801.tw)
  * @brief Header of LayerStack
  * @date 2020-05-29
  */

@@ -1,6 +1,6 @@
-#include <Rish/Renderer/Framebuffer.h>
 #include <glad/glad.h>
-#include <Rish/Core/Log.h>
+#include <Rish/Renderer/Framebuffer.h>
+
 
 namespace rl {
 

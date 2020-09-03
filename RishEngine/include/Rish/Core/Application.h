@@ -1,6 +1,6 @@
 /**
  * @file Application.h
- * @author roy4801 (roy@rish.com.tw), icejj
+ * @author roy4801 (me@roy4801.tw), icejj
  * @brief Header of Application class
  * @date 2020-06-13
  */
