@@ -10,7 +10,7 @@
 #include "Rish/Core/ResManager.h"
 #include "Rish/Core/ResHolder.h"
 
-#include "Rish/Animation/Editor/Editor.h"
+#include "Rish/Animation/Editor/EditorApp.h"
 #include "Rish/Animation/Animation.h"
 #include "Rish/Animation/Loader.h"
 

@@ -39,7 +39,10 @@ public:
     void onEvent(Event &e);
     void onImGuiRender();
 
+    void onResize(float width, float height);
+
     void setState(bool state) { m_enableState = state; }
+    bool getState() const { return m_enableState; }
 
     OrthographicCamera& getCamera() { return m_camera; }
     const OrthographicCamera& getCamera() const { return m_camera; }

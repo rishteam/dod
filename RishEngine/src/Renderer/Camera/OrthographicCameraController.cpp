@@ -1,6 +1,7 @@
+#include <Rish/Renderer/Camera/OrthographicCameraController.h>
+
 #include <Rish/rlpch.h>
 #include <Rish/Input/Input.h>
-#include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
 #include <imgui.h>
 
@@ -96,6 +97,14 @@ void OrthographicCameraController::onImGuiRender()
     ImGui::End();
 }
 
+void OrthographicCameraController::onResize(float width, float height)
+{
+    m_aspect = (float)width / (float)height;
+    //
+    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
+    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
+}
+
 bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 {
     m_zoom -= e.yOffset * 0.25f;
@@ -108,10 +117,7 @@ bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 
 bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e)
 {
-    m_aspect = (float)e.m_width / (float)e.m_height;
-    //
-    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
-    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
+    onResize(e.m_width, e.m_height);
     return false;
 }
 

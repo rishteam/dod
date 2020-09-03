@@ -107,7 +107,9 @@ void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 
 void ComponentEditPanel::onImGuiRender()
 {
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 4));
     ImGui::Begin(ICON_FA_INFO_CIRCLE " Inspector");
+    ImGui::PopStyleVar();
     if(!m_targetEntity)
     {
         ImGui::End();

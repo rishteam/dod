@@ -43,7 +43,7 @@ public:
 	 */
 	void invalidate();
 
-	void bind();
+	void bind() const;
 	void unbind();
 
 	void resize(uint32_t width, uint32_t height);

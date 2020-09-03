@@ -7,7 +7,9 @@ namespace rl {
 
 void SceneHierarchyPanel::onImGuiRender()
 {
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 4));
     ImGui::Begin(ICON_FA_LIST " Hierarchy");
+    ImGui::PopStyleVar();
     ImGui::Text("Entity List");
 
     ImGuiWindowFlags window_flags = 0;

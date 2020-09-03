@@ -1,5 +1,6 @@
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>
@@ -77,7 +78,9 @@ void EditorLayer::onImGuiRender()
     }
 	ImGui::End();
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Scene");
+	ImGui::PopStyleVar();
     {
         // if resize
         auto size = ImGui::GetContentRegionAvail();
@@ -85,9 +88,11 @@ void EditorLayer::onImGuiRender()
         if(m_sceneViewportPanelSize != viewportSize)
         {
             m_sceneViewportPanelSize = viewportSize;
-            m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+            m_framebuffer->resize((uint32_t)size.x, (uint32_t)size.y);
+            m_cameraController.onResize(size.x, size.y);
         }
         // show
+        // TODO: fix flickering issue
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
         ImGui::Image((ImTextureID)textureID, size, {0, 0}, {1, -1});
         // states

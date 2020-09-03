@@ -33,7 +33,7 @@
 // Animation Module
 #include <Rish/Animation/Animation.h>
 #include <Rish/Animation/Loader.h>
-#include <Rish/Animation/Editor/Editor.h>
+#include <Rish/Animation/Editor/EditorApp.h>
 
 // Layers
 #include <Rish/Layer/Layer.h>
