@@ -37,10 +37,8 @@ public:
 	 * @brief Update Entity behavior
 	 * @param dt
 	 */
+	 // TODO: rename
 	void update(const OrthographicCamera &camera, Time dt);
-
-	// Test
-	std::vector<Entity> getAllEntities();
 
 private:
 	static int entityNumber;

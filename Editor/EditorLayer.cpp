@@ -67,6 +67,7 @@ void EditorLayer::onImGuiRender()
 		{
 		    if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
             {
+		        RL_ERROR("Not implemented");
             }
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
@@ -106,9 +107,7 @@ void EditorLayer::onImGuiRender()
                 {
                     m_sceneLoaded = false;
 
-                    // TODO: Refactor this
-                    m_showErrorModal = true;
-                    m_showErrorModalErrorMessage = fmt::format("Failed to load scene {}.", m_scenePath);
+                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.", m_scenePath));
                 }
 			}
 
@@ -148,24 +147,6 @@ void EditorLayer::onImGuiRender()
 		ImGui::EndMenuBar();
 	}
 
-	if(m_showErrorModal)
-	{
-        if (!ImGui::IsPopupOpen("Something bad happened"))
-            ImGui::OpenPopup("Something bad happened");
-        // TODO: improve imgui modal data communication
-
-        m_showErrorModal = false;
-    }
-    if (ImGui::BeginPopupModal("Something bad happened",
-           nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
-    {
-        ImGui::Text("%s", m_showErrorModalErrorMessage.c_str());
-        if (ImGui::Button("Ok")) {
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::EndPopup();
-    }
-
 	ImGui::Begin("Entity");
     {
         m_sceneHierarchyPanel.onImGuiRender();
@@ -195,6 +176,8 @@ void EditorLayer::onImGuiRender()
     defaultLogWindow.onImGuiRender();
 
 	EndDockspace();
+
+	m_errorModal.onImGuiRender();
 }
 
 void EditorLayer::onEvent(rl::Event& event)

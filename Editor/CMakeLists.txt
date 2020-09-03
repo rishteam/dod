@@ -11,6 +11,7 @@ add_executable(Editor
     Panels/SceneHierarchyPanel.cpp
     Panels/ComponentEditPanel.cpp
     Panels/ComponentSelectionPanel.cpp
+    Panels/ErrorModal.cpp
 )
 
 target_include_directories(Editor PUBLIC ${CMAKE_SOURCE_DIR})

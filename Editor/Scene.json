@@ -7,11 +7,11 @@
                 "value0": 2,
                 "value1": 0,
                 "value2": {
-                    "Tag": "A"
+                    "Tag": "Left"
                 },
                 "value3": 1,
                 "value4": {
-                    "Tag": "B"
+                    "Tag": "Right"
                 },
                 "value5": 2,
                 "value6": 0,
@@ -43,7 +43,7 @@
                         }
                     },
                     "Translate": {
-                        "x": -0.7699999809265137,
+                        "x": -0.8299999833106995,
                         "y": 0.0,
                         "z": 0.0
                     },
@@ -115,7 +115,7 @@
                     },
                     "Vertex Shader": "/shader/vertexShader/vertexSrc.glsl",
                     "Fragment Shader": "/shader/fragmentShader/fragSrc.glsl",
-                    "Texture": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\texture\\2.png"
+                    "Texture": "C:\\Users\\Rish\\Desktop\\rish\\dod\\Editor\\assets\\texture\\1.png"
                 }
             }
         }

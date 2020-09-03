@@ -4,6 +4,8 @@
 #include "Panels/ComponentEditPanel.h"
 #include "Panels/ComponentSelectionPanel.h"
 
+#include "Panels/ErrorModal.h"
+
 namespace rl {
 
 class EditorLayer : public rl::Layer
@@ -29,11 +31,7 @@ private:
 	Ref<rl::Scene> m_scene;
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
-
 	//
-	bool m_showErrorModal = false;
-	std::string m_showErrorModalErrorMessage;
-
 	bool m_sceneWindowHovered = false;
 	bool m_sceneWindowFocused = false;
 
@@ -41,6 +39,7 @@ private:
 
 	SceneHierarchyPanel m_sceneHierarchyPanel;
 	ComponentEditPanel m_componentEditPanel;
+	ErrorModal m_errorModal;
 };
 
 }
