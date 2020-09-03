@@ -22,19 +22,20 @@ namespace rl {
 class RL_API Input
 {
 public:
-    virtual ~Input() = default;
-    // Key
+    //////////////////////////////////////
+    // Keyboard
     /// Get Key pressed
-    static bool IsKeyPressed(int keycode) { return s_keyboardState && s_instance->isKeyPressedImpl(keycode); }
+    static bool IsKeyPressed(int keycode);
     // Mouse
     /// Get Mouse button pressed
-    static bool IsMouseButtonPressed(int mbutton) { return s_mouseState && s_instance->isMouseButtonPressedImpl(mbutton); }
-    /// Get Mouse Posistion
-    static std::pair<float, float> GetMousePosition() { return s_instance->getMousePositionImpl(); }
-    /// Get Mouse X
-    static float GetMouseX() { return s_instance->getMouseXImpl(); }
-    /// Get Mouse Y
-    static float GetMouseY() { return s_instance->getMouseYImpl(); }
+    static bool IsMouseButtonPressed(int mbutton);
+    /// Get Mouse Position
+    static std::pair<float, float> GetMousePosition();
+    /// Set Moise Position
+    static void SetMousePosition(float x, float y);
+    //
+    static float GetMouseX();
+    static float GetMouseY();
     /// Enable/Disable Input
     static void SetInputState(bool state) { SetKeyboardState(state); SetMouseState(state); }
     /// Enable/Disable Keyboard
@@ -42,16 +43,7 @@ public:
     /// Enable/Disable Mouse
     static void SetMouseState(bool state) { s_mouseState = state; }
 
-protected:
-    virtual bool isKeyPressedImpl(int keycode) = 0; ///< @note Implement these in Platform
-
-    virtual bool isMouseButtonPressedImpl(int mbutton) = 0; ///< @note Implement these in Platform
-    virtual std::pair<float, float> getMousePositionImpl() = 0; ///< @note Implement these in Platform
-    virtual float getMouseXImpl() = 0; ///< @note Implement these in Platform
-    virtual float getMouseYImpl() = 0; ///< @note Implement these in Platform
-
 private:
-    static Scope<Input> s_instance;
     static bool s_keyboardState;
     static bool s_mouseState;
 };

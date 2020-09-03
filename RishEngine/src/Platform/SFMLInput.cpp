@@ -5,46 +5,47 @@
 #include <SFML/Window/Mouse.hpp>
 
 #include <Rish/Core/Application.h>
-#include <Rish/Platform/SFMLInput.h>
+#include <Rish/Input/Input.h>
 
 // TODO(roy4801): use RishEngine keycodes
 
 namespace rl {
 
-// Since the Input instance will be existed in the whole lifetime of the engine
-// We don't bother to delete it
-Scope<Input> Input::s_instance = MakeScope<SFMLInput>();
-
 bool Input::s_keyboardState = true;
 bool Input::s_mouseState = true;
 
-bool SFMLInput::isKeyPressedImpl(int keycode)
+bool Input::IsKeyPressed(int keycode)
 {
-    return sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keycode);
+    return s_keyboardState && sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keycode);
 }
 
-bool SFMLInput::isMouseButtonPressedImpl(int mbutton)
+bool Input::IsMouseButtonPressed(int mbutton)
 {
-    return sf::Mouse::isButtonPressed((sf::Mouse::Button)mbutton);
+    return s_mouseState && sf::Mouse::isButtonPressed((sf::Mouse::Button)mbutton);
 }
 
-std::pair<float, float> SFMLInput::getMousePositionImpl()
+std::pair<float, float> Input::GetMousePosition()
 {
-    sf::Window *ptr = static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
+    auto *ptr = static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
     sf::Vector2i pos = sf::Mouse::getPosition(*ptr);
     return std::make_pair((float)pos.x, (float)pos.y);
 }
 
-float SFMLInput::getMouseXImpl()
+void Input::SetMousePosition(float x, float y)
 {
-    auto [x, y] = getMousePositionImpl();
-    return x;
+    auto *ptr = static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
+    sf::Vector2i pos{static_cast<int>(x), static_cast<int>(y)};
+    sf::Mouse::setPosition(pos, *ptr);
 }
 
-float SFMLInput::getMouseYImpl()
+float Input::GetMouseX()
 {
-    auto [x, y] = getMousePositionImpl();
-    return y;
+    return GetMousePosition().first;
+}
+
+float Input::GetMouseY()
+{
+    return GetMousePosition().second;
 }
 
 }
