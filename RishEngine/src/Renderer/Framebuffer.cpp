@@ -1,6 +1,6 @@
-#include <Rish/Renderer/Framebuffer.h>
 #include <glad/glad.h>
-#include <Rish/Core/Log.h>
+#include <Rish/Renderer/Framebuffer.h>
+
 
 namespace rl {
 
@@ -16,9 +16,9 @@ Framebuffer::~Framebuffer()
 {
     RL_PROFILE_FUNCTION();
 
-    if(m_frameBufferID) glDeleteFramebuffers(1, &m_frameBufferID);
-	if(m_colorAttachment) glDeleteTextures(1, &m_colorAttachment);
-	if(m_depthAttachment) glDeleteTextures(1, &m_depthAttachment);
+    glDeleteFramebuffers(1, &m_frameBufferID);
+	glDeleteTextures(1, &m_colorAttachment);
+	glDeleteTextures(1, &m_depthAttachment);
 }
 
 void Framebuffer::invalidate()
@@ -60,7 +60,7 @@ void Framebuffer::invalidate()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Framebuffer::bind()
+void Framebuffer::bind() const
 {
     RL_PROFILE_FUNCTION();
 

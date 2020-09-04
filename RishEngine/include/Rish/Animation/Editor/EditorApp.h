@@ -1,6 +1,6 @@
 /**
  * @file Editor.h
- * @author roy4801 (roy@rish.com.tw)
+ * @author roy4801 (me@roy4801.tw)
  * @brief Header of Animation Editor
  * @date 2020-05-28
  */

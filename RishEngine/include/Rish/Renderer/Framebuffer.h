@@ -1,6 +1,6 @@
 /**
  * @file Framebuffer.h
- * @author icejj (lpc0503@gmail.com), roy4801 (roy@nisra.net)
+ * @author icejj (lpc0503@gmail.com), roy4801 (me@roy4801.tw)
  * @brief Header of framebuffer
  * @version 0.1
  * @date 2020-07-22
@@ -8,7 +8,6 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
 
 namespace rl {
 
@@ -44,13 +43,13 @@ public:
 	 */
 	void invalidate();
 
-	void bind();
+	void bind() const;
 	void unbind();
 
 	void resize(uint32_t width, uint32_t height);
 
 	uint32_t getColorAttachmentRendererID() const { return m_colorAttachment; }
-	const FramebufferSpecification& getSpecification() const { return m_spec; }
+	FramebufferSpecification getSpecification() const { return m_spec; }
 
 	static Ref<Framebuffer> Create(const FramebufferSpecification &spec);
 private:

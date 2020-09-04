@@ -43,6 +43,7 @@ add_subdirectory(deps/nativefiledialog)
 add_subdirectory(deps/glad)
 add_subdirectory(deps/spdlog)
 add_subdirectory(deps/entt)
+add_subdirectory(deps/IconFontCppHeaders)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
@@ -105,6 +106,7 @@ add_library(RishEngine
     # Scene
     src/Scene/Scene.cpp
     src/Scene/Entity.cpp
+    src/Scene/ComponentManager.cpp
 )
 
 # alias
@@ -204,6 +206,8 @@ find_package(cereal REQUIRED)
 target_link_libraries(RishEngine
     cereal
 )
+
+target_link_libraries(RishEngine IconFontCpp::IconFontCpp)
 
 # Copy files
 file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <Rish/rlpch.h>
 
 #include <Rish/Renderer/Renderer2D.h>
@@ -14,40 +12,37 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
+    RL_CORE_INFO("Construct Scene");
 }
 
 Scene::~Scene()
 {
+    RL_CORE_INFO("Destruct Scene");
 }
 
 Entity Scene::createEntity(const std::string& name)
 {
 	Entity entity = { m_registry.create(), this };
 	entity.addComponent<TransformComponent>();
-	auto& tag = entity.addComponent<TagComponent>();
+	auto& tag = entity.addComponent<TagComponent>().tag;
 	
 	if(name.empty())
 	{
-		tag.tag = fmt::format("Entity {}", entityNumber);
+		tag = fmt::format("Entity {}", entityNumber);
 	}
 	else
 	{
-		tag.tag = name;
+		tag = name;
 	}
 	entityNumber++;
 
-	RL_CORE_TRACE("[Scene] In");
+	RL_CORE_TRACE("[Scene] Created entity {}", tag);
 	return entity;	
 }
 
-std::vector<Entity> Scene::getAllEntities()
+void Scene::destroyEntity(const Entity &entity)
 {
-	std::vector<Entity> tmp;
-	m_registry.each([&](auto entity)
-	{
-		tmp.push_back({entity, this});
-	});
-	return tmp;
+    m_registry.destroy(entity.getEntityID());
 }
 
 void Scene::update(const OrthographicCamera &camera, Time dt)

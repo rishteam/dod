@@ -1,6 +1,6 @@
 /**
  * @file Time.h
- * @author roy4801 (roy@rish.com.tw)
+ * @author roy4801 (me@roy4801.tw)
  * @brief Header of Time related classes
  * @date 2020-06-15
  */

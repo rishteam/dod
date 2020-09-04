@@ -1,6 +1,6 @@
 /**
  * @file RishEngine.h
- * @author roy4801 (roy@rish.com.tw), icejj (icejj@rish.com.tw)
+ * @author roy4801 (me@roy4801.tw), icejj (icejj@rish.com.tw)
  * @brief This header should only be include by the CLIENT code
  * @date 2020-05-21
  */
@@ -33,7 +33,7 @@
 // Animation Module
 #include <Rish/Animation/Animation.h>
 #include <Rish/Animation/Loader.h>
-#include <Rish/Animation/Editor/Editor.h>
+#include <Rish/Animation/Editor/EditorApp.h>
 
 // Layers
 #include <Rish/Layer/Layer.h>

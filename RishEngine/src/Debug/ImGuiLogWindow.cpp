@@ -1,4 +1,6 @@
 #include <Rish/Debug/ImGuiLogWindow.h>
+
+#include <IconsFontAwesome5.h>
 #include <imgui.h>
 
 ImGuiLogWindow defaultLogWindow;
@@ -9,7 +11,7 @@ void ImGuiLogWindow::onImGuiRender()
     if(msgList.size() > logLinesLimit)
         msgList.resize(logLinesLimit);
 
-    ImGui::Begin("Log");
+    ImGui::Begin(ICON_FA_ALIGN_LEFT " Log");
     {
         ImGui::BeginChild("scrolling", ImVec2(0,0), false, ImGuiWindowFlags_HorizontalScrollbar);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));

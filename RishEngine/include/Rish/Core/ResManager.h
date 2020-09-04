@@ -1,6 +1,6 @@
 /**
  * @file resManager.h
- * @author roy4801 (roy@rish.com.tw)
+ * @author roy4801 (me@roy4801.tw)
  * @brief Header of Resource Manager
  * @version 0.1
  * @date 2020-05-11

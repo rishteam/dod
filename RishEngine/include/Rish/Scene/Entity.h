@@ -49,13 +49,27 @@ public:
 	void destroy()
 	{
 		m_scene->m_registry.destroy(m_entityHandle);
+        m_entityHandle = entt::null;
 		m_scene = nullptr;
 	}
 
-	operator bool() const { return (uint32_t)m_entityHandle != entt::null; }
+	operator bool() const
+	{
+	    // if the handle is null then false
+	    // if the handle isn't null then `m_scene->m_registry.valid(m_entityHandle)`
+	    return !(m_entityHandle == entt::null) && m_scene->m_registry.valid(m_entityHandle);
+	}
+	operator uint32_t() const { return (uint32_t)m_entityHandle; }
 
-    bool operator==(const Entity &rhs) const;
-    bool operator!=(const Entity &rhs) const;
+	entt::entity getEntityID() const { return m_entityHandle; }
+
+    bool operator==(const Entity &rhs) const { return m_entityHandle == rhs.m_entityHandle; }
+    bool operator!=(const Entity &rhs) const { return !(rhs == *this); }
+    //
+    bool operator<(const Entity &rhs) const { return m_entityHandle < rhs.m_entityHandle; }
+    bool operator>(const Entity &rhs) const { return rhs < *this; }
+    bool operator<=(const Entity &rhs) const { return !(rhs < *this); }
+    bool operator>=(const Entity &rhs) const { return !(*this < rhs); }
 
 private:
 	entt::entity m_entityHandle{entt::null};

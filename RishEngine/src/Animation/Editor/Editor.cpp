@@ -4,7 +4,7 @@
 
 #include "Rish/Core/ResManager.h"
 #include "Rish/Core/Log.h"
-#include "Rish/Animation/Editor/Editor.h"
+#include "Rish/Animation/Editor/EditorApp.h"
 #include "Rish/Animation/Loader.h"
 
 #include "Rish/Utils/FileDialog.h"

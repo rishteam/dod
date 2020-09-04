@@ -21,7 +21,6 @@ class Entity;
  */
 class Scene
 {
-
 public:
 	Scene();
 	~Scene();
@@ -38,20 +37,24 @@ public:
 	 * @brief Update Entity behavior
 	 * @param dt
 	 */
+	 // TODO: rename
 	void update(const OrthographicCamera &camera, Time dt);
 
-	// Test
-	std::vector<Entity> getAllEntities();
-
 private:
-
 	static int entityNumber;
-
 	entt::registry m_registry;
 
-	friend class Entity;
-	friend class cereal::access;
+    ////////////////////////////////////////////////////////////////
+	// friend class
+    ////////////////////////////////////////////////////////////////
+    friend class Entity;
+    friend class SceneHierarchyPanel;
+    friend class ComponentSelectionPanel;
 
+    ////////////////////////////////////////////////////////////////
+    // Serialization functions
+    ////////////////////////////////////////////////////////////////
+	friend class cereal::access;
 	// TODO: Auto reflect the components of a entity?
 	template <class Archive>
 	void save(Archive &ar) const

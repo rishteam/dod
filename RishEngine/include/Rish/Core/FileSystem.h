@@ -1,6 +1,6 @@
 /**
  * @file fileSystem.h
- * @author icejj (icejj@rish.com.tw), roy4801 (roy@rish.com.tw)
+ * @author icejj (icejj@rish.com.tw), roy4801 (me@roy4801.tw)
  * @brief File System
  * @version 0.1
  * @date 2020-05-03

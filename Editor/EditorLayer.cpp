@@ -1,8 +1,12 @@
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Renderer/Renderer.h>
+#include <Rish/Renderer/Renderer2D.h>
+#include <Rish/Utils/FileDialog.h>
 
+#include <IconsFontAwesome5.h>
 #include <imgui.h>
 
 #include "EditorLayer.h"
@@ -18,38 +22,41 @@ EditorLayer::EditorLayer()
 
 	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-    m_scene = std::make_shared<rl::Scene>();
+    m_scene = MakeRef<Scene>();
 }
 
 void EditorLayer::onAttach()
 {
     RL_CORE_INFO("[EditorLayer] onAttach");
-	rl::FramebufferSpecification fbspec;
+	FramebufferSpecification fbspec;
 	fbspec.width = 1280;
 	fbspec.height = 720;
 	m_framebuffer = Framebuffer::Create(fbspec);
+
+    m_sceneHierarchyPanel.onAttach(m_scene);
+    m_componentEditPanel.onAttach(m_scene);
 }
 
 void EditorLayer::onDetach()
 {
     RL_CORE_INFO("[EditorLayer] onDetach");
+    m_sceneHierarchyPanel.onDetach();
+    m_componentEditPanel.onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
 {
-    static float rotate = 0.f;
-    rotate += 10 * dt.asSeconds();
-
+    m_cameraController.setState(m_sceneWindowFocused);
     m_cameraController.onUpdate(dt);
 
 	m_framebuffer->bind();
+    {
+        Renderer2D::ResetStats();
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear();
 
-	Renderer2D::ResetStats();
-	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-	RenderCommand::Clear();
-
-    m_scene->update(m_cameraController.getCamera(), dt);
-
+        m_scene->update(m_cameraController.getCamera(), dt);
+    }
 	m_framebuffer->unbind();
 }
 
@@ -57,276 +64,163 @@ void EditorLayer::onImGuiRender()
 {
     BeginDockspace();
     // Menu Bar
-	if(ImGui::BeginMenuBar())
-	{
-		if(ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Open"))
-			{
-			    // open file
-				std::string filename = rl::FileSystem::ReadTextFile("Scene.json");
-				RL_TRACE("Scene file = {}", filename);
+    onImGuiMainMenuRender();
 
-				// deserialize
-				std::stringstream oos(filename);
-				cereal::JSONInputArchive inputArchive(oos);
-				inputArchive(cereal::make_nvp("Scene", m_scene));
+    m_sceneHierarchyPanel.onImGuiRender();
 
-                m_entityList = m_scene->getAllEntities();
-				std::reverse(m_entityList.begin(), m_entityList.end());
-			}
-
-            if (ImGui::MenuItem("Save"))
-            {
-                // TODO: Maybe implement a function return ofstream from rl::FileSystem
-                std::ofstream os("Scene.json");
-                cereal::JSONOutputArchive outputArchive(os);
-
-                outputArchive(cereal::make_nvp("Scene", m_scene));
-            }
-
-            ImGui::Separator();
-
-            if(ImGui::MenuItem("Exit"))
-            {
-                Application::Get().close();
-            }
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
-	}
-
-    static int selectedEntity = -1;
-
-	ImGui::Begin("Entity");
+    // TODO: should these code exist?
+    if (m_sceneHierarchyPanel.selectedSize() == 1 &&
+        m_sceneHierarchyPanel.isSelected())
     {
-        // RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
-        ImGui::Text("Entity List");
-        {
-            static std::vector<bool> s_selectableStates;
-            s_selectableStates.resize(m_entityList.size());
-            // Multiple select
-            ImGui::ListBoxHeader("##EntityList", ImVec2(-1, 500));
-            for (int i = 0; i < m_entityList.size(); i++)
-            {
-                if (ImGui::Selectable(m_entityList[i].getComponent<TagComponent>().tag.c_str(), s_selectableStates[i]))
-                {
-                    // Not press ctrl
-                    if (!ImGui::GetIO().KeyCtrl)
-                    {
-                        std::fill(s_selectableStates.begin(), s_selectableStates.end(), false);
-                    }
-                    s_selectableStates[i] = !s_selectableStates[i];
-                    selectedEntity = i;
-                }
-            }
-            ImGui::ListBoxFooter();
-            // Count the selected entities
-            int cnt = 0;
-            for(int i = 0; i < s_selectableStates.size(); i++)
-            {
-                if(s_selectableStates[i])
-                {
-                    cnt++;
-                    selectedEntity = i;
-                }
-            }
-            // If the selectedCnt > 2 then not showing the settings
-            if(cnt >= 2)
-                selectedEntity = -1;
-        }
-
-        ImGui::Separator();
-
-        // Settings
-        if (selectedEntity != -1)
-        {
-            if (m_entityList[selectedEntity].hasComponent<TagComponent>()) {
-                if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    std::string tmp = m_entityList[selectedEntity].getComponent<TagComponent>().tag.c_str();
-                    static char tag[32];
-                    strcpy(tag, tmp.c_str());
-                    ImGui::InputText("Tag", tag, IM_ARRAYSIZE(tag));
-                    m_entityList[selectedEntity].getComponent<TagComponent>().tag = tag;
-                }
-            }
-
-            if (m_entityList[selectedEntity].hasComponent<TransformComponent>()) {
-                if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                    auto &transform = m_entityList[selectedEntity].getComponent<TransformComponent>();
-                    ImGui::SliderFloat("TranslateX", &transform.translate.x, -1.f, 1.f, "%.2f");
-                    ImGui::SliderFloat("TranslateY", &transform.translate.y, -1.f, 1.f, "%.2f");
-                    // ImGui::SliderFloat("Z", &transform.z, -10, 10, "%.2f");`x
-                    ImGui::Separator();
-                    ImGui::DragFloat("ScaleX", &transform.scale.x, 0.1f, 0.f);
-                    ImGui::DragFloat("ScaleY", &transform.scale.y, 0.1f, 0.f);
-                }
-            }
-
-            if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
-            {
-                if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
-                {
-                    auto &renderCp = m_entityList[selectedEntity].getComponent<RenderComponent>();
-                    ImGui::ColorEdit4("Color", glm::value_ptr(renderCp.color));
-
-                    ImGui::Text("Texture");
-                    {
-                        std::string tPath;
-                        if (ImGui::Button("Select")) {
-                            if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
-                                renderCp.texturePath = tPath;
-                                renderCp.reloadTexture = true;
-                            }
-                        }
-
-                        ImGui::SameLine();
-                        ImGui::InputText("##texturePath", const_cast<char *>(renderCp.texturePath.c_str()),
-                                         renderCp.texturePath.size(), ImGuiInputTextFlags_ReadOnly);
-
-                        ImGui::Image(renderCp.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
-                    }
-
-                    ImGui::Text("Shader");
-                    {
-                        std::string path;
-                        auto &vertPath = renderCp.vertPath;
-                        if (ImGui::Button("Select##Vert")) {
-                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-                                vertPath = path;
-                                renderCp.reloadShader = true;
-                            }
-                        }
-                        ImGui::SameLine();
-                        ImGui::InputText("##VertexShaderPath", const_cast<char *>(vertPath.c_str()),
-                                         vertPath.size(), ImGuiInputTextFlags_ReadOnly);
-
-                        auto &fragPath = renderCp.fragPath;
-                        if (ImGui::Button("Select##Frag"))
-                        {
-                            if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
-                            {
-                                fragPath = path;
-                                renderCp.reloadShader = true;
-                            }
-                        }
-                        ImGui::SameLine();
-                        ImGui::InputText("##FragmentShaderPath", const_cast<char *>(fragPath.c_str()),
-                                         fragPath.size(), ImGuiInputTextFlags_ReadOnly);
-                    }
-                }
-            }
-        }
+        m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
     }
-	ImGui::End();
+    else
+        m_componentEditPanel.resetSelected();
+    m_componentEditPanel.onImGuiRender();
 
 	ImGui::Begin("Entity Manager");
     {
-        if (ImGui::Button("Create Entity"))
-        {
-            auto ent = m_scene->createEntity();
-            m_entityList.push_back(ent);
-            RL_CORE_TRACE("Number of Entities: {}", m_entityList.size());
-        }
-
-        if (selectedEntity != -1)
-        {
-            if (ImGui::Button("Delete Entity"))
-            {
-                m_entityList[selectedEntity].destroy();
-                auto it = std::find(m_entityList.begin(), m_entityList.end(), m_entityList[selectedEntity]);
-                m_entityList.erase(it);
-                selectedEntity = -1;
-            }
-        }
-
-        ImGui::Separator();
-
-        const char *components[] = {"TagComponent", "TransformComponent", "RenderComponent"};
-        static int selectedComponent = -1;
-        if (selectedEntity != -1) {
-            if (ImGui::Button("Add Component")) {
-                ImGui::OpenPopup("Components");
-            }
-
-            if (ImGui::BeginPopup("Components")) {
-                for (int i = 0; i < IM_ARRAYSIZE(components); i++) {
-                    if (ImGui::Selectable(components[i])) {
-                        selectedComponent = i;
-                        switch (i) {
-                            case 0:
-                                if (!m_entityList[selectedEntity].hasComponent<TagComponent>()) {
-                                    m_entityList[selectedEntity].addComponent<TagComponent>();
-                                }
-                                break;
-                            case 1:
-                                if (!m_entityList[selectedEntity].hasComponent<TransformComponent>()) {
-                                    m_entityList[selectedEntity].addComponent<TransformComponent>();
-                                }
-                                break;
-
-                            case 2:
-                                if (!m_entityList[selectedEntity].hasComponent<RenderComponent>()) {
-                                    m_entityList[selectedEntity].addComponent<RenderComponent>();
-                                }
-                                break;
-                        }
-                    }
-                }
-                ImGui::EndPopup();
-            }
-
-            static int selectedDeleteComponent = -1;
-            if (ImGui::Button("Delete Component")) {
-                ImGui::OpenPopup("Delete_Component");
-            }
-
-            if (ImGui::BeginPopup("Delete_Component")) {
-                for (int i = 0; i < IM_ARRAYSIZE(components); i++) {
-                    if (ImGui::Selectable(components[i])) {
-                        switch (i) {
-                            case 0:
-                                ImGui::Text("Cannot Delete TagComponent!!!!");
-                                break;
-
-                            case 1:
-                                if (m_entityList[selectedEntity].hasComponent<TransformComponent>())
-                                    m_entityList[selectedEntity].removeComponent<TransformComponent>();
-                                break;
-
-                            case 2:
-                                if (m_entityList[selectedEntity].hasComponent<RenderComponent>())
-                                    m_entityList[selectedEntity].removeComponent<RenderComponent>();
-                                break;
-                        }
-                    }
-                }
-                ImGui::EndPopup();
-            }
-
-        }
     }
 	ImGui::End();
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Scene");
+	ImGui::PopStyleVar();
     {
+        // if resize
+        auto size = ImGui::GetContentRegionAvail();
+        glm::vec2 viewportSize{size.x, size.y};
+        if(m_sceneViewportPanelSize != viewportSize)
+        {
+            m_sceneViewportPanelSize = viewportSize;
+            m_framebuffer->resize((uint32_t)size.x, (uint32_t)size.y);
+            m_cameraController.onResize(size.x, size.y);
+        }
+        // show
+        // TODO: fix flickering issue
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-
-        // TODO Actually should be (void*)textureID, but it went error on it, but this can work??
-        ImGui::Image((uintptr_t) textureID, ImVec2{1280, 720}, {0, 0}, {1, -1});
+        ImGui::Image((ImTextureID)textureID, size, {0, 0}, {1, -1});
+        // states
+        m_sceneWindowFocused = ImGui::IsWindowFocused();
+        m_sceneWindowHovered = ImGui::IsWindowHovered();
     }
 	ImGui::End();
+
+    ImGui::Begin(ICON_FA_TERMINAL " Console");
+    ImGui::End();
 
     defaultLogWindow.onImGuiRender();
 
 	EndDockspace();
+
+	m_errorModal.onImGuiRender();
+}
+
+void EditorLayer::onImGuiMainMenuRender()
+{
+    if(ImGui::BeginMenuBar())
+    {
+        if(ImGui::BeginMenu("File"))
+        {
+            if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
+            {
+                RL_ERROR("Not implemented");
+            }
+
+            if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
+            {
+                // Open File
+                std::string path, content;
+                if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+                {
+                    content = FileSystem::ReadTextFile(path);
+                    m_scenePath = path;
+                }
+
+                // Deserialize
+                std::stringstream oos(content);
+                bool failLoad = false;
+                try
+                {
+                    cereal::JSONInputArchive inputArchive(oos);
+                    inputArchive(cereal::make_nvp("Scene", m_scene));
+                }
+                catch (cereal::RapidJSONException &e)
+                {
+                    RL_CORE_ERROR("Failed to load scene: {}", e.what());
+                    failLoad = true;
+                }
+
+                if(!failLoad)
+                {
+                    m_sceneLoaded = true;
+
+                    // Because the panels are now holding strong ref to the scene
+                    // We need to reset the context
+                    m_sceneHierarchyPanel.setContext(m_scene);
+                    m_componentEditPanel.setContext(m_scene);
+                }
+                else
+                {
+                    m_sceneLoaded = false;
+
+                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.", m_scenePath));
+                }
+            }
+
+            ImGui::Separator();
+
+            // TODO: hot reload?
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S", false, m_sceneLoaded))
+            {
+                // TODO: Maybe implement a function return ofstream from rl::FileSystem
+                std::ofstream os(m_scenePath);
+                cereal::JSONOutputArchive outputArchive(os);
+                outputArchive(cereal::make_nvp("Scene", m_scene));
+            }
+
+            if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
+            {
+                std::string path;
+                if(FileDialog::SelectSaveFile(nullptr, nullptr, path))
+                {
+                    // TODO: Maybe implement a function return ofstream from rl::FileSystem
+                    std::ofstream os(path);
+                    cereal::JSONOutputArchive outputArchive(os);
+                    outputArchive(cereal::make_nvp("Scene", m_scene));
+                }
+            }
+
+            ImGui::Separator();
+
+            if(ImGui::MenuItem("Exit", "Ctrl+W"))
+            {
+                Application::Get().close();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if(ImGui::BeginMenu("Tools"))
+        {
+            if(ImGui::MenuItem("Renderer Statistics"))
+            {
+                // TODO: Use overlay
+                auto stat = Renderer2D::GetStats();
+                RL_INFO("Renderer2D: quad = {}, draw = {}", stat.QuadCount, stat.DrawCount);
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
 }
 
 void EditorLayer::onEvent(rl::Event& event)
 {
-    m_cameraController.onEvent(event);
+    if(m_sceneWindowFocused && m_sceneWindowHovered)
+        m_cameraController.onEvent(event);
 }
 
 void EditorLayer::BeginDockspace()

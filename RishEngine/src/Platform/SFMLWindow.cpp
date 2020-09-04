@@ -1,10 +1,12 @@
+#include <glad/glad.h>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/Clipboard.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <glad/glad.h>
-#include <SFML/OpenGL.hpp>
 #include <SFML/System/Clock.hpp>
 //
+#include <IconsFontAwesome5.h>
+//
+#include <Rish/config.h>
 #include "Rish/Core/Core.h"
 #include "Rish/Platform/SFMLWindow.h"
 
@@ -441,6 +443,15 @@ void SFMLWindow::initImGui()
         // No need to call AddDefaultFont
         UpdateFontTexture();
     }
+
+    // merge in icons from Font Awesome
+    // from deps: [IconFontCppHeader](https://github.com/juliettef/IconFontCppHeaders)
+    static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    ImFontConfig icons_config;
+    icons_config.MergeMode = true;
+    icons_config.PixelSnapH = true;
+    ImFont *font = io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "assets/" FONT_ICON_FILE_NAME_FAS, 14.0f, &icons_config, icons_ranges );
+    UpdateFontTexture();
 
     s_windowHasFocus = m_SFMLWindow.hasFocus();
 }

@@ -1,10 +1,14 @@
 #include <RishEngine.h>
 
+#include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ComponentEditPanel.h"
+#include "Panels/ComponentSelectionPanel.h"
+
+#include "Panels/ErrorModal.h"
+
 namespace rl {
 
-#define MAXENTITES 1000
-
-class EditorLayer : public rl::Layer
+class EditorLayer : public Layer
 {
 public:
 	EditorLayer();
@@ -21,12 +25,25 @@ public:
 	static void EndDockspace();
 
 private:
+    void onImGuiMainMenuRender();
+
+    //////////////////////////////////////////
+    // Scene
+    //////////////////////////////////////////
+	Ref<Framebuffer> m_framebuffer;
+	Ref<Scene> m_scene;
+	std::string m_scenePath;
+	bool m_sceneLoaded = false;
+    glm::vec2 m_sceneViewportPanelSize {0.f, 0.f};
+	//
+	bool m_sceneWindowHovered = false;
+	bool m_sceneWindowFocused = false;
+	// Scene window camera
 	OrthographicCameraController m_cameraController;
 
-	std::shared_ptr<rl::Framebuffer> m_framebuffer;
-	std::shared_ptr<rl::Scene> m_scene;
-
-	std::vector<Entity> m_entityList;
+	SceneHierarchyPanel m_sceneHierarchyPanel;
+	ComponentEditPanel m_componentEditPanel;
+	ErrorModal m_errorModal;
 };
 
 }
