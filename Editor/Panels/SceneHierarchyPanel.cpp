@@ -28,6 +28,7 @@ void SceneHierarchyPanel::onImGuiRender()
         ImGui::IsAnyItemActive())
     {
         resetSelected();
+        m_entitySet.clear();
     }
 
     // Right click menu
@@ -36,8 +37,11 @@ void SceneHierarchyPanel::onImGuiRender()
             m_currentScene->createEntity();
         }
         if (isSelected() && ImGui::MenuItem("Delete Entity")) {
-            auto ent = getSelectedEntity();
-            ent.destroy();
+            for(auto e : m_entitySet)
+            {
+                e.destroy();
+            }
+            m_entitySet.clear();
             resetSelected();
         }
         ImGui::EndPopup();
@@ -50,13 +54,26 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 {
     auto &tag = entity.getComponent<TagComponent>().tag;
 
-    ImGuiTreeNodeFlags nodeFlags = getTarget() == entity ? ImGuiTreeNodeFlags_Selected : 0;
+    ImGuiTreeNodeFlags nodeFlags = m_entitySet.count(entity) ? ImGuiTreeNodeFlags_Selected : 0;
     nodeFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
     if(ImGui::IsItemClicked())
     {
-        setTarget(entity);
+        if(!ImGui::GetIO().KeyCtrl)
+        {
+            m_entitySet.clear();
+        }
+
+        if(!m_entitySet.count(entity))
+        {
+            setTarget(entity);
+            m_entitySet.insert(entity);
+        }
+        else
+        {
+            m_entitySet.erase(entity);
+        }
     }
 
     if(opened)

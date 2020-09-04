@@ -4,8 +4,8 @@ project(Editor)
 
 add_executable(Editor
     # main
+    EditorApp.cpp
     EditorLayer.cpp
-        EditorApp.cpp
 
     # Panels
     Panels/SceneHierarchyPanel.cpp

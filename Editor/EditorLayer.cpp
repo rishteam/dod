@@ -69,8 +69,11 @@ void EditorLayer::onImGuiRender()
     m_sceneHierarchyPanel.onImGuiRender();
 
     // TODO: should these code exist?
-    if (m_sceneHierarchyPanel.isSelected())
+    if (m_sceneHierarchyPanel.selectedSize() == 1 &&
+        m_sceneHierarchyPanel.isSelected())
+    {
         m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
+    }
     else
         m_componentEditPanel.resetSelected();
     m_componentEditPanel.onImGuiRender();

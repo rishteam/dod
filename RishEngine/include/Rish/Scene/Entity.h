@@ -63,8 +63,13 @@ public:
 
 	entt::entity getEntityID() const { return m_entityHandle; }
 
-    bool operator==(const Entity &rhs) const;
-    bool operator!=(const Entity &rhs) const;
+    bool operator==(const Entity &rhs) const { return m_entityHandle == rhs.m_entityHandle; }
+    bool operator!=(const Entity &rhs) const { return !(rhs == *this); }
+    //
+    bool operator<(const Entity &rhs) const { return m_entityHandle < rhs.m_entityHandle; }
+    bool operator>(const Entity &rhs) const { return rhs < *this; }
+    bool operator<=(const Entity &rhs) const { return !(rhs < *this); }
+    bool operator>=(const Entity &rhs) const { return !(*this < rhs); }
 
 private:
 	entt::entity m_entityHandle{entt::null};

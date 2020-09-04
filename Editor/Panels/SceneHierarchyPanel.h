@@ -17,8 +17,11 @@ public:
     ~SceneHierarchyPanel() override = default;
 
     void onImGuiRender() override;
+
+    size_t selectedSize() const { return m_entitySet.size(); }
 private:
     void drawEntityNode(Entity entity);
+    std::set<Entity> m_entitySet;
 };
 
 } // end of namespace rl
