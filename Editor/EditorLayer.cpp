@@ -71,6 +71,8 @@ void EditorLayer::onImGuiRender()
     // TODO: should these code exist?
     if (m_sceneHierarchyPanel.isSelected())
         m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
+    else
+        m_componentEditPanel.resetSelected();
     m_componentEditPanel.onImGuiRender();
 
 	ImGui::Begin("Entity Manager");

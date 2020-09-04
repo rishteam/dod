@@ -12,12 +12,24 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::PopStyleVar();
     ImGui::Text("Entity List");
 
+    // Entity List Window
     ImGuiWindowFlags window_flags = 0;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
+
+    // Draw entity hierarchy
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
         drawEntityNode(entity);
     });
+
+    // Reset selected when click empty space in the window
+    if(isSelected() &&
+        ImGui::IsWindowFocused() && ImGui::IsWindowHovered() &&
+        ImGui::IsAnyItemActive())
+    {
+        resetSelected();
+    }
+
     // Right click menu
     if (ImGui::BeginPopupContextWindow()) {
         if (ImGui::MenuItem("Create Entity")) {
@@ -38,14 +50,13 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 {
     auto &tag = entity.getComponent<TagComponent>().tag;
 
-    ImGuiTreeNodeFlags nodeFlags = m_selectedEntity == entity ? ImGuiTreeNodeFlags_Selected : 0;
+    ImGuiTreeNodeFlags nodeFlags = getTarget() == entity ? ImGuiTreeNodeFlags_Selected : 0;
     nodeFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
     if(ImGui::IsItemClicked())
     {
-        m_selectedEntity = entity;
-        m_isSelected = true;
+        setTarget(entity);
     }
 
     if(opened)
