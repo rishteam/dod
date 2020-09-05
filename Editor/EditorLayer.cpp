@@ -46,9 +46,19 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
+    // Resize the framebuffer if user resize the viewport
+    auto framebufferSpec = m_framebuffer->getSpecification();
+    auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
+    if(m_sceneViewportPanelSize != framebufferSize &&
+        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
+    {
+        m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_cameraController.onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
+    }
+    //
     m_cameraController.setState(m_sceneWindowFocused);
     m_cameraController.onUpdate(dt);
-
+    //
 	m_framebuffer->bind();
     {
         Renderer2D::ResetStats();
@@ -87,17 +97,10 @@ void EditorLayer::onImGuiRender()
 	ImGui::Begin("Scene");
 	ImGui::PopStyleVar();
     {
-        // if resize
+        // Update viewport resize
         auto size = ImGui::GetContentRegionAvail();
-        glm::vec2 viewportSize{size.x, size.y};
-        if(m_sceneViewportPanelSize != viewportSize)
-        {
-            m_sceneViewportPanelSize = viewportSize;
-            m_framebuffer->resize((uint32_t)size.x, (uint32_t)size.y);
-            m_cameraController.onResize(size.x, size.y);
-        }
+        m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show
-        // TODO: fix flickering issue
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
         ImGui::Image((ImTextureID)textureID, size, {0, 0}, {1, -1});
         // states
