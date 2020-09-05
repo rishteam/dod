@@ -54,10 +54,7 @@ struct TagComponent
 	std::string tag;
 
 	TagComponent() = default;
-	TagComponent(const std::string& t)
-		: tag(t)
-    {
-    }
+	TagComponent(const std::string& t) : tag(t) {}
 
 private:
 	friend class cereal::access;
@@ -76,9 +73,7 @@ struct TransformComponent
 	glm::vec3 scale {1.f, 1.f, 1.f};
 
 	TransformComponent() = default;
-	TransformComponent(const glm::mat4& t)
-		: transform(t)
-    {}
+	TransformComponent(const glm::mat4& t) : transform(t) {}
 
 private:
 	friend class cereal::access;
@@ -103,14 +98,10 @@ struct RenderComponent
 	std::shared_ptr<Texture2D> m_texture;
 
 	// states
-	bool reloadShader = true;
-	bool reloadTexture = true;
 	bool init = true;
 
 	RenderComponent() = default;
-	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s)
-	{
-	}
+	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s) {}
 	RenderComponent(const std::string &vp, const std::string &fp, const glm::vec4 &c)
 		: vertPath(vp), fragPath(fp), color(c)
 	{

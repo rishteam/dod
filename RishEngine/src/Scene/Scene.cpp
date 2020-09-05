@@ -55,19 +55,9 @@ void Scene::update(const OrthographicCamera &camera, Time dt)
 
 		if(render.init)
 		{
-			render.init = false;
-		}
-
-		if(render.reloadShader)
-		{
-			render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-			render.reloadShader = false;
-		}
-
-		if(render.reloadTexture)
-		{
 			render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-			render.reloadTexture = false;
+			render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
+			render.init = false;
 		}
 
         Renderer2D::BeginScene(camera);
