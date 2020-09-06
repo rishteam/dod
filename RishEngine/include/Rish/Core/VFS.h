@@ -120,7 +120,7 @@ public:
      * @param path Path to the file in VFS
      * @return char* File content
      */
-    static char *ReadFile(const std::string &path);
+    static Scope<char[]> ReadWholeFile(const std::string &path, size_t &siz);
 	// TODO: return length?
 
 	/**

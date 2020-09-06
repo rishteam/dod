@@ -2,12 +2,6 @@
 
 namespace rl {
 
-File::File(const std::string &path) : m_path(path)
-{
-	m_file = fs::is_regular_file(path);
-	m_dir = fs::is_directory(path);
-}
-
 std::string FileSystem::GetCurrentDirectory()
 {
 	return fs::current_path().string();
@@ -35,11 +29,37 @@ void FileSystem::SetCurrentDirectoryPath(const fs::path &path)
 		RL_CORE_ERROR("FileSystemError: Failed to set current directory {}", path.string());
 }
 
-void FileSystem::CreateFile(const std::string &path)
+bool FileSystem::CreateFile(const std::string &path)
 {
-	std::ofstream file{
-		path};
-	RL_CORE_INFO("FileSystem: File create in {}", path.c_str());
+    std::ofstream file{path};
+
+    if(!file)
+    {
+        RL_CORE_ERROR("[FileSystem] failed to create file {}", path);
+        return false;
+    }
+    else
+        return true;
+}
+
+bool FileSystem::DeleteFile(const std::string &path)
+{
+    bool res = true;
+    fs::path p{path};
+    //
+    try
+    {
+        res = fs::remove(p);
+    }
+    catch(fs::filesystem_error &e)
+    {
+        RL_CORE_ERROR("[FileSystem] failed to delete {}, reason: {}", path, e.what());
+        return false;
+    }
+    //
+    if(!res)
+        RL_CORE_WARN("[FileSystem] {} is not exist", path);
+    return res;
 }
 
 bool FileSystem::FileExists(const std::string &path)
@@ -62,12 +82,16 @@ int FileSystem::GetFileSize(const std::string &path)
 
 bool FileSystem::IsDirectory(const std::string &path)
 {
-	return (FileExists(path) ? fs::is_directory(path) : false);
+    if(!FileExists(path))
+        RL_CORE_WARN("[FileSystem] {} is not exist", path);
+	return fs::is_directory(path);
 }
 
 bool FileSystem::IsFile(const std::string &path)
 {
-	return (FileExists(path) ? fs::is_regular_file(path) : false);
+    if(!FileExists(path))
+        RL_CORE_WARN("[FileSystem] {} is not exist", path);
+	return fs::is_regular_file(path);
 }
 
 bool FileSystem::ReadFile(const std::string &path, void *buffer, int size)
@@ -88,15 +112,17 @@ bool FileSystem::ReadFile(const std::string &path, void *buffer, int size)
 	return false;
 }
 
-char *FileSystem::ReadFile(const std::string &path)
+Scope<char[]> FileSystem::ReadWholeFile(const std::string &path, size_t &siz)
 {
 	std::ifstream fs;
 	fs.open(path, std::ios::binary);
-	int size = GetFileSize(path);
-	char *buffer = new char[size];
-	fs.read(buffer, size);
+	//
+    siz = GetFileSize(path);
+    Scope<char[]> buffer = MakeScope<char[]>(siz);
+    //
+	fs.read(buffer.get(), siz);
 	fs.close();
-
+    //
 	return buffer;
 }
 
@@ -113,7 +139,6 @@ std::string FileSystem::ReadTextFile(const std::string &path)
 
 bool FileSystem::WriteFile(const std::string &path, const char *buffer, int size)
 {
-
 	std::ofstream fs;
 	bool success;
 	fs.open(path, std::ios::binary);
@@ -142,19 +167,9 @@ bool FileSystem::WriteTextFile(const std::string &path, const std::string &text,
 bool FileSystem::List(const std::string &path, std::vector<File> &vec)
 {
 	for (const auto &entry : fs::directory_iterator(path))
-	{
+		vec.emplace_back(entry.path());
 
-		File tmp(entry.path().string());
-		vec.push_back(tmp);
-	}
-
-	if (vec.size())
-		return true;
-	else
-	{
-		RL_CORE_INFO("FileSystem: No file in {}");
-		return false;
-	}
+	return !vec.empty();
 }
 
 }

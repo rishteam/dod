@@ -5,10 +5,10 @@
 
 #include "ParticleSystem.h"
 
-class TestLayer : public rl::Layer
+class ParticleLayer : public rl::Layer
 {
 public:
-    TestLayer();
+    ParticleLayer();
 
     void onAttach() override;
     void onDetach() override;

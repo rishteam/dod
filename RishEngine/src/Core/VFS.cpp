@@ -95,11 +95,11 @@ bool VFS::ResolvePhysicalPath(const std::string path, std::string &outphysicalPa
 	return true;
 }
 
-char *VFS::ReadFile(const std::string &path)
+Scope<char[]> VFS::ReadWholeFile(const std::string &path, size_t &siz)
 {
     RL_CORE_ASSERT(instance, "[VFS] The VFS is not initialized.");
 	std::string physicalPath;
-	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::ReadFile(physicalPath) : nullptr;
+	return ResolvePhysicalPath(path, physicalPath) ? FileSystem::ReadWholeFile(physicalPath, siz) : nullptr;
 }
 
 std::string VFS::ReadTextFile(const std::string &path)

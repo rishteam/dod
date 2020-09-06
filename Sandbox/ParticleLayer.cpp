@@ -1,9 +1,9 @@
-#include "TestLayer.h"
+#include "ParticleLayer.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
-TestLayer::TestLayer()
-    : Layer("TestLayer"),
+ParticleLayer::ParticleLayer()
+    : Layer("ParticleLayer"),
       m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true),
       m_particleSystem(1000)
 {
@@ -22,7 +22,7 @@ TestLayer::TestLayer()
     m_particle.position = { 0.0f, 0.0f };
 }
 
-void TestLayer::onAttach()
+void ParticleLayer::onAttach()
 {
     RL_PROFILE_FUNCTION();
 
@@ -32,12 +32,12 @@ void TestLayer::onAttach()
     m_sprite = rl::SubTexture2D::CreateFromSheet(m_spriteSheet, {0, 0}, {17, 17}, {2, 2});
 }
 
-void TestLayer::onDetach()
+void ParticleLayer::onDetach()
 {
     RL_PROFILE_FUNCTION();
 }
 
-void TestLayer::onUpdate(rl::Time dt)
+void ParticleLayer::onUpdate(rl::Time dt)
 {
     RL_PROFILE_FUNCTION();
     // Update
@@ -105,7 +105,7 @@ void TestLayer::onUpdate(rl::Time dt)
     m_particleSystem.onRender(m_cameraController.getCamera());
 }
 
-void TestLayer::onImGuiRender()
+void ParticleLayer::onImGuiRender()
 {
     RL_PROFILE_FUNCTION();
 
@@ -152,7 +152,7 @@ void TestLayer::onImGuiRender()
     m_cameraController.onImGuiRender();
 }
 
-void TestLayer::onEvent(rl::Event &e)
+void ParticleLayer::onEvent(rl::Event &e)
 {
     RL_PROFILE_FUNCTION();
     m_cameraController.onEvent(e);

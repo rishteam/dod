@@ -1,5 +1,5 @@
 #include "SandboxLayer.h"
-#include "TestLayer.h"
+#include "ParticleLayer.h"
 
 #include <RishEngine.h>
 #include <EntryPoint.h>
@@ -10,8 +10,8 @@ public:
     Sandbox() : rl::Application("Sandbox", 1920, 1080)
     {
         RL_PROFILE_FUNCTION();
-//        pushLayer(new ExampleSandboxLayer());
-        pushLayer(new TestLayer());
+        pushLayer(new ExampleSandboxLayer());
+//        pushLayer(new ParticleLayer());
     }
 
     virtual ~Sandbox() override
