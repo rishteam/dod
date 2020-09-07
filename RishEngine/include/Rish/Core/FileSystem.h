@@ -70,6 +70,32 @@ public:
 	static void SetCurrentDirectoryPath(const fs::path &path);
 
 	/**
+	 * @brief Normalize the path
+	 * @param path path
+	 * @return Normalized path
+	 *
+	 * @code{.cpp}
+	 * rl::FileSystem::Normalize("a/b/c/../../d/e");
+	 * // a\d\e
+	 * @endcode
+	 */
+	static std::string Normalize(const std::string &path);
+
+	/**
+	 * @brief Get the absolute path
+	 * @param path path
+	 * @return absolute path
+	 */
+    static std::string AbsolutePath(const std::string &path);
+
+    /**
+     * @brief Is absolute path
+     * @param path Path
+     * @return bool
+     */
+    static bool IsAbsolutePath(const std::string &path);
+
+	/**
      * @brief Create a File
      * @param path Path to the new file
      */
@@ -104,6 +130,12 @@ public:
      * @param path Path to the directory
      * @return true It's a directory
      * @return false It's not a directory
+     *
+     * @code{.cpp}
+     * rl::FileSystem::IsDirectory("assets/") == true;
+     * rl::FileSystem::IsDirectory(R"(C:\Users\Rish\Desktop\rish\dod\Sandbox\assets)") == true;
+     * rl::FileSystem::IsDirectory("assets/1.png") == false;
+     * @endcode
      */
 	static bool IsDirectory(const std::string &path);
 
@@ -113,6 +145,12 @@ public:
      * @param path  Path to the file
      * @return true It's a file
      * @return false It's not a file
+     *
+     * @code{.cpp}
+     * rl::FileSystem::IsFile("assets/") == false;
+     * rl::FileSystem::IsFile(R"(C:\Users\Rish\Desktop\rish\dod\Sandbox\assets)") == false;
+     * rl::FileSystem::IsFile("assets/1.png") == true;
+     * @endcode
      */
 	static bool IsFile(const std::string &path);
 
@@ -124,8 +162,6 @@ public:
      * @code{.cpp}
      * size_t size;
      * auto buf = rl::FileSystem::ReadWholeFile("assets/test.bin", size);
-     * for(int i = 0; i < size; i++)
-     *     printf("%hhx ", buf[i]);
      * @endcode
      */
 	static Scope<char[]> ReadWholeFile(const std::string &path, size_t &siz);

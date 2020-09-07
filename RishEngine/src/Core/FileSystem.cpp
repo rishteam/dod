@@ -82,16 +82,28 @@ int FileSystem::GetFileSize(const std::string &path)
 
 bool FileSystem::IsDirectory(const std::string &path)
 {
-    if(!FileExists(path))
+    std::string p{Normalize(path)};
+    //
+    if(!IsAbsolutePath(p))
+        p = AbsolutePath(p);
+    //
+    if(!FileExists(p))
         RL_CORE_WARN("[FileSystem] {} is not exist", path);
-	return fs::is_directory(path);
+    //
+	return fs::is_directory(p);
 }
 
 bool FileSystem::IsFile(const std::string &path)
 {
-    if(!FileExists(path))
+    std::string p{Normalize(path)};
+    //
+    if(!IsAbsolutePath(p))
+        p = AbsolutePath(p);
+    //
+    if(!FileExists(p))
         RL_CORE_WARN("[FileSystem] {} is not exist", path);
-	return fs::is_regular_file(path);
+    //
+	return fs::is_regular_file(p);
 }
 
 bool FileSystem::ReadFile(const std::string &path, void *buffer, int size)
@@ -170,6 +182,28 @@ bool FileSystem::List(const std::string &path, std::vector<File> &vec)
 		vec.emplace_back(entry.path());
 
 	return !vec.empty();
+}
+
+std::string FileSystem::Normalize(const std::string &path)
+{
+    fs::path p;
+    if(path.back() == '/' || path.back() == '\\')
+        p.assign(path.begin(), path.end()-1);
+    else
+        p.assign(path.begin(), path.end());
+    //
+    p = p.lexically_normal();
+    return p.string();
+}
+
+std::string FileSystem::AbsolutePath(const std::string &path)
+{
+    return fs::absolute(path).string();;
+}
+
+bool FileSystem::IsAbsolutePath(const std::string &path)
+{
+    return fs::path{path}.is_absolute();
 }
 
 }
