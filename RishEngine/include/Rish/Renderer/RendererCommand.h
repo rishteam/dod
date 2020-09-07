@@ -46,6 +46,10 @@ public:
      */
     static void DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount=0);
 
+    // !TEMP!
+    // TODO: Please REFACTOR me please
+    static void DrawLineElement(const Ref<VertexArray> &vertexArray, uint32_t indexCount=0);
+
     static void ClearStates();
 };
 

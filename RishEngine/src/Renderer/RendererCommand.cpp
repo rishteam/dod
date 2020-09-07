@@ -7,16 +7,18 @@ void APIENTRY OpenGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
 {
     switch (severity)
     {
-        case GL_DEBUG_SEVERITY_HIGH:         RL_CORE_CRITICAL(message); return;
-        case GL_DEBUG_SEVERITY_MEDIUM:       RL_CORE_ERROR(message); return;
-        case GL_DEBUG_SEVERITY_LOW:          RL_CORE_WARN(message); return;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: RL_CORE_TRACE(message); return;
+        case GL_DEBUG_SEVERITY_HIGH:         RL_CORE_CRITICAL("[OpenGL] {}", message); return;
+        case GL_DEBUG_SEVERITY_MEDIUM:       RL_CORE_ERROR("[OpenGL] {}", message); return;
+        case GL_DEBUG_SEVERITY_LOW:          RL_CORE_WARN("[OpenGL] {}", message); return;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: RL_CORE_TRACE("[OpenGL] {}", message); return;
     }
 
     RL_CORE_ASSERT(false, "Unknown severity level!");
 }
 
-void rl::RenderCommand::Init()
+namespace rl {
+
+void RenderCommand::Init()
 {
 #ifdef RL_DEBUG
     glEnable(GL_DEBUG_OUTPUT);
@@ -33,30 +35,39 @@ void rl::RenderCommand::Init()
     glDepthFunc(GL_LESS);
 }
 
-void rl::RenderCommand::SetClearColor(const glm::vec4 &color)
+void RenderCommand::SetClearColor(const glm::vec4 &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void rl::RenderCommand::Clear()
+void RenderCommand::Clear()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void rl::RenderCommand::DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount)
+void RenderCommand::DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount)
 {
     indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 }
 
-void rl::RenderCommand::SetViewPort(float x, float y, float width, float height)
+// TODO: Please REFACTOR me please
+void RenderCommand::DrawLineElement(const Ref<VertexArray> &vertexArray, uint32_t indexCount)
 {
-    glViewport((GLint)x, (GLint)y, (GLsizei)width, (GLsizei)height);
+    indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
+    glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, nullptr);
 }
 
-void rl::RenderCommand::ClearStates()
+void RenderCommand::SetViewPort(float x, float y, float width, float height)
+{
+    glViewport((GLint) x, (GLint) y, (GLsizei) width, (GLsizei) height);
+}
+
+void RenderCommand::ClearStates()
 {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 }

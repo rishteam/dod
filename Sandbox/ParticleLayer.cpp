@@ -78,6 +78,8 @@ void ParticleLayer::onUpdate(rl::Time dt)
 
         rl::Renderer2D::DrawRotatedQuad({-9.0f, 0.f}, {1.f, 1.f}, m_sprite, glm::vec4{1.f}, m_objectRotate);
 
+        rl::Renderer2D::DrawLine({-15.f, -15.f, 5.f}, {1.f, 1.f, 5.f});
+
         rl::Renderer2D::EndScene();
     }
 

@@ -4,8 +4,8 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("ExampleSandboxLayer")
 {
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
-    rl::VFS::Mount("shader", "Sandbox/assets");
-    rl::VFS::Mount("texture", "Sandbox/assets");
+    rl::VFS::Mount("shader", "assets");
+    rl::VFS::Mount("texture", "assets");
 }
 
 void ExampleSandboxLayer::onAttach()

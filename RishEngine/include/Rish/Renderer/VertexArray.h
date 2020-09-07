@@ -33,7 +33,9 @@ public:
 	void setVertexBuffer(const Ref<VertexBuffer>& vertexBuffer);
 	void setIndexBuffer(const Ref<IndexBuffer>& indexBuf);
 
+    Ref<VertexBuffer>& getVertexBuffer() { return m_vertexBuffer; }
 	const Ref<VertexBuffer>& getVertexBuffer() const { return m_vertexBuffer; }
+    Ref<IndexBuffer>& getIndexBuffer() { return m_indexBuffer; }
 	const Ref<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
 
 private:

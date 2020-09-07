@@ -10,8 +10,8 @@ public:
     Sandbox() : rl::Application("Sandbox", 1920, 1080)
     {
         RL_PROFILE_FUNCTION();
-        pushLayer(new ExampleSandboxLayer());
-//        pushLayer(new ParticleLayer());
+//        pushLayer(new ExampleSandboxLayer());
+        pushLayer(new ParticleLayer());
     }
 
     virtual ~Sandbox() override
