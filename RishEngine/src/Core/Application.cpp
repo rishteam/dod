@@ -1,11 +1,14 @@
 #include <Rish/Core/Application.h>
 #include <Rish/Core/Core.h>
-#include <Rish/Input/Input.h>
 #include <Rish/Core/Time.h>
-
+#include <Rish/Input/Input.h>
+//
+#include <Rish/Core/FileSystem.h>
+#include <Rish/Core/VFS.h>
+//
 #include <Rish/Events/Event.h>
 #include <Rish/Events/ApplicationEvent.h>
-
+//
 #include <Rish/Renderer/Renderer.h>
 
 namespace rl {
@@ -23,6 +26,10 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     // Initialize the window
     m_window = Scope<Window>(Window::Create(name, width, height));
     m_window->setEventCallback(RL_BIND_EVENT_FUNC(Application::onEvent));
+
+    VFS::Mount("shader", "assets/shader");
+    VFS::Mount("fonts", "assets/fonts");
+    VFS::Mount("texture", "assets/texture");
 
     // Initialize the renderer
     Renderer::Init();

@@ -17,10 +17,12 @@ EditorLayer::EditorLayer()
     : Layer("editorLayer"),
       m_cameraController(Application::Get().getWindow().getAspectRatio())
 {
-	VFS::Mount("shader", "assets/shader");
-	VFS::Mount("texture", "assets/texture");
+	VFS::Mount("shader", "assets/editor/shader");
+	VFS::Mount("texture", "assets/editor/texture");
 
-	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
+    ImGui::LoadIniSettingsFromDisk("Editor/imgui.ini");
+
+    RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_scene = MakeRef<Scene>();
 }

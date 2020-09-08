@@ -1,5 +1,7 @@
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/Application.h>
+
 #include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/VertexArray.h>
@@ -235,8 +237,7 @@ void Renderer2D::Init()
         s_data->lineVertexArray->setIndexBuffer(lineIB);
         delete [] lineIndices;
         // shader
-        s_data->lineShader = MakeRef<Shader>(Shader::ShaderFile{"DefaultLineShader", lineVS},
-                                             Shader::ShaderFile{"DefaultLineShader", lineFS});
+        s_data->lineShader = Shader::LoadShaderVFS("/shader/line.vs", "/shader/line.fs");
     }
 }
 
@@ -287,7 +288,6 @@ void Renderer2D::EndScene()
 
         // Draw
         s_data->quadVertexArray->bind();
-        RenderCommand::SetLineThickness(2.f);
         RenderCommand::DrawElement(DrawTriangles, s_data->quadVertexArray, s_data->quadIndexCount);
         s_data->quadVertexArray->unbind();
 
@@ -307,6 +307,9 @@ void Renderer2D::EndScene()
         // Shader
         s_data->lineShader->bind();
         s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
+        s_data->lineShader->setFloat2("u_ViewPort", glm::vec2{Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()});
+        s_data->lineShader->setFloat("u_LineWidth", 100.f);
+        s_data->lineShader->setFloat("u_BlendFactor", 1.5f);
         // Draw
         s_data->lineVertexArray->bind();
         // TODO: Please REFACTOR me please

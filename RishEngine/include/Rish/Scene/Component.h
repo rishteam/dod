@@ -89,8 +89,8 @@ private:
 
 struct RenderComponent
 {
-	std::string vertPath = "/shader/vertexShader/vertexSrc.glsl";
-	std::string fragPath = "/shader/fragmentShader/fragSrc.glsl";
+	std::string vertPath = "/shader/vertexSrc.glsl";
+	std::string fragPath = "/shader/fragSrc.glsl";
 	std::shared_ptr<rl::Shader> m_shader;
 
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};

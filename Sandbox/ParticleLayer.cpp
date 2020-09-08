@@ -13,6 +13,8 @@ ParticleLayer::ParticleLayer()
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
 
+    ImGui::LoadIniSettingsFromDisk("Sandbox/imgui.ini");
+
     m_particle.colorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
     m_particle.colorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
     m_particle.sizeBegin = 0.5f, m_particle.sizeVar = 0.3f, m_particle.sizeEnd = 0.0f;

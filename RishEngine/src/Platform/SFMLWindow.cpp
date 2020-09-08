@@ -7,12 +7,9 @@
 #include <IconsFontAwesome5.h>
 //
 #include <Rish/config.h>
-#include "Rish/Core/Core.h"
-#include "Rish/Platform/SFMLWindow.h"
+#include <Rish/Platform/SFMLWindow.h>
 
-#include "Rish/Events/ApplicationEvent.h"
-#include "Rish/Events/KeyEvent.h"
-#include "Rish/Events/MouseEvent.h"
+#include <Rish/Core/VFS.h>
 
 namespace rl {
 
@@ -450,7 +447,8 @@ void SFMLWindow::initImGui()
     ImFontConfig icons_config;
     icons_config.MergeMode = true;
     icons_config.PixelSnapH = true;
-    ImFont *font = io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "assets/" FONT_ICON_FILE_NAME_FAS, 14.0f, &icons_config, icons_ranges );
+
+    io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "../assets/fonts/" FONT_ICON_FILE_NAME_FAS, 14.0f, &icons_config, icons_ranges );
     UpdateFontTexture();
 
     s_windowHasFocus = m_SFMLWindow.hasFocus();
