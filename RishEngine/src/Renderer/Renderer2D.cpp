@@ -14,51 +14,6 @@ namespace rl {
 ////////////////////////////////////////////////////////////////
 // Quad Renderer
 ////////////////////////////////////////////////////////////////
-const char *quadTexVS = R"glsl(
-#version 330 core
-
-layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec4 a_Color;
-layout(location = 2) in vec2 a_TexCoord;
-layout(location = 3) in float a_TexIndex;
-layout(location = 4) in float a_Tiling;
-
-out vec4 v_Color;
-out vec2 v_TexCoord;
-out float v_TexIndex;
-out float v_Tiling;
-
-uniform mat4 u_ViewProjection;
-
-void main()
-{
-	gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-    //
-    v_Color = a_Color;
-    v_TexCoord = a_TexCoord;
-    v_TexIndex = a_TexIndex;
-    v_Tiling = a_Tiling;
-}
-)glsl";
-const char *quadTexFS = R"glsl(
-#version 330 core
-
-in vec4 v_Color;
-in vec2 v_TexCoord;
-in float v_TexIndex;
-in float v_Tiling;
-
-out vec4 color;
-
-uniform sampler2D u_Textures[32];
-
-void main()
-{
-    int index = int(v_TexIndex);
-    vec4 texColor = texture(u_Textures[index], v_TexCoord * v_Tiling);
-    color = texColor * v_Color;
-}
-)glsl";
 
 struct QuadVertex
 {
@@ -77,34 +32,6 @@ const size_t MaxQuadIndexCount = MaxQuadCount * 6;
 ////////////////////////////////////////////////////////////////
 // Line Renderer
 ////////////////////////////////////////////////////////////////
-const char *lineVS = R"glsl(
-#version 330 core
-
-layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec4 a_Color;
-
-uniform mat4 u_ViewProjection;
-
-out vec4 v_Color;
-
-void main()
-{
-    gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-    v_Color = a_Color;
-}
-)glsl";
-const char *lineFS = R"glsl(
-#version 330 core
-
-in vec4 v_Color;
-
-layout(location = 0) out vec4 color;
-
-void main()
-{
-    color = v_Color;
-}
-)glsl";
 
 struct LineVertex
 {
@@ -202,8 +129,7 @@ void Renderer2D::Init()
         s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
         s_data->textureSlots[0] = s_data->whiteTexture;
         // texture shader
-        s_data->quadTexShader = MakeRef<Shader>(Shader::ShaderFile{"DefaultRenderer2D_Shader", quadTexVS},
-                                                Shader::ShaderFile{"DefaultRenderer2D_Shader", quadTexFS});
+        s_data->quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
         int sampler[MaxTextures];
         for (int i = 0; i < MaxTextures; i++)
             sampler[i] = i;

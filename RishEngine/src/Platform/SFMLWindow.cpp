@@ -448,6 +448,7 @@ void SFMLWindow::initImGui()
     icons_config.MergeMode = true;
     icons_config.PixelSnapH = true;
 
+    // TODO: deal with the path situation
     io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "../assets/fonts/" FONT_ICON_FILE_NAME_FAS, 14.0f, &icons_config, icons_ranges );
     UpdateFontTexture();
 
