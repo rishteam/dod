@@ -132,8 +132,6 @@ void ParticleLayer::onImGuiRender()
     ImGui::End();
 
     ImGui::Begin("Debug");
-        static char tmp[128];
-        ImGui::InputText("aaa", tmp, 128);
         ImGui::Text("FPS = %d", rl::Application::Get().getFps());
         ImGui::Text("Draw = %d Quad count = %d", rl::Renderer2D::GetStats().DrawCount, rl::Renderer2D::GetStats().QuadCount);
         ImGui::DragInt("W", &m_gridWidth);

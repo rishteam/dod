@@ -261,9 +261,6 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera)
 
     // Line
     {
-//        s_data->lineShader->bind();
-//        s_data->lineShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
-
         s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
     }
@@ -290,7 +287,8 @@ void Renderer2D::EndScene()
 
         // Draw
         s_data->quadVertexArray->bind();
-        RenderCommand::DrawElement(s_data->quadVertexArray, s_data->quadIndexCount);
+        RenderCommand::SetLineThickness(2.f);
+        RenderCommand::DrawElement(DrawTriangles, s_data->quadVertexArray, s_data->quadIndexCount);
         s_data->quadVertexArray->unbind();
 
         // Reset
@@ -312,7 +310,7 @@ void Renderer2D::EndScene()
         // Draw
         s_data->lineVertexArray->bind();
         // TODO: Please REFACTOR me please
-        RenderCommand::DrawLineElement(s_data->lineVertexArray, s_data->lineIndexCount);
+        RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount);
         s_data->lineVertexArray->unbind();
         // Reset
         s_data->lineIndexCount = 0;
@@ -574,10 +572,10 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
     s_data->lineBufferPtr++;
     s_data->lineBufferPtr->position = p1;
     s_data->lineBufferPtr->color = color;
+    s_data->lineBufferPtr++;
 
     s_data->lineIndexCount += 2;
     s_data->renderStats.LineCount++;
-
 }
 
 } // namespace of rl

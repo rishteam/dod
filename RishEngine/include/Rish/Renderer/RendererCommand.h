@@ -8,6 +8,13 @@
 
 namespace rl {
 
+enum DrawType
+{
+    DrawTriangles = 0,
+    DrawLines,
+    DrawTypeCount
+};
+
 /**
  * @brief Renderer Commands
  */
@@ -36,21 +43,45 @@ public:
     static void SetClearColor(const glm::vec4 &color);
 
     /**
+     * @brief Set depth test
+     * @param state true/false
+     */
+    static void SetDepthTest(bool state);
+
+    /**
+     * @brief Depth function option
+     * @details <https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDepthFunc.xhtml>
+     */
+    enum class DepthFunc
+    {
+        Less,
+        LessEqual,
+        Equal
+    };
+    /**
+     * @brief Set depth function
+     * @param option
+     */
+    static void SetDepthFunc(DepthFunc option);
+
+    /**
      * @brief Clear the render target
      */
     static void Clear();
 
     /**
+     * @brief Reset GL3+ states
+     */
+    static void ClearStates();
+
+    /**
      * @brief Draw By IndexBuffer
      * @param vertexArray Vertex Array
      */
-    static void DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount=0);
+    static void DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount = 0);
 
-    // !TEMP!
-    // TODO: Please REFACTOR me please
-    static void DrawLineElement(const Ref<VertexArray> &vertexArray, uint32_t indexCount=0);
-
-    static void ClearStates();
+    static void SetLineThickness(float t);
+    static void SetLineSmooth(bool state);
 };
 
 }

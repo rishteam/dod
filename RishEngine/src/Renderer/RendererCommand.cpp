@@ -31,8 +31,7 @@ void RenderCommand::Init()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    SetDepthTest(true);
 }
 
 void RenderCommand::SetClearColor(const glm::vec4 &color)
@@ -45,17 +44,12 @@ void RenderCommand::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderCommand::DrawElement(const Ref <VertexArray> &vertexArray, uint32_t indexCount)
+void RenderCommand::DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount)
 {
     indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
-    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
-}
 
-// TODO: Please REFACTOR me please
-void RenderCommand::DrawLineElement(const Ref<VertexArray> &vertexArray, uint32_t indexCount)
-{
-    indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
-    glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, nullptr);
+    GLenum type = drawType == DrawTriangles ? GL_TRIANGLES : GL_LINES;
+    glDrawElements(type, indexCount, GL_UNSIGNED_INT, nullptr);
 }
 
 void RenderCommand::SetViewPort(float x, float y, float width, float height)
@@ -68,6 +62,45 @@ void RenderCommand::ClearStates()
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void RenderCommand::SetDepthTest(bool state)
+{
+    if(state)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
+
+void RenderCommand::SetDepthFunc(DepthFunc option)
+{
+    GLenum opt{};
+    switch (option)
+    {
+        case DepthFunc::Less:
+            opt = GL_LESS;
+        break;
+        case DepthFunc::LessEqual:
+            opt = GL_LEQUAL;
+        break;
+        case DepthFunc::Equal:
+            opt = GL_EQUAL;
+        break;
+    }
+    glDepthFunc(opt);
+}
+
+void RenderCommand::SetLineThickness(float t)
+{
+    glLineWidth(t);
+}
+
+void RenderCommand::SetLineSmooth(bool state)
+{
+    if(state)
+        glEnable(GL_LINE_SMOOTH);
+    else
+        glDisable(GL_LINE_SMOOTH);
 }
 
 }
