@@ -61,15 +61,22 @@ void EditorLayer::onUpdate(Time dt)
     m_cameraController.setState(m_sceneWindowFocused);
     m_cameraController.onUpdate(dt);
     //
-	m_framebuffer->bind();
+    Renderer2D::ResetStats();
+    Renderer2D::BeginScene(m_cameraController.getCamera(), m_framebuffer);
     {
-        Renderer2D::ResetStats();
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
-
+        //
+        for(int i = -10; i <= 10; i++)
+        {
+            Renderer2D::DrawLine({-100, i, -1}, {100, i, -1});
+            Renderer2D::DrawLine({i, -100, -1}, {i, 100, -1});
+        }
+        //
         m_scene->update(m_cameraController.getCamera(), dt);
+        //
     }
-	m_framebuffer->unbind();
+    Renderer2D::EndScene();
 }
 
 void EditorLayer::onImGuiRender()

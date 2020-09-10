@@ -84,6 +84,10 @@ struct Renderer2DData
     uint32_t lineIndexCount = 0;
 
     ////////////////////////////////////////////////////////////////
+    // Common
+    ////////////////////////////////////////////////////////////////
+    bool sceneState = false;                ///< Is the scene now active (called BeginScene())
+    Ref<Framebuffer> targetFramebuffer;
     OrthographicCamera camera;
     Renderer2D::Stats renderStats;
 };
@@ -174,11 +178,16 @@ void Renderer2D::Shutdown()
     s_data.reset(nullptr);
 }
 
-void Renderer2D::BeginScene(const OrthographicCamera &camera)
+void Renderer2D::BeginScene(const OrthographicCamera &camera, Ref<Framebuffer> framebuffer)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
     s_data->camera = camera;
+
+    s_data->sceneState = true;
+
+    if(framebuffer)
+        s_data->targetFramebuffer = framebuffer;
 
     // Quad
     {
@@ -191,11 +200,17 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera)
         s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
     }
+
+    // Bind the framebuffer
+    if(s_data->targetFramebuffer)
+        s_data->targetFramebuffer->bind();
 }
 
 void Renderer2D::EndScene()
 {
     RL_PROFILE_RENDERER_FUNCTION();
+
+    s_data->sceneState = false;
 
     // Quad
     if(s_data->quadIndexCount)
@@ -233,12 +248,15 @@ void Renderer2D::EndScene()
         // Shader
         s_data->lineShader->bind();
         s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
-        s_data->lineShader->setFloat2("u_ViewPort", glm::vec2{Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()});
-        s_data->lineShader->setFloat("u_LineWidth", 100.f);
+        if(s_data->targetFramebuffer)
+            s_data->lineShader->setFloat2("u_ViewPort", glm::vec2{s_data->targetFramebuffer->getWidth(), s_data->targetFramebuffer->getHeight()});
+        else
+            s_data->lineShader->setFloat2("u_ViewPort", glm::vec2{Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()});
+        s_data->lineShader->setFloat("u_LineWidth", 2.f);
         s_data->lineShader->setFloat("u_BlendFactor", 1.5f);
         // Draw
         s_data->lineVertexArray->bind();
-        // TODO: Please REFACTOR me please
+        RenderCommand::SetLineThickness(2.f);
         RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount);
         s_data->lineVertexArray->unbind();
         // Reset
@@ -246,6 +264,9 @@ void Renderer2D::EndScene()
 
         s_data->renderStats.DrawCount++;
     }
+    // Unbind the framebuffer
+    if(s_data->targetFramebuffer)
+        s_data->targetFramebuffer->unbind();
 }
 
 Renderer2D::Stats &Renderer2D::GetStats()
@@ -290,6 +311,8 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &color)
 {
     RL_PROFILE_RENDERER_FUNCTION();
+
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -346,6 +369,8 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
     FlushStatesIfExceeds();
 
     // Check if the texture is in slots
@@ -383,6 +408,8 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
     FlushStatesIfExceeds();
 
     const Ref<Texture2D> texture = subtexture->getTexture();
@@ -413,6 +440,8 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
                                  const glm::vec4 &color, float rotate)
 {
     RL_PROFILE_RENDERER_FUNCTION();
+
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -459,7 +488,7 @@ void Renderer2D::FlushStatesIfExceeds()
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
-        BeginScene(s_data->camera);
+        BeginScene(s_data->camera, nullptr);
     }
 }
 
@@ -490,10 +519,12 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
     if(s_data->lineIndexCount >= MaxLineCount)
     {
         EndScene();
-        BeginScene(s_data->camera);
+        BeginScene(s_data->camera, nullptr);
     }
 
     s_data->lineBufferPtr->position = p0;
@@ -505,6 +536,11 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
 
     s_data->lineIndexCount += 2;
     s_data->renderStats.LineCount++;
+}
+
+void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
+{
+    DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
 }
 
 } // namespace of rl

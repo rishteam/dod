@@ -50,6 +50,8 @@ public:
 
 	uint32_t getColorAttachmentRendererID() const { return m_colorAttachment; }
 	FramebufferSpecification getSpecification() const { return m_spec; }
+	uint32_t getWidth() const { return m_spec.width; }
+    uint32_t getHeight() const { return m_spec.height; }
 
 	static Ref<Framebuffer> Create(const FramebufferSpecification &spec);
 private:

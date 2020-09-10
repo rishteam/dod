@@ -59,7 +59,7 @@ void ParticleLayer::onUpdate(rl::Time dt)
     {
         RL_PROFILE_SCOPE("Renderer Draw");
         rl::Renderer2D::ResetStats();
-        rl::Renderer2D::BeginScene(m_cameraController.getCamera());
+        rl::Renderer2D::BeginScene(m_cameraController.getCamera(), nullptr);
 
         rl::Renderer2D::DrawQuad({-0.9f, 0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 1.f, 0.f, 1.f});
         rl::Renderer2D::DrawQuad({0.3f, -0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 0.f, 1.f, 1.f});

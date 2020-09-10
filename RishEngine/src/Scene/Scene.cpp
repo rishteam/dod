@@ -64,13 +64,10 @@ void Scene::update(const OrthographicCamera &camera, Time dt)
 			render.init = false;
 		}
 
-        Renderer2D::BeginScene(camera);
 		if(render.m_texture)
 		    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
 		else
 		    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-
-        Renderer2D::EndScene();
 	}
 }
 
