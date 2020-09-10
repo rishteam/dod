@@ -6,6 +6,8 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Component.h>
 
+#include <Rish/Utils/uuid.h>
+
 namespace rl{
 
 int Scene::entityNumber = 0;
@@ -24,8 +26,10 @@ Entity Scene::createEntity(const std::string& name)
 {
 	Entity entity = { m_registry.create(), this };
 	entity.addComponent<TransformComponent>();
-	auto& tag = entity.addComponent<TagComponent>().tag;
-	
+	auto &tagComponent = entity.addComponent<TagComponent>();
+	tagComponent.id = uuid::generate_uuid_v4();
+
+    auto &tag = tagComponent.tag;
 	if(name.empty())
 	{
 		tag = fmt::format("Entity {}", entityNumber);

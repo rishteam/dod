@@ -51,7 +51,8 @@ namespace rl {
 
 struct TagComponent
 {
-	std::string tag;
+	std::string tag{};
+	std::string id{};
 
 	TagComponent() = default;
 	TagComponent(const std::string& t) : tag(t) {}
@@ -61,7 +62,7 @@ private:
 	template<class Archive>
 	void serialize(Archive &ar)
 	{
-		ar(cereal::make_nvp("Tag", tag));
+		ar(cereal::make_nvp("Tag", tag), cereal::make_nvp("Id", id));
 	}
 
 };

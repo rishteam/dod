@@ -59,7 +59,8 @@ private:
 	template <class Archive>
 	void save(Archive &ar) const
 	{
-		ar(CEREAL_NVP(entityNumber));
+		ar(CEREAL_NVP(entityNumber),
+            cereal::make_nvp("version", "0.0.1"));
 
 		 entt::snapshot{m_registry}
 		 	.component<TagComponent, TransformComponent, RenderComponent>(ar);
@@ -68,8 +69,10 @@ private:
 	template <class Archive>
 	void load(Archive &ar)
 	{
-		RL_CORE_TRACE("Scene load");
-		ar(CEREAL_NVP(entityNumber));
+	    std::string version;
+		ar(CEREAL_NVP(entityNumber),
+            cereal::make_nvp("version", version));
+		RL_CORE_INFO("[Scene] Loading version: {}", version);
 
 		entt::snapshot_loader{m_registry}
 			.component<TagComponent, TransformComponent, RenderComponent>(ar);

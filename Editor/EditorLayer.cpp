@@ -143,6 +143,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 }
 
                 // Deserialize
+                std::string exceptionMsg;
                 std::stringstream oos(content);
                 bool failLoad = false;
                 try
@@ -152,7 +153,14 @@ void EditorLayer::onImGuiMainMenuRender()
                 }
                 catch (cereal::RapidJSONException &e)
                 {
-                    RL_CORE_ERROR("Failed to load scene: {}", e.what());
+                    RL_CORE_ERROR("Failed to load scene {}", e.what());
+                    exceptionMsg = e.what();
+                    failLoad = true;
+                }
+                catch (cereal::Exception &e)
+                {
+                    RL_CORE_ERROR("Failed to load scene {}", e.what());
+                    exceptionMsg = e.what();
                     failLoad = true;
                 }
 
@@ -169,7 +177,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 {
                     m_sceneLoaded = false;
 
-                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.", m_scenePath));
+                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
                 }
             }
 
