@@ -12,7 +12,7 @@ add_executable(Editor
     Panels/ComponentEditPanel.cpp
     Panels/ComponentSelectionPanel.cpp
     Panels/ErrorModal.cpp
-)
+        EditorGrid.cpp EditorGrid.h)
 
 target_include_directories(Editor PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(Editor

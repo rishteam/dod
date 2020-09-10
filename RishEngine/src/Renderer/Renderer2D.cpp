@@ -248,15 +248,9 @@ void Renderer2D::EndScene()
         // Shader
         s_data->lineShader->bind();
         s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
-        if(s_data->targetFramebuffer)
-            s_data->lineShader->setFloat2("u_ViewPort", glm::vec2{s_data->targetFramebuffer->getWidth(), s_data->targetFramebuffer->getHeight()});
-        else
-            s_data->lineShader->setFloat2("u_ViewPort", glm::vec2{Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()});
-        s_data->lineShader->setFloat("u_LineWidth", 2.f);
-        s_data->lineShader->setFloat("u_BlendFactor", 1.5f);
         // Draw
         s_data->lineVertexArray->bind();
-        RenderCommand::SetLineThickness(2.f);
+        RenderCommand::SetLineThickness(1.f);
         RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount);
         s_data->lineVertexArray->unbind();
         // Reset
