@@ -76,9 +76,12 @@ public:
 
     /**
      * @brief Draw By IndexBuffer
-     * @param vertexArray Vertex Array
+     * @param drawType Primitive type
+     * @param vertexArray VA
+     * @param indexCount Index count
+     * @param depthTest Enable/Disable depth test
      */
-    static void DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount = 0);
+    static void DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount=0, bool depthTest=false);
 
     static void SetLineThickness(float t);
     static void SetLineSmooth(bool state);

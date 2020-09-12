@@ -16,7 +16,7 @@ public:
     static void Init();
     static void Shutdown();
 
-    static void BeginScene(const OrthographicCamera &camera, Ref<Framebuffer> framebuffer=nullptr);
+    static void BeginScene(const OrthographicCamera &camera, const Ref<Framebuffer>& framebuffer=nullptr, bool depthTest=false);
     static void EndScene();
 
     // TODO: support to specify the origin

@@ -49,6 +49,7 @@ public:
     const OrthographicCameraBounds& getBounds() const { return m_bounds; }
 
     float getRotate() const { return m_rotate; }
+    glm::vec3 getPosition() const { return m_position; }
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);

@@ -86,7 +86,8 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     // Common
     ////////////////////////////////////////////////////////////////
-    bool sceneState = false;                ///< Is the scene now active (called BeginScene())
+    bool sceneState = false; ///< Is the scene now active (called BeginScene())
+    bool depthTest = false;  ///< Is the scene enable depth test
     Ref<Framebuffer> targetFramebuffer;
     OrthographicCamera camera;
     Renderer2D::Stats renderStats;
@@ -178,12 +179,13 @@ void Renderer2D::Shutdown()
     s_data.reset(nullptr);
 }
 
-void Renderer2D::BeginScene(const OrthographicCamera &camera, Ref<Framebuffer> framebuffer)
+void Renderer2D::BeginScene(const OrthographicCamera &camera, const Ref<Framebuffer>& framebuffer, bool depthTest)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    s_data->camera = camera;
+    s_data->depthTest = depthTest;
 
+    s_data->camera = camera;
     s_data->sceneState = true;
 
     if(framebuffer)
@@ -210,7 +212,25 @@ void Renderer2D::EndScene()
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    s_data->sceneState = false;
+    // Line
+    if(s_data->lineIndexCount)
+    {
+        // send accumulated VB
+        size_t lineBufferCurrentSize = (s_data->lineBufferPtr - s_data->lineBuffer) * sizeof(LineVertex);
+        s_data->lineVertexArray->getVertexBuffer()->setData(s_data->lineBuffer, lineBufferCurrentSize);
+        // Shader
+        s_data->lineShader->bind();
+        s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
+        // Draw
+        s_data->lineVertexArray->bind();
+        RenderCommand::SetLineThickness(1.f);
+        RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount, s_data->depthTest);
+        s_data->lineVertexArray->unbind();
+        // Reset
+        s_data->lineIndexCount = 0;
+
+        s_data->renderStats.DrawCount++;
+    }
 
     // Quad
     if(s_data->quadIndexCount)
@@ -229,7 +249,7 @@ void Renderer2D::EndScene()
 
         // Draw
         s_data->quadVertexArray->bind();
-        RenderCommand::DrawElement(DrawTriangles, s_data->quadVertexArray, s_data->quadIndexCount);
+        RenderCommand::DrawElement(DrawTriangles, s_data->quadVertexArray, s_data->quadIndexCount, s_data->depthTest);
         s_data->quadVertexArray->unbind();
 
         // Reset
@@ -239,28 +259,11 @@ void Renderer2D::EndScene()
         s_data->renderStats.DrawCount++;
     }
 
-    // Line
-    if(s_data->lineIndexCount)
-    {
-        // send accumulated VB
-        size_t lineBufferCurrentSize = (s_data->lineBufferPtr - s_data->lineBuffer) * sizeof(LineVertex);
-        s_data->lineVertexArray->getVertexBuffer()->setData(s_data->lineBuffer, lineBufferCurrentSize);
-        // Shader
-        s_data->lineShader->bind();
-        s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
-        // Draw
-        s_data->lineVertexArray->bind();
-        RenderCommand::SetLineThickness(1.f);
-        RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount);
-        s_data->lineVertexArray->unbind();
-        // Reset
-        s_data->lineIndexCount = 0;
-
-        s_data->renderStats.DrawCount++;
-    }
     // Unbind the framebuffer
     if(s_data->targetFramebuffer)
         s_data->targetFramebuffer->unbind();
+
+    s_data->sceneState = false;
 }
 
 Renderer2D::Stats &Renderer2D::GetStats()

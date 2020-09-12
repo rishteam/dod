@@ -31,7 +31,7 @@ void RenderCommand::Init()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    SetDepthTest(true);
+//    SetDepthTest(false);
 }
 
 void RenderCommand::SetClearColor(const glm::vec4 &color)
@@ -44,12 +44,14 @@ void RenderCommand::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderCommand::DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount)
+void RenderCommand::DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount, bool depthTest)
 {
     indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
 
     GLenum type = drawType == DrawTriangles ? GL_TRIANGLES : GL_LINES;
+    if(!depthTest) SetDepthTest(false);
     glDrawElements(type, indexCount, GL_UNSIGNED_INT, nullptr);
+    if(!depthTest) SetDepthTest(true);
 }
 
 void RenderCommand::SetViewPort(float x, float y, float width, float height)

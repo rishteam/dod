@@ -223,7 +223,7 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 // TODO: Use overlay
                 auto stat = Renderer2D::GetStats();
-                RL_INFO("Renderer2D: quad = {}, draw = {}", stat.QuadCount, stat.DrawCount);
+                RL_INFO("Renderer2D: quad = {}, line = {}, draw = {}", stat.QuadCount, stat.LineCount, stat.DrawCount);
             }
 
             ImGui::EndMenu();
