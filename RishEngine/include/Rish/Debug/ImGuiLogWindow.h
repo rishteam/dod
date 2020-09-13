@@ -23,6 +23,9 @@ public:
 
     std::deque<std::string> msgList;
     uint32_t logLinesLimit;
+private:
+    std::string m_filterTag;
+    std::string m_filterText;
 };
 
 extern ImGuiLogWindow defaultLogWindow;

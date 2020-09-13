@@ -99,7 +99,7 @@ add_library(RishEngine
     src/Renderer/Renderer.cpp
     src/Renderer/Renderer2D.cpp
 
-    # Camera
+        # Camera
     src/Renderer/Camera/OrthographicCamera.cpp
     src/Renderer/Camera/OrthographicCameraController.cpp
 

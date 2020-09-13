@@ -75,11 +75,19 @@ void OrthographicCameraController::onEvent(Event &e)
 
 void OrthographicCameraController::onImGuiRender()
 {
-    ImGui::Begin("Debug");
-    ImGui::BeginGroup();
-    ImGui::Text("Camera");
-    ImGui::Text("Position %.2f %.2f %.2f", m_position.x, m_position.y, m_position.z);
-    ImGui::Text("Rotate %.2f", m_rotate);
+    ImGui::Begin("OrthographicCameraController");
+    ImGui::Text("Aspect: %.2f",m_aspect);
+    ImGui::Checkbox("Enable Camera", &m_enableState);
+    //
+    ImGui::DragFloat("Zoom", &m_zoom);
+    //
+    ImGui::DragFloat3("Position", glm::value_ptr(m_position));
+    ImGui::DragFloat("Translate Speed", &m_translateSpeed);
+    //
+    ImGui::Checkbox("Enable Rotate", &m_isAbleToRotate);
+    ImGui::DragFloat("Rotate", &m_rotate);
+    ImGui::DragFloat("Rotate Speed", &m_rotateSpeed);
+    //
 
     auto &cam = m_camera.getViewProjectionMatrix();
     ImGui::Text("View Projection Matrix");
@@ -93,7 +101,6 @@ void OrthographicCameraController::onImGuiRender()
         }
         ImGui::NewLine();
     }
-    ImGui::EndGroup();
     ImGui::End();
 }
 
@@ -107,8 +114,8 @@ void OrthographicCameraController::onResize(float width, float height)
 
 bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 {
-    m_zoom -= e.yOffset * 0.25f;
-    m_zoom = std::max(m_zoom, 0.25f);
+    m_zoom -= e.yOffset * zoomSpeed();
+    m_zoom = std::max(m_zoom, 0.20f);
     //
     m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
     m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
@@ -119,6 +126,20 @@ bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e)
 {
     onResize(e.m_width, e.m_height);
     return false;
+}
+
+float OrthographicCameraController::zoomSpeed() const
+{
+    if(m_zoom < 1.f)
+        return 0.05f;
+    else if(m_zoom < 10.f)
+        return 0.2f;
+    else if(m_zoom < 50.f)
+        return 0.5f;
+    else if(m_zoom < 100.f)
+        return 1.f;
+    else
+        return 5.f;
 }
 
 }

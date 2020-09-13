@@ -47,15 +47,19 @@ public:
     OrthographicCamera& getCamera() { return m_camera; }
     const OrthographicCamera& getCamera() const { return m_camera; }
     const OrthographicCameraBounds& getBounds() const { return m_bounds; }
-
     float getRotate() const { return m_rotate; }
+    glm::vec3 getPosition() const { return m_position; }
+    float getZoom() const { return m_zoom; }
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
-private:
+    //
     bool m_enableState = true;
     float m_aspect = 1280.f / 720.f;
+    // Zoom
     float m_zoom = 1.f;
+    float zoomSpeed() const;
+    //
     OrthographicCameraBounds m_bounds;
     OrthographicCamera m_camera;
 

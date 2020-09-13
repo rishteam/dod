@@ -6,6 +6,8 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Component.h>
 
+#include <Rish/Utils/uuid.h>
+
 namespace rl{
 
 int Scene::entityNumber = 0;
@@ -24,8 +26,10 @@ Entity Scene::createEntity(const std::string& name)
 {
 	Entity entity = { m_registry.create(), this };
 	entity.addComponent<TransformComponent>();
-	auto& tag = entity.addComponent<TagComponent>().tag;
-	
+	auto &tagComponent = entity.addComponent<TagComponent>();
+	tagComponent.id = uuid::generate_uuid_v4();
+
+    auto &tag = tagComponent.tag;
 	if(name.empty())
 	{
 		tag = fmt::format("Entity {}", entityNumber);
@@ -55,28 +59,15 @@ void Scene::update(const OrthographicCamera &camera, Time dt)
 
 		if(render.init)
 		{
+			render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+			render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
 			render.init = false;
 		}
 
-		if(render.reloadShader)
-		{
-			render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-			render.reloadShader = false;
-		}
-
-		if(render.reloadTexture)
-		{
-			render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-			render.reloadTexture = false;
-		}
-
-        Renderer2D::BeginScene(camera);
 		if(render.m_texture)
 		    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
 		else
 		    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-
-        Renderer2D::EndScene();
 	}
 }
 

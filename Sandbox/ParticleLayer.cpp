@@ -1,9 +1,9 @@
-#include "TestLayer.h"
+#include "ParticleLayer.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
-TestLayer::TestLayer()
-    : Layer("TestLayer"),
+ParticleLayer::ParticleLayer()
+    : Layer("ParticleLayer"),
       m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true),
       m_particleSystem(1000)
 {
@@ -12,6 +12,8 @@ TestLayer::TestLayer()
     RL_INFO("Current = {}", rl::FileSystem::GetCurrentDirectory());
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
+
+    ImGui::LoadIniSettingsFromDisk("Sandbox/imgui.ini");
 
     m_particle.colorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
     m_particle.colorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
@@ -22,7 +24,7 @@ TestLayer::TestLayer()
     m_particle.position = { 0.0f, 0.0f };
 }
 
-void TestLayer::onAttach()
+void ParticleLayer::onAttach()
 {
     RL_PROFILE_FUNCTION();
 
@@ -32,12 +34,12 @@ void TestLayer::onAttach()
     m_sprite = rl::SubTexture2D::CreateFromSheet(m_spriteSheet, {0, 0}, {17, 17}, {2, 2});
 }
 
-void TestLayer::onDetach()
+void ParticleLayer::onDetach()
 {
     RL_PROFILE_FUNCTION();
 }
 
-void TestLayer::onUpdate(rl::Time dt)
+void ParticleLayer::onUpdate(rl::Time dt)
 {
     RL_PROFILE_FUNCTION();
     // Update
@@ -57,7 +59,7 @@ void TestLayer::onUpdate(rl::Time dt)
     {
         RL_PROFILE_SCOPE("Renderer Draw");
         rl::Renderer2D::ResetStats();
-        rl::Renderer2D::BeginScene(m_cameraController.getCamera());
+        rl::Renderer2D::BeginScene(m_cameraController.getCamera(), nullptr);
 
         rl::Renderer2D::DrawQuad({-0.9f, 0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 1.f, 0.f, 1.f});
         rl::Renderer2D::DrawQuad({0.3f, -0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 0.f, 1.f, 1.f});
@@ -77,6 +79,12 @@ void TestLayer::onUpdate(rl::Time dt)
         rl::Renderer2D::DrawQuad({-10.0, -3.f}, {1.f, 1.f}, m_sprite, glm::vec4{1.f});
 
         rl::Renderer2D::DrawRotatedQuad({-9.0f, 0.f}, {1.f, 1.f}, m_sprite, glm::vec4{1.f}, m_objectRotate);
+
+        rl::Renderer2D::DrawLine({-15.f, -15.f, 5.f}, {1.f, 1.f, 5.f});
+        rl::Renderer2D::DrawLine({-15.f, -15.f, 5.f}, {1.f, 1.f, 5.f}, {1.f, 0.f, 0.f, 1.f});
+
+        rl::Renderer2D::DrawQuad({-3, 1}, {1.f, 1.f}, {1.f, 1.f, 1.f, 1.f});
+        rl::Renderer2D::DrawQuad({-3, 1}, {1.f, 1.f}, {1.f, 0.f, 0.f, 1.f});
 
         rl::Renderer2D::EndScene();
     }
@@ -105,7 +113,7 @@ void TestLayer::onUpdate(rl::Time dt)
     m_particleSystem.onRender(m_cameraController.getCamera());
 }
 
-void TestLayer::onImGuiRender()
+void ParticleLayer::onImGuiRender()
 {
     RL_PROFILE_FUNCTION();
 
@@ -130,8 +138,6 @@ void TestLayer::onImGuiRender()
     ImGui::End();
 
     ImGui::Begin("Debug");
-        static char tmp[128];
-        ImGui::InputText("aaa", tmp, 128);
         ImGui::Text("FPS = %d", rl::Application::Get().getFps());
         ImGui::Text("Draw = %d Quad count = %d", rl::Renderer2D::GetStats().DrawCount, rl::Renderer2D::GetStats().QuadCount);
         ImGui::DragInt("W", &m_gridWidth);
@@ -152,7 +158,7 @@ void TestLayer::onImGuiRender()
     m_cameraController.onImGuiRender();
 }
 
-void TestLayer::onEvent(rl::Event &e)
+void ParticleLayer::onEvent(rl::Event &e)
 {
     RL_PROFILE_FUNCTION();
     m_cameraController.onEvent(e);

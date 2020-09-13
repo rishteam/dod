@@ -51,20 +51,18 @@ namespace rl {
 
 struct TagComponent
 {
-	std::string tag;
+	std::string tag{};
+	std::string id{};
 
 	TagComponent() = default;
-	TagComponent(const std::string& t)
-		: tag(t)
-    {
-    }
+	TagComponent(const std::string& t) : tag(t) {}
 
 private:
 	friend class cereal::access;
 	template<class Archive>
 	void serialize(Archive &ar)
 	{
-		ar(cereal::make_nvp("Tag", tag));
+		ar(cereal::make_nvp("Tag", tag), cereal::make_nvp("Id", id));
 	}
 
 };
@@ -76,9 +74,7 @@ struct TransformComponent
 	glm::vec3 scale {1.f, 1.f, 1.f};
 
 	TransformComponent() = default;
-	TransformComponent(const glm::mat4& t)
-		: transform(t)
-    {}
+	TransformComponent(const glm::mat4& t) : transform(t) {}
 
 private:
 	friend class cereal::access;
@@ -94,8 +90,8 @@ private:
 
 struct RenderComponent
 {
-	std::string vertPath = "/shader/vertexShader/vertexSrc.glsl";
-	std::string fragPath = "/shader/fragmentShader/fragSrc.glsl";
+	std::string vertPath = "/shader/vertexSrc.glsl";
+	std::string fragPath = "/shader/fragSrc.glsl";
 	std::shared_ptr<rl::Shader> m_shader;
 
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
@@ -103,14 +99,10 @@ struct RenderComponent
 	std::shared_ptr<Texture2D> m_texture;
 
 	// states
-	bool reloadShader = true;
-	bool reloadTexture = true;
 	bool init = true;
 
 	RenderComponent() = default;
-	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s)
-	{
-	}
+	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s) {}
 	RenderComponent(const std::string &vp, const std::string &fp, const glm::vec4 &c)
 		: vertPath(vp), fragPath(fp), color(c)
 	{

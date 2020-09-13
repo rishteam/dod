@@ -8,7 +8,6 @@
 #pragma once
 
 #include "Rish/rlpch.h"
-#include "Rish/Core/Core.h"
 #include "Rish/Core/Log.h"
 
 namespace rl {
@@ -19,18 +18,25 @@ namespace rl {
 class RL_API File
 {
 public:
-	File(const std::string &path);
+	File(const std::string &path) : m_path(path)
+    {}
+    File(const fs::path &p) : m_path(p)
+    {}
 
-	// TODO: getName(): get the name of file (last entry of path)
-	std::string getPath() { return m_path; }
-	bool isFile() { return m_file; }
-	bool isDir() { return m_dir; }
+	std::string getPath() const { return m_path.string(); }
+	std::string getFilename() const { return m_path.filename().string(); }
+	std::string getExtenstion() const { return m_path.extension().string(); }
+
+	File parent() { return m_path.parent_path(); }
+
+	bool isFile() { return fs::is_regular_file(fs::absolute(m_path)); }
+	bool isDirectory() { return fs::is_directory(fs::absolute(m_path)); }
 
 private:
-	std::string m_path;
-	bool m_file;
-	bool m_dir;
+	fs::path m_path;
 };
+
+
 
 /**
  * @brief File System class
@@ -64,10 +70,42 @@ public:
 	static void SetCurrentDirectoryPath(const fs::path &path);
 
 	/**
-     * @brief Create a File
-     * @param path Path of the new file
+	 * @brief Normalize the path
+	 * @param path path
+	 * @return Normalized path
+	 *
+	 * @code{.cpp}
+	 * rl::FileSystem::Normalize("a/b/c/../../d/e");
+	 * // a\d\e
+	 * @endcode
+	 */
+	static std::string Normalize(const std::string &path);
+
+	/**
+	 * @brief Get the absolute path
+	 * @param path path
+	 * @return absolute path
+	 */
+    static std::string AbsolutePath(const std::string &path);
+
+    /**
+     * @brief Is absolute path
+     * @param path Path
+     * @return bool
      */
-	static void CreateFile(const std::string &path);
+    static bool IsAbsolutePath(const std::string &path);
+
+	/**
+     * @brief Create a File
+     * @param path Path to the new file
+     */
+	static bool CreateFile(const std::string &path);
+
+	/**
+	 * @brief Delete a File
+	 * @param path Path to the new file
+	 */
+	static bool DeleteFile(const std::string &path);
 
 	/**
      * @brief Is the file exist
@@ -92,6 +130,12 @@ public:
      * @param path Path to the directory
      * @return true It's a directory
      * @return false It's not a directory
+     *
+     * @code{.cpp}
+     * rl::FileSystem::IsDirectory("assets/") == true;
+     * rl::FileSystem::IsDirectory(R"(C:\Users\Rish\Desktop\rish\dod\Sandbox\assets)") == true;
+     * rl::FileSystem::IsDirectory("assets/1.png") == false;
+     * @endcode
      */
 	static bool IsDirectory(const std::string &path);
 
@@ -101,18 +145,26 @@ public:
      * @param path  Path to the file
      * @return true It's a file
      * @return false It's not a file
+     *
+     * @code{.cpp}
+     * rl::FileSystem::IsFile("assets/") == false;
+     * rl::FileSystem::IsFile(R"(C:\Users\Rish\Desktop\rish\dod\Sandbox\assets)") == false;
+     * rl::FileSystem::IsFile("assets/1.png") == true;
+     * @endcode
      */
 	static bool IsFile(const std::string &path);
 
 	/**
      * @brief Read the file in binary mode and returns a new array
-     * @warning This will return a new allocated `char*` \n
-     *          Remeber to *DELETE* on your own
      * @param path Path to the file in FileSystem
      * @return char* File content
+     *
+     * @code{.cpp}
+     * size_t size;
+     * auto buf = rl::FileSystem::ReadWholeFile("assets/test.bin", size);
+     * @endcode
      */
-	static char *ReadFile(const std::string &path);
-	// TODO: size???
+	static Scope<char[]> ReadWholeFile(const std::string &path, size_t &siz);
 
 	/**
      * @brief Read the file in binary mode into a specified buffer
@@ -163,9 +215,14 @@ public:
      * @param path Path that ready to list 
      * @param vec The buffer contains all the files or directories under the path 
      * @return true Exist some file under the path
-     * @return false No file exist under the path 
+     * @return false No file exist under the path
+     *
+     * @code{.cpp}
+     * std::vector<rl::File> fileList;
+     * rl::FileSystem::List("assets/", fileList);
+     * @endcode
      */
 	static bool List(const std::string &path, std::vector<File> &vec);
 };
 
-} // namespace icejj
+} // namespace rl

@@ -5,7 +5,7 @@ project(Sandbox)
 add_executable(${PROJECT_NAME}
     SandboxApp.cpp
     SandboxLayer.cpp
-    TestLayer.cpp
+    ParticleLayer.cpp
     ParticleSystem.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})

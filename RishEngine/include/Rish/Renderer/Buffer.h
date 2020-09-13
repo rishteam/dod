@@ -182,7 +182,20 @@ class RL_API VertexBuffer
 {
 public:
 	VertexBuffer();
+
+	/**
+	 * @brief Construct the dynamic VertexBuffer with vertices
+	 * @param size Size of the buffer in bytes
+	 */
 	VertexBuffer(uint32_t size);
+
+	/**
+	 * @brief Construct the static VertexBuffer with vertices
+	 * @param vertices Array of vertices
+	 * @param size Size of the buffer in bytes
+	 *
+	 * @warning VertexBuffer won't obtain the ownership of the array passing in
+	 */
 	VertexBuffer(float *vertices, uint32_t size);
 	~VertexBuffer();
 

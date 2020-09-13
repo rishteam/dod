@@ -17,10 +17,12 @@ EditorLayer::EditorLayer()
     : Layer("editorLayer"),
       m_cameraController(Application::Get().getWindow().getAspectRatio())
 {
-	VFS::Mount("shader", "assets/shader");
-	VFS::Mount("texture", "assets/texture");
+	VFS::Mount("shader", "assets/editor/shader");
+	VFS::Mount("texture", "assets/editor/texture");
 
-	RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
+    ImGui::LoadIniSettingsFromDisk("Editor/imgui.ini");
+
+    RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_scene = MakeRef<Scene>();
 }
@@ -35,29 +37,47 @@ void EditorLayer::onAttach()
 
     m_sceneHierarchyPanel.onAttach(m_scene);
     m_componentEditPanel.onAttach(m_scene);
+    m_editorGrid.onAttach();
 }
 
 void EditorLayer::onDetach()
 {
     RL_CORE_INFO("[EditorLayer] onDetach");
+
+    ImGui::SaveIniSettingsToDisk("Editor/imgui.ini");
+
     m_sceneHierarchyPanel.onDetach();
     m_componentEditPanel.onDetach();
+    m_editorGrid.onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
 {
+    // Resize the framebuffer if user resize the viewport
+    auto framebufferSpec = m_framebuffer->getSpecification();
+    auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
+    if(m_sceneViewportPanelSize != framebufferSize &&
+        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
+    {
+        m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_cameraController.onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
+    }
+    //
     m_cameraController.setState(m_sceneWindowFocused);
     m_cameraController.onUpdate(dt);
-
-	m_framebuffer->bind();
+    //
+    Renderer2D::ResetStats();
+    Renderer2D::BeginScene(m_cameraController.getCamera(), m_framebuffer);
     {
-        Renderer2D::ResetStats();
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
-
+        //
+        m_editorGrid.onUpdate(m_cameraController);
+        //
         m_scene->update(m_cameraController.getCamera(), dt);
+        //
     }
-	m_framebuffer->unbind();
+    Renderer2D::EndScene();
 }
 
 void EditorLayer::onImGuiRender()
@@ -80,6 +100,7 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("Entity Manager");
     {
+
     }
 	ImGui::End();
 
@@ -87,17 +108,10 @@ void EditorLayer::onImGuiRender()
 	ImGui::Begin("Scene");
 	ImGui::PopStyleVar();
     {
-        // if resize
+        // Update viewport resize
         auto size = ImGui::GetContentRegionAvail();
-        glm::vec2 viewportSize{size.x, size.y};
-        if(m_sceneViewportPanelSize != viewportSize)
-        {
-            m_sceneViewportPanelSize = viewportSize;
-            m_framebuffer->resize((uint32_t)size.x, (uint32_t)size.y);
-            m_cameraController.onResize(size.x, size.y);
-        }
+        m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show
-        // TODO: fix flickering issue
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
         ImGui::Image((ImTextureID)textureID, size, {0, 0}, {1, -1});
         // states
@@ -138,6 +152,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 }
 
                 // Deserialize
+                std::string exceptionMsg;
                 std::stringstream oos(content);
                 bool failLoad = false;
                 try
@@ -147,7 +162,14 @@ void EditorLayer::onImGuiMainMenuRender()
                 }
                 catch (cereal::RapidJSONException &e)
                 {
-                    RL_CORE_ERROR("Failed to load scene: {}", e.what());
+                    RL_CORE_ERROR("Failed to load scene {}", e.what());
+                    exceptionMsg = e.what();
+                    failLoad = true;
+                }
+                catch (cereal::Exception &e)
+                {
+                    RL_CORE_ERROR("Failed to load scene {}", e.what());
+                    exceptionMsg = e.what();
                     failLoad = true;
                 }
 
@@ -164,7 +186,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 {
                     m_sceneLoaded = false;
 
-                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.", m_scenePath));
+                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
                 }
             }
 
@@ -207,14 +229,26 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 // TODO: Use overlay
                 auto stat = Renderer2D::GetStats();
-                RL_INFO("Renderer2D: quad = {}, draw = {}", stat.QuadCount, stat.DrawCount);
+                RL_INFO("Renderer2D: quad = {}, line = {}, draw = {}", stat.QuadCount, stat.LineCount, stat.DrawCount);
             }
 
             ImGui::EndMenu();
         }
 
+        if(ImGui::BeginMenu("Debug"))
+        {
+            ImGui::MenuItem("Editor Grid", nullptr, &m_debugEditorGrid);
+            ImGui::MenuItem("Editor Camera", nullptr, &m_debugCameraController);
+            ImGui::EndMenu();
+        }
+
         ImGui::EndMenuBar();
     }
+
+    if(m_debugEditorGrid)
+        m_editorGrid.onImGuiRender();
+    if(m_debugCameraController)
+        m_cameraController.onImGuiRender();
 }
 
 void EditorLayer::onEvent(rl::Event& event)

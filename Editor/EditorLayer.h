@@ -3,8 +3,9 @@
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ComponentEditPanel.h"
 #include "Panels/ComponentSelectionPanel.h"
-
 #include "Panels/ErrorModal.h"
+
+#include "EditorGrid.h"
 
 namespace rl {
 
@@ -41,9 +42,17 @@ private:
 	// Scene window camera
 	OrthographicCameraController m_cameraController;
 
+	// Editor
+	EditorGrid m_editorGrid;
+
 	SceneHierarchyPanel m_sceneHierarchyPanel;
 	ComponentEditPanel m_componentEditPanel;
 	ErrorModal m_errorModal;
+
+	// Main Menu
+	bool m_debugEditorGrid = false;
+	bool m_debugCameraController = false;
+
 };
 
 }

@@ -40,7 +40,7 @@ void Renderer::Submit(const Ref<Shader> &shader, const Ref<VertexArray> &vertexA
     shader->setMat4("u_Model", transform);
     //
     vertexArray->bind();
-    RenderCommand::DrawElement(vertexArray, 0);
+    RenderCommand::DrawElement(DrawTriangles, vertexArray, 0);
     // TODO: check the reason that this must unbind
     vertexArray->unbind();
     shader->unbind();
