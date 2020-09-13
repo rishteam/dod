@@ -114,7 +114,6 @@ void OrthographicCameraController::onResize(float width, float height)
 
 bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 {
-    RL_CORE_INFO("off = {}", e.yOffset);
     m_zoom -= e.yOffset * zoomSpeed();
     m_zoom = std::max(m_zoom, 0.20f);
     //
@@ -129,7 +128,7 @@ bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e)
     return false;
 }
 
-float OrthographicCameraController::zoomSpeed()
+float OrthographicCameraController::zoomSpeed() const
 {
     if(m_zoom < 1.f)
         return 0.05f;
@@ -137,8 +136,10 @@ float OrthographicCameraController::zoomSpeed()
         return 0.2f;
     else if(m_zoom < 50.f)
         return 0.5f;
-    else
+    else if(m_zoom < 100.f)
         return 1.f;
+    else
+        return 5.f;
 }
 
 }

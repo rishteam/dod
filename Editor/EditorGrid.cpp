@@ -12,7 +12,6 @@ void EditorGrid::onUpdate(const OrthographicCameraController &cameraController)
     // Get the camera bound with ref to current camera pos
     m_currentBound = cameraController.getBounds();
 
-
     float nowMinBound = std::ceil(std::min(m_currentBound.right, m_currentBound.top));
     // Less than the previous limit
     if(nowMinBound <= preLimit)

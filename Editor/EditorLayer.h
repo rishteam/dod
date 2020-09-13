@@ -48,6 +48,11 @@ private:
 	SceneHierarchyPanel m_sceneHierarchyPanel;
 	ComponentEditPanel m_componentEditPanel;
 	ErrorModal m_errorModal;
+
+	// Main Menu
+	bool m_debugEditorGrid = false;
+	bool m_debugCameraController = false;
+
 };
 
 }

@@ -86,9 +86,6 @@ void EditorLayer::onImGuiRender()
     // Menu Bar
     onImGuiMainMenuRender();
 
-    m_editorGrid.onImGuiRender();
-    m_cameraController.onImGuiRender();
-
     m_sceneHierarchyPanel.onImGuiRender();
 
     // TODO: should these code exist?
@@ -238,8 +235,20 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::EndMenu();
         }
 
+        if(ImGui::BeginMenu("Debug"))
+        {
+            ImGui::MenuItem("Editor Grid", nullptr, &m_debugEditorGrid);
+            ImGui::MenuItem("Editor Camera", nullptr, &m_debugCameraController);
+            ImGui::EndMenu();
+        }
+
         ImGui::EndMenuBar();
     }
+
+    if(m_debugEditorGrid)
+        m_editorGrid.onImGuiRender();
+    if(m_debugCameraController)
+        m_cameraController.onImGuiRender();
 }
 
 void EditorLayer::onEvent(rl::Event& event)

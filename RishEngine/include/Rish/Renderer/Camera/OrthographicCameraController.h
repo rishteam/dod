@@ -53,11 +53,13 @@ public:
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
-    float zoomSpeed();
-private:
+    //
     bool m_enableState = true;
     float m_aspect = 1280.f / 720.f;
+    // Zoom
     float m_zoom = 1.f;
+    float zoomSpeed() const;
+    //
     OrthographicCameraBounds m_bounds;
     OrthographicCamera m_camera;
 
