@@ -11,13 +11,9 @@ void EditorGrid::onUpdate(const OrthographicCameraController &cameraController)
     const auto & pos = cameraController.getPosition();
     // Get the camera bound with ref to current camera pos
     m_currentBound = cameraController.getBounds();
-    m_currentBound.left += pos.x;
-    m_currentBound.right += pos.x;
-    m_currentBound.top += pos.y;
-    m_currentBound.bottom += pos.y;
+
 
     float nowMinBound = std::ceil(std::min(m_currentBound.right, m_currentBound.top));
-
     // Less than the previous limit
     if(nowMinBound <= preLimit)
     {
@@ -42,11 +38,17 @@ void EditorGrid::onUpdate(const OrthographicCameraController &cameraController)
         preLimit = limit;
         limit *= 10.f;
     }
+
+    m_currentBound.left += pos.x;
+    m_currentBound.right += pos.x;
+    m_currentBound.top += pos.y;
+    m_currentBound.bottom += pos.y;
+
     // Draw only current and next level
-    drawLines(currentOffset, cur);
-    drawLines(nextOffset, startColor);
+    drawGrid(currentOffset, cur);
+    drawGrid(nextOffset, startColor);
     //
-    drawLines(0, glm::vec4{0.8f, 0.f, 0.f,  1.0f});
+    drawGrid(0, glm::vec4{0.8f, 0.f, 0.f, 1.0f});
 }
 
 void EditorGrid::onImGuiRender()
@@ -60,13 +62,13 @@ void EditorGrid::onImGuiRender()
     float nowLevel = std::ceil(std::min(m_currentBound.right, m_currentBound.top));
     ImGui::Text("lev = %f", nowLevel);
     ImGui::Text("lerp val = %f", (limit-nowLevel)/limit);
-    ImGui::DragFloat("limit", &limit);
+    ImGui::DragFloat("limit", &limit, 0.01f);
     ImGui::Text("currentOffset = %f | nextOffset = %f", currentOffset, nextOffset);
     ImGui::Text("limit = %f | preLimit = %f", limit, preLimit);
     ImGui::End();
 }
 
-void EditorGrid::drawLines(float offset, const glm::vec4 &color)
+void EditorGrid::drawGrid(float offset, const glm::vec4 &color)
 {
     auto &bound = m_currentBound;
 
@@ -79,27 +81,19 @@ void EditorGrid::drawLines(float offset, const glm::vec4 &color)
 
     // straight lines
     // left
-    for(float i = 0.f; i >= bound.left; i -= offset)
+    for(float i = 0.f; i >= std::floor(bound.left); i -= offset)
         Renderer2D::DrawLine({i, bound.bottom, -1}, {i, bound.top, -1}, color);
     // right
-    for(float i = 0.f; i < bound.right; i += offset)
+    for(float i = 0.f; i < std::ceil(bound.right); i += offset)
         Renderer2D::DrawLine({i, bound.bottom, -1}, {i, bound.top, -1}, color);
 
     // horizontal lines
     // bottom
-    for(float i = 0.f; i >= bound.bottom; i -= offset)
+    for(float i = 0.f; i >= std::floor(bound.bottom); i -= offset)
         Renderer2D::DrawLine({bound.left, i, -1}, {bound.right, i, -1}, color);
     // top
-    for(float i = 0.f; i < bound.top; i += offset)
+    for(float i = 0.f; i < std::ceil(bound.top); i += offset)
         Renderer2D::DrawLine({bound.left, i, -1}, {bound.right, i, -1}, color);
-}
-
-void EditorGrid::onAttach()
-{
-}
-
-void EditorGrid::onDetach()
-{
 }
 
 }
