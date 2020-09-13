@@ -44,7 +44,7 @@ private:
 
     glm::mat4 m_viewMatrix{1.f};          ///< View Matrix
     glm::mat4 m_projectionMatrix{1.f};    ///< Projection Matrix
-    glm::mat4 m_vpMatrix{1.f};            ///< View Projection Matrix \f$\text{Projeciton} \cdot \text{View}\f$
+    glm::mat4 m_vpMatrix{1.f};            ///< View Projection Matrix
 };
 
 } // end of namespace rl
