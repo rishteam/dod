@@ -38,6 +38,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/compatibility.hpp>
 
 // For current state, we put serialization related things here for convenience
 #include <cereal/cereal.hpp>

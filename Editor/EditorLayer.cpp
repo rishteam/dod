@@ -37,13 +37,18 @@ void EditorLayer::onAttach()
 
     m_sceneHierarchyPanel.onAttach(m_scene);
     m_componentEditPanel.onAttach(m_scene);
+    m_editorGrid.onAttach();
 }
 
 void EditorLayer::onDetach()
 {
     RL_CORE_INFO("[EditorLayer] onDetach");
+
+    ImGui::SaveIniSettingsToDisk("Editor/imgui.ini");
+
     m_sceneHierarchyPanel.onDetach();
     m_componentEditPanel.onDetach();
+    m_editorGrid.onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -81,6 +86,9 @@ void EditorLayer::onImGuiRender()
     // Menu Bar
     onImGuiMainMenuRender();
 
+    m_editorGrid.onImGuiRender();
+    m_cameraController.onImGuiRender();
+
     m_sceneHierarchyPanel.onImGuiRender();
 
     // TODO: should these code exist?
@@ -95,6 +103,7 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("Entity Manager");
     {
+
     }
 	ImGui::End();
 
