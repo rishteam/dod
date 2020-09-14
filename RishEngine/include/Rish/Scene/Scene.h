@@ -27,18 +27,23 @@ public:
 
 	/**
 	 * @brief Create a Entity object
-	 * 
-	 * @return Entity 
+	 * @param name Name
+	 * @return Entity
 	 */
 	Entity createEntity(const std::string& name = std::string());
+
+	/**
+	 * @brief Destroy a Entity object
+	 * @param entity Entity
+	 */
 	void destroyEntity(const Entity& entity);
 
 	/**
 	 * @brief Update Entity behavior
-	 * @param dt
+	 * @param camera Camera
+	 * @param dt Delta t
 	 */
-	 // TODO: rename
-	void update(const OrthographicCamera &camera, Time dt);
+	void onUpdate(const OrthographicCamera &camera, Time dt);
 
 private:
 	static int entityNumber;

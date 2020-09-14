@@ -49,7 +49,7 @@ void Scene::destroyEntity(const Entity &entity)
     m_registry.destroy(entity.getEntityID());
 }
 
-void Scene::update(const OrthographicCamera &camera, Time dt)
+void Scene::onUpdate(const OrthographicCamera &camera, Time dt)
 {
 	auto transGroup = m_registry.group<TransformComponent, RenderComponent>();
 	for(auto entity: transGroup)
@@ -68,6 +68,14 @@ void Scene::update(const OrthographicCamera &camera, Time dt)
 		    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
 		else
 		    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+
+		// Draw Border
+		glm::vec3 p[4];
+		glm::vec2 off[] = { {-1, 1}, { 1, 1}, { 1,-1}, {-1,-1} };
+		for(int i = 0; i < 4; i++) // gen vertices
+            p[i] = transform.translate + transform.scale * glm::vec3(off[i], 1.f) * 0.5f;
+		for(int i = 0; i < 4; i++)
+            Renderer2D::DrawLine(p[i], p[(i+1)%4]);
 	}
 }
 

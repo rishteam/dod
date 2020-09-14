@@ -1,4 +1,4 @@
-#include <imgui.h>
+#include <Rish/ImGui.h>
 
 #include <SFML/Window/Keyboard.hpp>
 #include <Rish/Core/Application.h>

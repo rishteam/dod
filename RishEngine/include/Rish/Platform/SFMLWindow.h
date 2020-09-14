@@ -11,7 +11,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <imgui.h>
+#include <Rish/ImGui.h>
 #include <imgui-SFML.h>
 
 #include <Rish/Core/Window.h>

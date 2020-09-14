@@ -2,7 +2,7 @@
 
 #include <Rish/Scene/ComponentManager.h>
 
-#include <imgui.h>
+#include <Rish/ImGui.h>
 #include <entt/entt.hpp>
 
 namespace rl {

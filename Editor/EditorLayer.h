@@ -43,7 +43,7 @@ private:
 	OrthographicCameraController m_cameraController;
 
 	// Editor
-	EditorGrid m_editorGrid;
+	Ref<EditorGrid> m_editorGrid;
 
 	SceneHierarchyPanel m_sceneHierarchyPanel;
 	ComponentEditPanel m_componentEditPanel;

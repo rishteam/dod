@@ -10,7 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/printf.h>
-#include <imgui.h>
+#include <Rish/ImGui.h>
 
 #include "Rish/Core/Core.h"
 

@@ -3,7 +3,7 @@
 #include <Rish/rlpch.h>
 #include <Rish/Input/Input.h>
 
-#include <imgui.h>
+#include <Rish/ImGui.h>
 
 namespace rl {
 

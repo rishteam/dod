@@ -1,6 +1,6 @@
 #include "Rish/rlpch.h"
 
-#include <imgui.h>
+#include <Rish/ImGui.h>
 
 #include "Rish/Core/ResManager.h"
 #include "Rish/Core/Log.h"

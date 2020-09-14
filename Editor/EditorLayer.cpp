@@ -7,7 +7,7 @@
 #include <Rish/Utils/FileDialog.h>
 
 #include <IconsFontAwesome5.h>
-#include <imgui.h>
+#include <Rish/ImGui.h>
 
 #include "EditorLayer.h"
 
@@ -25,6 +25,7 @@ EditorLayer::EditorLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_scene = MakeRef<Scene>();
+    m_editorGrid = MakeRef<EditorGrid>();
 }
 
 void EditorLayer::onAttach()
@@ -37,7 +38,7 @@ void EditorLayer::onAttach()
 
     m_sceneHierarchyPanel.onAttach(m_scene);
     m_componentEditPanel.onAttach(m_scene);
-    m_editorGrid.onAttach();
+    m_editorGrid->onAttach();
 }
 
 void EditorLayer::onDetach()
@@ -48,7 +49,7 @@ void EditorLayer::onDetach()
 
     m_sceneHierarchyPanel.onDetach();
     m_componentEditPanel.onDetach();
-    m_editorGrid.onDetach();
+    m_editorGrid->onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -72,9 +73,9 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
-        m_editorGrid.onUpdate(m_cameraController);
+        m_editorGrid->onUpdate(m_cameraController);
         //
-        m_scene->update(m_cameraController.getCamera(), dt);
+        m_scene->onUpdate(m_cameraController.getCamera(), dt);
         //
     }
     Renderer2D::EndScene();
@@ -100,13 +101,12 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::Begin("Entity Manager");
     {
-
     }
 	ImGui::End();
 
+    ImVec2 padding = ImGui::GetStyle().WindowPadding;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Scene");
-	ImGui::PopStyleVar();
     {
         // Update viewport resize
         auto size = ImGui::GetContentRegionAvail();
@@ -117,8 +117,19 @@ void EditorLayer::onImGuiRender()
         // states
         m_sceneWindowFocused = ImGui::IsWindowFocused();
         m_sceneWindowHovered = ImGui::IsWindowHovered();
+
+        // Get mouse position
+        ImVec2 curMPos = ImGui::GetMousePosRelatedToWindow(), mr;
+        // Convert the origin to center
+        float hW = size.x / 2.f, hH = size.y / 2.f;
+        mr.x = curMPos.x - hW;
+        mr.y = hH - curMPos.y;
+        // to NDC
+        mr.x /= hW;
+        mr.y /= hH;
     }
 	ImGui::End();
+	ImGui::PopStyleVar();
 
     ImGui::Begin(ICON_FA_TERMINAL " Console");
     ImGui::End();
@@ -246,7 +257,7 @@ void EditorLayer::onImGuiMainMenuRender()
     }
 
     if(m_debugEditorGrid)
-        m_editorGrid.onImGuiRender();
+        m_editorGrid->onImGuiRender();
     if(m_debugCameraController)
         m_cameraController.onImGuiRender();
 }

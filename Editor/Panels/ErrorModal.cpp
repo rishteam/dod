@@ -1,6 +1,6 @@
 #include "ErrorModal.h"
 
-#include <imgui.h>
+#include <Rish/ImGui.h>
 
 namespace rl {
 

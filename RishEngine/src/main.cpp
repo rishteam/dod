@@ -3,7 +3,7 @@
 #include <SFML/System.hpp>
 #include <SFML/OpenGL.hpp>
 
-#include <imgui.h>
+#include <Rish/ImGui.h>
 #include <imgui-SFML.h>
 
 #include "Rish/Core/Log.h"

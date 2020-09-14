@@ -3,7 +3,7 @@
 #include <Rish/Utils/FileDialog.h>
 
 #include <IconsFontAwesome5.h>
-#include <imgui.h>
+#include <Rish/ImGui.h>
 #include <imgui_stdlib.h>
 
 namespace rl {
