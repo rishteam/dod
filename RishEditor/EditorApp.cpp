@@ -8,7 +8,7 @@ namespace rl {
 class Editor : public rl::Application
 {
 public:
-	Editor() : rl::Application("Editor", 1920, 1000)
+	Editor() : rl::Application("RishEditor", 1920, 1000)
 	{
 		pushLayer(new EditorLayer());
 	}

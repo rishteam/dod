@@ -5,7 +5,7 @@
 #include "Panels/ComponentSelectionPanel.h"
 #include "Panels/ErrorModal.h"
 
-#include "EditorGrid.h"
+#include "RishEditor/Edit/EditorGrid.h"
 
 namespace rl {
 

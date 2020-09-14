@@ -20,7 +20,7 @@ EditorLayer::EditorLayer()
 	VFS::Mount("shader", "assets/editor/shader");
 	VFS::Mount("texture", "assets/editor/texture");
 
-    ImGui::LoadIniSettingsFromDisk("Editor/imgui.ini");
+    ImGui::LoadIniSettingsFromDisk("RishEditor/imgui.ini");
 
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
@@ -45,7 +45,7 @@ void EditorLayer::onDetach()
 {
     RL_CORE_INFO("[EditorLayer] onDetach");
 
-    ImGui::SaveIniSettingsToDisk("Editor/imgui.ini");
+    ImGui::SaveIniSettingsToDisk("RishEditor/imgui.ini");
 
     m_sceneHierarchyPanel.onDetach();
     m_componentEditPanel.onDetach();
@@ -248,8 +248,8 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Debug"))
         {
-            ImGui::MenuItem("Editor Grid", nullptr, &m_debugEditorGrid);
-            ImGui::MenuItem("Editor Camera", nullptr, &m_debugCameraController);
+            ImGui::MenuItem("RishEditor Grid", nullptr, &m_debugEditorGrid);
+            ImGui::MenuItem("RishEditor Camera", nullptr, &m_debugCameraController);
             ImGui::EndMenu();
         }
 

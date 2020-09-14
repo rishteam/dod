@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # BINARY_NAME=Sandbox/Sandbox.exe
-BINARY_NAME=Editor/Editor.exe
+BINARY_NAME=RishEditor/Editor.exe
 
 usage() {
     cat <<EOF
