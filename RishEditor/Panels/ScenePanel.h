@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/Time.h>
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
 
@@ -16,6 +17,7 @@ public:
 
     virtual void onAttach(const Ref <Scene> &scene) { setContext(scene); }
     virtual void onDetach() {}
+    virtual void onUpdate(Time dt) {}
     virtual void onImGuiRender() = 0;
 
     void setContext(const Ref<Scene> &scene) { m_currentScene = scene; }

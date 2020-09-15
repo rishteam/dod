@@ -16,9 +16,10 @@ add_executable(Editor
     # Edit
     Edit/EditorGrid.cpp
     Edit/EditorGrid.h
+    Edit/EditController.cpp
 )
 
-target_include_directories(Editor PUBLIC ${CMAKE_SOURCE_DIR})
+target_include_directories(Editor PUBLIC ${PROJECT_SOURCE_DIR})
 target_link_libraries(Editor
     Rish::Engine project_options project_warnings
 )

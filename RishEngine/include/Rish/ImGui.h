@@ -37,6 +37,9 @@ std::pair<ImVec2, ImVec2> GetWindowContentPoints();
  */
 ImVec2 GetMousePosRelatedToWindow();
 
+void BeginDockspace(const char *name);
+void EndDockspace();
+
 } // end of namespace ImGui
 
 ImVec2 operator+(const ImVec2 &lhs, const ImVec2 &rhs);
