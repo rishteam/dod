@@ -106,14 +106,14 @@ void EditorLayer::onImGuiRender()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Scene");
     {
+        // update edit controller
+        m_editController->onImGuiRender();
         // Update viewport size (For resizing the framebuffer)
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
-        // update edit controller
-        m_editController->onImGuiRender();
     }
 	ImGui::End();
 	ImGui::PopStyleVar();
