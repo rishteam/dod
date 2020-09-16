@@ -5,23 +5,21 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
 
-#include "SceneTargetPanel.h"
+#include "SceneMultiTargetPanel.h"
 
 namespace rl {
 
-class RL_API SceneHierarchyPanel : public SceneTargetPanel
+class RL_API SceneHierarchyPanel : public SceneMultiTargetPanel
 {
 public:
     SceneHierarchyPanel() = default;
-    SceneHierarchyPanel(const Ref<Scene> &scene) : SceneTargetPanel(scene) {}
+    SceneHierarchyPanel(const Ref<Scene> &scene) : SceneMultiTargetPanel(scene) {}
     ~SceneHierarchyPanel() override = default;
 
     void onImGuiRender() override;
 
-    size_t selectedSize() const { return m_entitySet.size(); }
 private:
     void drawEntityNode(Entity entity);
-    std::set<Entity> m_entitySet;
 };
 
 } // end of namespace rl

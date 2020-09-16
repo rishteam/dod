@@ -85,16 +85,29 @@ void EditorLayer::onImGuiRender()
     // Menu Bar
     onImGuiMainMenuRender();
 
+    if(m_editController->isSelected())
+    {
+        auto ent = m_editController->getTarget();
+        RL_INFO("{}", ent.getComponent<TagComponent>().tag);
+        m_componentEditPanel.setTarget(ent);
+        m_sceneHierarchyPanel.addTarget(ent);
+    }
+
     m_sceneHierarchyPanel.onImGuiRender();
 
-    // TODO: should these code exist?
     if (m_sceneHierarchyPanel.selectedSize() == 1 &&
         m_sceneHierarchyPanel.isSelected())
     {
-        m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
+        auto ent = *m_sceneHierarchyPanel.getSelectedEntities().begin();
+        m_componentEditPanel.setTarget(ent);
+        m_editController->setTarget(ent);
     }
     else
+    {
         m_componentEditPanel.resetSelected();
+        m_editController->resetSelected();
+    }
+
     m_componentEditPanel.onImGuiRender();
 
 	ImGui::Begin("Entity Manager");
