@@ -3,6 +3,8 @@
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
 
+using namespace rl;
+
 class ExampleSandboxLayer : public rl::Layer
 {
 public:
@@ -15,5 +17,6 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
-
+    Ref<Scene> m_scene;
+    OrthographicCameraController m_cameraController;
 };
