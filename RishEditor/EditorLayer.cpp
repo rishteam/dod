@@ -88,8 +88,7 @@ void EditorLayer::onImGuiRender()
     if(m_editController->isSelected())
     {
         auto ent = m_editController->getTarget();
-        RL_INFO("{}", ent.getComponent<TagComponent>().tag);
-        m_componentEditPanel.setTarget(ent);
+        m_sceneHierarchyPanel.resetTarget();
         m_sceneHierarchyPanel.addTarget(ent);
     }
 
@@ -193,8 +192,10 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
+                    // TODO: Make EditorLayer manages all ScenePanels
                     m_sceneHierarchyPanel.setContext(m_scene);
                     m_componentEditPanel.setContext(m_scene);
+                    m_editController->setContext(m_scene);
                 }
                 else
                 {

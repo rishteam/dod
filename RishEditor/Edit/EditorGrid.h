@@ -25,7 +25,7 @@ private:
     glm::vec4 startColor{0.7f, 0.7f, 0.7f, 1.0f}, endColor{0.1f, 0.1f, 0.1f, 1.0f};
     float limit{20.f}, preLimit{limit/10.f};
     //
-    float currentOffset = 1.5f;
+    float currentOffset = 1.0f;
     float preOffset = currentOffset / 10.f;
     float nextOffset = currentOffset * 10.f;
     //

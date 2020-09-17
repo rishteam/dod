@@ -26,9 +26,18 @@ void EditController::onDetach()
 
 void EditController::onUpdate(Time dt)
 {
-    m_editorGrid.onUpdate();
     m_cameraController->setState(m_sceneWindowFocused);
     m_cameraController->onUpdate(dt);
+    m_editorGrid.onUpdate();
+
+    glm::vec2 t = (glm::vec2)m_curEntPos;
+    glm::vec2 s = (glm::vec2)m_curHalfSize;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
 
     if(isSelected())
     {
@@ -53,37 +62,30 @@ void EditController::onImGuiRender()
     auto size = ImGui::GetContentRegionAvail();
     // Get mouse position
     ImVec2 curMPos = ImGui::GetMousePosRelatedToWindow(), mr{0.f, 0.f};
-    // Convert the origin to center
-    float hW = size.x / 2.f, hH = size.y / 2.f;
-    mr.x = curMPos.x - hW;
-    mr.y = hH - curMPos.y;
-    auto tmp = mr;
+    mr.x = curMPos.x;
+    mr.y = curMPos.y;
     // to NDC
-    mr.x /= hW;
-    mr.y /= hH;
+    mr.x /= size.x;
+    mr.y /= size.y;
     // To camera space
-    glm::vec2 mposInCamera{m_cameraController->getBounds().getWidth() * mr.x + m_cameraController->getPosition().x,
-                           m_cameraController->getBounds().getHeight() * mr.y + m_cameraController->getPosition().y};
+    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - mr.x);
+    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - mr.y);
+    glm::vec2 mposInCamera{xaxis, yaxis};
 
     if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        RL_INFO("{} {}", mposInCamera.x, mposInCamera.y);
         m_currentScene->m_registry.each([&](auto entityID)
         {
             Entity ent{entityID, m_currentScene.get()};
             // AABB
-            auto trans = ent.getComponent<TransformComponent>().translate;
-            auto halfScale = ent.getComponent<TransformComponent>().scale;
-            auto upperRight = trans + halfScale, bottomLeft = trans - halfScale;
-
-            RL_INFO("UR = {} {} {}", upperRight.x, upperRight.y, upperRight.z);
-            RL_INFO("BL = {} {} {}", bottomLeft.x, bottomLeft.y, bottomLeft.z);
+            m_curEntPos = ent.getComponent<TransformComponent>().translate;
+            m_curHalfSize = ent.getComponent<TransformComponent>().scale / 2.f;
+            glm::vec3 upperRight = m_curEntPos + m_curHalfSize, bottomLeft = m_curEntPos - m_curHalfSize;
 
             if(bottomLeft.x <= mposInCamera.x && bottomLeft.y <= mposInCamera.y &&
                mposInCamera.x <= upperRight.x && mposInCamera.y <= upperRight.y)
             {
                 setTarget(ent);
-                RL_INFO("Select {}", ent.getComponent<TagComponent>().tag);
             }
         });
     }
@@ -92,14 +94,6 @@ void EditController::onImGuiRender()
     auto padding = ImGui::GetStyle().WindowPadding;
     ImGui::PopStyleVar();
     //
-    ImGui::Begin("Debug");
-    ImGui::Text("size = %.2f %.2f", size.x, size.y);
-    ImGui::Text("curMPos = %.2f %.2f", curMPos.x, curMPos.y);
-    ImGui::Text("tmp = %.2f %.2f", tmp.x, tmp.y);
-    ImGui::Text("mr = %.2f %.2f", mr.x, mr.y);
-    ImGui::Text("mposInCamera = %.2f %.2f", mposInCamera.x, mposInCamera.y);
-    ImGui::Text("controller = %.2f %.2f", m_cameraController->getBounds().getWidth(), m_cameraController->getBounds().getHeight());
-    ImGui::End();
     if(m_debugEditorGrid)
         m_editorGrid.onImGuiRender();
     if(m_debugCameraController)

@@ -120,7 +120,8 @@ void Renderer2D::Init()
         uint32_t *quadIndices = new uint32_t[MaxQuadIndexCount];
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         uint32_t offset = 0;
-        for (int i = 0; i < MaxQuadIndexCount; i += 6) {
+        for (int i = 0; i < MaxQuadIndexCount; i += 6)
+        {
             for (int j = 0; j < 6; j++)
                 quadIndices[i + j] = pattern[j] + offset;
             offset += 4;
@@ -143,9 +144,9 @@ void Renderer2D::Init()
 
         // template for quad vertex
         s_data->quadVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // bottom left
-        s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f}; // bottom right
-        s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f}; // top left
-        s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f}; // top right
+        s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};  // bottom right
+        s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};  // top left
+        s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};   // top right
     }
     ////////////////////////////////////////////////////////////////
     // Line Renderer

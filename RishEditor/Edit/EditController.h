@@ -25,6 +25,9 @@ private:
     EditorGrid m_editorGrid;
     Ref<OrthographicCameraController> m_cameraController;
 
+    // Attributes of current selected entity
+    glm::vec3 m_curEntPos, m_curHalfSize;
+
     bool m_sceneWindowFocused = false;
     bool m_sceneWindowHovered = false;
 public:
