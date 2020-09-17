@@ -93,3 +93,6 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 }
 
 #include <Rish/Debug/Instrumentor.h>
+
+/// @defgroup core Core Module
+/// Core functions of RishEngine

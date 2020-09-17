@@ -271,3 +271,7 @@ inline bool ResManager<sf::Music>::load(const std::string &resName, const std::s
 }
 
 } // namespace rl
+
+/// @class rl::ResManager
+/// @ingroup core
+///

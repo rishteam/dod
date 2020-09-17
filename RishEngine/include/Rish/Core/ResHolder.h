@@ -52,3 +52,7 @@ private:
 };
 
 } // end namespace rl
+
+/// @class rl::ResHolder
+/// @ingroup core
+///
