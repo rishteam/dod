@@ -54,26 +54,40 @@ void EditController::onImGuiRender()
     mr.x /= size.x;
     mr.y /= size.y;
     // To camera space
-    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - mr.x) + m_cameraController->getPosition().x;
-    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - mr.y) + m_cameraController->getPosition().y;
+    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - mr.x)
+            + m_cameraController->getPosition().x;
+    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - mr.y)
+            + m_cameraController->getPosition().y;
     glm::vec2 mposInCamera{xaxis, yaxis};
 
     if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
+        Entity frontEntity;
+        float maxZ{-100.f};
+        glm::vec3 upperRight, bottomLeft;
+        // Iterate through all entities
         m_currentScene->m_registry.each([&](auto entityID)
         {
             Entity ent{entityID, m_currentScene.get()};
             // AABB
             m_curEntPos = ent.getComponent<TransformComponent>().translate;
             m_curHalfSize = ent.getComponent<TransformComponent>().scale / 2.f;
-            glm::vec3 upperRight = m_curEntPos + m_curHalfSize, bottomLeft = m_curEntPos - m_curHalfSize;
-
+            upperRight = m_curEntPos + m_curHalfSize, bottomLeft = m_curEntPos - m_curHalfSize;
             if(bottomLeft.x <= mposInCamera.x && bottomLeft.y <= mposInCamera.y &&
                mposInCamera.x <= upperRight.x && mposInCamera.y <= upperRight.y)
             {
-                setTarget(ent);
+                // Pick the max Z one
+                if (maxZ < m_curEntPos.z) {
+                    frontEntity = ent;
+                    maxZ = m_curEntPos.z;
+                }
             }
         });
+
+        if(frontEntity)
+        {
+            setTarget(frontEntity);
+        }
     }
 
     // Preserve window padding

@@ -76,6 +76,8 @@ struct TransformComponent
 	TransformComponent() = default;
 	TransformComponent(const glm::mat4& t) : transform(t) {}
 
+
+
 private:
 	friend class cereal::access;
 	template <class Archive>

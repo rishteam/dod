@@ -24,7 +24,15 @@ EditorLayer::EditorLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_scene = MakeRef<Scene>();
+    //
     m_editController = MakeRef<EditController>();
+    m_panelList.push_back(m_editController);
+    //
+    m_sceneHierarchyPanel = MakeRef<SceneHierarchyPanel>();
+    m_panelList.push_back(m_sceneHierarchyPanel);
+    //
+    m_componentEditPanel = MakeRef<ComponentEditPanel>();
+    m_panelList.push_back(m_componentEditPanel);
 }
 
 void EditorLayer::onAttach()
@@ -35,9 +43,8 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
 	m_framebuffer = Framebuffer::Create(fbspec);
 
-    m_sceneHierarchyPanel.onAttach(m_scene);
-    m_componentEditPanel.onAttach(m_scene);
-    m_editController->onAttach(m_scene);
+    for(auto &panel : m_panelList)
+        panel->onAttach(m_scene);
 }
 
 void EditorLayer::onDetach()
@@ -46,9 +53,8 @@ void EditorLayer::onDetach()
 
     ImGui::SaveIniSettingsToDisk("RishEditor/imgui.ini");
 
-    m_sceneHierarchyPanel.onDetach();
-    m_componentEditPanel.onDetach();
-    m_editController->onDetach();
+    for(auto &panel : m_panelList)
+        panel->onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -88,26 +94,26 @@ void EditorLayer::onImGuiRender()
     if(m_editController->isSelected())
     {
         auto ent = m_editController->getTarget();
-        m_sceneHierarchyPanel.resetTarget();
-        m_sceneHierarchyPanel.addTarget(ent);
+        m_sceneHierarchyPanel->resetTarget();
+        m_sceneHierarchyPanel->addTarget(ent);
     }
 
-    m_sceneHierarchyPanel.onImGuiRender();
+    m_sceneHierarchyPanel->onImGuiRender();
 
-    if (m_sceneHierarchyPanel.selectedSize() == 1 &&
-        m_sceneHierarchyPanel.isSelected())
+    if (m_sceneHierarchyPanel->selectedSize() == 1 &&
+        m_sceneHierarchyPanel->isSelected())
     {
-        auto ent = *m_sceneHierarchyPanel.getSelectedEntities().begin();
-        m_componentEditPanel.setTarget(ent);
+        auto ent = *m_sceneHierarchyPanel->getSelectedEntities().begin();
+        m_componentEditPanel->setTarget(ent);
         m_editController->setTarget(ent);
     }
     else
     {
-        m_componentEditPanel.resetSelected();
+        m_componentEditPanel->resetSelected();
         m_editController->resetSelected();
     }
 
-    m_componentEditPanel.onImGuiRender();
+    m_componentEditPanel->onImGuiRender();
 
 	ImGui::Begin("Entity Manager");
     {
@@ -185,17 +191,15 @@ void EditorLayer::onImGuiMainMenuRender()
                     exceptionMsg = e.what();
                     failLoad = true;
                 }
-
+                // If success
                 if(!failLoad)
                 {
                     m_sceneLoaded = true;
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    // TODO: Make EditorLayer manages all ScenePanels
-                    m_sceneHierarchyPanel.setContext(m_scene);
-                    m_componentEditPanel.setContext(m_scene);
-                    m_editController->setContext(m_scene);
+                    for(auto & panel : m_panelList)
+                        panel->setContext(m_scene);
                 }
                 else
                 {

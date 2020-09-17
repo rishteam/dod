@@ -22,14 +22,14 @@ public:
 
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
 private:
-    EditorGrid m_editorGrid;
-    Ref<OrthographicCameraController> m_cameraController;
+    EditorGrid m_editorGrid;                              ///< Editor grid
+    Ref<OrthographicCameraController> m_cameraController; ///< Editor camera
 
     // Attributes of current selected entity
     glm::vec3 m_curEntPos, m_curHalfSize;
 
-    bool m_sceneWindowFocused = false;
-    bool m_sceneWindowHovered = false;
+    bool m_sceneWindowFocused = false; ///< Is Scene window focused?
+    bool m_sceneWindowHovered = false; ///< Is Scene window hovered?
 public:
     bool m_debugEditorGrid = false;
     bool m_debugCameraController = false;
