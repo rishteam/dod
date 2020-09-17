@@ -5,7 +5,8 @@
 #include "Panels/ComponentSelectionPanel.h"
 #include "Panels/ErrorModal.h"
 
-#include "EditorGrid.h"
+#include "Edit/EditorGrid.h"
+#include "Edit/EditController.h"
 
 namespace rl {
 
@@ -22,9 +23,6 @@ public:
 	virtual void onImGuiRender() override;
 	virtual void onEvent(rl::Event& event) override;
 
-	static void BeginDockspace();
-	static void EndDockspace();
-
 private:
     void onImGuiMainMenuRender();
 
@@ -36,23 +34,13 @@ private:
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
     glm::vec2 m_sceneViewportPanelSize {0.f, 0.f};
-	//
-	bool m_sceneWindowHovered = false;
-	bool m_sceneWindowFocused = false;
-	// Scene window camera
-	OrthographicCameraController m_cameraController;
 
 	// Editor
-	Ref<EditorGrid> m_editorGrid;
+	Ref<EditController> m_editController;
 
 	SceneHierarchyPanel m_sceneHierarchyPanel;
 	ComponentEditPanel m_componentEditPanel;
 	ErrorModal m_errorModal;
-
-	// Main Menu
-	bool m_debugEditorGrid = false;
-	bool m_debugCameraController = false;
-
 };
 
 }

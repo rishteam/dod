@@ -120,7 +120,8 @@ void Renderer2D::Init()
         uint32_t *quadIndices = new uint32_t[MaxQuadIndexCount];
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         uint32_t offset = 0;
-        for (int i = 0; i < MaxQuadIndexCount; i += 6) {
+        for (int i = 0; i < MaxQuadIndexCount; i += 6)
+        {
             for (int j = 0; j < 6; j++)
                 quadIndices[i + j] = pattern[j] + offset;
             offset += 4;
@@ -143,9 +144,9 @@ void Renderer2D::Init()
 
         // template for quad vertex
         s_data->quadVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // bottom left
-        s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f}; // bottom right
-        s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f}; // top left
-        s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f}; // top right
+        s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};  // bottom right
+        s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};  // top left
+        s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};   // top right
     }
     ////////////////////////////////////////////////////////////////
     // Line Renderer
@@ -538,6 +539,21 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
 void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
 {
     DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
+}
+
+
+void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
 }
 
 } // namespace of rl

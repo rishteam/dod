@@ -34,7 +34,7 @@ void AnimationEditor::processEvent(const sf::Event &e)
 void AnimationEditor::update()
 {
     if(!m_showEditor) return;
-    if (!ImGui::Begin("Animation Editor", &m_showEditor, m_windowFlag))
+    if (!ImGui::Begin("Animation RishEditor", &m_showEditor, m_windowFlag))
     {
         ImGui::End();
         return; // early out

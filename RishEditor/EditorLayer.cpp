@@ -14,18 +14,17 @@
 namespace rl {
 
 EditorLayer::EditorLayer()
-    : Layer("editorLayer"),
-      m_cameraController(Application::Get().getWindow().getAspectRatio())
+    : Layer("EditorLayer")
 {
 	VFS::Mount("shader", "assets/editor/shader");
 	VFS::Mount("texture", "assets/editor/texture");
 
-    ImGui::LoadIniSettingsFromDisk("Editor/imgui.ini");
+    ImGui::LoadIniSettingsFromDisk("RishEditor/imgui.ini");
 
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_scene = MakeRef<Scene>();
-    m_editorGrid = MakeRef<EditorGrid>();
+    m_editController = MakeRef<EditController>();
 }
 
 void EditorLayer::onAttach()
@@ -38,22 +37,24 @@ void EditorLayer::onAttach()
 
     m_sceneHierarchyPanel.onAttach(m_scene);
     m_componentEditPanel.onAttach(m_scene);
-    m_editorGrid->onAttach();
+    m_editController->onAttach(m_scene);
 }
 
 void EditorLayer::onDetach()
 {
     RL_CORE_INFO("[EditorLayer] onDetach");
 
-    ImGui::SaveIniSettingsToDisk("Editor/imgui.ini");
+    ImGui::SaveIniSettingsToDisk("RishEditor/imgui.ini");
 
     m_sceneHierarchyPanel.onDetach();
     m_componentEditPanel.onDetach();
-    m_editorGrid->onDetach();
+    m_editController->onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
 {
+    auto cameraController = m_editController->getCameraController();
+
     // Resize the framebuffer if user resize the viewport
     auto framebufferSpec = m_framebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
@@ -61,21 +62,18 @@ void EditorLayer::onUpdate(Time dt)
         m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
     {
         m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
-        m_cameraController.onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
+        cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
     //
-    m_cameraController.setState(m_sceneWindowFocused);
-    m_cameraController.onUpdate(dt);
-    //
     Renderer2D::ResetStats();
-    Renderer2D::BeginScene(m_cameraController.getCamera(), m_framebuffer);
+    Renderer2D::BeginScene(cameraController->getCamera(), m_framebuffer);
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
-        m_editorGrid->onUpdate(m_cameraController);
+        m_editController->onUpdate(dt);
         //
-        m_scene->onUpdate(m_cameraController.getCamera(), dt);
+        m_scene->onUpdate(cameraController->getCamera(), dt);
         //
     }
     Renderer2D::EndScene();
@@ -83,20 +81,32 @@ void EditorLayer::onUpdate(Time dt)
 
 void EditorLayer::onImGuiRender()
 {
-    BeginDockspace();
+    ImGui::BeginDockspace("EditorDockspace");
     // Menu Bar
     onImGuiMainMenuRender();
 
+    if(m_editController->isSelected())
+    {
+        auto ent = m_editController->getTarget();
+        m_sceneHierarchyPanel.resetTarget();
+        m_sceneHierarchyPanel.addTarget(ent);
+    }
+
     m_sceneHierarchyPanel.onImGuiRender();
 
-    // TODO: should these code exist?
     if (m_sceneHierarchyPanel.selectedSize() == 1 &&
         m_sceneHierarchyPanel.isSelected())
     {
-        m_componentEditPanel.setTarget(m_sceneHierarchyPanel.getSelectedEntity());
+        auto ent = *m_sceneHierarchyPanel.getSelectedEntities().begin();
+        m_componentEditPanel.setTarget(ent);
+        m_editController->setTarget(ent);
     }
     else
+    {
         m_componentEditPanel.resetSelected();
+        m_editController->resetSelected();
+    }
+
     m_componentEditPanel.onImGuiRender();
 
 	ImGui::Begin("Entity Manager");
@@ -104,39 +114,31 @@ void EditorLayer::onImGuiRender()
     }
 	ImGui::End();
 
-    ImVec2 padding = ImGui::GetStyle().WindowPadding;
+    // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Scene");
     {
-        // Update viewport resize
+        // update edit controller
+        m_editController->onImGuiRender();
+        // Update viewport size (For resizing the framebuffer)
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
-        // show
+        // show scene
         uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-        ImGui::Image((ImTextureID)textureID, size, {0, 0}, {1, -1});
-        // states
-        m_sceneWindowFocused = ImGui::IsWindowFocused();
-        m_sceneWindowHovered = ImGui::IsWindowHovered();
-
-        // Get mouse position
-        ImVec2 curMPos = ImGui::GetMousePosRelatedToWindow(), mr;
-        // Convert the origin to center
-        float hW = size.x / 2.f, hH = size.y / 2.f;
-        mr.x = curMPos.x - hW;
-        mr.y = hH - curMPos.y;
-        // to NDC
-        mr.x /= hW;
-        mr.y /= hH;
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();
 	ImGui::PopStyleVar();
 
+	// Console
     ImGui::Begin(ICON_FA_TERMINAL " Console");
+    ImGui::Text("TODO");
     ImGui::End();
 
+    // Log window
     defaultLogWindow.onImGuiRender();
 
-	EndDockspace();
+	ImGui::EndDockspace();
 
 	m_errorModal.onImGuiRender();
 }
@@ -190,8 +192,10 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
+                    // TODO: Make EditorLayer manages all ScenePanels
                     m_sceneHierarchyPanel.setContext(m_scene);
                     m_componentEditPanel.setContext(m_scene);
+                    m_editController->setContext(m_scene);
                 }
                 else
                 {
@@ -248,67 +252,19 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Debug"))
         {
-            ImGui::MenuItem("Editor Grid", nullptr, &m_debugEditorGrid);
-            ImGui::MenuItem("Editor Camera", nullptr, &m_debugCameraController);
+            ImGui::MenuItem("RishEditor Grid", nullptr, &m_editController->m_debugEditorGrid);
+            ImGui::MenuItem("RishEditor Camera", nullptr, &m_editController->m_debugCameraController);
             ImGui::EndMenu();
         }
 
         ImGui::EndMenuBar();
     }
 
-    if(m_debugEditorGrid)
-        m_editorGrid->onImGuiRender();
-    if(m_debugCameraController)
-        m_cameraController.onImGuiRender();
 }
 
-void EditorLayer::onEvent(rl::Event& event)
+void EditorLayer::onEvent(rl::Event& e)
 {
-    if(m_sceneWindowFocused && m_sceneWindowHovered)
-        m_cameraController.onEvent(event);
-}
-
-void EditorLayer::BeginDockspace()
-{
-    static bool opt_fullscreen_persistant = true;
-    bool opt_fullscreen = opt_fullscreen_persistant;
-    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-    if (opt_fullscreen)
-    {
-        ImGuiViewport *viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->GetWorkPos());
-        ImGui::SetNextWindowSize(viewport->GetWorkSize());
-        ImGui::SetNextWindowViewport(viewport->ID);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-    }
-
-    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-        window_flags |= ImGuiWindowFlags_NoBackground;
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("DockSpace Demo", nullptr, window_flags);
-    ImGui::PopStyleVar();
-
-    if (opt_fullscreen)
-        ImGui::PopStyleVar(2);
-
-    // DockSpace
-    ImGuiIO &io = ImGui::GetIO();
-    if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-    {
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-    }
-}
-
-void EditorLayer::EndDockspace()
-{
-    ImGui::End();
+    m_editController->onEvent(e);
 }
 
 }
