@@ -39,7 +39,7 @@ struct LineVertex
     glm::vec4 color;
 };
 
-const size_t MaxLineCount = 1000;
+const size_t MaxLineCount = 500000;
 const size_t MaxLineVertexCount = MaxLineCount * 2;
 const size_t MaxLineIndexCount = MaxLineCount * 6;
 
@@ -554,6 +554,20 @@ void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, cons
     };
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color)
+{
+    const int pointCount = 30;
+    glm::vec2 p[pointCount];
+    float d = 0.f;
+    for(auto & i : p)
+    {
+        i = position + glm::vec2{radius * std::sin(glm::radians(d)), radius * std::cos(glm::radians(d))};
+        d += 360.f / pointCount;
+    }
+    for(int i = 0; i < pointCount; i++)
+        DrawLine(p[i], p[(i+1)%pointCount], color);
 }
 
 } // namespace of rl

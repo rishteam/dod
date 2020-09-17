@@ -43,6 +43,8 @@ public:
 
     static void DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color=glm::vec4(1.f));
 
+    static void DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color=glm::vec4(1.f));
+
     struct Stats
     {
         uint32_t QuadCount = 0; /// Draw quad count

@@ -63,14 +63,9 @@ void ParticleLayer::onUpdate(rl::Time dt)
         rl::Renderer2D::ResetStats();
         rl::Renderer2D::BeginScene(m_cameraController.getCamera(), nullptr);
 
-//        rl::Renderer2D::DrawQuad({0.f, 0.0f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 1.f});
-        rl::Renderer2D::DrawRotatedQuad({0.f, 0.0f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 1.f}, 0.f);
-
-        rl::Renderer2D::DrawLine({-100, 0}, {100, 0});
-        rl::Renderer2D::DrawLine({0, -100}, {0, 100});
-
-        rl::Renderer2D::DrawLine({0.5f, 0.5f}, {0.f, 0.5f}, {0.f, 0.f, 1.f, 1.f});
-        rl::Renderer2D::DrawLine({-0.5f, 0.5f}, {0.f, 0.5f}, {0.f, 1.f, 0.f, 1.f});
+        for(int i = 0; i < 100; i++)
+            for(int j = 0; j < 100; j++)
+                rl::Renderer2D::DrawCircleLine({i, j}, 1.f);
 
         rl::Renderer2D::EndScene();
     }
