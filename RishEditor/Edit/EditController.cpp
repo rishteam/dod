@@ -30,26 +30,12 @@ void EditController::onUpdate(Time dt)
     m_cameraController->onUpdate(dt);
     m_editorGrid.onUpdate();
 
-    glm::vec2 t = (glm::vec2)m_curEntPos;
-    glm::vec2 s = (glm::vec2)m_curHalfSize;
-    glm::vec2 p[4] = {
-        {t.x - s.x, t.y - s.y},
-        {t.x + s.x, t.y - s.y},
-        {t.x + s.x, t.y + s.y},
-        {t.x - s.x, t.y + s.y}
-    };
-
     if(isSelected())
     {
         auto ent = getTarget();
         auto &transform = ent.getComponent<TransformComponent>();
         // Draw Border
-        glm::vec3 p[4];
-        glm::vec2 off[] = { {-1, 1}, { 1, 1}, { 1,-1}, {-1,-1} };
-        for(int i = 0; i < 4; i++) // gen vertices
-            p[i] = transform.translate + transform.scale * glm::vec3(off[i], 1.f) * 0.5f;
-        for(int i = 0; i < 4; i++)
-            Renderer2D::DrawLine(p[i], p[(i+1)%4]);
+        Renderer2D::DrawRect(transform.translate, transform.scale);
     }
 }
 
@@ -68,8 +54,8 @@ void EditController::onImGuiRender()
     mr.x /= size.x;
     mr.y /= size.y;
     // To camera space
-    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - mr.x);
-    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - mr.y);
+    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - mr.x) + m_cameraController->getPosition().x;
+    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - mr.y) + m_cameraController->getPosition().y;
     glm::vec2 mposInCamera{xaxis, yaxis};
 
     if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))

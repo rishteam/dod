@@ -541,4 +541,19 @@ void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::v
     DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
 }
 
+
+void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+}
+
 } // namespace of rl
