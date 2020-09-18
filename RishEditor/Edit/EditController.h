@@ -31,8 +31,9 @@ private:
     glm::vec3 m_moveEntityDiff{0.f};
     bool m_isNowMovingEntity = false;
 
-    glm::vec2 m_curMousePosInCamera;
-    glm::vec2 m_preMousePosInCamera;
+    glm::vec3 m_moveCameraDiff{0.f};
+    glm::vec2 m_preMPos{0.f};
+    bool m_isNowMovingCamera = false;
 
     bool m_sceneWindowFocused = false; ///< Is Scene window focused?
     bool m_sceneWindowHovered = false; ///< Is Scene window hovered?

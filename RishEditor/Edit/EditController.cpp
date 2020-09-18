@@ -92,26 +92,23 @@ void EditController::onImGuiRender()
     }
 
     // Entity move
-    if(ImGui::IsMouseDown(ImGuiMouseButton_Left))
+    if(ImGui::IsMouseDown(ImGuiMouseButton_Left) && isSelected())
     {
-        if(isSelected())
+        auto ent = getTarget();
+        auto &entPos = ent.getComponent<TransformComponent>().translate;
+        const auto &entSize = ent.getComponent<TransformComponent>().scale;
+        //
+        // No moving entity
+        if(!m_isNowMovingEntity)
         {
-            auto ent = getTarget();
-            auto &entPos = ent.getComponent<TransformComponent>().translate;
-            const auto &entSize = ent.getComponent<TransformComponent>().scale;
-            //
-            // No moving entity
-            if(!m_isNowMovingEntity)
-            {
-                if (Math::AABB2DPoint(entPos, entSize, mposInCamera)) {
-                    m_moveEntityDiff = entPos - glm::vec3(mposInCamera, 0.f);
-                    m_isNowMovingEntity = true;
-                }
+            if (Math::AABB2DPoint(entPos, entSize, mposInCamera)) {
+                m_moveEntityDiff = entPos - glm::vec3(mposInCamera, 0.f);
+                m_isNowMovingEntity = true;
             }
-            else
-            {
-                entPos = glm::vec3(mposInCamera, 0.f) + m_moveEntityDiff;
-            }
+        }
+        else
+        {
+            entPos = glm::vec3(mposInCamera, 0.f) + m_moveEntityDiff;
         }
     }
     else
@@ -120,24 +117,40 @@ void EditController::onImGuiRender()
         m_moveEntityDiff = glm::vec3{0.f};
     }
 
-    // TODO: Camera pane
-    if(ImGui::IsMouseDown(ImGuiMouseButton_Right))
+    // Camera pane
+    if(m_sceneWindowFocused &&
+       ImGui::IsMouseDown(ImGuiMouseButton_Right))
     {
-        m_curMousePosInCamera = mposInCamera;
-
-//        glm::vec2 dif = m_curMousePosInCamera - m_preMousePosInCamera;
-//        RL_INFO("dif = {} {}", dif.x, dif.y);
-//        m_cameraController->setPosition({1.f, 1.f});
-//        m_cameraController->move(dif);
-
-        m_preMousePosInCamera = m_curMousePosInCamera;
+        if(!m_isNowMovingCamera)
+        {
+            m_isNowMovingCamera = true;
+            auto camPos = m_cameraController->getPosition();
+            m_moveCameraDiff = camPos - glm::vec3(mposInCamera, 0.f);
+            m_preMPos = mposInCamera;
+        }
+        else if(m_isNowMovingCamera && mposInCamera != m_preMPos)
+        {
+            // Natural pane (inverse)
+            glm::vec2 vec = mposInCamera - m_preMPos;
+            m_cameraController->move(-vec);
+            m_isNowMovingCamera = false;
+        }
+    }
+    else
+    {
+        m_isNowMovingCamera = false;
+        m_moveCameraDiff = glm::vec3{0.f};
     }
 
     // Preserve window padding
     auto padding = ImGui::GetStyle().WindowPadding;
     ImGui::PopStyleVar();
     //
-
+    ImGui::Begin("Debug");
+    auto move = glm::vec3(mposInCamera, 0.f) + m_moveCameraDiff;
+    ImGui::Text("diff = %.2f %.2f %.2f", m_moveCameraDiff.x, m_moveCameraDiff.y, m_moveCameraDiff.z);
+    ImGui::Text("move = %.2f %.2f %.2f", move.x, move.y, move.z);
+    ImGui::End();
     if(m_debugEditorGrid)
         m_editorGrid.onImGuiRender();
     if(m_debugCameraController)

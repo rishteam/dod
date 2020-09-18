@@ -14,6 +14,28 @@ ImVec2 ImGui::GetMousePosRelatedToWindow()
     return ImVec2{mpos.x - ul.x, mpos.y - ul.y};
 }
 
+ImVec2 ImGui::GetMousePosRelatedToWindowNormalize()
+{
+    ImVec2 pos = GetMousePosRelatedToWindow();
+    ImVec2 size = GetContentRegionAvail();
+    pos.x /= size.x;
+    pos.y /= size.y;
+    return pos;
+}
+
+ImVec2 ImGui::GetMousePosRelatedToWindowNormalizeCenter()
+{
+    ImVec2 pos = GetMousePosRelatedToWindow();
+    ImVec2 size = GetContentRegionAvail();
+    size.x /= 2.f;
+    size.y /= 2.f;
+    pos.x = pos.x - size.x;
+    pos.y = size.y - pos.y;
+    pos.x /= size.x;
+    pos.y /= size.y;
+    return pos;
+}
+
 std::pair<ImVec2, ImVec2> ImGui::GetWindowContentPoints()
 {
     ImVec2 padding = ImGui::GetStyle().WindowPadding;
