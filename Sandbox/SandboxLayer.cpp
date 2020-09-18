@@ -15,12 +15,9 @@ void ExampleSandboxLayer::onAttach()
 {
     auto cur = rl::FileSystem::GetCurrentDirectoryPath();
     m_scene = rl::MakeRef<rl::Scene>();
+    m_world = rl::MakeRef<rl::PhysicsWorld>(Vec2(0.0, -9.8), 800.0f, 600.0f);
 
-    Entity ent = m_scene->createEntity();
 
-    ent.addComponent<RenderComponent>("/shader/textured.vert", "/shader/textured.frag", glm::vec4{1,1,1,1});
-    ent.addComponent<Physics2D>();
-    ent.addComponent<BoxCollider2D>();
 }
 
 void ExampleSandboxLayer::onDetach()
@@ -31,9 +28,8 @@ void ExampleSandboxLayer::onDetach()
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
-    //
     Renderer2D::BeginScene(m_cameraController.getCamera());
-    m_scene->onUpdate(m_cameraController.getCamera(), dt);
+    Renderer2D::DrawQuad({0, 0}, {1 , 1}, {1, 1, 1, 1});
     Renderer2D::EndScene();
 }
 

@@ -51,6 +51,29 @@ void Scene::destroyEntity(const Entity &entity)
 
 void Scene::onUpdate(const OrthographicCamera &camera, Time dt)
 {
+//    //check the trigger of collide
+//    auto group = m_registry.group<TransformComponent, BoxCollider2D>();
+//    for(auto entity : group)
+//    {
+//
+//    }
+//
+//    //Joint
+//    auto group2 = m_registry.group<TransformComponent, Joint>();
+//    for(auto entity : group)
+//    {
+//
+//    }
+//
+//
+//    //RigidBody2D Component
+//    auto group3 = m_registry.group<TransformComponent, RigidBody2D>();
+//    for(auto entity : group)
+//    {
+//
+//    }
+
+
 	auto transGroup = m_registry.group<TransformComponent, RenderComponent>();
 	for(auto entity: transGroup)
 	{

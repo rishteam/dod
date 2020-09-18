@@ -2,6 +2,9 @@
 
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/RigidBody2D.h>
+
 
 using namespace rl;
 
@@ -18,5 +21,6 @@ public:
 
 private:
     Ref<Scene> m_scene;
+    Ref<PhysicsWorld> m_world;
     OrthographicCameraController m_cameraController;
 };
