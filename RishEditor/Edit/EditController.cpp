@@ -46,27 +46,23 @@ void EditController::onImGuiRender()
     m_sceneWindowFocused = ImGui::IsWindowFocused();
     m_sceneWindowHovered = ImGui::IsWindowHovered();
 
-    auto size = ImGui::GetContentRegionAvail();
-    // Get mouse position
-    ImVec2 curMPos = ImGui::GetMousePosRelatedToWindow(), mr{0.f, 0.f};
-    mr.x = curMPos.x;
-    mr.y = curMPos.y;
-    // to NDC
-    mr.x /= size.x;
-    mr.y /= size.y;
-    // To camera space
-    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - mr.x)
+    ImVec2 mr = ImGui::GetMousePosRelatedToWindowNormalize();
+    sceneMousePosNormalize = glm::vec2{mr.x, mr.y};
+    mr = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
+    sceneMousePosCenterNormalize = glm::vec2{mr.x, mr.y};
+
+    // To world space
+    float xaxis = glm::lerp(m_cameraController->getBounds().right, m_cameraController->getBounds().left, 1.f - sceneMousePosNormalize.x)
             + m_cameraController->getPosition().x;
-    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - mr.y)
+    float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - sceneMousePosNormalize.y)
             + m_cameraController->getPosition().y;
-    glm::vec2 mposInCamera{xaxis, yaxis};
+    glm::vec2 mposInWorld{xaxis, yaxis};
 
     // Click to select a entity
     if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
         Entity frontEntity;
         float maxZ{-100.f};
-        glm::vec3 upperRight, bottomLeft;
         // Iterate through all entities
         m_currentScene->m_registry.each([&](auto entityID)
         {
@@ -75,7 +71,7 @@ void EditController::onImGuiRender()
             m_curEntPos = ent.getComponent<TransformComponent>().translate;
             m_curSize = ent.getComponent<TransformComponent>().scale;
 
-            if(Math::AABB2DPoint(m_curEntPos, m_curSize, mposInCamera))
+            if(Math::AABB2DPoint(m_curEntPos, m_curSize, mposInWorld))
             {
                 // Pick the max Z one
                 if (maxZ < m_curEntPos.z) {
@@ -101,14 +97,14 @@ void EditController::onImGuiRender()
         // No moving entity
         if(!m_isNowMovingEntity)
         {
-            if (Math::AABB2DPoint(entPos, entSize, mposInCamera)) {
-                m_moveEntityDiff = entPos - glm::vec3(mposInCamera, 0.f);
+            if (Math::AABB2DPoint(entPos, entSize, mposInWorld)) {
+                m_moveEntityDiff = entPos - glm::vec3(mposInWorld, 0.f);
                 m_isNowMovingEntity = true;
             }
         }
         else
         {
-            entPos = glm::vec3(mposInCamera, 0.f) + m_moveEntityDiff;
+            entPos = glm::vec3(mposInWorld, 0.f) + m_moveEntityDiff;
         }
     }
     else
@@ -125,13 +121,13 @@ void EditController::onImGuiRender()
         {
             m_isNowMovingCamera = true;
             auto camPos = m_cameraController->getPosition();
-            m_moveCameraDiff = camPos - glm::vec3(mposInCamera, 0.f);
-            m_preMPos = mposInCamera;
+            m_moveCameraDiff = camPos - glm::vec3(mposInWorld, 0.f);
+            m_preMPos = mposInWorld;
         }
-        else if(m_isNowMovingCamera && mposInCamera != m_preMPos)
+        else if(m_isNowMovingCamera && mposInWorld != m_preMPos)
         {
             // Natural pane (inverse)
-            glm::vec2 vec = mposInCamera - m_preMPos;
+            glm::vec2 vec = mposInWorld - m_preMPos;
             m_cameraController->move(-vec);
             m_isNowMovingCamera = false;
         }
@@ -146,11 +142,12 @@ void EditController::onImGuiRender()
     auto padding = ImGui::GetStyle().WindowPadding;
     ImGui::PopStyleVar();
     //
-    ImGui::Begin("Debug");
-    auto move = glm::vec3(mposInCamera, 0.f) + m_moveCameraDiff;
-    ImGui::Text("diff = %.2f %.2f %.2f", m_moveCameraDiff.x, m_moveCameraDiff.y, m_moveCameraDiff.z);
-    ImGui::Text("move = %.2f %.2f %.2f", move.x, move.y, move.z);
-    ImGui::End();
+    if(m_debugEditorController)
+    {
+        ImGui::Begin("EditController");
+
+        ImGui::End();
+    }
     if(m_debugEditorGrid)
         m_editorGrid.onImGuiRender();
     if(m_debugCameraController)
@@ -161,8 +158,22 @@ void EditController::onImGuiRender()
 
 void EditController::onEvent(Event &e)
 {
+    EventDispatcher dispatcher(e);
+    dispatcher.dispatch<MouseScrolledEvent>(RL_BIND_EVENT_FUNC(EditController::onMouseScrolled));
+    //
     if(m_sceneWindowFocused && m_sceneWindowHovered)
         m_cameraController->onEvent(e);
+}
+
+bool EditController::onMouseScrolled(MouseScrolledEvent &e)
+{
+    // TODO: camera translate when zooming
+//    RL_INFO("onMouseScrolled {:.2f}, {:.2f}", sceneMousePosCenterNormalize.x, sceneMousePosCenterNormalize.y);
+//    if(e.yOffset >= 0.f)
+//        m_cameraController->move(-sceneMousePosCenterNormalize);
+//    else
+//        m_cameraController->move(sceneMousePosCenterNormalize);
+    return false;
 }
 
 } // end of namespace rl

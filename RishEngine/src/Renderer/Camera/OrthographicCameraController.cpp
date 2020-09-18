@@ -49,7 +49,6 @@ void OrthographicCameraController::onUpdate(Time dt)
 //    else if(rl::Input::IsKeyPressed(rl::Keyboard::D))
 //        m_position += glm::vec3(dir[3], 0.f) * dt.asSeconds();
 
-
     m_camera.setPosition(m_position);
 
     if(!m_isAbleToRotate)

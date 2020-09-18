@@ -256,8 +256,9 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Debug"))
         {
-            ImGui::MenuItem("RishEditor Grid", nullptr, &m_editController->m_debugEditorGrid);
-            ImGui::MenuItem("RishEditor Camera", nullptr, &m_editController->m_debugCameraController);
+            ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
+            ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
+            ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
             ImGui::EndMenu();
         }
 
