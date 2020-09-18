@@ -42,14 +42,16 @@ public:
     void onResize(float width, float height);
 
     void setState(bool state) { m_enableState = state; }
-    bool getState() const { return m_enableState; }
+    bool getState() const     { return m_enableState; }
 
-    OrthographicCamera& getCamera() { return m_camera; }
-    const OrthographicCamera& getCamera() const { return m_camera; }
+    OrthographicCamera& getCamera()                   { return m_camera; }
+    const OrthographicCamera& getCamera() const       { return m_camera; }
     const OrthographicCameraBounds& getBounds() const { return m_bounds; }
-    float getRotate() const { return m_rotate; }
-    glm::vec3 getPosition() const { return m_position; }
-    float getZoom() const { return m_zoom; }
+    float getRotate() const                           { return m_rotate; }
+    glm::vec3 getPosition() const                     { return m_position; }
+    void setPosition(const glm::vec2 &p)              { m_position = glm::vec3(p, 0.f); m_camera.setPosition(m_position); }
+//    void move(const glm::vec2 &p)                     { m_position += glm::vec3(p, 0.f); }
+    float getZoom() const                             { return m_zoom; }
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
@@ -63,7 +65,7 @@ private:
     OrthographicCameraBounds m_bounds;
     OrthographicCamera m_camera;
 
-    float m_translateSpeed = 5.f;
+    float m_translateSpeed = 1.5f;
     float m_rotateSpeed = 180.f;
 
     bool m_isAbleToRotate;

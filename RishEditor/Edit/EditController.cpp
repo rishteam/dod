@@ -1,6 +1,7 @@
 #include <Rish/Core/Application.h>
 #include <Rish/Core/Time.h>
 #include <Rish/Renderer/Renderer2D.h>
+#include <Rish/Math/AABB.h>
 #include <Rish/ImGui.h>
 
 #include "EditController.h"
@@ -60,6 +61,7 @@ void EditController::onImGuiRender()
             + m_cameraController->getPosition().y;
     glm::vec2 mposInCamera{xaxis, yaxis};
 
+    // Click to select a entity
     if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
         Entity frontEntity;
@@ -71,10 +73,9 @@ void EditController::onImGuiRender()
             Entity ent{entityID, m_currentScene.get()};
             // AABB
             m_curEntPos = ent.getComponent<TransformComponent>().translate;
-            m_curHalfSize = ent.getComponent<TransformComponent>().scale / 2.f;
-            upperRight = m_curEntPos + m_curHalfSize, bottomLeft = m_curEntPos - m_curHalfSize;
-            if(bottomLeft.x <= mposInCamera.x && bottomLeft.y <= mposInCamera.y &&
-               mposInCamera.x <= upperRight.x && mposInCamera.y <= upperRight.y)
+            m_curSize = ent.getComponent<TransformComponent>().scale;
+
+            if(Math::AABB2DPoint(m_curEntPos, m_curSize, mposInCamera))
             {
                 // Pick the max Z one
                 if (maxZ < m_curEntPos.z) {
@@ -90,10 +91,53 @@ void EditController::onImGuiRender()
         }
     }
 
+    // Entity move
+    if(ImGui::IsMouseDown(ImGuiMouseButton_Left))
+    {
+        if(isSelected())
+        {
+            auto ent = getTarget();
+            auto &entPos = ent.getComponent<TransformComponent>().translate;
+            const auto &entSize = ent.getComponent<TransformComponent>().scale;
+            //
+            // No moving entity
+            if(!m_isNowMovingEntity)
+            {
+                if (Math::AABB2DPoint(entPos, entSize, mposInCamera)) {
+                    m_moveEntityDiff = entPos - glm::vec3(mposInCamera, 0.f);
+                    m_isNowMovingEntity = true;
+                }
+            }
+            else
+            {
+                entPos = glm::vec3(mposInCamera, 0.f) + m_moveEntityDiff;
+            }
+        }
+    }
+    else
+    {
+        m_isNowMovingEntity = false;
+        m_moveEntityDiff = glm::vec3{0.f};
+    }
+
+    // TODO: Camera pane
+    if(ImGui::IsMouseDown(ImGuiMouseButton_Right))
+    {
+        m_curMousePosInCamera = mposInCamera;
+
+//        glm::vec2 dif = m_curMousePosInCamera - m_preMousePosInCamera;
+//        RL_INFO("dif = {} {}", dif.x, dif.y);
+//        m_cameraController->setPosition({1.f, 1.f});
+//        m_cameraController->move(dif);
+
+        m_preMousePosInCamera = m_curMousePosInCamera;
+    }
+
     // Preserve window padding
     auto padding = ImGui::GetStyle().WindowPadding;
     ImGui::PopStyleVar();
     //
+
     if(m_debugEditorGrid)
         m_editorGrid.onImGuiRender();
     if(m_debugCameraController)

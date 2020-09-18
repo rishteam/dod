@@ -26,7 +26,13 @@ private:
     Ref<OrthographicCameraController> m_cameraController; ///< Editor camera
 
     // Attributes of current selected entity
-    glm::vec3 m_curEntPos, m_curHalfSize;
+    glm::vec3 m_curEntPos{}, m_curSize{};
+
+    glm::vec3 m_moveEntityDiff{0.f};
+    bool m_isNowMovingEntity = false;
+
+    glm::vec2 m_curMousePosInCamera;
+    glm::vec2 m_preMousePosInCamera;
 
     bool m_sceneWindowFocused = false; ///< Is Scene window focused?
     bool m_sceneWindowHovered = false; ///< Is Scene window hovered?

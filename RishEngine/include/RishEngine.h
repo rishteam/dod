@@ -52,6 +52,9 @@
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
+// Math
+#include <Rish/Math/AABB.h>
+
 // Scene
 #include "Rish/Scene/Scene.h"
 #include "Rish/Scene/Entity.h"
