@@ -14,6 +14,8 @@
 namespace rl {
 
 /**
+ * @class rl::Window
+ * @ingroup core
  * @brief Window class
  * @details Interface of abstract Window class
  * @warning Implement concrete Window class of corresponding platform or lower level library

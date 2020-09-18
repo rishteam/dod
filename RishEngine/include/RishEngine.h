@@ -62,6 +62,3 @@
 
 // Debug
 #include <Rish/Debug/Instrumentor.h>
-
-/// @defgroup core Core Module
-/// Core functions
