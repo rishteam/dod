@@ -49,6 +49,16 @@ namespace glm
 
 namespace rl {
 
+/**
+ * @defgroup components Components
+ * @brief Components for entities
+ * @ingroup scene
+ * @{
+ */
+
+/**
+ * @brief Tag
+ */
 struct TagComponent
 {
 	std::string tag{};
@@ -67,6 +77,9 @@ private:
 
 };
 
+/**
+ * @brief Transform
+ */
 struct TransformComponent
 {
 	glm::mat4 transform {1.0f};
@@ -75,8 +88,6 @@ struct TransformComponent
 
 	TransformComponent() = default;
 	TransformComponent(const glm::mat4& t) : transform(t) {}
-
-
 
 private:
 	friend class cereal::access;
@@ -90,6 +101,9 @@ private:
 	}
 };
 
+/**
+ * @brief Render
+ */
 struct RenderComponent
 {
 	std::string vertPath = "/shader/vertexSrc.glsl";
@@ -123,5 +137,9 @@ private:
 	}
 
 };
+
+/**
+ * @}
+ */
 
 } // end of rl

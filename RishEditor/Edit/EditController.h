@@ -37,7 +37,7 @@ private:
     // Camera pane
     glm::vec3 m_moveCameraDiff{0.f};
     glm::vec2 m_preMPos{0.f};
-    bool m_isNowMovingCamera = false;
+    bool m_isNowMovingCamera = false; ///< Is now moving camera
 
     //
     glm::vec2 sceneMousePosNormalize{0.f};

@@ -13,6 +13,10 @@
 
 namespace rl {
 
+/**
+ * @brief Orthographic camera bound
+ * @details This defines orthographic projection bounds
+ */
 struct OrthographicCameraBounds
 {
     OrthographicCameraBounds(float Left, float Right, float Bottom, float Top)
@@ -30,6 +34,9 @@ struct OrthographicCameraBounds
     float getHeight() const { return top - bottom; }
 };
 
+/**
+ * @brief Orthographic camera controller
+ */
 class RL_API OrthographicCameraController
 {
 public:

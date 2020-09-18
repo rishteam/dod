@@ -8,6 +8,11 @@
 
 namespace rl {
 
+// TODO: Move this class to Editor?
+
+/**
+ * @brief Component Manager
+ */
 class RL_API ComponentManager
 {
 public:

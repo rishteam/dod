@@ -117,14 +117,13 @@ void EditController::onImGuiRender()
     if(m_sceneWindowFocused &&
        ImGui::IsMouseDown(ImGuiMouseButton_Right))
     {
-        if(!m_isNowMovingCamera)
+        if(!m_isNowMovingCamera) // is not moving
         {
             m_isNowMovingCamera = true;
-            auto camPos = m_cameraController->getPosition();
-            m_moveCameraDiff = camPos - glm::vec3(mposInWorld, 0.f);
             m_preMPos = mposInWorld;
         }
-        else if(m_isNowMovingCamera && mposInWorld != m_preMPos)
+        else if(m_isNowMovingCamera &&    // is moving
+                mposInWorld != m_preMPos) // and mpos has been changed
         {
             // Natural pane (inverse)
             glm::vec2 vec = mposInWorld - m_preMPos;
@@ -135,7 +134,6 @@ void EditController::onImGuiRender()
     else
     {
         m_isNowMovingCamera = false;
-        m_moveCameraDiff = glm::vec3{0.f};
     }
 
     // Preserve window padding

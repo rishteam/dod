@@ -86,3 +86,8 @@ private:
 };
 
 } // namespace rl
+
+/**
+ * @class rl::Scene
+ * @ingroup scene
+ */

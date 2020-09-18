@@ -5,6 +5,9 @@
 
 namespace rl {
 
+/**
+ * @brief Result of Profiling
+ */
 struct ProfileResult
 {
     std::string Name;
@@ -12,6 +15,9 @@ struct ProfileResult
     std::thread::id ThreadID;
 };
 
+/**
+ * @brief Session name
+ */
 struct InstrumentationSession
 {
     std::string Name;
@@ -19,12 +25,16 @@ struct InstrumentationSession
 
 using InstrumentorClock=std::chrono::steady_clock;
 
+/**
+ * @brief Profiling Instrumentor
+ */
 class Instrumentor
 {
 private:
     std::mutex m_Mutex;
     InstrumentationSession *m_CurrentSession;
     std::ofstream m_OutputStream;
+
 public:
     Instrumentor()
         : m_CurrentSession(nullptr)
@@ -96,6 +106,9 @@ public:
     }
 };
 
+/**
+ * @brief Profiling Timer
+ */
 class InstrumentationTimer
 {
 public:
@@ -161,12 +174,12 @@ private:
 	#endif
 
     #define RL_PROFILE_BEGIN_SESSION(name, filepath) rl::Instrumentor::Get().BeginSession(name, filepath)
-    #define RL_PROFILE_END_SESSION() rl::Instrumentor::Get().EndSession()
-    #define RL_PROFILE_SCOPE(name) rl::InstrumentationTimer TOKENPASTE2(time, __LINE__)(name)
-    #define RL_PROFILE_FUNCTION() RL_PROFILE_SCOPE(RL_FUNC_SIG)
+    #define RL_PROFILE_END_SESSION()                 rl::Instrumentor::Get().EndSession()
+    #define RL_PROFILE_SCOPE(name)                   rl::InstrumentationTimer TOKENPASTE2(time, __LINE__)(name)
+    #define RL_PROFILE_FUNCTION()                    RL_PROFILE_SCOPE(RL_FUNC_SIG)
 
     #if RL_PROFILE_RENDERER
-        #define RL_PROFILE_RENDERER_FUNCTION() RL_PROFILE_FUNCTION()
+        #define RL_PROFILE_RENDERER_FUNCTION()  RL_PROFILE_FUNCTION()
         #define RL_PROFILE_RENDERER_SCOPE(name) RL_PROFILE_SCOPE(name)
     #else
         #define RL_PROFILE_RENDERER_FUNCTION()

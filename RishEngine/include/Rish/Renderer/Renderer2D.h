@@ -10,6 +10,9 @@
 
 namespace rl {
 
+/**
+ * @brief 2D Renderer
+ */
 class RL_API Renderer2D
 {
 public:

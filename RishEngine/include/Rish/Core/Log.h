@@ -107,5 +107,7 @@ const char* GetSrcFileRelativePath(const char* path);
 
 }
 
-/// @class rl::Logger
-/// @ingroup core
+/**
+ * @class rl::Logger
+ * @ingroup core
+ */
