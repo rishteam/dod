@@ -89,7 +89,12 @@ struct Renderer2DData
     bool sceneState = false; ///< Is the scene now active (called BeginScene())
     bool depthTest = false;  ///< Is the scene enable depth test
     Ref<Framebuffer> targetFramebuffer;
-    OrthographicCamera camera;
+    //
+    OrthographicCamera orthoCamera;
+    bool isEditorCamera = false; // TODO: this is dirty
+    Camera camera = glm::mat4(1.f);
+    glm::mat4 m_viewProjMatrix;
+    //
     Renderer2D::Stats renderStats;
 };
 static Scope<Renderer2DData> s_data;
@@ -180,13 +185,49 @@ void Renderer2D::Shutdown()
     s_data.reset(nullptr);
 }
 
-void Renderer2D::BeginScene(const OrthographicCamera &camera, const Ref<Framebuffer>& framebuffer, bool depthTest)
+void Renderer2D::BeginScene(const OrthographicCamera &camera,
+                            const Ref<Framebuffer>& framebuffer, bool depthTest)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
     s_data->depthTest = depthTest;
 
+    s_data->isEditorCamera = true;
+    s_data->orthoCamera = camera;
+    //
+    s_data->sceneState = true;
+
+    if(framebuffer)
+        s_data->targetFramebuffer = framebuffer;
+
+    // Quad
+    {
+        s_data->quadBufferPtr = s_data->quadBuffer;
+        s_data->quadIndexCount = 0;
+    }
+
+    // Line
+    {
+        s_data->lineBufferPtr = s_data->lineBuffer;
+        s_data->lineIndexCount = 0;
+    }
+
+    // Bind the framebuffer
+    if(s_data->targetFramebuffer)
+        s_data->targetFramebuffer->bind();
+}
+
+void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
+                            const Ref<Framebuffer>& framebuffer, bool depthTest)
+{
+    RL_PROFILE_RENDERER_FUNCTION();
+
+    s_data->depthTest = depthTest;
+
+    s_data->isEditorCamera = false;
     s_data->camera = camera;
+    s_data->m_viewProjMatrix = camera.getProjection() * glm::inverse(transform); // TODO: not support rotate now
+    //
     s_data->sceneState = true;
 
     if(framebuffer)
@@ -221,7 +262,8 @@ void Renderer2D::EndScene()
         s_data->lineVertexArray->getVertexBuffer()->setData(s_data->lineBuffer, lineBufferCurrentSize);
         // Shader
         s_data->lineShader->bind();
-        s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
+        s_data->lineShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
+            s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
         // Draw
         s_data->lineVertexArray->bind();
         RenderCommand::SetLineThickness(1.f);
@@ -242,7 +284,8 @@ void Renderer2D::EndScene()
 
         // Shader
         s_data->quadTexShader->bind();
-        s_data->quadTexShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
+        s_data->quadTexShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
+               s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
 
         // Bind texture slots
         for(int i = 0; i < s_data->textureSlotAddIndex; i++)
@@ -486,7 +529,7 @@ void Renderer2D::FlushStatesIfExceeds()
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
-        BeginScene(s_data->camera, nullptr);
+        BeginScene(s_data->orthoCamera, nullptr);
     }
 }
 
@@ -522,7 +565,7 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
     if(s_data->lineIndexCount >= MaxLineCount)
     {
         EndScene();
-        BeginScene(s_data->camera, nullptr);
+        BeginScene(s_data->orthoCamera, nullptr);
     }
 
     s_data->lineBufferPtr->position = p0;

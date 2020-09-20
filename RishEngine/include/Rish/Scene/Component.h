@@ -6,6 +6,7 @@
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/Texture2D.h>
+#include <Rish/Renderer/Camera/Camera.h>
 #include <Rish/Core/VFS.h>
 
 #include <cereal/cereal.hpp>
@@ -136,6 +137,21 @@ private:
 		);
 	}
 
+};
+
+/**
+ * @brief Camera Component
+ */
+struct CameraComponent
+{
+    Camera camera;
+    float zoom = 1.f;
+
+
+    CameraComponent() = default;
+    CameraComponent(const CameraComponent&) = default;
+    CameraComponent(const glm::mat4 &c)
+        : camera(c) {}
 };
 
 /**

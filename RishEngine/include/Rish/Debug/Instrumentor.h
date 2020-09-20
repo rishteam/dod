@@ -145,9 +145,7 @@ private:
     bool m_Stopped;
 };
 
-}
-
-// TODO: support multithreading
+} // end of namespace rl
 
 // https://stackoverflow.com/questions/1597007/creating-c-macro-with-and-line-token-concatenation-with-positioning-macr
 // https://stackoverflow.com/questions/1489932/how-to-concatenate-twice-with-the-c-preprocessor-and-expand-a-macro-as-in-arg

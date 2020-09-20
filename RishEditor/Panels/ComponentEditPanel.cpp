@@ -103,6 +103,26 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
     }
 }
 
+template<>
+void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
+{
+    if (!m_targetEntity.hasComponent<CameraComponent>()) return;
+    //
+    if (ImGui::CollapsingHeader("CameraComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if(drawEditComponentrightClickMenu<CameraComponent>())
+            return;
+        //
+        auto &camera = m_targetEntity.getComponent<CameraComponent>();
+        static float as[2] = {16.f, 9.f};
+        ImGui::DragFloat2("Aspect", as);
+        float aspect = as[0] / as[1];
+        ImGui::DragFloat("Zoom", &camera.zoom);
+        float zoom = camera.zoom;
+        camera.camera.setProjection(glm::ortho(-aspect * zoom, aspect * zoom, -zoom, zoom));
+    }
+}
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -123,9 +143,11 @@ void ComponentEditPanel::onImGuiRender()
 
     ImGui::BeginChild("EntityComponentEdit");
     // TODO: Make this into dispatcher
+    //
     drawEditComponentWidget<TagComponent>();
     drawEditComponentWidget<TransformComponent>();
     drawEditComponentWidget<RenderComponent>();
+    drawEditComponentWidget<CameraComponent>();
 
     // Popup
     if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

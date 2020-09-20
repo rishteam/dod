@@ -41,7 +41,8 @@ void EditorLayer::onAttach()
 	FramebufferSpecification fbspec;
 	fbspec.width = 1280;
 	fbspec.height = 720;
-	m_framebuffer = Framebuffer::Create(fbspec);
+    m_editorFramebuffer = Framebuffer::Create(fbspec);
+    m_sceneFramebuffer = Framebuffer::Create(fbspec);
 
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
@@ -62,27 +63,47 @@ void EditorLayer::onUpdate(Time dt)
     auto cameraController = m_editController->getCameraController();
 
     // Resize the framebuffer if user resize the viewport
-    auto framebufferSpec = m_framebuffer->getSpecification();
+    auto framebufferSpec = m_editorFramebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
     if(m_sceneViewportPanelSize != framebufferSize &&
         m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
     {
-        m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
-    //
+    // TODO: Rendering Queue
     Renderer2D::ResetStats();
-    Renderer2D::BeginScene(cameraController->getCamera(), m_framebuffer);
+    Renderer2D::BeginScene(cameraController->getCamera(), m_editorFramebuffer);
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
         m_editController->onUpdate(dt);
         //
-        m_scene->onUpdate(cameraController->getCamera(), dt);
+        auto transGroup = m_scene->m_registry.group<TransformComponent, RenderComponent>();
+        for(auto entity: transGroup)
+        {
+            auto &transform = transGroup.get<TransformComponent>(entity);
+            auto &render = transGroup.get<RenderComponent>(entity);
+
+            // TODO: make these into entt function
+            if(render.init)
+            {
+                render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+                render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
+                render.init = false;
+            }
+
+            if(render.m_texture)
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        }
         //
     }
     Renderer2D::EndScene();
+
+    m_scene->onUpdate(m_sceneFramebuffer, dt);
 }
 
 void EditorLayer::onImGuiRender()
@@ -122,7 +143,7 @@ void EditorLayer::onImGuiRender()
 
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("Scene");
+	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
     {
         // update edit controller
         m_editController->onImGuiRender();
@@ -130,11 +151,22 @@ void EditorLayer::onImGuiRender()
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
-        uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
+        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();
+
+    ImGui::Begin(ICON_FA_GAMEPAD " Game");
+    {
+        auto size = ImGui::GetContentRegionAvail();
+        uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
+    }
+    ImGui::End();
+
 	ImGui::PopStyleVar();
+
+    m_scene->onImGuiRender();
 
 	// Console
     ImGui::Begin(ICON_FA_TERMINAL " Console");

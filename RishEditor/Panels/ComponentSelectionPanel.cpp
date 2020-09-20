@@ -25,6 +25,7 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     SceneTargetPanel::onAttach(scene);
     ComponentManager::registerComponent<TransformComponent>();
     ComponentManager::registerComponent<RenderComponent>();
+    ComponentManager::registerComponent<CameraComponent>();
 }
 
 } // end of namespace rl

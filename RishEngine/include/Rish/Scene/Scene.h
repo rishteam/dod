@@ -2,7 +2,7 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
-
+#include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Scene/Component.h>
 
@@ -43,7 +43,12 @@ public:
 	 * @param camera Camera
 	 * @param dt Delta t
 	 */
-	void onUpdate(const OrthographicCamera &camera, Time dt);
+	void onUpdate(const Ref<Framebuffer> &framebuffer, Time dt);
+
+	// TODO: DEBUG ONLY
+	void onImGuiRender();
+    Camera mainCamera;
+    glm::mat4 mainCameraTransform;
 
 private:
 	static int entityNumber;
@@ -53,6 +58,8 @@ private:
 	// friend class
     ////////////////////////////////////////////////////////////////
     friend class Entity;
+    // Editor
+    friend class EditorLayer;
     friend class SceneHierarchyPanel;
     friend class ComponentSelectionPanel;
     friend class EditController;
