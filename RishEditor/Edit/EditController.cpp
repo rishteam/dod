@@ -31,6 +31,25 @@ void EditController::onUpdate(Time dt)
     m_cameraController->onUpdate(dt);
     m_editorGrid.onUpdate();
 
+    auto transGroup = getContext()->m_registry.group<TransformComponent, RenderComponent>();
+    for(auto entity: transGroup)
+    {
+        auto &transform = transGroup.get<TransformComponent>(entity);
+        auto &render = transGroup.get<RenderComponent>(entity);
+
+        // TODO: make these into entt function
+        if(render.init)
+        {
+            render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+            render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
+            render.init = false;
+        }
+
+        if(render.m_texture)
+            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        else
+            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+    }
     if(isSelected())
     {
         auto ent = getTarget();

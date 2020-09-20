@@ -83,20 +83,17 @@ private:
  */
 struct TransformComponent
 {
-	glm::mat4 transform {1.0f};
-	glm::vec3 translate {0.0f, 0.0f, 0.0f};
+    glm::vec3 translate {0.0f, 0.0f, 0.0f};
 	glm::vec3 scale {1.f, 1.f, 1.f};
 
 	TransformComponent() = default;
-	TransformComponent(const glm::mat4& t) : transform(t) {}
 
 private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive &ar)
 	{
-		ar( cereal::make_nvp("Transform", transform),
-			cereal::make_nvp("Translate", translate),
+		ar( cereal::make_nvp("Translate", translate),
 			cereal::make_nvp("Scale", scale)
 		);
 	}
@@ -145,13 +142,22 @@ private:
 struct CameraComponent
 {
     Camera camera;
+    float aspect = 16.f / 9.f;
     float zoom = 1.f;
-
 
     CameraComponent() = default;
     CameraComponent(const CameraComponent&) = default;
     CameraComponent(const glm::mat4 &c)
         : camera(c) {}
+private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("camera", camera),
+           cereal::make_nvp("zoom", zoom),
+           cereal::make_nvp("aspect", aspect));
+    }
 };
 
 /**

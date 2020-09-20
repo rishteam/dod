@@ -43,7 +43,7 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
     m_editorFramebuffer = Framebuffer::Create(fbspec);
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
-
+    // Attach all panels
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 }
@@ -53,7 +53,7 @@ void EditorLayer::onDetach()
     RL_CORE_INFO("[EditorLayer] onDetach");
 
     ImGui::SaveIniSettingsToDisk("RishEditor/imgui.ini");
-
+    // Detach all panels
     for(auto &panel : m_panelList)
         panel->onDetach();
 }
@@ -73,37 +73,23 @@ void EditorLayer::onUpdate(Time dt)
     }
     // TODO: Rendering Queue
     Renderer2D::ResetStats();
-    Renderer2D::BeginScene(cameraController->getCamera(), m_editorFramebuffer);
+    m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
-        //
+        Renderer2D::BeginScene(cameraController->getCamera());
         m_editController->onUpdate(dt);
-        //
-        auto transGroup = m_scene->m_registry.group<TransformComponent, RenderComponent>();
-        for(auto entity: transGroup)
-        {
-            auto &transform = transGroup.get<TransformComponent>(entity);
-            auto &render = transGroup.get<RenderComponent>(entity);
-
-            // TODO: make these into entt function
-            if(render.init)
-            {
-                render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-                render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-                render.init = false;
-            }
-
-            if(render.m_texture)
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
-            else
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-        }
-        //
+        Renderer2D::EndScene();
     }
-    Renderer2D::EndScene();
+    m_editorFramebuffer->unbind();
 
-    m_scene->onUpdate(m_sceneFramebuffer, dt);
+    m_sceneFramebuffer->bind();
+    {
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear();
+        m_scene->onUpdate(dt);
+    }
+    m_sceneFramebuffer->unbind();
 }
 
 void EditorLayer::onImGuiRender()
@@ -136,11 +122,6 @@ void EditorLayer::onImGuiRender()
 
     m_componentEditPanel->onImGuiRender();
 
-	ImGui::Begin("Entity Manager");
-    {
-    }
-	ImGui::End();
-
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
@@ -156,17 +137,31 @@ void EditorLayer::onImGuiRender()
     }
 	ImGui::End();
 
+    ImVec2 size; // debug
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
     {
-        auto size = ImGui::GetContentRegionAvail();
-        uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
-        ImGui::Image(textureID, size, {0, 0}, {1, -1});
+        if(m_scene->haveCamera())
+        {
+            size = ImGui::GetContentRegionAvail();
+            float fullH=0.f;
+            //
+            fullH = size.y;
+            size.y = size.x * 1.f / m_scene->getAspect();
+            float dummyH = (fullH - size.y) / 2.f;
+
+            uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
+            ImGui::Dummy({size.x, dummyH});
+            ImGui::Image(textureID, size, {0, 0}, {1, -1});
+        }
     }
     ImGui::End();
 
 	ImGui::PopStyleVar();
 
-    m_scene->onImGuiRender();
+    ImGui::Begin("Entity Manager");
+    {
+    }
+    ImGui::End();
 
 	// Console
     ImGui::Begin(ICON_FA_TERMINAL " Console");

@@ -23,6 +23,13 @@ public:
     void setProjection(const glm::mat4 &proj) { m_projection = proj; }
 private:
     glm::mat4 m_projection;
+
+    friend cereal::access;
+    template<typename Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("projection", m_projection));
+    }
 };
 
 } // end of namespace rl

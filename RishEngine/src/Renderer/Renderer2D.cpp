@@ -88,7 +88,6 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     bool sceneState = false; ///< Is the scene now active (called BeginScene())
     bool depthTest = false;  ///< Is the scene enable depth test
-    Ref<Framebuffer> targetFramebuffer;
     //
     OrthographicCamera orthoCamera;
     bool isEditorCamera = false; // TODO: this is dirty
@@ -185,8 +184,7 @@ void Renderer2D::Shutdown()
     s_data.reset(nullptr);
 }
 
-void Renderer2D::BeginScene(const OrthographicCamera &camera,
-                            const Ref<Framebuffer>& framebuffer, bool depthTest)
+void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
@@ -196,9 +194,6 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera,
     s_data->orthoCamera = camera;
     //
     s_data->sceneState = true;
-
-    if(framebuffer)
-        s_data->targetFramebuffer = framebuffer;
 
     // Quad
     {
@@ -211,14 +206,10 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera,
         s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
     }
-
-    // Bind the framebuffer
-    if(s_data->targetFramebuffer)
-        s_data->targetFramebuffer->bind();
 }
 
 void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
-                            const Ref<Framebuffer>& framebuffer, bool depthTest)
+                            bool depthTest)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
@@ -230,9 +221,6 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
     //
     s_data->sceneState = true;
 
-    if(framebuffer)
-        s_data->targetFramebuffer = framebuffer;
-
     // Quad
     {
         s_data->quadBufferPtr = s_data->quadBuffer;
@@ -244,10 +232,6 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
         s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
     }
-
-    // Bind the framebuffer
-    if(s_data->targetFramebuffer)
-        s_data->targetFramebuffer->bind();
 }
 
 void Renderer2D::EndScene()
@@ -302,10 +286,6 @@ void Renderer2D::EndScene()
 
         s_data->renderStats.DrawCount++;
     }
-
-    // Unbind the framebuffer
-    if(s_data->targetFramebuffer)
-        s_data->targetFramebuffer->unbind();
 
     s_data->sceneState = false;
 }
@@ -529,7 +509,7 @@ void Renderer2D::FlushStatesIfExceeds()
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
-        BeginScene(s_data->orthoCamera, nullptr);
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 }
 
@@ -565,7 +545,7 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
     if(s_data->lineIndexCount >= MaxLineCount)
     {
         EndScene();
-        BeginScene(s_data->orthoCamera, nullptr);
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 
     s_data->lineBufferPtr->position = p0;

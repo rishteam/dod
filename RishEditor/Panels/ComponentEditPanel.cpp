@@ -114,12 +114,16 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
             return;
         //
         auto &camera = m_targetEntity.getComponent<CameraComponent>();
-        static float as[2] = {16.f, 9.f};
-        ImGui::DragFloat2("Aspect", as);
-        float aspect = as[0] / as[1];
-        ImGui::DragFloat("Zoom", &camera.zoom);
+        static float aspectList[][2] = {{16.f, 9.f}, {4, 3}};
+        static const char *aspectName[2] = {"16 : 9", "4 : 3"};
+        static int aspectNowSelect = 0;
+        // Aspect
+        ImGui::Combo("Aspect", &aspectNowSelect, aspectName, 2);
+        camera.aspect = aspectList[aspectNowSelect][0] / aspectList[aspectNowSelect][1];
+        // Zoom
+        ImGui::DragFloat("Zoom", &camera.zoom, 0.1f);
         float zoom = camera.zoom;
-        camera.camera.setProjection(glm::ortho(-aspect * zoom, aspect * zoom, -zoom, zoom));
+        camera.camera.setProjection(glm::ortho(-camera.aspect * zoom, camera.aspect * zoom, -zoom, zoom));
     }
 }
 

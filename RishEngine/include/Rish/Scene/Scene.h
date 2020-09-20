@@ -43,14 +43,19 @@ public:
 	 * @param camera Camera
 	 * @param dt Delta t
 	 */
-	void onUpdate(const Ref<Framebuffer> &framebuffer, Time dt);
+	void onUpdate(Time dt);
 
-	// TODO: DEBUG ONLY
 	void onImGuiRender();
-    Camera mainCamera;
-    glm::mat4 mainCameraTransform;
+
+	bool haveCamera() const { return m_isAnyCamera; }
+	float getAspect() const { return m_cameraAspect; }
 
 private:
+	bool m_isAnyCamera = false;
+    Camera m_mainCamera{};
+    glm::mat4 m_mainCameraTransform{};
+    float m_cameraAspect{};
+
 	static int entityNumber;
 	entt::registry m_registry;
 
