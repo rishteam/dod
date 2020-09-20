@@ -1,11 +1,28 @@
 #include "Rish/Physics/RigidBody2D.h"
 
-rl::RigidBody2D::RigidBody2D(){
-    mass = 0;
-    velocity = Vec2(1.0, -1.0);
-    angularVelocity = 0;
-    force = Vec2(0.0, 0.0);
-    torque = 0;
+rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
+    mass = m_;
+    position = position_;
+    wh = wh_;
+    velocity.Set(0.0f, 0.0f);
+    angularVelocity = 0.0f;
+    force.Set(0.0f, 0.0f);
+    torque = 0.0f;
+    friction = 0.2f;
+    mass = m_;
+
+    if (mass < MAX_float)
+    {
+        invMass = 1.0f / mass;
+        I = mass * (wh.x * wh.x + wh.y * wh.y) / 12.0f;
+        invI = 1.0f / I;
+    }
+    else
+    {
+        invMass = 0.0f;
+        I = MAX_float;
+        invI = 0.0f;
+    }
 }
 
 std::pair<Vec2, float> rl::RigidBody2D::getPhysicsData()

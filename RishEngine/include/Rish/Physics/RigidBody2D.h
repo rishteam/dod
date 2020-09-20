@@ -8,7 +8,7 @@ namespace rl {
 class RL_API RigidBody2D
 {
 public:
-    RigidBody2D();
+    RigidBody2D(Vec2 position_, Vec2 wh_, float m_);
     ~RigidBody2D() = default;
     std::pair<Vec2, float> getPhysicsData();
     Vec2 getwh();

@@ -20,6 +20,7 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
+    float x,y,w,h,m;
     Ref<Scene> m_scene;
     Ref<PhysicsWorld> m_world;
     OrthographicCameraController m_cameraController;

@@ -5,6 +5,7 @@
 #include "Rish/Physics/vector_math.h"
 
 //被撞的body2, 撞人的body1
+namespace rl {
     struct Contact {
         Vec2 position;
         Vec2 normal;
@@ -24,7 +25,7 @@
     class ArbiterKey {
     public:
         //小的放前面
-        ArbiterKey(rl::RigidBody2D *b1, rl::RigidBody2D *b2) {
+        ArbiterKey(Ref<RigidBody2D> &b1, Ref<RigidBody2D> &b2) {
             if (b1 < b2) {
                 body1 = b1;
                 body2 = b2;
@@ -36,8 +37,8 @@
 
         ~ArbiterKey() = default;
 
-        rl::RigidBody2D *body1;
-        rl::RigidBody2D *body2;
+        Ref<RigidBody2D> body1;
+        Ref<RigidBody2D> body2;
     };
 
     inline bool operator<(const ArbiterKey &a1, const ArbiterKey &a2) {
@@ -172,7 +173,7 @@
 
     class Arbiter {
     public:
-        Arbiter(rl::RigidBody2D *b1_, rl::RigidBody2D *b2_);
+        Arbiter(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_);
 
         ~Arbiter() = default;
 
@@ -182,14 +183,15 @@
 
         void ApplyImpulse();
 
-        int calContactPoints(Contact *contacts, rl::RigidBody2D *b1, rl::RigidBody2D *b2);
+        int calContactPoints(Contact *contacts, Ref<RigidBody2D> &b1, Ref<RigidBody2D> &b2);
 
         Contact contacts[2];
         int numContacts = 0;
 
-        rl::RigidBody2D *body1;
-        rl::RigidBody2D *body2;
+        Ref<RigidBody2D> body1;
+        Ref<RigidBody2D> body2;
 
         //combined friction
         float friction = 0.0f;
     };
+}

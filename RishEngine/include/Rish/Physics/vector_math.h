@@ -140,7 +140,7 @@ public:
      * @retval float 旋轉過後的向量
      */
     void rotate_ref(float angle, Vec2 &ref);
-    int x, y;
+    float x, y;
 };
 
 

@@ -18,21 +18,17 @@ rl::PhysicsWorld::PhysicsWorld(Vec2 gravity_, float width_, float height_)
 void rl::PhysicsWorld::Clear()
 {
     //release space
-    for(auto ptr : bodies)
-    {
-        delete ptr;
-    }
     bodies.clear();
     joints.clear();
     arbiters.clear();
 }
 
-void rl::PhysicsWorld::Add(RigidBody2D* body)
+void rl::PhysicsWorld::Add(const Ref<RigidBody2D> &body)
 {
     bodies.push_back(body);
 }
 
-void rl::PhysicsWorld::AddJoints(Joint* joint)
+void rl::PhysicsWorld::AddJoints(Ref<Joint> joint)
 {
     joints.push_back(joint);
 }
@@ -100,9 +96,9 @@ void rl::PhysicsWorld::BoardPhase()
             auto iter = arbiters.find(key);
 
             // SAT collision
-            auto box1 = new rl::Box(reinterpret_cast<RigidBody2D &>(bodies.at(i)));
-            auto box2 = new rl::Box(reinterpret_cast<RigidBody2D &>(bodies.at(j)));
-            if(box1->isCollide(reinterpret_cast<Box &>(box2)))
+            auto box1 = MakeRef<Box>(bodies.at(i));
+            auto box2 = MakeRef<Box>(bodies.at(j));
+            if(box1->isCollide(box2))
             {
                 //add new arbiter
                 if (iter == arbiters.end())
@@ -162,4 +158,47 @@ Vec2 rl::PhysicsWorld::ConvertWorldToScreen(const Vec2& pw)
     ps.y = (1.0f - v) * h;
     return ps;
 };
+
+void rl::PhysicsWorld::demo1()
+{
+    this->Clear();
+    //方塊
+    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, 1.0f), Vec2(0.25f, 0.25f), 10);
+    this->Add(floor);
+    //地板
+    auto box = rl::MakeRef<RigidBody2D>(Vec2(0.0f, 0.0f), Vec2(0.5f, 0.5f), MAX_float);
+    this->Add(box);
+}
+void rl::PhysicsWorld::demo2()
+{
+
+}
+void rl::PhysicsWorld::demo3()
+{
+
+}
+void rl::PhysicsWorld::demo4()
+{
+
+}
+void rl::PhysicsWorld::demo5()
+{
+
+}
+void rl::PhysicsWorld::demo6()
+{
+
+}
+void rl::PhysicsWorld::demo7()
+{
+
+}
+void rl::PhysicsWorld::demo8()
+{
+
+}
+void rl::PhysicsWorld::demo9()
+{
+
+}
 

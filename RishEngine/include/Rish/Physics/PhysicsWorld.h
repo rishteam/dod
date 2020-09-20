@@ -15,15 +15,26 @@ namespace rl {
     public:
         PhysicsWorld(Vec2 gravity_, float width_, float height_);
 
-        void Add(RigidBody2D *body);
+        void Add(const Ref<RigidBody2D> &body);
 
-        void AddJoints(Joint *joint);
+        void AddJoints(Ref<Joint> joint);
 
         void Clear();
 
         void Step(float delta_t);
 
         void BoardPhase();
+
+        void demo1();
+        void demo2();
+        void demo3();
+        void demo4();
+        void demo5();
+        void demo6();
+        void demo7();
+        void demo8();
+        void demo9();
+
 
         static Vec2 ChangeToPhysicsWorld(const Vec2 &ps);
 
@@ -39,8 +50,8 @@ namespace rl {
         float timeStep = 1.0 / 60.0f;
         int iterations = 10;
 
-        std::vector<RigidBody2D*> bodies;
-        std::vector<Joint*> joints;
+        std::vector<Ref<RigidBody2D>> bodies;
+        std::vector<Ref<Joint>> joints;
         std::map<ArbiterKey, Arbiter> arbiters;
 
     };

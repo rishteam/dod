@@ -14,10 +14,10 @@ rl::Box::Box(float x_, float y_, float w_, float h_)
     this->_setVertices();
 }
 
-rl::Box::Box(rl::RigidBody2D &body)
+rl::Box::Box(Ref<RigidBody2D> &body)
 {
-    float w_ = float(body.wh.x);
-    float h_ = float(body.wh.y);
+    float w_ = float(body->wh.x);
+    float h_ = float(body->wh.y);
     float ratio = w_ / h_;
 
     Vec2 extents(ratio * 25.0f, 25.0f);
@@ -26,8 +26,8 @@ rl::Box::Box(rl::RigidBody2D &body)
     Vec2 lower = m_center - extents;
     Vec2 upper = m_center + extents;
 
-    float u = (body.position.x - lower.x) / (upper.x - lower.x);
-    float v = (body.position.y - lower.y) / (upper.y - lower.y);
+    float u = (body->position.x - lower.x) / (upper.x - lower.x);
+    float v = (body->position.y - lower.y) / (upper.y - lower.y);
 
     x = u * w_;
     y = (1.0f - v) * h_;
@@ -82,25 +82,25 @@ float rl::Box::get_height()
     return h;
 }
 
-bool rl::Box::isCollide(rl::Box &b)
+bool rl::Box::isCollide(Ref<Box> &b)
 {
     this->_setVertices();
     this->_findSAT();
 
-    b._setVertices();
-    b._findSAT();
-    auto b_sat = b.SAT;
+    b->_setVertices();
+    b->_findSAT();
+    auto b_sat = b->SAT;
 
     //分離軸枚舉，只需枚舉兩個向量，因為另外兩個只是反向而已
     auto PA = getMinMax(this->SAT[0], this->Vertices);
-    auto PB = getMinMax(this->SAT[0], b.Vertices);
+    auto PB = getMinMax(this->SAT[0], b->Vertices);
     auto QA = getMinMax(this->SAT[1], this->Vertices);
-    auto QB = getMinMax(this->SAT[1], b.Vertices);
+    auto QB = getMinMax(this->SAT[1], b->Vertices);
 
     auto WA = getMinMax(b_sat[0], this->Vertices);
-    auto WB = getMinMax(b_sat[0], b.Vertices);
+    auto WB = getMinMax(b_sat[0], b->Vertices);
     auto XA = getMinMax(b_sat[1], this->Vertices);
-    auto XB = getMinMax(b_sat[1], b.Vertices);
+    auto XB = getMinMax(b_sat[1], b->Vertices);
 
 
     //檢查分離軸上投影區段是否分開
