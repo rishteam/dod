@@ -29,17 +29,27 @@ private:
     //////////////////////////////////////////
     // Scene
     //////////////////////////////////////////
-	Ref<Framebuffer> m_framebuffer;
+	Ref<Framebuffer> m_editorFramebuffer;
+    //
+	Ref<Framebuffer> m_sceneFramebuffer;
 	Ref<Scene> m_scene;
+	//
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
     glm::vec2 m_sceneViewportPanelSize {0.f, 0.f};
 
-	// Editor
+    //////////////////////////////////////////
+    // Editor Panels
+    //////////////////////////////////////////
 	Ref<EditController> m_editController;
+    Ref<SceneHierarchyPanel> m_sceneHierarchyPanel;
+    Ref<ComponentEditPanel> m_componentEditPanel;
 
-	SceneHierarchyPanel m_sceneHierarchyPanel;
-	ComponentEditPanel m_componentEditPanel;
+	std::vector<Ref<ScenePanel>> m_panelList;
+
+    //////////////////////////////////////////
+    // Common Widgets
+    //////////////////////////////////////////
 	ErrorModal m_errorModal;
 };
 

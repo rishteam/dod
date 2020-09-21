@@ -2,9 +2,10 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
-
-#include <Rish/Renderer/Camera/OrthographicCamera.h>
+#include <Rish/Renderer/Framebuffer.h>
+//#include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Scene/Component.h>
+#include <Rish/Scene/SceneCamera.h>
 
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
@@ -43,9 +44,22 @@ public:
 	 * @param camera Camera
 	 * @param dt Delta t
 	 */
-	void onUpdate(const OrthographicCamera &camera, Time dt);
+	void onUpdate(Time dt);
+
+	void onImGuiRender();
+
+	const SceneCamera& getMainCamera() const { return m_mainCamera; }
 
 private:
+    ////////////////////////////////////////////////////////////////
+    // Scene Camera
+    ////////////////////////////////////////////////////////////////
+    SceneCamera m_mainCamera{};
+    glm::mat4 m_mainCameraTransform{};
+
+    ////////////////////////////////////////////////////////////////
+    // Scene
+    ////////////////////////////////////////////////////////////////
 	static int entityNumber;
 	entt::registry m_registry;
 
@@ -53,6 +67,8 @@ private:
 	// friend class
     ////////////////////////////////////////////////////////////////
     friend class Entity;
+    // Editor
+    friend class EditorLayer;
     friend class SceneHierarchyPanel;
     friend class ComponentSelectionPanel;
     friend class EditController;
@@ -86,3 +102,8 @@ private:
 };
 
 } // namespace rl
+
+/**
+ * @class rl::Scene
+ * @ingroup scene
+ */

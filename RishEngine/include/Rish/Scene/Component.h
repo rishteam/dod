@@ -1,12 +1,12 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-
+#include <Rish/Core/VFS.h>
 #include <Rish/Renderer/Buffer.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/Texture2D.h>
-#include <Rish/Core/VFS.h>
+#include <Rish/Scene/SceneCamera.h>
 
 #include <cereal/cereal.hpp>
 
@@ -49,6 +49,16 @@ namespace glm
 
 namespace rl {
 
+/**
+ * @defgroup components Components
+ * @brief Components for entities
+ * @ingroup scene
+ * @{
+ */
+
+/**
+ * @brief Tag
+ */
 struct TagComponent
 {
 	std::string tag{};
@@ -67,27 +77,30 @@ private:
 
 };
 
+/**
+ * @brief Transform
+ */
 struct TransformComponent
 {
-	glm::mat4 transform {1.0f};
-	glm::vec3 translate {0.0f, 0.0f, 0.0f};
+    glm::vec3 translate {0.0f, 0.0f, 0.0f};
 	glm::vec3 scale {1.f, 1.f, 1.f};
 
 	TransformComponent() = default;
-	TransformComponent(const glm::mat4& t) : transform(t) {}
 
 private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive &ar)
 	{
-		ar( cereal::make_nvp("Transform", transform),
-			cereal::make_nvp("Translate", translate),
+		ar( cereal::make_nvp("Translate", translate),
 			cereal::make_nvp("Scale", scale)
 		);
 	}
 };
 
+/**
+ * @brief Render
+ */
 struct RenderComponent
 {
 	std::string vertPath = "/shader/vertexSrc.glsl";
@@ -121,5 +134,32 @@ private:
 	}
 
 };
+
+/**
+ * @brief Camera Component
+ */
+struct CameraComponent
+{
+    SceneCamera camera;
+    bool primary = false;
+    bool lockAspect = true;
+
+    CameraComponent() = default;
+    CameraComponent(const CameraComponent&) = default;
+private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("camera", camera),
+           cereal::make_nvp("lockAspect", lockAspect),
+           cereal::make_nvp("primary", primary)
+        );
+    }
+};
+
+/**
+ * @}
+ */
 
 } // end of rl

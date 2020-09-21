@@ -22,17 +22,33 @@ public:
 
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
 private:
-    EditorGrid m_editorGrid;
-    Ref<OrthographicCameraController> m_cameraController;
+    bool onMouseScrolled(MouseScrolledEvent &e);
+
+    EditorGrid m_editorGrid;                              ///< Editor grid
+    Ref<OrthographicCameraController> m_cameraController; ///< Editor camera
 
     // Attributes of current selected entity
-    glm::vec3 m_curEntPos, m_curHalfSize;
+    glm::vec3 m_curEntPos{}, m_curSize{};
 
-    bool m_sceneWindowFocused = false;
-    bool m_sceneWindowHovered = false;
+    // Entity move
+    glm::vec3 m_moveEntityDiff{0.f};
+    bool m_isNowMovingEntity = false;
+
+    // Camera pane
+    glm::vec3 m_moveCameraDiff{0.f};
+    glm::vec2 m_preMPos{0.f};
+    bool m_isNowMovingCamera = false; ///< Is now moving camera
+
+    //
+    glm::vec2 sceneMousePosNormalize{0.f};
+    glm::vec2 sceneMousePosCenterNormalize{0.f};
+
+    bool m_sceneWindowFocused = false; ///< Is Scene window focused?
+    bool m_sceneWindowHovered = false; ///< Is Scene window hovered?
 public:
     bool m_debugEditorGrid = false;
     bool m_debugCameraController = false;
+    bool m_debugEditorController = false;
 };
 
 } // end of namespace rl

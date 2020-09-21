@@ -20,6 +20,7 @@ namespace rl {
 
 /**
  * @brief ImGui Layer
+ * @ingroup core
  * @details Handles the ImGui layer things
  */
 class RL_API ImGuiLayer : public Layer

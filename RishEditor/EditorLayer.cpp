@@ -24,7 +24,15 @@ EditorLayer::EditorLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_scene = MakeRef<Scene>();
+    //
     m_editController = MakeRef<EditController>();
+    m_panelList.push_back(m_editController);
+    //
+    m_sceneHierarchyPanel = MakeRef<SceneHierarchyPanel>();
+    m_panelList.push_back(m_sceneHierarchyPanel);
+    //
+    m_componentEditPanel = MakeRef<ComponentEditPanel>();
+    m_panelList.push_back(m_componentEditPanel);
 }
 
 void EditorLayer::onAttach()
@@ -33,11 +41,11 @@ void EditorLayer::onAttach()
 	FramebufferSpecification fbspec;
 	fbspec.width = 1280;
 	fbspec.height = 720;
-	m_framebuffer = Framebuffer::Create(fbspec);
-
-    m_sceneHierarchyPanel.onAttach(m_scene);
-    m_componentEditPanel.onAttach(m_scene);
-    m_editController->onAttach(m_scene);
+    m_editorFramebuffer = Framebuffer::Create(fbspec);
+    m_sceneFramebuffer = Framebuffer::Create(fbspec);
+    // Attach all panels
+    for(auto &panel : m_panelList)
+        panel->onAttach(m_scene);
 }
 
 void EditorLayer::onDetach()
@@ -45,10 +53,9 @@ void EditorLayer::onDetach()
     RL_CORE_INFO("[EditorLayer] onDetach");
 
     ImGui::SaveIniSettingsToDisk("RishEditor/imgui.ini");
-
-    m_sceneHierarchyPanel.onDetach();
-    m_componentEditPanel.onDetach();
-    m_editController->onDetach();
+    // Detach all panels
+    for(auto &panel : m_panelList)
+        panel->onDetach();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -56,27 +63,35 @@ void EditorLayer::onUpdate(Time dt)
     auto cameraController = m_editController->getCameraController();
 
     // Resize the framebuffer if user resize the viewport
-    auto framebufferSpec = m_framebuffer->getSpecification();
+    auto framebufferSpec = m_editorFramebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
     if(m_sceneViewportPanelSize != framebufferSize &&
         m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
     {
-        m_framebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
-    //
+    // TODO: Rendering Queue
     Renderer2D::ResetStats();
-    Renderer2D::BeginScene(cameraController->getCamera(), m_framebuffer);
+    m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
+        Renderer2D::BeginScene(cameraController->getCamera());
         m_editController->onUpdate(dt);
-        //
-        m_scene->onUpdate(cameraController->getCamera(), dt);
-        //
+        Renderer2D::EndScene();
     }
-    Renderer2D::EndScene();
+    m_editorFramebuffer->unbind();
+
+    m_sceneFramebuffer->bind();
+    {
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear();
+        //
+        m_scene->onUpdate(dt);
+    }
+    m_sceneFramebuffer->unbind();
 }
 
 void EditorLayer::onImGuiRender()
@@ -88,35 +103,30 @@ void EditorLayer::onImGuiRender()
     if(m_editController->isSelected())
     {
         auto ent = m_editController->getTarget();
-        m_sceneHierarchyPanel.resetTarget();
-        m_sceneHierarchyPanel.addTarget(ent);
+        m_sceneHierarchyPanel->resetTarget();
+        m_sceneHierarchyPanel->addTarget(ent);
     }
 
-    m_sceneHierarchyPanel.onImGuiRender();
+    m_sceneHierarchyPanel->onImGuiRender();
 
-    if (m_sceneHierarchyPanel.selectedSize() == 1 &&
-        m_sceneHierarchyPanel.isSelected())
+    if (m_sceneHierarchyPanel->selectedSize() == 1 &&
+        m_sceneHierarchyPanel->isSelected())
     {
-        auto ent = *m_sceneHierarchyPanel.getSelectedEntities().begin();
-        m_componentEditPanel.setTarget(ent);
+        auto ent = *m_sceneHierarchyPanel->getSelectedEntities().begin();
+        m_componentEditPanel->setTarget(ent);
         m_editController->setTarget(ent);
     }
     else
     {
-        m_componentEditPanel.resetSelected();
+        m_componentEditPanel->resetSelected();
         m_editController->resetSelected();
     }
 
-    m_componentEditPanel.onImGuiRender();
-
-	ImGui::Begin("Entity Manager");
-    {
-    }
-	ImGui::End();
+    m_componentEditPanel->onImGuiRender();
 
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("Scene");
+	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
     {
         // update edit controller
         m_editController->onImGuiRender();
@@ -124,11 +134,44 @@ void EditorLayer::onImGuiRender()
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
-        uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
+        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();
+
+    ImVec2 size; // debug
+    ImGui::Begin(ICON_FA_GAMEPAD " Game");
+    {
+        size = ImGui::GetContentRegionAvail();
+        float fullH{};
+        fullH = size.y;
+        size.y = size.x * 1.f / m_scene->getMainCamera().getAspect();
+        float dummyH = (fullH - size.y) / 2.f;
+
+        uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
+        ImGui::Dummy({size.x, dummyH});
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
+    }
+    ImGui::End();
+
 	ImGui::PopStyleVar();
+
+    ImGui::Begin("Entity Manager");
+    {
+    }
+    ImGui::End();
+
+    ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
+    {
+        // TODO: item width??
+        float buttonWidth = 100.f;
+        ImGui::PushItemWidth(buttonWidth);
+        ImGui::Button(ICON_FA_PLAY);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_PAUSE);
+        ImGui::PopItemWidth();
+    }
+    ImGui::End();
 
 	// Console
     ImGui::Begin(ICON_FA_TERMINAL " Console");
@@ -185,17 +228,15 @@ void EditorLayer::onImGuiMainMenuRender()
                     exceptionMsg = e.what();
                     failLoad = true;
                 }
-
+                // If success
                 if(!failLoad)
                 {
                     m_sceneLoaded = true;
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    // TODO: Make EditorLayer manages all ScenePanels
-                    m_sceneHierarchyPanel.setContext(m_scene);
-                    m_componentEditPanel.setContext(m_scene);
-                    m_editController->setContext(m_scene);
+                    for(auto & panel : m_panelList)
+                        panel->setContext(m_scene);
                 }
                 else
                 {
@@ -252,8 +293,9 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Debug"))
         {
-            ImGui::MenuItem("RishEditor Grid", nullptr, &m_editController->m_debugEditorGrid);
-            ImGui::MenuItem("RishEditor Camera", nullptr, &m_editController->m_debugCameraController);
+            ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
+            ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
+            ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
             ImGui::EndMenu();
         }
 

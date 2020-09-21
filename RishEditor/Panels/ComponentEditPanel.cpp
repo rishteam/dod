@@ -20,6 +20,7 @@ void ComponentEditPanel::drawEditComponentWidget<TagComponent>()
         //
         std::string &tag = m_targetEntity.getComponent<TagComponent>().tag;
         std::string &id = m_targetEntity.getComponent<TagComponent>().id;
+        // TODO: Wrap?
         ImGui::PushItemWidth(300);
         ImGui::InputText("Tag", &tag);
         ImGui::InputText("Id", &id, ImGuiInputTextFlags_ReadOnly);
@@ -103,6 +104,50 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
     }
 }
 
+template<>
+void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
+{
+    if (!m_targetEntity.hasComponent<CameraComponent>()) return;
+    //
+    if (ImGui::CollapsingHeader("CameraComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if(drawEditComponentrightClickMenu<CameraComponent>())
+            return;
+        //
+        auto &camera = m_targetEntity.getComponent<CameraComponent>();
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        //
+        static float aspectList[][2] = {{16.f, 9.f}, {4, 3}};
+        static const char *aspectName[2] = {"16 : 9", "4 : 3"};
+        static int aspectNowSelect = 0;
+        static float size = 5.f, near = -1.0f, far = 1.0f;
+
+        // Primary
+        ImGui::Checkbox("Primary", &camera.primary);
+        ImGui::Checkbox("Fixed Aspect", &camera.lockAspect);
+        //
+        if(camera.lockAspect)
+        {
+            // Aspect
+            ImGui::Combo("Aspect", &aspectNowSelect, aspectName, 2);
+            camera.camera.setAspect(aspectList[aspectNowSelect][0] / aspectList[aspectNowSelect][1]);
+            //
+            ImGui::DragFloat("Size", &size, 0.1f);
+            ImGui::DragFloat("Near Plane", &near, 0.1f);
+            ImGui::DragFloat("Far Plane", &far, 0.1f);
+            camera.camera.setOrthographic(size, near, far);
+            //
+            transform.scale.y = size;
+            transform.scale.x = size * camera.camera.getAspect();
+        }
+        else
+        {
+            camera.camera.setAspect(transform.scale.x / transform.scale.y);
+            camera.camera.setOrthographic(transform.scale.y, near, far);
+        }
+    }
+}
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -123,9 +168,11 @@ void ComponentEditPanel::onImGuiRender()
 
     ImGui::BeginChild("EntityComponentEdit");
     // TODO: Make this into dispatcher
+    //
     drawEditComponentWidget<TagComponent>();
     drawEditComponentWidget<TransformComponent>();
     drawEditComponentWidget<RenderComponent>();
+    drawEditComponentWidget<CameraComponent>();
 
     // Popup
     if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

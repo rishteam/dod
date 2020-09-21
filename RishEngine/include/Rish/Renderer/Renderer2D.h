@@ -6,17 +6,22 @@
 #include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/Texture2D.h>
 #include <Rish/Renderer/SubTexture2D.h>
+#include <Rish/Renderer/Camera/Camera.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 
 namespace rl {
 
+/**
+ * @brief 2D Renderer
+ */
 class RL_API Renderer2D
 {
 public:
     static void Init();
     static void Shutdown();
 
-    static void BeginScene(const OrthographicCamera &camera, const Ref<Framebuffer>& framebuffer=nullptr, bool depthTest=false);
+    static void BeginScene(const OrthographicCamera &camera, bool depthTest=false);
+    static void BeginScene(const Camera &camera, const glm::mat4 &transform, bool depthTest=false);
     static void EndScene();
 
     // TODO: support to specify the origin
@@ -42,6 +47,8 @@ public:
     static void DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color=glm::vec4(1.f));
 
     static void DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color=glm::vec4(1.f));
+
+    static void DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color=glm::vec4(1.f));
 
     struct Stats
     {

@@ -8,6 +8,9 @@
 
 namespace rl {
 
+/**
+ * @brief 2D sub-texture
+ */
 class RL_API SubTexture2D
 {
 public:

@@ -2,15 +2,15 @@
  * @file RishEngine.h
  * @author roy4801 (me@roy4801.tw), icejj (icejj@rish.com.tw)
  * @brief This header should only be include by the CLIENT code
+ * @warning This header should only be include by the CLIENT code
  * @date 2020-05-21
  */
 #pragma once
 
 /**
- * @warning This header should only be include by the CLIENT code
+ * @defgroup core Core Module
+ * @brief Core functions of RishEngine
  */
-
-// Core Module
 #include <Rish/Core/Core.h>
 #include <Rish/Core/Log.h>
 #include <Rish/Core/ResHolder.h>
@@ -27,19 +27,25 @@
 
 // Utils Module
 #include <Rish/Debug/debug-trap.h>
-#include <Rish/Utils/FileDialog.h>
 #include <Rish/Debug/ImGuiLogWindow.h>
+#include <Rish/Utils/FileDialog.h>
 
-// Animation Module
+/**
+ * @defgroup animation Animation Module
+ * @brief Animation
+ */
 #include <Rish/Animation/Animation.h>
 #include <Rish/Animation/Loader.h>
 #include <Rish/Animation/Editor/EditorApp.h>
 
-// Layers
+// Layer
 #include <Rish/Layer/Layer.h>
 #include <Rish/Layer/ImGuiLayer.h>
 
-// Renderer
+/**
+ * @defgroup renderer Renderer module
+ * @brief Renderer module
+ */
 #include <Rish/Renderer/Buffer.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/VertexArray.h>
@@ -52,13 +58,19 @@
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
-// Scene
+/**
+ * @defgroup math Math Module
+ * @brief Math related
+ */
+#include <Rish/Math/AABB.h>
+
+/**
+ * @defgroup scene Scene Module
+ * @brief Scene
+ */
 #include "Rish/Scene/Scene.h"
 #include "Rish/Scene/Entity.h"
 #include "Rish/Scene/Component.h"
 
 // Debug
 #include <Rish/Debug/Instrumentor.h>
-
-/// @defgroup core Core Module
-/// Core functions

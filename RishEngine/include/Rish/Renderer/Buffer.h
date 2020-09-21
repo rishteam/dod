@@ -119,9 +119,12 @@ struct RL_API BufferElement
 			return 4;
 		case ShaderDataType::Bool:
 			return 1;
+        default:
+            RL_CORE_ASSERT(false, "Unknown ShaderDataType");
+            return 0;
 		}
-		RL_CORE_ASSERT(false, "Unknown ShaderDataType");
-		return 0;
+//		RL_CORE_ASSERT(false, "Unknown ShaderDataType");
+//		return 0;
 	}
 };
 

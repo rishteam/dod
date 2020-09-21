@@ -109,7 +109,7 @@ add_library(RishEngine
     src/Scene/ComponentManager.cpp
 
     src/ImGui.cpp
-)
+        src/Math/AABB.cpp src/Scene/SceneCamera.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

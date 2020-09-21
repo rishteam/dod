@@ -37,6 +37,9 @@ std::pair<ImVec2, ImVec2> GetWindowContentPoints();
  */
 ImVec2 GetMousePosRelatedToWindow();
 
+ImVec2 GetMousePosRelatedToWindowNormalize();
+ImVec2 GetMousePosRelatedToWindowNormalizeCenter();
+
 void BeginDockspace(const char *name);
 void EndDockspace();
 

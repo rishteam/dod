@@ -11,6 +11,11 @@
 
 #include <spdlog/fmt/bundled/format.h>
 
+/**
+ * @addgroup core
+ * @{
+ */
+
 namespace rl {
 
 /**
@@ -196,7 +201,12 @@ inline std::ostream &operator<<(std::ostream &os, const Event &e)
 }
 
 /**
+ * @}
+ */
+
+/**
  * @class rl::Event
+ * @ingroup core
  *
  * RishEngine Events.
  * @note Always dispatch your events with rl::EventDispatcher in your own layer which is inherited from rl::Layer in the overrided function `void onEvent(rl::Event &event)`

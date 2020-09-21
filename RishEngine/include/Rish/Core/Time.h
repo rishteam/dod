@@ -12,6 +12,8 @@
 namespace rl {
 
 /**
+ * @class rl::Time
+ * @ingroip core
  * @brief Time Class
  */
 class Time
@@ -127,6 +129,8 @@ public:
 };
 
 /**
+ * @class rl::Clock
+ * @ingroup core
  * @brief Clock class
  * @details A class that measure the elapsed time
  * 
@@ -169,6 +173,8 @@ private:
 };
 
 /**
+ * @class rl::Timer
+ * @ingroup core
  * @brief Timer class
  * @details A timer that binds function to a specific time, the function will not run until the times up.<br/>
  * Timer have static timerList and static loopTimerList that stores the timer.
@@ -259,3 +265,4 @@ private:
 };
 
 }
+
