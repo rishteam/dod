@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include "Rish/Physics/vector_math.h"
+#include <Rish/Physics/vector_math.h>
 
 namespace rl {
 
@@ -10,6 +10,7 @@ class RL_API RigidBody2D
 public:
     RigidBody2D(Vec2 position_, Vec2 wh_, float m_);
     ~RigidBody2D() = default;
+    void setAngle(float rad);
     std::pair<Vec2, float> getPhysicsData();
     Vec2 getwh();
     float getMass();

@@ -1,4 +1,4 @@
-#include "Rish/Physics/Arbiter.h"
+#include <Rish/Physics/Arbiter.h>
 
 namespace rl {
     Arbiter::Arbiter(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_) {

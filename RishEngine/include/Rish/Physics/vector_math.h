@@ -1,7 +1,6 @@
+#pragma once
 #include <Rish/rlpch.h>
 
-#ifndef vector_math_H_
-#define vector_math_H_
 /**
  * @file vector_math.h
  * @author  halloworld <william31212@gmail.com>
@@ -288,4 +287,3 @@ template<typename T> inline void Swap(T& a, T& b)
     a = b;
     b = tmp;
 }
-#endif

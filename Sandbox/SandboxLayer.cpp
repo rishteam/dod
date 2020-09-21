@@ -30,12 +30,26 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
     Renderer2D::BeginScene(m_cameraController.getCamera());
 
     //simulate
-    m_world->Step();
+    m_world->Step(dt);
 
     //draw box
     for(auto obj : m_world->bodies)
     {
-        Renderer2D::DrawQuad({obj->position.x, obj->position.y}, { obj->wh.x, obj->wh.y}, {1, 0, 0, 0.5});
+        Renderer2D::DrawRotatedQuad({obj->position.x, obj->position.y}, { obj->wh.x, obj->wh.y}, {1, 0, 0, 0.5}, glm::degrees(obj->angle));
+    }
+    for(auto jit : m_world->joints)
+    {
+        Mat22 R1(jit->b1->angle);
+        Mat22 R2(jit->b2->angle);
+
+        Vec2 x1 = jit->b1->position;
+        Vec2 p1 = x1 + R1 * jit->localAnchor1;
+
+        Vec2 x2 = jit->b2->position;
+        Vec2 p2 = x2 + R2 * jit->localAnchor2;
+
+        Renderer2D::DrawLine({x1.x, x1.y}, {p1.x, p1.y}, {1, 1, 0, 0.5});
+        Renderer2D::DrawLine({x2.x, x2.y}, {p2.x, p2.y}, {1, 1, 0, 0.5});
     }
 
     Renderer2D::EndScene();
@@ -84,7 +98,29 @@ void ExampleSandboxLayer::onImGuiRender()
     if (ImGui::Button("Clear")) {
         m_world->Clear();
     }
+
+
     ImGui::Separator();
+    ImGui::Checkbox("AccumulateImpulses", &m_world->accumulateImpulses);
+    ImGui::SameLine();
+    ImGui::Checkbox("WarmStarting", &m_world->warmStarting);
+    ImGui::SameLine();
+    ImGui::Checkbox("positionCorrection", &m_world->positionCorrection);
+
+    if (ImGui::CollapsingHeader("Box's Data"))
+    {
+        for(int i = 0; i < m_world->bodies.size(); i++)
+        {
+            Ref<RigidBody2D> box = m_world->bodies.at(i);
+            ImGui::Text("Box%d:", i);
+            ImGui::Text("[Physics] Center: (%f, %f)", box->getPhysicsData().first.x, box->getPhysicsData().first.y);
+            ImGui::Text("[Physics] width:%f, height:%f", box->getwh().x, box->getwh().y);
+            ImGui::Text("[Physics] mass: %f", box->getMass());
+            ImGui::Text("[Physics] angle: %f", box->getPhysicsData().second );
+            ImGui::Text("[Physics] friction: %f", box->getfriction());
+            ImGui::Separator();
+        }
+    }
     ImGui::End();
     m_cameraController.onImGuiRender();
 }

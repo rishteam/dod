@@ -1,4 +1,4 @@
-#include "Rish/Physics/vector_math.h"
+#include <Rish/Physics/vector_math.h>
 
 Vec2::Vec2()
 {

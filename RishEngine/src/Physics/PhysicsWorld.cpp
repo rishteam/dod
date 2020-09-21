@@ -1,4 +1,4 @@
-#include "Rish/Physics/PhysicsWorld.h"
+#include <Rish/Physics/PhysicsWorld.h>
 
 bool rl::PhysicsWorld::accumulateImpulses = true;
 bool rl::PhysicsWorld::warmStarting = true;
@@ -28,7 +28,7 @@ void rl::PhysicsWorld::Add(const Ref<RigidBody2D> &body)
     bodies.push_back(body);
 }
 
-void rl::PhysicsWorld::AddJoints(Ref<Joint> joint)
+void rl::PhysicsWorld::AddJoints(const Ref<Joint> &joint)
 {
     joints.push_back(joint);
 }
@@ -163,15 +163,30 @@ void rl::PhysicsWorld::demo1()
 {
     this->Clear();
     //方塊
-    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, 1.0f), Vec2(0.25f, 0.25f), 10);
-    this->Add(floor);
-    //地板
-    auto box = rl::MakeRef<RigidBody2D>(Vec2(0.0f, 0.0f), Vec2(0.5f, 0.5f), MAX_float);
+    auto box = MakeRef<RigidBody2D>(Vec2(0.0f, 10.0f), Vec2(2.0f, 1.0f), 10);
+    box->setAngle(degreesToRadians(30));
     this->Add(box);
+    //地板
+    auto floor = rl::MakeRef<RigidBody2D>(Vec2(0.0f, -0.5f * 2), Vec2(10.0f, 2.0f), MAX_float);
+    this->Add(floor);
 }
 void rl::PhysicsWorld::demo2()
 {
+    this->Clear();
+    //地板
+    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
+    floor->friction = 0.2f;
+    this->Add(floor);
 
+    //箱子
+    auto box = MakeRef<RigidBody2D>(Vec2(9.0f, 11.0f), Vec2(1.0f, 1.0f), 10);
+    box->friction = 0.2f;
+    this->Add(box);
+
+    //關節點
+    auto j1 = MakeRef<Joint>();
+    j1->Set(floor, box, Vec2(0.0f, 11.0f));
+    this->AddJoints(j1);
 }
 void rl::PhysicsWorld::demo3()
 {

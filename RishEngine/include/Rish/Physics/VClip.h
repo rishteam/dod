@@ -1,5 +1,6 @@
 #pragma once
-#include "Rish/Physics/vector_math.h"
+
+#include <Rish/Physics/vector_math.h>
 
 // 定義形狀
 //

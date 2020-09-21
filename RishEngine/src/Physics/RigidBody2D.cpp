@@ -1,4 +1,4 @@
-#include "Rish/Physics/RigidBody2D.h"
+#include <Rish/Physics/RigidBody2D.h>
 
 rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
     mass = m_;
@@ -9,6 +9,7 @@ rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
     force.Set(0.0f, 0.0f);
     torque = 0.0f;
     friction = 0.2f;
+    angle = 0.0f;
     mass = m_;
 
     if (mass < MAX_float)
@@ -23,6 +24,11 @@ rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
         I = MAX_float;
         invI = 0.0f;
     }
+}
+
+void rl::RigidBody2D::setAngle(float rad)
+{
+    angle = rad;
 }
 
 std::pair<Vec2, float> rl::RigidBody2D::getPhysicsData()
