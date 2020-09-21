@@ -143,6 +143,7 @@ struct CameraComponent
 {
     Camera camera;
     float aspect = 16.f / 9.f;
+    bool lockAspect = true;
     float zoom = 1.f;
 
     CameraComponent() = default;
@@ -156,7 +157,8 @@ private:
     {
         ar(cereal::make_nvp("camera", camera),
            cereal::make_nvp("zoom", zoom),
-           cereal::make_nvp("aspect", aspect));
+           cereal::make_nvp("aspect", aspect),
+           cereal::make_nvp("lockAspect", lockAspect));
     }
 };
 

@@ -20,6 +20,7 @@ void ComponentEditPanel::drawEditComponentWidget<TagComponent>()
         //
         std::string &tag = m_targetEntity.getComponent<TagComponent>().tag;
         std::string &id = m_targetEntity.getComponent<TagComponent>().id;
+        // TODO: Wrap?
         ImGui::PushItemWidth(300);
         ImGui::InputText("Tag", &tag);
         ImGui::InputText("Id", &id, ImGuiInputTextFlags_ReadOnly);
@@ -114,16 +115,44 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
             return;
         //
         auto &camera = m_targetEntity.getComponent<CameraComponent>();
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        //
         static float aspectList[][2] = {{16.f, 9.f}, {4, 3}};
         static const char *aspectName[2] = {"16 : 9", "4 : 3"};
-        static int aspectNowSelect = 0;
+        static int aspectNowSelect = 0, prevAspectNowSelect = aspectNowSelect;
+        static glm::vec3 prevScale{};
         // Aspect
         ImGui::Combo("Aspect", &aspectNowSelect, aspectName, 2);
         camera.aspect = aspectList[aspectNowSelect][0] / aspectList[aspectNowSelect][1];
-        // Zoom
-        ImGui::DragFloat("Zoom", &camera.zoom, 0.1f);
-        float zoom = camera.zoom;
-        camera.camera.setProjection(glm::ortho(-camera.aspect * zoom, camera.aspect * zoom, -zoom, zoom));
+        //
+        ImGui::Checkbox("Lock Aspect", &camera.lockAspect);
+        if(camera.lockAspect)
+        {
+            // Zoom
+            static float zoom = 1.f;
+            if(ImGui::DragFloat("Zoom", &zoom, 0.1f))
+            {
+                transform.scale.y = zoom;
+            }
+            ImGui::SameLine();
+            ImGui::Text("BUG");
+
+            if(prevScale.y != transform.scale.y || prevAspectNowSelect != aspectNowSelect)
+                transform.scale.x = transform.scale.y * camera.aspect;
+            else if(prevScale.x != transform.scale.x)
+                transform.scale.y = transform.scale.x * 1.f / camera.aspect;
+        }
+        prevScale = transform.scale;
+        prevAspectNowSelect = aspectNowSelect;
+
+        //
+        camera.camera.setProjection(
+        glm::ortho(
+            -transform.scale.x / 2.f,
+             transform.scale.x / 2.f,
+            -transform.scale.y / 2.f,
+             transform.scale.y / 2.f)
+         );
     }
 }
 
