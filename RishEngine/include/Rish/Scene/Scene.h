@@ -3,8 +3,9 @@
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
 #include <Rish/Renderer/Framebuffer.h>
-#include <Rish/Renderer/Camera/OrthographicCamera.h>
+//#include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Scene/Component.h>
+#include <Rish/Scene/SceneCamera.h>
 
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
@@ -47,15 +48,18 @@ public:
 
 	void onImGuiRender();
 
-	bool haveCamera() const { return m_isAnyCamera; }
-	float getAspect() const { return m_cameraAspect; }
+	const SceneCamera& getMainCamera() const { return m_mainCamera; }
 
 private:
-	bool m_isAnyCamera = false;
-    Camera m_mainCamera{};
+    ////////////////////////////////////////////////////////////////
+    // Scene Camera
+    ////////////////////////////////////////////////////////////////
+    SceneCamera m_mainCamera{};
     glm::mat4 m_mainCameraTransform{};
-    float m_cameraAspect{};
 
+    ////////////////////////////////////////////////////////////////
+    // Scene
+    ////////////////////////////////////////////////////////////////
 	static int entityNumber;
 	entt::registry m_registry;
 

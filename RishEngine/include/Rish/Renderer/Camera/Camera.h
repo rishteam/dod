@@ -18,12 +18,15 @@ public:
         : m_projection(proj)
     {
     }
+    virtual ~Camera() = default;
 
     glm::mat4 getProjection() const { return m_projection; }
     void setProjection(const glm::mat4 &proj) { m_projection = proj; }
-private:
-    glm::mat4 m_projection;
 
+protected:
+    glm::mat4 m_projection{1.f};
+
+private:
     friend cereal::access;
     template<typename Archive>
     void serialize(Archive &ar)

@@ -16,13 +16,13 @@ public:
     virtual void onImGuiRender() = 0;
 
     // For target
-    Entity getTarget() const { return m_targetEntity; }
+    Entity getTarget() const                  { return m_targetEntity; }
     void setTarget(const Entity targetEntity) { m_isSelected = true; m_targetEntity = targetEntity; }
-    void resetTarget() { m_isSelected = false; m_targetEntity = Entity(); }
+    void resetTarget()                        { m_isSelected = false; m_targetEntity = Entity(); }
     // For selection
-    Entity getSelectedEntity() const { return m_targetEntity; }
-    bool isSelected() const { return m_isSelected; }
-    void resetSelected() { m_isSelected = false; m_targetEntity = Entity(); }
+    Entity getSelectedEntity() const          { return m_targetEntity; }
+    bool isSelected() const                   { return m_isSelected; }
+    void resetSelected()                      { m_isSelected = false; m_targetEntity = Entity(); }
 protected:
     Entity m_targetEntity;
     bool m_isSelected = false;

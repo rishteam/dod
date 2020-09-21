@@ -77,6 +77,7 @@ void EditorLayer::onUpdate(Time dt)
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
+        //
         Renderer2D::BeginScene(cameraController->getCamera());
         m_editController->onUpdate(dt);
         Renderer2D::EndScene();
@@ -87,6 +88,7 @@ void EditorLayer::onUpdate(Time dt)
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
+        //
         m_scene->onUpdate(dt);
     }
     m_sceneFramebuffer->unbind();
@@ -140,19 +142,15 @@ void EditorLayer::onImGuiRender()
     ImVec2 size; // debug
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
     {
-        if(m_scene->haveCamera())
-        {
-            size = ImGui::GetContentRegionAvail();
-            float fullH=0.f;
-            //
-            fullH = size.y;
-            size.y = size.x * 1.f / m_scene->getAspect();
-            float dummyH = (fullH - size.y) / 2.f;
+        size = ImGui::GetContentRegionAvail();
+        float fullH{};
+        fullH = size.y;
+        size.y = size.x * 1.f / m_scene->getMainCamera().getAspect();
+        float dummyH = (fullH - size.y) / 2.f;
 
-            uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
-            ImGui::Dummy({size.x, dummyH});
-            ImGui::Image(textureID, size, {0, 0}, {1, -1});
-        }
+        uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
+        ImGui::Dummy({size.x, dummyH});
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
     ImGui::End();
 
@@ -160,6 +158,18 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Entity Manager");
     {
+    }
+    ImGui::End();
+
+    ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
+    {
+        // TODO: item width??
+        float buttonWidth = 100.f;
+        ImGui::PushItemWidth(buttonWidth);
+        ImGui::Button(ICON_FA_PLAY);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_PAUSE);
+        ImGui::PopItemWidth();
     }
     ImGui::End();
 

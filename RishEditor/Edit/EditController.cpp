@@ -65,6 +65,7 @@ void EditController::onImGuiRender()
     m_sceneWindowFocused = ImGui::IsWindowFocused();
     m_sceneWindowHovered = ImGui::IsWindowHovered();
 
+    // Get mouse positions
     ImVec2 mr = ImGui::GetMousePosRelatedToWindowNormalize();
     sceneMousePosNormalize = glm::vec2{mr.x, mr.y};
     mr = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
@@ -78,7 +79,9 @@ void EditController::onImGuiRender()
     glm::vec2 mposInWorld{xaxis, yaxis};
 
     // Click to select a entity
-    if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+    if(m_sceneWindowFocused &&
+       m_sceneWindowHovered &&
+       ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
         Entity frontEntity;
         float maxZ{-100.f};
@@ -107,7 +110,10 @@ void EditController::onImGuiRender()
     }
 
     // Entity move
-    if(ImGui::IsMouseDown(ImGuiMouseButton_Left) && isSelected())
+    if(m_sceneWindowFocused &&
+       m_sceneWindowHovered &&
+       ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
+       isSelected())
     {
         auto ent = getTarget();
         auto &entPos = ent.getComponent<TransformComponent>().translate;

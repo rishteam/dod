@@ -16,12 +16,12 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
-//    RL_CORE_INFO("Construct Scene");
+    RL_CORE_INFO("Construct Scene");
 }
 
 Scene::~Scene()
 {
-//    RL_CORE_INFO("Destruct Scene");
+    RL_CORE_INFO("Destruct Scene");
 }
 
 Entity Scene::createEntity(const std::string& name)
@@ -53,6 +53,7 @@ void Scene::destroyEntity(const Entity &entity)
 
 void Scene::onUpdate(Time dt)
 {
+    bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
     {
@@ -60,30 +61,31 @@ void Scene::onUpdate(Time dt)
         auto &transform = ent.getComponent<TransformComponent>();
         auto &camera = ent.getComponent<CameraComponent>();
 
-        m_isAnyCamera = true;
-        m_mainCamera = camera.camera;
-        m_mainCameraTransform = glm::translate(glm::mat4(1.f), transform.translate);
-        m_cameraAspect = camera.aspect;
+        if(camera.primary)
+        {
+            m_mainCamera = camera.camera;
+            m_mainCameraTransform = glm::translate(glm::mat4(1.f), transform.translate);
+            isAnyCamera = true;
+        }
     }
 
     // TODO: implement multiple camera
-    if(m_isAnyCamera)
-    {
-        auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
-        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
-        for(auto entity : cameraGroup)
-        {
-            Entity ent{entity, this};
-            auto &transform = ent.getComponent<TransformComponent>();
-            auto &render = ent.getComponent<RenderComponent>();
+    if(!isAnyCamera) return;
 
-            if(render.m_texture)
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
-            else
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-        }
-        Renderer2D::EndScene();
+    auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
+    Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+    for(auto entity : cameraGroup)
+    {
+        Entity ent{entity, this};
+        auto &transform = ent.getComponent<TransformComponent>();
+        auto &render = ent.getComponent<RenderComponent>();
+
+        if(render.m_texture)
+            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        else
+            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
     }
+    Renderer2D::EndScene();
 }
 
 void Scene::onImGuiRender()

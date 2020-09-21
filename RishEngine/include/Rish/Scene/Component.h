@@ -1,13 +1,12 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-
+#include <Rish/Core/VFS.h>
 #include <Rish/Renderer/Buffer.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/Texture2D.h>
-#include <Rish/Renderer/Camera/Camera.h>
-#include <Rish/Core/VFS.h>
+#include <Rish/Scene/SceneCamera.h>
 
 #include <cereal/cereal.hpp>
 
@@ -141,24 +140,21 @@ private:
  */
 struct CameraComponent
 {
-    Camera camera;
-    float aspect = 16.f / 9.f;
+    SceneCamera camera;
+    bool primary = false;
     bool lockAspect = true;
-    float zoom = 1.f;
 
     CameraComponent() = default;
     CameraComponent(const CameraComponent&) = default;
-    CameraComponent(const glm::mat4 &c)
-        : camera(c) {}
 private:
     friend class cereal::access;
     template<class Archive>
     void serialize(Archive &ar)
     {
         ar(cereal::make_nvp("camera", camera),
-           cereal::make_nvp("zoom", zoom),
-           cereal::make_nvp("aspect", aspect),
-           cereal::make_nvp("lockAspect", lockAspect));
+           cereal::make_nvp("lockAspect", lockAspect),
+           cereal::make_nvp("primary", primary)
+        );
     }
 };
 
