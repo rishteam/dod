@@ -70,10 +70,10 @@ void rl::PhysicsWorld::Step(float delta_t)
         for (auto arb = arbiters.begin(); arb != arbiters.end(); ++arb) {
             arb->second.ApplyImpulse();
         }
-      for (auto jit : joints)
-      {
+        for (auto jit : joints)
+        {
           jit->ApplyImpulse();
-      }
+        }
     }
 
     // Integrate Velocities
@@ -171,7 +171,7 @@ void rl::PhysicsWorld::demo1()
 //    box->setAngle(degreesToRadians(30));
     this->Add(box);
     //地板
-    auto floor = rl::MakeRef<RigidBody2D>(Vec2(0.0f, -0.5f * 2), Vec2(10.0f, 2.0f), MAX_float);
+    auto floor = rl::MakeRef<RigidBody2D>(Vec2(0.0f, -5.0f * 2), Vec2(100.0f, 20.0f), MAX_float);
     this->Add(floor);
 }
 void rl::PhysicsWorld::demo2()
@@ -196,8 +196,8 @@ void rl::PhysicsWorld::demo3()
 {
     this->Clear();
 
-    auto floor1 = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
-    this->Add(floor1);
+    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
+    this->Add(floor);
 
     auto floor2 = MakeRef<RigidBody2D>(Vec2(-2.0f, 11.0f), Vec2(13.0f, 0.25f), MAX_float);
     floor2->angle = -0.25f;
@@ -229,25 +229,37 @@ void rl::PhysicsWorld::demo4()
 {
     this->Clear();
     auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
-    floor->friction = 0.2f;
+    floor->friction = 1.0f;
     this->Add(floor);
 
     for (int i = 0; i < 10; ++i)
     {
-        float x = Random(-0.1f, 0.1f);
-        auto box = MakeRef<RigidBody2D>(Vec2(x, 0.51f + 1.05f * i), Vec2(1.0f, 1.0f), 10);
+//        float x = Random(-0.1f, 0.1f);
+        auto box = MakeRef<RigidBody2D>(Vec2(0, 0.51f + 1.05f * i), Vec2(1.0f, 1.0f), 10);
         box->friction = 0.2f;
         this->Add(box);
     }
 }
 void rl::PhysicsWorld::demo5()
 {
-
-
-
+    this->Clear();
+    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
+    floor->friction = 1.0f;
+    this->Add(floor);
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 10-j; ++i) {
+            float x_idx = 0.75;
+            float y_idx = 0.5;
+            auto box = MakeRef<RigidBody2D>(Vec2((-3.50 + x_idx/2 * j) + x_idx * i, 0.4 + y_idx * j), Vec2(0.5,0.5), 10);
+            box->friction = 0.5;
+            this->Add(box);
+        }
+    }
 }
 void rl::PhysicsWorld::demo6()
 {
+
+
 
 }
 void rl::PhysicsWorld::demo7()

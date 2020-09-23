@@ -16,24 +16,10 @@ rl::Box::Box(float x_, float y_, float w_, float h_)
 
 rl::Box::Box(Ref<RigidBody2D> &body)
 {
-    float w_ = float(body->wh.x);
-    float h_ = float(body->wh.y);
-    float ratio = w_ / h_;
-
-    Vec2 extents(ratio * 25.0f, 25.0f);
-    Vec2 m_center(0, 0);
-
-    Vec2 lower = m_center - extents;
-    Vec2 upper = m_center + extents;
-
-    float u = (body->position.x - lower.x) / (upper.x - lower.x);
-    float v = (body->position.y - lower.y) / (upper.y - lower.y);
-
-    x = u * w_;
-    y = (1.0f - v) * h_;
-    w = w_;
-    h = h_;
-    rotation = 0.0f;
+    this->w = float(body->wh.x);
+    this->h = float(body->wh.y);
+    this->x = body->position.x;
+    this->y = body->position.y;
     corner.push_back(Vec2(w / 2.0, -h / 2.0));
     corner.push_back(Vec2(w / 2.0, h / 2.0));
     corner.push_back(Vec2(-w / 2.0, h / 2.0));
