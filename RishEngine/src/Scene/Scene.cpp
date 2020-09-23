@@ -90,36 +90,56 @@ void Scene::onUpdate(Time dt)
 
 void Scene::onImGuiRender()
 {
-    ImGui::Begin("SecenDebug");
-    ImGui::Text("Projection");
-    auto proj = m_mainCamera.getProjection();
-    for(int i = 0; i < 4; i++)
+    if(m_debugCamera)
     {
-        ImGui::PushID(i);
-        for(int j = 0; j < 4; j++)
+        ImGui::Begin("Scene Debug");
+        ImGui::Text("Projection");
+        auto proj = m_mainCamera.getProjection();
+        for(int i = 0; i < 4; i++)
         {
-            ImGui::PushID(j);
-            ImGui::Text("%.2f", static_cast<double>(proj[i][j])); ImGui::SameLine();
+            ImGui::PushID(i);
+            for(int j = 0; j < 4; j++)
+            {
+                ImGui::PushID(j);
+                ImGui::Text("%.2f", static_cast<double>(proj[i][j])); ImGui::SameLine();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
             ImGui::PopID();
         }
-        ImGui::NewLine();
-        ImGui::PopID();
-    }
-    ImGui::Separator();
-    ImGui::Text("Camera Transform");
-    for(int i = 0; i < 4; i++)
-    {
-        ImGui::PushID(i);
-        for(int j = 0; j < 4; j++)
+        ImGui::Separator();
+        ImGui::Text("Camera Transform");
+        for(int i = 0; i < 4; i++)
         {
-            ImGui::PushID(j);
-            ImGui::Text("%.2f", static_cast<double>(m_mainCameraTransform[i][j])); ImGui::SameLine();
+            ImGui::PushID(i);
+            for(int j = 0; j < 4; j++)
+            {
+                ImGui::PushID(j);
+                ImGui::Text("%.2f", static_cast<double>(m_mainCameraTransform[i][j])); ImGui::SameLine();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
             ImGui::PopID();
         }
-        ImGui::NewLine();
-        ImGui::PopID();
+        ImGui::Text("Size = %.2f", m_mainCamera.m_orthoSize);
+        ImGui::Text("Near = %.2f, Far = %.2f", m_mainCamera.m_orthoNear, m_mainCamera.m_orthoFar);
+        ImGui::Text("Aspect = %.2f", m_mainCamera.m_aspect);
+        ImGui::End();
     }
-    ImGui::End();
+}
+
+void Scene::onViewportResize(uint32_t width, uint32_t height)
+{
+    m_viewportWidth = width;
+    m_viewportHeight = height;
+
+    auto view = m_registry.view<CameraComponent>();
+    for(auto entity : view)
+    {
+        auto &cameraComponent = view.get<CameraComponent>(entity);
+        if(!cameraComponent.lockAspect)
+            cameraComponent.camera.setViewportSize(width, height);
+    }
 }
 
 } // namespace rl

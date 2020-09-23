@@ -148,13 +148,16 @@ void EditorLayer::onImGuiRender()
         size.y = size.x * 1.f / m_scene->getMainCamera().getAspect();
         float dummyH = (fullH - size.y) / 2.f;
 
+        m_scene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
+
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
     ImGui::End();
-
 	ImGui::PopStyleVar();
+
+	m_scene->onImGuiRender();
 
     ImGui::Begin("Entity Manager");
     {
@@ -205,6 +208,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 {
                     content = FileSystem::ReadTextFile(path);
                     m_scenePath = path;
+                    RL_INFO("content = {}", content);
                 }
 
                 // Deserialize
@@ -296,12 +300,12 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
             ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
             ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
+            ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
             ImGui::EndMenu();
         }
 
         ImGui::EndMenuBar();
     }
-
 }
 
 void EditorLayer::onEvent(rl::Event& e)
