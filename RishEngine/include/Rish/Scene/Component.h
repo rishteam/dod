@@ -2,11 +2,14 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/VFS.h>
+//
 #include <Rish/Renderer/Buffer.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/Texture2D.h>
+//
 #include <Rish/Scene/SceneCamera.h>
+//#include <Rish/Scene/ScriptableEntity.h>
 
 #include <cereal/cereal.hpp>
 
@@ -157,6 +160,32 @@ private:
         );
     }
 };
+
+/**
+ * @brief Native Script Component
+ */
+//struct NativeScriptComponent
+//{
+//    ScriptableEntity *instance = nullptr;
+//
+//    using NewFunc    = ScriptableEntity* (*)();
+//    using DeleteFunc = void (*)(NativeScriptComponent*);
+//
+//    NewFunc newScript;
+//    DeleteFunc deleteScript;
+//
+//    template<typename T>
+//    void bind()
+//    {
+//        newScript = []() {
+//            return static_cast<ScriptableEntity>(new T());
+//        };
+//        deleteScript = [](NativeScriptComponent *nsc) {
+//            delete nsc->instance;
+//            nsc->instance = nullptr;
+//        };
+//    }
+//};
 
 /**
  * @}

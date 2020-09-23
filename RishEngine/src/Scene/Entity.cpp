@@ -1,4 +1,5 @@
-#include "Rish/Scene/Entity.h"
+#include <Rish/Scene/Entity.h>
+#include <Rish/Scene/Scene.h>
 
 namespace rl {
 

@@ -3,10 +3,10 @@
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
 #include <Rish/Renderer/Framebuffer.h>
-//#include <Rish/Renderer/Camera/OrthographicCamera.h>
-#include <Rish/Scene/Component.h>
+//
 #include <Rish/Scene/SceneCamera.h>
-
+#include <Rish/Scene/Component.h>
+//
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
 

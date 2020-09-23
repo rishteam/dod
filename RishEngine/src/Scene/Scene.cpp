@@ -1,13 +1,13 @@
 #include <Rish/rlpch.h>
-
+//
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/Framebuffer.h>
+//
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
-#include <Rish/Scene/Component.h>
-
+//
 #include <Rish/Utils/uuid.h>
-
+//
 #include <Rish/ImGui.h>
 
 namespace rl{
