@@ -48,8 +48,8 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
         Vec2 x2 = jit->b2->position;
         Vec2 p2 = x2 + R2 * jit->localAnchor2;
 
-        Renderer2D::DrawLine({x1.x, x1.y}, {p1.x, p1.y}, {1, 1, 0, 0.5});
-        Renderer2D::DrawLine({x2.x, x2.y}, {p2.x, p2.y}, {1, 1, 0, 0.5});
+        Renderer2D::DrawLine({x1.x, x1.y}, {p1.x, p1.y}, {1, 1, 1, 0.5});
+        Renderer2D::DrawLine({x2.x, x2.y}, {p2.x, p2.y}, {1, 1, 1, 0.5});
     }
 
     Renderer2D::EndScene();
@@ -121,6 +121,19 @@ void ExampleSandboxLayer::onImGuiRender()
             ImGui::Separator();
         }
     }
+
+    if (ImGui::CollapsingHeader("Arbiters"))
+    {
+        ImGui::Text("Arbiters size: %d", m_world->arbiters.size());
+        for(auto arbiter : m_world->arbiters)
+        {
+            ImGui::Text("Arbiters: Contact %d", arbiter.second.numContacts);
+            ImGui::Separator();
+        }
+    }
+
+
+
     ImGui::End();
     m_cameraController.onImGuiRender();
 }

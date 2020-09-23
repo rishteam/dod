@@ -48,7 +48,6 @@ public:
     static float width;
     static float height;
     static Vec2 m_center;
-    float timeStep = 1.0 / 60.0f;
     int iterations = 10;
 
     std::vector<Ref<RigidBody2D>> bodies;

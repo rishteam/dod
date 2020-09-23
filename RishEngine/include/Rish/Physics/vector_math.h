@@ -287,3 +287,11 @@ template<typename T> inline void Swap(T& a, T& b)
     a = b;
     b = tmp;
 }
+
+inline float Random(float lo, float hi)
+{
+    float r = (float)rand();
+    r /= RAND_MAX;
+    r = (hi - lo) * r + lo;
+    return r;
+}
