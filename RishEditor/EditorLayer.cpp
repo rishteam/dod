@@ -6,7 +6,8 @@
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Utils/FileDialog.h>
 
-#include <IconsFontAwesome5.h>
+#include <Rish/Scene/ScriptableEntity.h>
+
 #include <Rish/ImGui.h>
 
 #include "EditorLayer.h"
@@ -35,6 +36,35 @@ EditorLayer::EditorLayer()
     m_panelList.push_back(m_componentEditPanel);
 }
 
+class CameraController : public ScriptableEntity
+{
+public:
+    void onCreate() override
+    {
+        RL_INFO("onCreate()");
+    }
+    void onDestroy() override
+    {
+        RL_INFO("onDestroy()");
+    }
+    void onUpdate(Time dt) override
+    {
+        auto &trans = getComponent<TransformComponent>().translate;
+        RL_INFO("onUpdate() {}", dt.asSeconds());
+
+        float speed = 10.f;
+
+        if(Input::IsKeyPressed(Keyboard::W))
+            trans.y += speed * dt.asSeconds();
+        if(Input::IsKeyPressed(Keyboard::S))
+            trans.y -= speed * dt.asSeconds();
+        if(Input::IsKeyPressed(Keyboard::A))
+            trans.x -= speed * dt.asSeconds();
+        if(Input::IsKeyPressed(Keyboard::D))
+            trans.x += speed * dt.asSeconds();
+    }
+};
+
 void EditorLayer::onAttach()
 {
     RL_CORE_INFO("[EditorLayer] onAttach");
@@ -46,6 +76,10 @@ void EditorLayer::onAttach()
     // Attach all panels
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
+
+    debugEntity = m_scene->createEntity();
+    debugEntity.addComponent<CameraComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 }
 
 void EditorLayer::onDetach()

@@ -9,13 +9,11 @@
 #include <Rish/Renderer/Texture2D.h>
 //
 #include <Rish/Scene/SceneCamera.h>
-//#include <Rish/Scene/ScriptableEntity.h>
 
 #include <cereal/cereal.hpp>
 
 namespace glm
 {
-
 	template <class Archive>
 	void serialize(Archive &archive, glm::vec2 &v) { archive(cereal::make_nvp("x", v.x), cereal::make_nvp("y", v.y)); }
 	template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(cereal::make_nvp("x" ,v.x), cereal::make_nvp("y" ,v.y), cereal::make_nvp("z" ,v.z)); }
@@ -160,32 +158,6 @@ private:
         );
     }
 };
-
-/**
- * @brief Native Script Component
- */
-//struct NativeScriptComponent
-//{
-//    ScriptableEntity *instance = nullptr;
-//
-//    using NewFunc    = ScriptableEntity* (*)();
-//    using DeleteFunc = void (*)(NativeScriptComponent*);
-//
-//    NewFunc newScript;
-//    DeleteFunc deleteScript;
-//
-//    template<typename T>
-//    void bind()
-//    {
-//        newScript = []() {
-//            return static_cast<ScriptableEntity>(new T());
-//        };
-//        deleteScript = [](NativeScriptComponent *nsc) {
-//            delete nsc->instance;
-//            nsc->instance = nullptr;
-//        };
-//    }
-//};
 
 /**
  * @}

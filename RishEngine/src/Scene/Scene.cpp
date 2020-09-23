@@ -5,6 +5,7 @@
 //
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
+#include <Rish/Scene/ScriptableEntity.h>
 //
 #include <Rish/Utils/uuid.h>
 //
@@ -53,6 +54,17 @@ void Scene::destroyEntity(const Entity &entity)
 
 void Scene::onUpdate(Time dt)
 {
+    m_registry.view<NativeScriptComponent>().each([=](auto entity, auto &nsc) {
+        if(!nsc.instance)
+        {
+            nsc.instance = nsc.newScript();
+            nsc.instance->m_entity = Entity{entity, this};
+            nsc.instance->onCreate();
+        }
+
+        nsc.instance->onUpdate(dt);
+    });
+
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
