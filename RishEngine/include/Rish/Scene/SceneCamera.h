@@ -29,6 +29,10 @@ private:
 
     float m_aspect = 0.f;
 
+    // Friend class
+    friend class Scene;
+
+    // Serialization function
     friend cereal::access;
     template<typename Archive>
     void serialize(Archive &ar)

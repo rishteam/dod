@@ -2,7 +2,6 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Scene/Scene.h>
-#include <Rish/Scene/Component.h>
 
 #include <entt/entt.hpp>
 

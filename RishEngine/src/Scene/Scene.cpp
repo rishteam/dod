@@ -1,13 +1,14 @@
 #include <Rish/rlpch.h>
-
+//
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/Framebuffer.h>
+//
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
-#include <Rish/Scene/Component.h>
-
+#include <Rish/Scene/ScriptableEntity.h>
+//
 #include <Rish/Utils/uuid.h>
-
+//
 #include <Rish/ImGui.h>
 
 namespace rl{
@@ -53,6 +54,17 @@ void Scene::destroyEntity(const Entity &entity)
 
 void Scene::onUpdate(Time dt)
 {
+    m_registry.view<NativeScriptComponent>().each([=](auto entity, auto &nsc) {
+        if(!nsc.instance)
+        {
+            nsc.instance = nsc.newScript();
+            nsc.instance->m_entity = Entity{entity, this};
+            nsc.instance->onCreate();
+        }
+
+        nsc.instance->onUpdate(dt);
+    });
+
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
@@ -90,36 +102,56 @@ void Scene::onUpdate(Time dt)
 
 void Scene::onImGuiRender()
 {
-    ImGui::Begin("SecenDebug");
-    ImGui::Text("Projection");
-    auto proj = m_mainCamera.getProjection();
-    for(int i = 0; i < 4; i++)
+    if(m_debugCamera)
     {
-        ImGui::PushID(i);
-        for(int j = 0; j < 4; j++)
+        ImGui::Begin("Scene Debug");
+        ImGui::Text("Projection");
+        auto proj = m_mainCamera.getProjection();
+        for(int i = 0; i < 4; i++)
         {
-            ImGui::PushID(j);
-            ImGui::Text("%.2f", static_cast<double>(proj[i][j])); ImGui::SameLine();
+            ImGui::PushID(i);
+            for(int j = 0; j < 4; j++)
+            {
+                ImGui::PushID(j);
+                ImGui::Text("%.2f", static_cast<double>(proj[i][j])); ImGui::SameLine();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
             ImGui::PopID();
         }
-        ImGui::NewLine();
-        ImGui::PopID();
-    }
-    ImGui::Separator();
-    ImGui::Text("Camera Transform");
-    for(int i = 0; i < 4; i++)
-    {
-        ImGui::PushID(i);
-        for(int j = 0; j < 4; j++)
+        ImGui::Separator();
+        ImGui::Text("Camera Transform");
+        for(int i = 0; i < 4; i++)
         {
-            ImGui::PushID(j);
-            ImGui::Text("%.2f", static_cast<double>(m_mainCameraTransform[i][j])); ImGui::SameLine();
+            ImGui::PushID(i);
+            for(int j = 0; j < 4; j++)
+            {
+                ImGui::PushID(j);
+                ImGui::Text("%.2f", static_cast<double>(m_mainCameraTransform[i][j])); ImGui::SameLine();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
             ImGui::PopID();
         }
-        ImGui::NewLine();
-        ImGui::PopID();
+        ImGui::Text("Size = %.2f", m_mainCamera.m_orthoSize);
+        ImGui::Text("Near = %.2f, Far = %.2f", m_mainCamera.m_orthoNear, m_mainCamera.m_orthoFar);
+        ImGui::Text("Aspect = %.2f", m_mainCamera.m_aspect);
+        ImGui::End();
     }
-    ImGui::End();
+}
+
+void Scene::onViewportResize(uint32_t width, uint32_t height)
+{
+    m_viewportWidth = width;
+    m_viewportHeight = height;
+
+    auto view = m_registry.view<CameraComponent>();
+    for(auto entity : view)
+    {
+        auto &cameraComponent = view.get<CameraComponent>(entity);
+        if(!cameraComponent.lockAspect)
+            cameraComponent.camera.setViewportSize(width, height);
+    }
 }
 
 } // namespace rl

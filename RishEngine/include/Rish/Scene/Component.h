@@ -2,17 +2,18 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/VFS.h>
+//
 #include <Rish/Renderer/Buffer.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/Texture2D.h>
+//
 #include <Rish/Scene/SceneCamera.h>
 
 #include <cereal/cereal.hpp>
 
 namespace glm
 {
-
 	template <class Archive>
 	void serialize(Archive &archive, glm::vec2 &v) { archive(cereal::make_nvp("x", v.x), cereal::make_nvp("y", v.y)); }
 	template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(cereal::make_nvp("x" ,v.x), cereal::make_nvp("y" ,v.y), cereal::make_nvp("z" ,v.z)); }

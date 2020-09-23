@@ -26,6 +26,9 @@ public:
 private:
     void onImGuiMainMenuRender();
 
+    // Debug
+    Entity debugEntity;
+
     //////////////////////////////////////////
     // Scene
     //////////////////////////////////////////
