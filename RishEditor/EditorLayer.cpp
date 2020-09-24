@@ -27,6 +27,7 @@ EditorLayer::EditorLayer()
 
     m_editorScene = MakeRef<Scene>();
     m_scene = m_editorScene;
+    m_runtimeScene = MakeRef<Scene>();
     //
     m_editController = MakeRef<EditController>();
     m_panelList.push_back(m_editController);
@@ -219,10 +220,16 @@ void EditorLayer::onImGuiRender()
     {
         if(ImGui::Button(ICON_FA_PLAY))
         {
+            // TODO: copy scene to m_runtimeScene and make current scene to runtime scene
+            // TODO: clean the scene before clean
+            // TODO: make sure switch scene affect the panels
+            m_editorScene->copySceneTo(m_runtimeScene);
+
+            switchScene(m_runtimeScene);
+
             if(m_sceneState != SceneState::Play)
                 m_scene->onScenePlay();
 
-            // TODO: copy scene to m_runtimeScene and make current scene to runtime scene
             m_sceneState = SceneState::Play;
         }
         ImGui::SameLine();
@@ -235,6 +242,9 @@ void EditorLayer::onImGuiRender()
         {
             if(m_sceneState != SceneState::Editor)
                 m_scene->onSceneStop();
+
+            switchScene(m_editorScene);
+
             m_sceneState = SceneState::Editor;
         }
     }
@@ -303,8 +313,7 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    for(auto & panel : m_panelList)
-                        panel->setContext(m_scene);
+                    setContextToPanels(m_scene);
                 }
                 else
                 {
@@ -375,6 +384,18 @@ void EditorLayer::onImGuiMainMenuRender()
 void EditorLayer::onEvent(rl::Event& e)
 {
     m_editController->onEvent(e);
+}
+
+void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
+{
+    for(auto & panel : m_panelList)
+        panel->setContext(scene);
+}
+
+void EditorLayer::switchScene(const Ref<Scene> &scene)
+{
+    m_scene = scene;
+    setContextToPanels(scene);
 }
 
 }

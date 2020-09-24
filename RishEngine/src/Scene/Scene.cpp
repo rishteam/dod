@@ -44,7 +44,25 @@ Entity Scene::createEntity(const std::string& name)
 	entityNumber++;
 
 	RL_CORE_TRACE("[Scene] Created entity {}", tag);
-	return entity;	
+	return entity;
+}
+
+Entity Scene::createEntity(const UUID &id, const std::string &name)
+{
+    Entity entity = {m_registry.create(), this};
+    entity.addComponent<TransformComponent>();
+    auto &tagComponent = entity.addComponent<TagComponent>();
+    tagComponent.id = id;
+
+    auto &tag = tagComponent.tag;
+    if(name.empty())
+        tag = fmt::format("Entity {}", entityNumber);
+    else
+        tag = name;
+    entityNumber++;
+
+    RL_CORE_TRACE("[Scene] Created entity {} by id {}", tag, id.to_string());
+    return entity;
 }
 
 void Scene::destroyEntity(const Entity &entity)
@@ -115,9 +133,14 @@ void Scene::onSceneStop()
     });
 }
 
-void Scene::copyScene(Ref<Scene> &target)
+void Scene::copySceneTo(Ref<Scene> &target)
 {
-
+    auto view = m_registry.view<TagComponent>();
+    for(auto ent : view)
+    {
+        auto &tag = view.get<TagComponent>(ent);
+        target->createEntity(tag.id, tag.tag);
+    }
 }
 
 void Scene::onImGuiRender()

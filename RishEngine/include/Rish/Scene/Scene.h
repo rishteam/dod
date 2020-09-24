@@ -49,7 +49,7 @@ public:
 	void onScenePlay();
 	void onSceneStop();
 
-	void copyScene(Ref<Scene> &target);
+	void copySceneTo(Ref<Scene> &target);
 
 	void onViewportResize(uint32_t width, uint32_t height);
 
@@ -72,7 +72,7 @@ private:
 	static int entityNumber;
 	entt::registry m_registry;
 
-//	Entity createEntity()
+	Entity createEntity(const UUID &id, const std::string &name);
 
     ////////////////////////////////////////////////////////////////
 	// friend class
