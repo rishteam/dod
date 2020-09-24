@@ -28,6 +28,7 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
     Renderer2D::BeginScene(m_cameraController.getCamera());
+    m_world->timeStep = dt;
 
     //simulate
     m_world->Step(dt);

@@ -42,6 +42,7 @@ public:
     static Vec2 ConvertWorldToScreen(const Vec2 &pw);
 
     Vec2 gravity;
+    float timeStep;
     static bool accumulateImpulses;
     static bool warmStarting;
     static bool positionCorrection;
