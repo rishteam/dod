@@ -46,12 +46,16 @@ public:
 	 */
 	void onUpdate(Time dt);
 
+	void onScenePlay();
+	void onSceneStop();
+
+	void copyScene(Ref<Scene> &target);
+
 	void onViewportResize(uint32_t width, uint32_t height);
 
 	void onImGuiRender();
 
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
-
 	bool m_debugCamera = false;
 private:
     ////////////////////////////////////////////////////////////////
@@ -67,6 +71,8 @@ private:
     ////////////////////////////////////////////////////////////////
 	static int entityNumber;
 	entt::registry m_registry;
+
+//	Entity createEntity()
 
     ////////////////////////////////////////////////////////////////
 	// friend class

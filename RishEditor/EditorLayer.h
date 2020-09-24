@@ -28,6 +28,19 @@ private:
 
     // Debug
     Entity debugEntity;
+    std::unordered_map<UUID, int> test;
+
+    //////////////////////////////////////////
+    // Editor Layer
+    //////////////////////////////////////////
+
+    enum class SceneState
+    {
+        Editor = 0,
+        Play,
+        Pause
+    };
+    SceneState m_sceneState = SceneState::Editor;
 
     //////////////////////////////////////////
     // Scene
@@ -35,7 +48,9 @@ private:
 	Ref<Framebuffer> m_editorFramebuffer;
     //
 	Ref<Framebuffer> m_sceneFramebuffer;
-	Ref<Scene> m_scene;
+    Ref<Scene> m_scene;        /// Current Scene
+    Ref<Scene> m_editorScene;  /// Editor Scene
+    Ref<Scene> m_runtimeScene; /// Runtime Scene
 	//
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;

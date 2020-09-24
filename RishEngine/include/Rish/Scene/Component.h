@@ -9,6 +9,8 @@
 #include <Rish/Renderer/Texture2D.h>
 //
 #include <Rish/Scene/SceneCamera.h>
+//
+#include <Rish/Utils/uuid.h>
 
 #include <cereal/cereal.hpp>
 
@@ -63,7 +65,7 @@ namespace rl {
 struct TagComponent
 {
 	std::string tag{};
-	std::string id{};
+	UUID id{};
 
 	TagComponent() = default;
 	TagComponent(const std::string& t) : tag(t) {}

@@ -15,4 +15,43 @@ static std::uniform_int_distribution<> dis2(8, 11);
 std::string generate_uuid_v4();
 
 } // end of namespace uuid
+
+class UUID
+{
+public:
+    UUID();
+
+    operator std::string () { return m_UUID; }
+    operator const std::string () { return m_UUID; }
+
+    std::string to_string() const { return m_UUID; }
+
+    friend bool operator==(const UUID &lhs, const UUID &rhs)
+    {
+        return lhs.m_UUID == rhs.m_UUID;
+    }
+private:
+    std::string m_UUID;
+
+    friend class cereal::access;
+    template<typename Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("uuid", m_UUID));
+    }
+};
+
 } // end of namespace rl
+
+namespace std {
+
+template<>
+struct hash<rl::UUID>
+{
+    std::size_t operator()(const rl::UUID &uuid) const
+    {
+        return hash<std::string>()(uuid.to_string());
+    }
+};
+
+}

@@ -9,6 +9,7 @@
 #include <Rish/Scene/ScriptableEntity.h>
 
 #include <Rish/ImGui.h>
+#include <imgui_internal.h>
 
 #include "EditorLayer.h"
 
@@ -24,7 +25,8 @@ EditorLayer::EditorLayer()
 
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-    m_scene = MakeRef<Scene>();
+    m_editorScene = MakeRef<Scene>();
+    m_scene = m_editorScene;
     //
     m_editController = MakeRef<EditController>();
     m_panelList.push_back(m_editController);
@@ -77,7 +79,7 @@ void EditorLayer::onAttach()
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 
-    debugEntity = m_scene->createEntity();
+    debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 }
@@ -94,6 +96,21 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
+    switch(m_sceneState)
+    {
+        case SceneState::Editor:
+
+        break;
+
+        case SceneState::Play:
+
+        break;
+
+        case SceneState::Pause:
+
+        break;
+    }
+    //
     auto cameraController = m_editController->getCameraController();
 
     // Resize the framebuffer if user resize the viewport
@@ -200,13 +217,26 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
     {
-        // TODO: item width??
-        float buttonWidth = 100.f;
-        ImGui::PushItemWidth(buttonWidth);
-        ImGui::Button(ICON_FA_PLAY);
+        if(ImGui::Button(ICON_FA_PLAY))
+        {
+            if(m_sceneState != SceneState::Play)
+                m_scene->onScenePlay();
+
+            // TODO: copy scene to m_runtimeScene and make current scene to runtime scene
+            m_sceneState = SceneState::Play;
+        }
         ImGui::SameLine();
-        ImGui::Button(ICON_FA_PAUSE);
-        ImGui::PopItemWidth();
+        if(ImGui::Button(ICON_FA_PAUSE))
+        {
+            m_sceneState = SceneState::Pause;
+        }
+        ImGui::SameLine();
+        if(ImGui::Button(ICON_FA_STOP))
+        {
+            if(m_sceneState != SceneState::Editor)
+                m_scene->onSceneStop();
+            m_sceneState = SceneState::Editor;
+        }
     }
     ImGui::End();
 

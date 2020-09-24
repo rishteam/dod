@@ -19,7 +19,7 @@ void ComponentEditPanel::drawEditComponentWidget<TagComponent>()
             return;
         //
         std::string &tag = m_targetEntity.getComponent<TagComponent>().tag;
-        std::string &id = m_targetEntity.getComponent<TagComponent>().id;
+        std::string id = m_targetEntity.getComponent<TagComponent>().id.to_string();
         // TODO: Wrap?
         ImGui::PushItemWidth(300);
         ImGui::InputText("Tag", &tag);
