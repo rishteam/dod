@@ -337,10 +337,69 @@ void rl::PhysicsWorld::demo7()
 }
 void rl::PhysicsWorld::demo8()
 {
-    
+    this->Clear();
+    //floor
+    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
+    floor->friction = 1.0f;
+    this->Add(floor);
+
+    auto floor2 = MakeRef<RigidBody2D>(Vec2(24.0f, 1.0f), Vec2(-3.0f, 20.0f), MAX_float);
+    floor2->friction = 1.0f;
+    this->Add(floor2);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        auto box = MakeRef<RigidBody2D>(Vec2(-6.0f + 1.0f * i, 11.125f), Vec2(0.4f, 4.0f), 10);
+        box->friction = 0.1f;
+        this->Add(box);
+    }
+
 }
+
 void rl::PhysicsWorld::demo9()
 {
+    this->Clear();
+    //floor
+    auto floor = MakeRef<RigidBody2D>(Vec2(0.0f, -10.0f), Vec2(100.0f, 20.0f), MAX_float);
+    floor->friction = 1.0f;
+    this->Add(floor);
 
+    float mass = 10.0f;
+    const int numPlanks = 15;
+    // Tuning
+    float frequencyHz = 4.0f;
+    float dampingRatio = 0.7f;
+
+    // frequency in radians
+    float omega = 2.0f * M_PI * frequencyHz;
+
+    // damping coefficient
+    float d = 2.0f * mass * dampingRatio * omega;
+
+    // spring stiffness
+    float k = mass * omega * omega;
+
+    // magic formulas
+    float softness = 1.0f / (d + timeStep * k);
+    float biasFactor = timeStep * k / (d + timeStep * k);
+
+    const float y = 12.0f;
+
+    for (int i = 0; i < numPlanks; ++i)
+    {
+        auto box = MakeRef<RigidBody2D>(Vec2(0.5 + i * 2.0, 20.0f), Vec2(1.75f, 1.0f), 10);
+        box->friction = 0.2f;
+        box->angle = 0.0f;
+        this->Add(box);
+    }
+
+    for (int i = 0; i < numPlanks ; ++i)
+    {
+        auto j1 =MakeRef<Joint>();
+        j1->Set(this->bodies.at(i), this->bodies.at(i+1), Vec2( i * 2.0, 20.0f));
+        j1->softness = softness;
+        j1->biasFactor = biasFactor;
+        this->AddJoints(j1);
+    }
 }
 
