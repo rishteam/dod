@@ -20,6 +20,7 @@ rl::Box::Box(Ref<RigidBody2D> &body)
     this->h = float(body->wh.y);
     this->x = body->position.x;
     this->y = body->position.y;
+    rotation = body->angle;
     corner.push_back(Vec2(w / 2.0, -h / 2.0));
     corner.push_back(Vec2(w / 2.0, h / 2.0));
     corner.push_back(Vec2(-w / 2.0, h / 2.0));

@@ -343,17 +343,51 @@ void rl::PhysicsWorld::demo8()
     floor->friction = 1.0f;
     this->Add(floor);
 
-    auto floor2 = MakeRef<RigidBody2D>(Vec2(24.0f, 1.0f), Vec2(-3.0f, 20.0f), MAX_float);
-    floor2->friction = 1.0f;
-    this->Add(floor2);
+    auto plat = MakeRef<RigidBody2D>(Vec2(-9.0f, 20.0f), Vec2(28.0f, 1.0f), MAX_float);
+    plat->friction = 1.0f;
+    this->Add(plat);
+
+    auto pend = MakeRef<RigidBody2D>(Vec2(-27.5f, 10.0f), Vec2(2.0f, 20.0f), MAX_float);
+    pend->friction = 1.0f;
+    this->Add(pend);
+
+    auto box = MakeRef<RigidBody2D>(Vec2(-35.5f, 30.0f), Vec2(1.0f, 1.0f), 10);
+    this->Add(box);
+    auto j = MakeRef<Joint>();
+    j->Set(pend, box, Vec2(-27.5f, 30.0f));
+    this->AddJoints(j);
 
     for (int i = 0; i < 10; ++i)
     {
-        auto box = MakeRef<RigidBody2D>(Vec2(-6.0f + 1.0f * i, 11.125f), Vec2(0.4f, 4.0f), 10);
-        box->friction = 0.1f;
-        this->Add(box);
+        auto domino = MakeRef<RigidBody2D>(Vec2(-20.0f + 2.25f * i, 30.0f), Vec2(1.0f, 10.0f), 10);
+        domino->friction = 0.1f;
+        this->Add(domino);
     }
 
+    auto skew = MakeRef<RigidBody2D>(Vec2(3.0f, 12.5f), Vec2(40.0f, 1.0f), MAX_float);
+    skew->angle = 0.25;
+    this->Add(skew);
+
+    auto teeter = MakeRef<RigidBody2D>(Vec2(-7, 2.5), Vec2(37.5, 1), 100);
+    this->Add(teeter);
+
+    auto j2 = MakeRef<Joint>();
+    j2->Set(floor, teeter, Vec2(-7, 2.5));
+    this->AddJoints(j2);
+
+    auto floor_box = MakeRef<RigidBody2D>(Vec2(13.5, 6.5), Vec2(5, 5), 10);
+    this->Add(floor_box);
+
+    auto floor_box_cap = MakeRef<RigidBody2D>(Vec2(13.5, 9.5), Vec2(5.0, 1.0), 10);
+    this->Add(floor_box_cap);
+
+    auto j3 = MakeRef<Joint>();
+    j3->Set(floor_box_cap, floor_box, Vec2(16, 9));
+    this->AddJoints(j3);
+
+    auto j4 = MakeRef<Joint>();
+    j4->Set(floor, floor_box, Vec2(13.5, 6.5));
+    this->AddJoints(j4);
 }
 
 void rl::PhysicsWorld::demo9()
