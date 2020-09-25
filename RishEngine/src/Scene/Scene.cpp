@@ -136,7 +136,7 @@ void Scene::onSceneStop()
 
 void Scene::copySceneTo(Ref<Scene> &target)
 {
-    std::unordered_map<UUID, entt::entity> enttMap;
+    std::unordered_map<UUID, entt::entity> targetEnttMap;
     //
     target->m_registry.clear();
     // Copy all entities by UUID
@@ -145,13 +145,13 @@ void Scene::copySceneTo(Ref<Scene> &target)
     {
         auto &tag = view.get<TagComponent>(ent);
         Entity targetEnt = target->createEntity(tag.id, tag.tag);
-        enttMap[tag.id] = targetEnt.getEntityID();
+        targetEnttMap[tag.id] = targetEnt.getEntityID();
     }
-
-    CopyComponent<TransformComponent>(target->m_registry, m_registry, enttMap);
-    CopyComponent<RenderComponent>(target->m_registry, m_registry, enttMap);
-    CopyComponent<CameraComponent>(target->m_registry, m_registry, enttMap);
-    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, enttMap);
+    // Copy components
+    CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap);
 }
 
 void Scene::onImGuiRender()

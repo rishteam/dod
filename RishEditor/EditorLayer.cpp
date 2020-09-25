@@ -120,7 +120,8 @@ void EditorLayer::onUpdate(Time dt)
     if(m_sceneViewportPanelSize != framebufferSize &&
         m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
     {
-        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x,
+                                    (uint32_t)m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
     // TODO: Rendering Queue
@@ -152,6 +153,7 @@ void EditorLayer::onImGuiRender()
     // Menu Bar
     onImGuiMainMenuRender();
 
+    // Select from editor
     if(m_editController->isSelected())
     {
         auto ent = m_editController->getTarget();
@@ -220,8 +222,6 @@ void EditorLayer::onImGuiRender()
     {
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            // TODO: copy scene to m_runtimeScene and make current scene to runtime scene
-            // TODO: clean the scene before clean
             // TODO: make sure switch scene affect the panels
             m_editorScene->copySceneTo(m_runtimeScene);
 
@@ -396,6 +396,11 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
 {
     m_scene = scene;
     setContextToPanels(scene);
+
+    // Reset Editor Panel target
+    m_editController->resetTarget();
+    m_sceneHierarchyPanel->resetTarget();
+    m_componentEditPanel->resetTarget();
 }
 
 }
