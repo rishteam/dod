@@ -148,6 +148,8 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
     }
 }
 
+// TODO Particle Component
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -173,6 +175,8 @@ void ComponentEditPanel::onImGuiRender()
     drawEditComponentWidget<TransformComponent>();
     drawEditComponentWidget<RenderComponent>();
     drawEditComponentWidget<CameraComponent>();
+
+    //TODO Add Particle Component
 
     // Popup
     if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

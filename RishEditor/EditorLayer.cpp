@@ -50,7 +50,7 @@ public:
     void onUpdate(Time dt) override
     {
         auto &trans = getComponent<TransformComponent>().translate;
-        RL_INFO("onUpdate() {}", dt.asSeconds());
+//        RL_INFO("onUpdate() {}", dt.asSeconds());
 
         float speed = 10.f;
 

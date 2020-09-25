@@ -65,6 +65,10 @@ void Scene::onUpdate(Time dt)
         nsc.instance->onUpdate(dt);
     });
 
+    // Particle System update
+
+    // Particle System render
+
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
