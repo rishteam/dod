@@ -8,7 +8,7 @@ namespace rl {
 
 template<typename T>
 void CopyComponent(entt::registry &dst, entt::registry &src,
-                   const std::unordered_map<UUID, entt::entity>& enttMap)
+                   std::unordered_map<UUID, entt::entity>& enttMap)
 {
     // Copy all src entities fro src registry to dst registry
     auto view = src.view<T>();
@@ -17,9 +17,9 @@ void CopyComponent(entt::registry &dst, entt::registry &src,
         // Get destination entity by id
         auto id = src.get<TagComponent>(srcEnt).id;
         auto dstEnt = enttMap[id];
-
+        // Copy the component to destination entity
         auto &srcComponent = src.get<T>(srcEnt);
-        auto &dstComponent = dst.emplace_or_replace<T>(dstEnt, srcComponent);
+        dst.emplace_or_replace<T>(dstEnt, srcComponent);
     }
 }
 

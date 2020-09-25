@@ -6,6 +6,7 @@
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/Utils.h>
 //
 #include <Rish/Utils/uuid.h>
 //
@@ -135,12 +136,22 @@ void Scene::onSceneStop()
 
 void Scene::copySceneTo(Ref<Scene> &target)
 {
+    std::unordered_map<UUID, entt::entity> enttMap;
+    //
+    target->m_registry.clear();
+    // Copy all entities by UUID
     auto view = m_registry.view<TagComponent>();
     for(auto ent : view)
     {
         auto &tag = view.get<TagComponent>(ent);
-        target->createEntity(tag.id, tag.tag);
+        Entity targetEnt = target->createEntity(tag.id, tag.tag);
+        enttMap[tag.id] = targetEnt.getEntityID();
     }
+
+    CopyComponent<TransformComponent>(target->m_registry, m_registry, enttMap);
+    CopyComponent<RenderComponent>(target->m_registry, m_registry, enttMap);
+    CopyComponent<CameraComponent>(target->m_registry, m_registry, enttMap);
+    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, enttMap);
 }
 
 void Scene::onImGuiRender()

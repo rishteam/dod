@@ -62,7 +62,7 @@ private:
     Ref<SceneHierarchyPanel> m_sceneHierarchyPanel;
     Ref<ComponentEditPanel> m_componentEditPanel;
 
-    void switchScene(const Ref<Scene> &scene);
+    void switchCurrentScene(const Ref<Scene> &scene);
     void setContextToPanels(const Ref<Scene> &scene);
 	std::vector<Ref<ScenePanel>> m_panelList;
 

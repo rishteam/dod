@@ -225,7 +225,7 @@ void EditorLayer::onImGuiRender()
             // TODO: make sure switch scene affect the panels
             m_editorScene->copySceneTo(m_runtimeScene);
 
-            switchScene(m_runtimeScene);
+            switchCurrentScene(m_runtimeScene);
 
             if(m_sceneState != SceneState::Play)
                 m_scene->onScenePlay();
@@ -243,7 +243,7 @@ void EditorLayer::onImGuiRender()
             if(m_sceneState != SceneState::Editor)
                 m_scene->onSceneStop();
 
-            switchScene(m_editorScene);
+            switchCurrentScene(m_editorScene);
 
             m_sceneState = SceneState::Editor;
         }
@@ -392,7 +392,7 @@ void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
         panel->setContext(scene);
 }
 
-void EditorLayer::switchScene(const Ref<Scene> &scene)
+void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
 {
     m_scene = scene;
     setContextToPanels(scene);
