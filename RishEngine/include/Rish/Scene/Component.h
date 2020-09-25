@@ -106,6 +106,7 @@ private:
  */
 struct RenderComponent
 {
+    // TODO: delete these
 	std::string vertPath = "/shader/vertexSrc.glsl";
 	std::string fragPath = "/shader/fragSrc.glsl";
 	std::shared_ptr<rl::Shader> m_shader;

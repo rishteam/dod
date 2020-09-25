@@ -1,22 +1,29 @@
 #include "ComponentEditPanel.h"
 
 #include <Rish/Utils/FileDialog.h>
+#include <Rish/Scene/ScriptableEntity.h>
 
-#include <IconsFontAwesome5.h>
 #include <Rish/ImGui.h>
-#include <imgui_stdlib.h>
+
+#define BeginDrawEditComponent(c)                                    \
+    if (!m_targetEntity.hasComponent<c>()) return;                   \
+    if (ImGui::CollapsingHeader(#c, ImGuiTreeNodeFlags_DefaultOpen)) \
+    {                                                                \
+
+#define EndDrawEditComponent() }
+
+#define DrawRightClickMenu(c, disable)              \
+    if(drawEditComponentRightClickMenu<c>(disable)) \
+        return;
 
 namespace rl {
 
 template<>
 void ComponentEditPanel::drawEditComponentWidget<TagComponent>()
 {
-    if (!m_targetEntity.hasComponent<TagComponent>()) return;
-    //
-    if (ImGui::CollapsingHeader("TagComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    BeginDrawEditComponent(TagComponent);
     {
-        if(drawEditComponentrightClickMenu<TagComponent>(true))
-            return;
+        DrawRightClickMenu(TagComponent, true);
         //
         std::string &tag = m_targetEntity.getComponent<TagComponent>().tag;
         std::string id = m_targetEntity.getComponent<TagComponent>().id.to_string();
@@ -26,34 +33,30 @@ void ComponentEditPanel::drawEditComponentWidget<TagComponent>()
         ImGui::InputText("Id", &id, ImGuiInputTextFlags_ReadOnly);
         ImGui::PopItemWidth();
     }
+    EndDrawEditComponent();
 }
 
 template<>
 void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
 {
-    if (!m_targetEntity.hasComponent<TransformComponent>()) return;
-    //
-    if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    BeginDrawEditComponent(TransformComponent);
     {
-        if(drawEditComponentrightClickMenu<TransformComponent>())
-            return;
+        DrawRightClickMenu(TagComponent, true);
         //
         auto &transform = m_targetEntity.getComponent<TransformComponent>();
         ImGui::DragFloat3("Translate", glm::value_ptr(transform.translate), 0.01f);
         ImGui::Separator();
         ImGui::DragFloat2("Scale", glm::value_ptr(transform.scale), 0.01f);
     }
+    EndDrawEditComponent();
 }
 
 template<>
 void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
 {
-    if (!m_targetEntity.hasComponent<RenderComponent>()) return;
-    //
-    if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    BeginDrawEditComponent(RenderComponent);
     {
-        if(drawEditComponentrightClickMenu<RenderComponent>())
-            return;
+        DrawRightClickMenu(RenderComponent, false);
         //
         auto &render = m_targetEntity.getComponent<RenderComponent>();
         ImGui::ColorEdit4("Color", glm::value_ptr(render.color));
@@ -102,17 +105,15 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
             ImGui::InputText("##FragmentShaderPath", &fragPath, ImGuiInputTextFlags_ReadOnly);
         }
     }
+    EndDrawEditComponent();
 }
 
 template<>
 void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
 {
-    if (!m_targetEntity.hasComponent<CameraComponent>()) return;
-    //
-    if (ImGui::CollapsingHeader("CameraComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    BeginDrawEditComponent(CameraComponent);
     {
-        if(drawEditComponentrightClickMenu<CameraComponent>())
-            return;
+        DrawRightClickMenu(CameraComponent, false);
         //
         auto &camera = m_targetEntity.getComponent<CameraComponent>();
         auto &transform = m_targetEntity.getComponent<TransformComponent>();
@@ -146,6 +147,20 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
             camera.camera.setOrthographic(transform.scale.y, near, far);
         }
     }
+    EndDrawEditComponent();
+}
+
+template<>
+void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
+{
+    BeginDrawEditComponent(NativeScriptComponent);
+    {
+        DrawRightClickMenu(NativeScriptComponent, false);
+        //
+        auto &scriptName =  m_targetEntity.getComponent<NativeScriptComponent>().scriptName;
+        ImGui::Text("Script = %s", scriptName.c_str());
+    }
+    EndDrawEditComponent();
 }
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
@@ -173,6 +188,7 @@ void ComponentEditPanel::onImGuiRender()
     drawEditComponentWidget<TransformComponent>();
     drawEditComponentWidget<RenderComponent>();
     drawEditComponentWidget<CameraComponent>();
+    drawEditComponentWidget<NativeScriptComponent>();
 
     // Popup
     if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

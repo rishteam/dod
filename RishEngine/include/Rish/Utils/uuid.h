@@ -16,6 +16,7 @@ std::string generate_uuid_v4();
 
 } // end of namespace uuid
 
+// TODO: Need to rework in the future
 class UUID
 {
 public:
