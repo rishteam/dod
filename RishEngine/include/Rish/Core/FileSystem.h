@@ -226,3 +226,7 @@ public:
 };
 
 } // namespace rl
+
+/// @class rl::FileSystem
+/// @ingroup core
+///

@@ -83,3 +83,7 @@ private:
 Application* CreateApplication();
 
 }
+
+/// @class rl::Application
+/// @ingroup core
+///

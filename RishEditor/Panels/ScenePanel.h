@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/Time.h>
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
 
@@ -15,11 +16,12 @@ public:
     virtual ~ScenePanel() = default;
 
     virtual void onAttach(const Ref <Scene> &scene) { setContext(scene); }
-    virtual void onDetach() {}
+    virtual void onDetach()                         {}
+    virtual void onUpdate(Time dt)                  {}
     virtual void onImGuiRender() = 0;
 
-    void setContext(const Ref<Scene> &scene) { m_currentScene = scene; }
-    Ref<Scene> getContext() { return m_currentScene; }
+    void setContext(const Ref<Scene> &scene)        { m_currentScene = scene; }
+    Ref<Scene> getContext()                         { return m_currentScene; }
 protected:
     Ref<Scene> m_currentScene;
 };

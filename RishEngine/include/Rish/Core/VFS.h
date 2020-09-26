@@ -13,6 +13,8 @@
 namespace rl {
 
 /**
+ * @class VFS
+ * @ingroup core
  * @brief Virtual File System class
  */
 class RL_API VFS

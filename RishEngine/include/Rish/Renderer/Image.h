@@ -5,6 +5,10 @@
 namespace rl {
 
 // TODO: make more functionalities for Image in the future ref: sf::Image
+
+/**
+ * @brief Image class
+ */
 class RL_API Image
 {
 public:

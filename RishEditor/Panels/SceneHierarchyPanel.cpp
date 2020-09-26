@@ -24,11 +24,10 @@ void SceneHierarchyPanel::onImGuiRender()
 
     // Reset selected when click empty space in the window
     if(isSelected() &&
-        ImGui::IsWindowFocused() && ImGui::IsWindowHovered() &&
-        ImGui::IsAnyItemActive())
+       ImGui::IsWindowFocused() && ImGui::IsWindowHovered() &&
+       ImGui::IsAnyItemActive())
     {
         resetSelected();
-        m_entitySet.clear();
     }
 
     // Right click menu
@@ -38,10 +37,7 @@ void SceneHierarchyPanel::onImGuiRender()
         }
         if (isSelected() && ImGui::MenuItem("Delete Entity")) {
             for(auto e : m_entitySet)
-            {
                 e.destroy();
-            }
-            m_entitySet.clear();
             resetSelected();
         }
         ImGui::EndPopup();
@@ -67,7 +63,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 
         if(!m_entitySet.count(entity))
         {
-            setTarget(entity);
+            addTarget(entity);
             m_entitySet.insert(entity);
         }
         else

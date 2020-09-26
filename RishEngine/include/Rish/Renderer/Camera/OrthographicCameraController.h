@@ -13,6 +13,10 @@
 
 namespace rl {
 
+/**
+ * @brief Orthographic camera bound
+ * @details This defines orthographic projection bounds
+ */
 struct OrthographicCameraBounds
 {
     OrthographicCameraBounds(float Left, float Right, float Bottom, float Top)
@@ -30,26 +34,39 @@ struct OrthographicCameraBounds
     float getHeight() const { return top - bottom; }
 };
 
+/**
+ * @brief Orthographic camera controller
+ */
 class RL_API OrthographicCameraController
 {
 public:
     OrthographicCameraController(float aspect, bool rotate=false);
-
+    // Main functions
     void onUpdate(Time dt);
     void onEvent(Event &e);
     void onImGuiRender();
-
+    // Events
     void onResize(float width, float height);
 
     void setState(bool state) { m_enableState = state; }
-    bool getState() const { return m_enableState; }
+    bool getState() const     { return m_enableState; }
 
-    OrthographicCamera& getCamera() { return m_camera; }
-    const OrthographicCamera& getCamera() const { return m_camera; }
+    OrthographicCamera& getCamera()                   { return m_camera; }
+    const OrthographicCamera& getCamera() const       { return m_camera; }
+    //
     const OrthographicCameraBounds& getBounds() const { return m_bounds; }
-    float getRotate() const { return m_rotate; }
-    glm::vec3 getPosition() const { return m_position; }
-    float getZoom() const { return m_zoom; }
+    //
+    float getRotate() const                           { return m_rotate; }
+    glm::vec3 getPosition() const                     { return m_position; }
+    void setPosition(const glm::vec2 &p)              { m_position = glm::vec3(p, 0.f); /*m_camera.setPosition(m_position);*/ }
+    float getZoom() const                             { return m_zoom; }
+    void setZoom(float z)                             { m_zoom = z; }
+    //
+    void move(const glm::vec2 &p)                     { m_position += glm::vec3(p, 0.f); }
+
+    // Public fields
+    float m_translateSpeed = 1.5f;
+    float m_rotateSpeed = 180.f;
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
@@ -62,9 +79,6 @@ private:
     //
     OrthographicCameraBounds m_bounds;
     OrthographicCamera m_camera;
-
-    float m_translateSpeed = 5.f;
-    float m_rotateSpeed = 180.f;
 
     bool m_isAbleToRotate;
     float m_rotate = 0.f;  // degrees, counter-clock wise

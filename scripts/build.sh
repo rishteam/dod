@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# BINARY_NAME=Sandbox/Sandbox.exe
-BINARY_NAME=Editor/Editor.exe
-
 usage() {
     cat <<EOF
 Usage: $0 <command>
-    full [run]     Remove the whole build/* before cmake
-    clean [run]    Call \`make clean\` after cmake before \`make -j6\`
-    run            Run the program after building
-    docs [open]    Build the docs
-    cloc           Calculate Lines Of Code
+    full [target]        Remove the whole build/* before cmake
+    clean [target]       Call \`make clean\` after cmake before \`make -j6\`
+    cmake                Rebuild the cmake files only
+    run                  Run the program after building
+    docs [engine|editor] Build the docs Remember to specify the target
+    cloc                 Calculate Lines Of Code
+
+Targets:
+    sandbox - RishEngine Sandbox
+    editor  - Rish Editor
 EOF
 }
 
@@ -28,6 +30,7 @@ cmake_go() {
         cmake ..
     else
         cmake -G "MSYS Makefiles" ..
+        cmake -S../RishEditor/docs -BRishEditorDocs -G "MSYS Makefiles"
     fi
 }
 
@@ -40,6 +43,14 @@ start_go() {
         open "$1"
     else
         start "$1"
+    fi
+}
+
+target_go() {
+    if [[ "$1" == "sandbox" ]]; then
+        start_go Sandbox/Sandbox.exe
+    elif [[ "$1" == "editor" ]]; then
+        start_go RishEditor/Editor.exe
     fi
 }
 
@@ -57,17 +68,22 @@ pushd build > /dev/null
 
 case "$1" in
 
+"cmake")
+    rm -rf ./*
+    cmake_go
+;;
+
 "full")
     rm -rf ./*
     cmake_go
     make_go
-    [[ "$2" == "run" ]] && run $?
+    [[ "$2" != "" ]] && target_go "$2"
 ;;
 
 "clean")
     make clean
     make_go
-    [[ "$2" == "run" ]] && run $?
+    [[ "$2" != "" ]] && target_go "$2"
 ;;
 
 "run")
@@ -77,8 +93,17 @@ case "$1" in
 ;;
 
 "docs")
+    # Build RishEngine docs
     make doxygen-docs
-    [[ "$2" == "open" ]] && start_go ./RishEngine/docs/html/index.html
+
+    # Build RishEditor docs
+    pushd RishEditorDocs
+    make doxygen-docs
+    popd
+
+    #
+    [[ "$2" == "engine" ]] && start_go ./RishEngine/docs/html/index.html
+    [[ "$2" == "editor" ]] && start_go ./RishEditorDocs/html/index.html
 ;;
 
 "cloc")

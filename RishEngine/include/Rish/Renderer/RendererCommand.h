@@ -8,10 +8,13 @@
 
 namespace rl {
 
+/**
+ * @brief Draw Premitive type
+ */
 enum DrawType
 {
-    DrawTriangles = 0,
-    DrawLines,
+    DrawTriangles = 0, ///< Triangles
+    DrawLines,         ///< Lines
     DrawTypeCount
 };
 

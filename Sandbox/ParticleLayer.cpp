@@ -37,6 +37,8 @@ void ParticleLayer::onAttach()
 void ParticleLayer::onDetach()
 {
     RL_PROFILE_FUNCTION();
+
+    ImGui::SaveIniSettingsToDisk("Sandbox/imgui.ini");
 }
 
 void ParticleLayer::onUpdate(rl::Time dt)
@@ -59,32 +61,11 @@ void ParticleLayer::onUpdate(rl::Time dt)
     {
         RL_PROFILE_SCOPE("Renderer Draw");
         rl::Renderer2D::ResetStats();
-        rl::Renderer2D::BeginScene(m_cameraController.getCamera(), nullptr);
+        rl::Renderer2D::BeginScene(m_cameraController.getCamera(), true);
 
-        rl::Renderer2D::DrawQuad({-0.9f, 0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 1.f, 0.f, 1.f});
-        rl::Renderer2D::DrawQuad({0.3f, -0.5f, -0.5f}, {0.5f, 0.5f}, {0.f, 0.f, 1.f, 1.f});
-        rl::Renderer2D::DrawRotatedQuad({0.8f, 0.6f, 0.f}, {1.f, 1.f}, m_texture, m_objectRotate);
-        rl::Renderer2D::DrawQuad(m_squarePosition, m_squareScale, m_squareColor);
-        for(int i = 0; i < m_gridWidth; i++)
-            for(int j = 0; j < m_gridHeight; j++)
-            {
-                if((i+j) % 2)
-                    rl::Renderer2D::DrawRotatedQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f}, m_objectRotate);
-                else
-                    rl::Renderer2D::DrawQuad({i, j, 0.0f}, {0.8f, 0.8f}, {i / 10.f, j / 10.f, 1.f, 1.f});
-            }
-        rl::Renderer2D::DrawQuad({-10.f, 2.f, 0.f}, {1.f, 1.f}, m_texture);
-
-        rl::Renderer2D::DrawQuad({-10.0, 0.f}, {1.f, 1.f}, m_spriteSheet);
-        rl::Renderer2D::DrawQuad({-10.0, -3.f}, {1.f, 1.f}, m_sprite, glm::vec4{1.f});
-
-        rl::Renderer2D::DrawRotatedQuad({-9.0f, 0.f}, {1.f, 1.f}, m_sprite, glm::vec4{1.f}, m_objectRotate);
-
-        rl::Renderer2D::DrawLine({-15.f, -15.f, 5.f}, {1.f, 1.f, 5.f});
-        rl::Renderer2D::DrawLine({-15.f, -15.f, 5.f}, {1.f, 1.f, 5.f}, {1.f, 0.f, 0.f, 1.f});
-
-        rl::Renderer2D::DrawQuad({-3, 1}, {1.f, 1.f}, {1.f, 1.f, 1.f, 1.f});
-        rl::Renderer2D::DrawQuad({-3, 1}, {1.f, 1.f}, {1.f, 0.f, 0.f, 1.f});
+        for(int i = 0; i < 100; i++)
+            for(int j = 0; j < 100; j++)
+                rl::Renderer2D::DrawCircleLine({i, j}, 1.f);
 
         rl::Renderer2D::EndScene();
     }
@@ -105,8 +86,8 @@ void ParticleLayer::onUpdate(rl::Time dt)
 
         //
         RL_INFO("Add particle ({}, {})", m_particle.position.x, m_particle.position.y);
-        for (int i = 0; i < 5; i++)
-            m_particleSystem.emit(m_particle);
+//        for (int i = 0; i < 5; i++)
+//            m_particleSystem.emit(m_particle);
     }
 
     m_particleSystem.onUpdate(dt);

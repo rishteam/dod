@@ -117,8 +117,10 @@ add_library(RishEngine
     src/Scene/Scene.cpp
     src/Scene/Entity.cpp
     src/Scene/ComponentManager.cpp
+    src/Scene/SceneCamera.cpp
 
     src/ImGui.cpp
+    src/Math/AABB.cpp
 )
 
 # alias

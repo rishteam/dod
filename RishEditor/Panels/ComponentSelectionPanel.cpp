@@ -1,6 +1,7 @@
 #include "ComponentSelectionPanel.h"
 
 #include <Rish/Scene/ComponentManager.h>
+#include <Rish/Scene/ScriptableEntity.h>
 
 #include <Rish/ImGui.h>
 #include <entt/entt.hpp>
@@ -25,6 +26,8 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     SceneTargetPanel::onAttach(scene);
     ComponentManager::registerComponent<TransformComponent>();
     ComponentManager::registerComponent<RenderComponent>();
+    ComponentManager::registerComponent<CameraComponent>();
+    ComponentManager::registerComponent<NativeScriptComponent>();
 }
 
 } // end of namespace rl

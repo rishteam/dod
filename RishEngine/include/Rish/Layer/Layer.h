@@ -16,6 +16,7 @@ namespace rl {
 
 /**
  * @brief Layer class
+ * @ingroup core
  * @details
  */
 class RL_API Layer

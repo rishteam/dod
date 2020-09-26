@@ -2,10 +2,11 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
-
-#include <Rish/Renderer/Camera/OrthographicCamera.h>
+#include <Rish/Renderer/Framebuffer.h>
+//
+#include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
-
+//
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
 
@@ -43,18 +44,45 @@ public:
 	 * @param camera Camera
 	 * @param dt Delta t
 	 */
-	void onUpdate(const OrthographicCamera &camera, Time dt);
+	void onUpdate(Time dt);
 
+	void onScenePlay();
+	void onSceneStop();
+
+	void copySceneTo(Ref<Scene> &target);
+
+	void onViewportResize(uint32_t width, uint32_t height);
+
+	void onImGuiRender();
+
+	const SceneCamera& getMainCamera() const { return m_mainCamera; }
+	bool m_debugCamera = false;
 private:
+    ////////////////////////////////////////////////////////////////
+    // Scene Camera
+    ////////////////////////////////////////////////////////////////
+    SceneCamera m_mainCamera{};
+    glm::mat4 m_mainCameraTransform{};
+
+    uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
+
+    ////////////////////////////////////////////////////////////////
+    // Scene
+    ////////////////////////////////////////////////////////////////
 	static int entityNumber;
 	entt::registry m_registry;
+
+	Entity createEntity(const UUID &id, const std::string &name);
 
     ////////////////////////////////////////////////////////////////
 	// friend class
     ////////////////////////////////////////////////////////////////
     friend class Entity;
+    // Editor
+    friend class EditorLayer;
     friend class SceneHierarchyPanel;
     friend class ComponentSelectionPanel;
+    friend class EditController;
 
     ////////////////////////////////////////////////////////////////
     // Serialization functions
@@ -64,24 +92,31 @@ private:
 	template <class Archive>
 	void save(Archive &ar) const
 	{
-		ar(CEREAL_NVP(entityNumber),
-            cereal::make_nvp("version", "0.0.1"));
-
 		 entt::snapshot{m_registry}
-		 	.component<TagComponent, TransformComponent, RenderComponent>(ar);
+		 	.component<
+                TagComponent,
+                TransformComponent,
+                RenderComponent,
+                CameraComponent
+            >(ar);
 	}
 
 	template <class Archive>
 	void load(Archive &ar)
 	{
-	    std::string version;
-		ar(CEREAL_NVP(entityNumber),
-            cereal::make_nvp("version", version));
-		RL_CORE_INFO("[Scene] Loading version: {}", version);
-
 		entt::snapshot_loader{m_registry}
-			.component<TagComponent, TransformComponent, RenderComponent>(ar);
+			.component<
+                TagComponent,
+			    TransformComponent,
+			    RenderComponent,
+			    CameraComponent
+            >(ar);
 	}
 };
 
 } // namespace rl
+
+/**
+ * @class rl::Scene
+ * @ingroup scene
+ */

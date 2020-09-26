@@ -2,7 +2,6 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Scene/Scene.h>
-#include <Rish/Scene/Component.h>
 
 #include <entt/entt.hpp>
 
@@ -79,6 +78,7 @@ private:
 
 /**
  * @class rl::Entity
+ * @ingroup scene
  * How to create an Entity and add/remove component? Use rl::Scene createEntity() function to create rl::Entity.<br/>
  * And then you can manipulate your rl::Entity.
  * 
@@ -99,6 +99,5 @@ private:
  * 
  * @endcode
  */
-
 
 }

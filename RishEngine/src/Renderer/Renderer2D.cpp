@@ -39,7 +39,7 @@ struct LineVertex
     glm::vec4 color;
 };
 
-const size_t MaxLineCount = 1000;
+const size_t MaxLineCount = 500000;
 const size_t MaxLineVertexCount = MaxLineCount * 2;
 const size_t MaxLineIndexCount = MaxLineCount * 6;
 
@@ -88,8 +88,12 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     bool sceneState = false; ///< Is the scene now active (called BeginScene())
     bool depthTest = false;  ///< Is the scene enable depth test
-    Ref<Framebuffer> targetFramebuffer;
-    OrthographicCamera camera;
+    //
+    OrthographicCamera orthoCamera;
+    bool isEditorCamera = false; // TODO: this is dirty
+    Camera camera = glm::mat4(1.f);
+    glm::mat4 m_viewProjMatrix;
+    //
     Renderer2D::Stats renderStats;
 };
 static Scope<Renderer2DData> s_data;
@@ -120,7 +124,8 @@ void Renderer2D::Init()
         uint32_t *quadIndices = new uint32_t[MaxQuadIndexCount];
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         uint32_t offset = 0;
-        for (int i = 0; i < MaxQuadIndexCount; i += 6) {
+        for (int i = 0; i < MaxQuadIndexCount; i += 6)
+        {
             for (int j = 0; j < 6; j++)
                 quadIndices[i + j] = pattern[j] + offset;
             offset += 4;
@@ -143,9 +148,9 @@ void Renderer2D::Init()
 
         // template for quad vertex
         s_data->quadVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // bottom left
-        s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f}; // bottom right
-        s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f}; // top left
-        s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f}; // top right
+        s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};  // bottom right
+        s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};  // top left
+        s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};   // top right
     }
     ////////////////////////////////////////////////////////////////
     // Line Renderer
@@ -179,17 +184,16 @@ void Renderer2D::Shutdown()
     s_data.reset(nullptr);
 }
 
-void Renderer2D::BeginScene(const OrthographicCamera &camera, const Ref<Framebuffer>& framebuffer, bool depthTest)
+void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
     s_data->depthTest = depthTest;
 
-    s_data->camera = camera;
+    s_data->isEditorCamera = true;
+    s_data->orthoCamera = camera;
+    //
     s_data->sceneState = true;
-
-    if(framebuffer)
-        s_data->targetFramebuffer = framebuffer;
 
     // Quad
     {
@@ -202,10 +206,32 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, const Ref<Framebuf
         s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
     }
+}
 
-    // Bind the framebuffer
-    if(s_data->targetFramebuffer)
-        s_data->targetFramebuffer->bind();
+void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
+                            bool depthTest)
+{
+    RL_PROFILE_RENDERER_FUNCTION();
+
+    s_data->depthTest = depthTest;
+
+    s_data->isEditorCamera = false;
+    s_data->camera = camera;
+    s_data->m_viewProjMatrix = camera.getProjection() * glm::inverse(transform); // TODO: not support rotate now
+    //
+    s_data->sceneState = true;
+
+    // Quad
+    {
+        s_data->quadBufferPtr = s_data->quadBuffer;
+        s_data->quadIndexCount = 0;
+    }
+
+    // Line
+    {
+        s_data->lineBufferPtr = s_data->lineBuffer;
+        s_data->lineIndexCount = 0;
+    }
 }
 
 void Renderer2D::EndScene()
@@ -220,7 +246,8 @@ void Renderer2D::EndScene()
         s_data->lineVertexArray->getVertexBuffer()->setData(s_data->lineBuffer, lineBufferCurrentSize);
         // Shader
         s_data->lineShader->bind();
-        s_data->lineShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
+        s_data->lineShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
+            s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
         // Draw
         s_data->lineVertexArray->bind();
         RenderCommand::SetLineThickness(1.f);
@@ -241,7 +268,8 @@ void Renderer2D::EndScene()
 
         // Shader
         s_data->quadTexShader->bind();
-        s_data->quadTexShader->setMat4("u_ViewProjection", s_data->camera.getViewProjectionMatrix());
+        s_data->quadTexShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
+               s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
 
         // Bind texture slots
         for(int i = 0; i < s_data->textureSlotAddIndex; i++)
@@ -258,10 +286,6 @@ void Renderer2D::EndScene()
 
         s_data->renderStats.DrawCount++;
     }
-
-    // Unbind the framebuffer
-    if(s_data->targetFramebuffer)
-        s_data->targetFramebuffer->unbind();
 
     s_data->sceneState = false;
 }
@@ -485,7 +509,7 @@ void Renderer2D::FlushStatesIfExceeds()
     if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
-        BeginScene(s_data->camera, nullptr);
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 }
 
@@ -521,7 +545,7 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
     if(s_data->lineIndexCount >= MaxLineCount)
     {
         EndScene();
-        BeginScene(s_data->camera, nullptr);
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 
     s_data->lineBufferPtr->position = p0;
@@ -538,6 +562,35 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
 void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
 {
     DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
+}
+
+
+void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color)
+{
+    const int pointCount = 30;
+    glm::vec2 p[pointCount];
+    float d = 0.f;
+    for(auto & i : p)
+    {
+        i = position + glm::vec2{radius * std::sin(glm::radians(d)), radius * std::cos(glm::radians(d))};
+        d += 360.f / pointCount;
+    }
+    for(int i = 0; i < pointCount; i++)
+        DrawLine(p[i], p[(i+1)%pointCount], color);
 }
 
 } // namespace of rl

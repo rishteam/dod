@@ -6,11 +6,15 @@
 
 namespace rl {
 
-void EditorGrid::onUpdate(const OrthographicCameraController &cameraController)
+EditorGrid::EditorGrid()
 {
-    const auto & pos = cameraController.getPosition();
+}
+
+void EditorGrid::onUpdate()
+{
+    const auto & pos = m_cameraController->getPosition();
     // Get the camera bound with ref to current camera pos
-    m_currentBound = cameraController.getBounds();
+    m_currentBound = m_cameraController->getBounds();
 
     float nowMinBound = std::ceil(std::min(m_currentBound.right, m_currentBound.top));
     // Less than the previous limit
