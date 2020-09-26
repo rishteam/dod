@@ -18,6 +18,8 @@ void EditController::onAttach(const Ref<Scene> &scene)
     m_cameraController = MakeRef<OrthographicCameraController>(
         Application::Get().getWindow().getAspectRatio());
     m_editorGrid.onAttach(m_cameraController);
+
+    // TODO: Load icons
 }
 
 void EditController::onDetach()
@@ -31,7 +33,8 @@ void EditController::onUpdate(Time dt)
     m_cameraController->onUpdate(dt);
     m_editorGrid.onUpdate();
 
-    auto transGroup = getContext()->m_registry.group<TransformComponent, RenderComponent>();
+    auto scene = getContext();
+    auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
     for(auto entity: transGroup)
     {
         auto &transform = transGroup.get<TransformComponent>(entity);
@@ -50,6 +53,19 @@ void EditController::onUpdate(Time dt)
         else
             Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
     }
+
+    // Draw special entities
+    // TODO: Refactor this
+
+    auto view = scene->m_registry.view<CameraComponent>();
+    for(auto entity : view)
+    {
+        Entity ent{entity, scene.get()};
+        auto &transform = ent.getComponent<TransformComponent>();
+
+        Renderer2D::DrawRect(transform.translate, transform.scale);
+    }
+
     if(isSelected())
     {
         auto ent = getTarget();

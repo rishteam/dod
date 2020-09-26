@@ -61,7 +61,7 @@ void ParticleLayer::onUpdate(rl::Time dt)
     {
         RL_PROFILE_SCOPE("Renderer Draw");
         rl::Renderer2D::ResetStats();
-        rl::Renderer2D::BeginScene(m_cameraController.getCamera(), nullptr);
+        rl::Renderer2D::BeginScene(m_cameraController.getCamera(), true);
 
         for(int i = 0; i < 100; i++)
             for(int j = 0; j < 100; j++)

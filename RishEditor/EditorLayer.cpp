@@ -9,6 +9,7 @@
 #include <Rish/Scene/ScriptableEntity.h>
 
 #include <Rish/ImGui.h>
+#include <imgui_internal.h>
 
 #include "EditorLayer.h"
 
@@ -24,7 +25,9 @@ EditorLayer::EditorLayer()
 
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-    m_scene = MakeRef<Scene>();
+    m_editorScene = MakeRef<Scene>();
+    m_scene = m_editorScene;
+    m_runtimeScene = MakeRef<Scene>();
     //
     m_editController = MakeRef<EditController>();
     m_panelList.push_back(m_editController);
@@ -77,7 +80,7 @@ void EditorLayer::onAttach()
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 
-    debugEntity = m_scene->createEntity();
+    debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 }
@@ -94,6 +97,21 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
+    switch(m_sceneState)
+    {
+        case SceneState::Editor:
+
+        break;
+
+        case SceneState::Play:
+
+        break;
+
+        case SceneState::Pause:
+
+        break;
+    }
+    //
     auto cameraController = m_editController->getCameraController();
 
     // Resize the framebuffer if user resize the viewport
@@ -102,7 +120,8 @@ void EditorLayer::onUpdate(Time dt)
     if(m_sceneViewportPanelSize != framebufferSize &&
         m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
     {
-        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x,
+                                    (uint32_t)m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
     // TODO: Rendering Queue
@@ -134,6 +153,7 @@ void EditorLayer::onImGuiRender()
     // Menu Bar
     onImGuiMainMenuRender();
 
+    // Select from editor
     if(m_editController->isSelected())
     {
         auto ent = m_editController->getTarget();
@@ -200,13 +220,33 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
     {
-        // TODO: item width??
-        float buttonWidth = 100.f;
-        ImGui::PushItemWidth(buttonWidth);
-        ImGui::Button(ICON_FA_PLAY);
+        if(ImGui::Button(ICON_FA_PLAY))
+        {
+            // TODO: make sure switch scene affect the panels
+            m_editorScene->copySceneTo(m_runtimeScene);
+
+            switchCurrentScene(m_runtimeScene);
+
+            if(m_sceneState != SceneState::Play)
+                m_scene->onScenePlay();
+
+            m_sceneState = SceneState::Play;
+        }
         ImGui::SameLine();
-        ImGui::Button(ICON_FA_PAUSE);
-        ImGui::PopItemWidth();
+        if(ImGui::Button(ICON_FA_PAUSE))
+        {
+            m_sceneState = SceneState::Pause;
+        }
+        ImGui::SameLine();
+        if(ImGui::Button(ICON_FA_STOP))
+        {
+            if(m_sceneState != SceneState::Editor)
+                m_scene->onSceneStop();
+
+            switchCurrentScene(m_editorScene);
+
+            m_sceneState = SceneState::Editor;
+        }
     }
     ImGui::End();
 
@@ -273,8 +313,7 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    for(auto & panel : m_panelList)
-                        panel->setContext(m_scene);
+                    setContextToPanels(m_scene);
                 }
                 else
                 {
@@ -345,6 +384,23 @@ void EditorLayer::onImGuiMainMenuRender()
 void EditorLayer::onEvent(rl::Event& e)
 {
     m_editController->onEvent(e);
+}
+
+void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
+{
+    for(auto & panel : m_panelList)
+        panel->setContext(scene);
+}
+
+void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
+{
+    m_scene = scene;
+    setContextToPanels(scene);
+
+    // Reset Editor Panel target
+    m_editController->resetTarget();
+    m_sceneHierarchyPanel->resetTarget();
+    m_componentEditPanel->resetTarget();
 }
 
 }

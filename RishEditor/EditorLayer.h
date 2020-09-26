@@ -30,12 +30,26 @@ private:
     Entity debugEntity;
 
     //////////////////////////////////////////
+    // Editor Layer
+    //////////////////////////////////////////
+
+    enum class SceneState
+    {
+        Editor = 0,
+        Play,
+        Pause
+    };
+    SceneState m_sceneState = SceneState::Editor;
+
+    //////////////////////////////////////////
     // Scene
     //////////////////////////////////////////
 	Ref<Framebuffer> m_editorFramebuffer;
     //
 	Ref<Framebuffer> m_sceneFramebuffer;
-	Ref<Scene> m_scene;
+    Ref<Scene> m_scene;        /// Current Scene
+    Ref<Scene> m_editorScene;  /// Editor Scene
+    Ref<Scene> m_runtimeScene; /// Runtime Scene
 	//
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
@@ -48,6 +62,8 @@ private:
     Ref<SceneHierarchyPanel> m_sceneHierarchyPanel;
     Ref<ComponentEditPanel> m_componentEditPanel;
 
+    void switchCurrentScene(const Ref<Scene> &scene);
+    void setContextToPanels(const Ref<Scene> &scene);
 	std::vector<Ref<ScenePanel>> m_panelList;
 
     //////////////////////////////////////////

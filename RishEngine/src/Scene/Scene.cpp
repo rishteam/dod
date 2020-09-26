@@ -6,6 +6,7 @@
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/Utils.h>
 //
 #include <Rish/Utils/uuid.h>
 //
@@ -30,7 +31,7 @@ Entity Scene::createEntity(const std::string& name)
 	Entity entity = { m_registry.create(), this };
 	entity.addComponent<TransformComponent>();
 	auto &tagComponent = entity.addComponent<TagComponent>();
-	tagComponent.id = uuid::generate_uuid_v4();
+	tagComponent.id = UUID();
 
     auto &tag = tagComponent.tag;
 	if(name.empty())
@@ -44,7 +45,25 @@ Entity Scene::createEntity(const std::string& name)
 	entityNumber++;
 
 	RL_CORE_TRACE("[Scene] Created entity {}", tag);
-	return entity;	
+	return entity;
+}
+
+Entity Scene::createEntity(const UUID &id, const std::string &name)
+{
+    Entity entity = {m_registry.create(), this};
+    entity.addComponent<TransformComponent>();
+    auto &tagComponent = entity.addComponent<TagComponent>();
+    tagComponent.id = id;
+
+    auto &tag = tagComponent.tag;
+    if(name.empty())
+        tag = fmt::format("Entity {}", entityNumber);
+    else
+        tag = name;
+    entityNumber++;
+
+    RL_CORE_TRACE("[Scene] Created entity {} by id {}", tag, id.to_string());
+    return entity;
 }
 
 void Scene::destroyEntity(const Entity &entity)
@@ -55,14 +74,9 @@ void Scene::destroyEntity(const Entity &entity)
 void Scene::onUpdate(Time dt)
 {
     m_registry.view<NativeScriptComponent>().each([=](auto entity, auto &nsc) {
-        if(!nsc.instance)
-        {
-            nsc.instance = nsc.newScript();
-            nsc.instance->m_entity = Entity{entity, this};
-            nsc.instance->onCreate();
+        if(nsc.instance) {
+            nsc.instance->onUpdate(dt);
         }
-
-        nsc.instance->onUpdate(dt);
     });
 
     bool isAnyCamera{false};
@@ -98,6 +112,46 @@ void Scene::onUpdate(Time dt)
             Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
     }
     Renderer2D::EndScene();
+}
+
+void Scene::onScenePlay()
+{
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
+    {
+        if (!nsc.instance) {
+            nsc.instance = nsc.newScript();
+            nsc.instance->m_entity = Entity{entityID, this};
+            nsc.instance->onCreate();
+        }
+    });
+}
+
+void Scene::onSceneStop()
+{
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
+    {
+        nsc.deleteScript(&nsc);
+    });
+}
+
+void Scene::copySceneTo(Ref<Scene> &target)
+{
+    std::unordered_map<UUID, entt::entity> targetEnttMap;
+    //
+    target->m_registry.clear();
+    // Copy all entities by UUID
+    auto view = m_registry.view<TagComponent>();
+    for(auto ent : view)
+    {
+        auto &tag = view.get<TagComponent>(ent);
+        Entity targetEnt = target->createEntity(tag.id, tag.tag);
+        targetEnttMap[tag.id] = targetEnt.getEntityID();
+    }
+    // Copy components
+    CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap);
 }
 
 void Scene::onImGuiRender()

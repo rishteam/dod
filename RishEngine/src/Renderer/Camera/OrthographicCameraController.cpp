@@ -19,8 +19,8 @@ OrthographicCameraController::OrthographicCameraController(float aspect, bool ro
 void OrthographicCameraController::onUpdate(Time dt)
 {
     // Early out if it is not enabled
-    if(!m_enableState)
-        return;
+//    if(!m_enableState)
+//        return;
 
     float rads = m_camera.getRotationRadians();
     // TODO: refactor these
