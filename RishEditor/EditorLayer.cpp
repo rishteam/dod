@@ -20,6 +20,7 @@ EditorLayer::EditorLayer()
 {
 	VFS::Mount("shader", "assets/editor/shader");
 	VFS::Mount("texture", "assets/editor/texture");
+    VFS::Mount("icon", "assets/editor/icon");
 
     ImGui::LoadIniSettingsFromDisk("RishEditor/imgui.ini");
 
@@ -374,6 +375,7 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
             ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
             ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
+            ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
             ImGui::EndMenu();
         }
 
