@@ -50,6 +50,7 @@ public:
 	void onUpdate(Time dt);
 
 	void onScenePlay();
+	void onScenePause();
 	void onSceneStop();
 
 	void copySceneTo(Ref<Scene> &target);
@@ -58,8 +59,17 @@ public:
 
 	void onImGuiRender();
 
+    enum class SceneState
+    {
+        Editor = 0,
+        Play,
+        Pause
+    };
+	SceneState getSceneState() const { return m_sceneState; }
+
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
 	bool m_debugCamera = false;
+	bool m_debugPhysics = true;
 private:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
@@ -74,6 +84,8 @@ private:
     ////////////////////////////////////////////////////////////////
 	static int entityNumber;
 	entt::registry m_registry;
+
+    SceneState m_sceneState = SceneState::Editor;
 
 	Entity createEntity(const UUID &id, const std::string &name);
 

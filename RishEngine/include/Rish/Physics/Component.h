@@ -10,21 +10,19 @@ namespace rl {
 struct RigidBody2DComponent{
     RigidBody2DComponent() = default;
     //角速度
-    float angularVelocity;
+    float angularVelocity = 0.0f;
     //角度
-    float angle;
+    float angle = 0.0f;
     //速度
-    Vec2 velocity;
+    Vec2 velocity = Vec2(0.0f, 0.0f);
     //力
-    Vec2 force;
+    Vec2 force = Vec2(0.0f, 0.0f);
     //力矩
-    float torque;
+    float torque = 0.0f;
     //摩擦力
-    float friction;
+    float friction = 0.0f;
     //質量，質量倒數
-    float mass, invMass;
-    //慣性矩，慣性矩倒數
-    float I, invI;
+    float mass = 10.0f;
     bool isCollide = false;
 
 
@@ -41,9 +39,6 @@ private:
             CEREAL_NVP(torque),
             CEREAL_NVP(friction),
             CEREAL_NVP(mass),
-            CEREAL_NVP(invMass),
-            CEREAL_NVP(I),
-            CEREAL_NVP(invI),
             CEREAL_NVP(isCollide)
         );
     }

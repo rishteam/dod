@@ -86,7 +86,6 @@ void EditorLayer::onAttach()
 
     Entity debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
     debugEntity = m_scene->createEntity("DebugSprite");
@@ -94,6 +93,7 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
     debugEntity = m_scene->createEntity("PhysicsTest");
+    debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
 }
 
@@ -109,17 +109,17 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
-    switch(m_sceneState)
+    switch(m_scene->getSceneState())
     {
-        case SceneState::Editor:
+        case Scene::SceneState::Editor:
 
         break;
 
-        case SceneState::Play:
+        case Scene::SceneState::Play:
 
         break;
 
-        case SceneState::Pause:
+        case Scene::SceneState::Pause:
 
         break;
     }
@@ -240,25 +240,19 @@ void EditorLayer::onImGuiRender()
 
             switchCurrentScene(m_runtimeScene);
 
-            if(m_sceneState != SceneState::Play) // if switch
-                m_scene->onScenePlay();
-
-            m_sceneState = SceneState::Play;
+            m_scene->onScenePlay();
         }
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_PAUSE))
         {
-            m_sceneState = SceneState::Pause;
+            m_scene->onScenePause();
         }
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_STOP))
         {
-            if(m_sceneState != SceneState::Editor) // if switch
-                m_scene->onSceneStop();
+            m_scene->onSceneStop();
 
             switchCurrentScene(m_editorScene);
-
-            m_sceneState = SceneState::Editor;
         }
     }
     ImGui::End();
@@ -388,6 +382,7 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
             ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
             ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
+            ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
             ImGui::EndMenu();
         }
 
