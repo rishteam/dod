@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Scene/Scene.h>
+//#include <Rish/Scene/Component.h>
 
 #include <entt/entt.hpp>
 
@@ -21,8 +22,7 @@ public:
 	template<typename T, typename... Args>
 	T& addComponent(Args&&... args)
 	{
-		RL_CORE_ASSERT(!hasComponent<T>(), "Entity already has component!");
-		return m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+		return m_scene->m_registry.emplace_or_replace<T>(m_entityHandle, std::forward<Args>(args)...);
 	}
 
 	template<typename T>
@@ -52,6 +52,8 @@ public:
 		m_scene = nullptr;
 	}
 
+	UUID getUUID() { return getComponent<TagComponent>().id; }
+
 	operator bool() const
 	{
 	    // if the handle is null then false
@@ -59,6 +61,7 @@ public:
 	    return !(m_entityHandle == entt::null) && m_scene->m_registry.valid(m_entityHandle);
 	}
 	operator uint32_t() const { return (uint32_t)m_entityHandle; }
+	operator entt::entity() const { return m_entityHandle; }
 
 	entt::entity getEntityID() const { return m_entityHandle; }
 

@@ -44,6 +44,8 @@ Entity Scene::createEntity(const std::string& name)
 	}
 	entityNumber++;
 
+    m_entNameToNumMap[tag]++;
+
 	RL_CORE_TRACE("[Scene] Created entity {}", tag);
 	return entity;
 }
@@ -62,6 +64,8 @@ Entity Scene::createEntity(const UUID &id, const std::string &name)
         tag = name;
     entityNumber++;
 
+    m_entNameToNumMap[tag]++;
+
     RL_CORE_TRACE("[Scene] Created entity {} by id {}", tag, id.to_string());
     return entity;
 }
@@ -69,6 +73,29 @@ Entity Scene::createEntity(const UUID &id, const std::string &name)
 void Scene::destroyEntity(const Entity &entity)
 {
     m_registry.destroy(entity.getEntityID());
+}
+
+template<typename T>
+void CopyComponentToEntityIfExists(Entity dst, Entity src)
+{
+    if(src.hasComponent<T>())
+    {
+        auto &dstComponent = dst.addComponent<T>();
+        dstComponent = src.getComponent<T>();
+    }
+}
+
+Entity Scene::duplicateEntity(Entity src)
+{
+    auto &tag = src.getComponent<TagComponent>().tag;
+    m_entNameToNumMap[tag]++;
+    auto ent = createEntity(fmt::format("{} ({})", tag, m_entNameToNumMap[tag]));
+
+    CopyComponentToEntityIfExists<TransformComponent>(ent, src);
+    CopyComponentToEntityIfExists<RenderComponent>(ent, src);
+    CopyComponentToEntityIfExists<CameraComponent>(ent, src);
+    CopyComponentToEntityIfExists<NativeScriptComponent>(ent, src);
+    CopyComponentToEntityIfExists<RigidBody2DComponent>(ent, src);
 }
 
 void Scene::onUpdate(Time dt)
@@ -262,6 +289,9 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap);
+    // Copy other states
+    target->m_entNameToNumMap = m_entNameToNumMap;
+    target->mapPhysics_obj = mapPhysics_obj;
 }
 
 void Scene::onImGuiRender()

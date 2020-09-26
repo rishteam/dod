@@ -40,6 +40,12 @@ void SceneHierarchyPanel::onImGuiRender()
                 e.destroy();
             resetSelected();
         }
+        if (isSelected() && ImGui::MenuItem("Duplicate Entity")) {
+            for(auto &ent : getSelectedEntities()) {
+                m_currentScene->duplicateEntity(ent);
+            }
+            resetSelected();
+        }
         ImGui::EndPopup();
     }
     ImGui::EndChild();
