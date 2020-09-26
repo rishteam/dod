@@ -45,8 +45,10 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
         //
         auto &transform = m_targetEntity.getComponent<TransformComponent>();
         ImGui::DragFloat3("Translate", glm::value_ptr(transform.translate), 0.01f);
-        ImGui::Separator();
         ImGui::DragFloat2("Scale", glm::value_ptr(transform.scale), 0.01f);
+        ImGui::DragFloat("Rotation", &transform.rotate, 0.1f);
+        ImGui::SameLine();
+        ImGui::HelpMarker("In degrees");
     }
     EndDrawEditComponent();
 }
@@ -182,25 +184,26 @@ void ComponentEditPanel::onImGuiRender()
     m_componentSelectionPanel.setTarget(m_targetEntity);
 
     ImGui::BeginChild("EntityComponentEdit");
-    // TODO: Make this into dispatcher
-    //
-    drawEditComponentWidget<TagComponent>();
-    drawEditComponentWidget<TransformComponent>();
-    drawEditComponentWidget<RenderComponent>();
-    drawEditComponentWidget<CameraComponent>();
-    drawEditComponentWidget<NativeScriptComponent>();
-
-    // Popup
-    if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
     {
-        ImGui::OpenPopup("ComponentSelectionPanel");
-    }
-    if(ImGui::BeginPopup("ComponentSelectionPanel"))
-    {
-        m_componentSelectionPanel.onImGuiRender();
-        ImGui::EndPopup();
-    }
+        // TODO: Make this into dispatcher
+        //
+        drawEditComponentWidget<TagComponent>();
+        drawEditComponentWidget<TransformComponent>();
+        drawEditComponentWidget<RenderComponent>();
+        drawEditComponentWidget<CameraComponent>();
+        drawEditComponentWidget<NativeScriptComponent>();
 
+        // Popup
+        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+        {
+            ImGui::OpenPopup("ComponentSelectionPanel");
+        }
+        if(ImGui::BeginPopup("ComponentSelectionPanel"))
+        {
+            m_componentSelectionPanel.onImGuiRender();
+            ImGui::EndPopup();
+        }
+    }
     ImGui::EndChild();
     ImGui::End();
 }

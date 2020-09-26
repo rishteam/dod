@@ -85,8 +85,9 @@ private:
  */
 struct TransformComponent
 {
-    glm::vec3 translate {0.0f, 0.0f, 0.0f};
-	glm::vec3 scale {1.f, 1.f, 1.f};
+    glm::vec3 translate {0.0f, 0.0f, 0.0f};  ///< Translation
+	glm::vec3 scale {1.f, 1.f, 1.f};         ///< Scale in three axis
+	float rotate = 0.f;                                 ///< Rotation in degrees
 
 	TransformComponent() = default;
 
@@ -95,9 +96,11 @@ private:
 	template <class Archive>
 	void serialize(Archive &ar)
 	{
-		ar( cereal::make_nvp("Translate", translate),
-			cereal::make_nvp("Scale", scale)
-		);
+	    ar(
+            CEREAL_NVP(translate),
+            CEREAL_NVP(scale),
+            CEREAL_NVP(rotate)
+        );
 	}
 };
 

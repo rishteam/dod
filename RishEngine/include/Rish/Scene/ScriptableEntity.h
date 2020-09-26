@@ -33,7 +33,7 @@ private:
 struct NativeScriptComponent
 {
     ScriptableEntity *instance = nullptr;
-    std::string scriptName="DefaultScript";
+    std::string scriptName     = "DefaultScript";
 
     using NewFunc    = ScriptableEntity* (*)();
     using DeleteFunc = void (*)(NativeScriptComponent*);

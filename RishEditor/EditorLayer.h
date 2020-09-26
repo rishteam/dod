@@ -26,10 +26,6 @@ public:
 private:
     void onImGuiMainMenuRender();
 
-    // Debug
-    Entity debugEntity;
-    Entity physicsTest;
-
     //////////////////////////////////////////
     // Editor Layer
     //////////////////////////////////////////

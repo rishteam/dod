@@ -8,6 +8,21 @@
 
 namespace rl {
 
+Ref<Texture2D> s_cameraIcon;
+void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene)
+{
+    auto view = scene->m_registry.view<CameraComponent>();
+    for(auto entity : view)
+    {
+        Entity ent{entity, scene.get()};
+        auto &transform = ent.getComponent<TransformComponent>();
+
+        if(m_debugShowIcon)
+            Renderer2D::DrawQuad(transform.translate, {0.2f, 0.2f}, s_cameraIcon);
+        Renderer2D::DrawRect(transform.translate, transform.scale);
+    }
+}
+
 EditController::EditController()
 {
 }
@@ -19,7 +34,7 @@ void EditController::onAttach(const Ref<Scene> &scene)
         Application::Get().getWindow().getAspectRatio());
     m_editorGrid.onAttach(m_cameraController);
 
-    // TODO: Load icons
+    s_cameraIcon = Texture2D::LoadTextureVFS("/icon/cameraIcon.png");
 }
 
 void EditController::onDetach()
@@ -49,27 +64,29 @@ void EditController::onUpdate(Time dt)
         }
 
         if(render.m_texture)
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        }
         else
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        }
     }
 
     // Draw special entities
-    // TODO: Refactor this
-
-    auto view = scene->m_registry.view<CameraComponent>();
-    for(auto entity : view)
-    {
-        Entity ent{entity, scene.get()};
-        auto &transform = ent.getComponent<TransformComponent>();
-
-        Renderer2D::DrawRect(transform.translate, transform.scale);
-    }
+    drawCameraIconAndBorder(scene);
 
     if(isSelected())
     {
         auto ent = getTarget();
         auto &transform = ent.getComponent<TransformComponent>();
+        // TODO: Make bounding box
         // Draw Border
         Renderer2D::DrawRect(transform.translate, transform.scale);
     }
