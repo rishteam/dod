@@ -111,7 +111,7 @@ add_library(RishEngine
 
     src/ImGui.cpp
     src/Math/AABB.cpp
-)
+        src/Math/BoundingBox.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
