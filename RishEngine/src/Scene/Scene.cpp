@@ -107,9 +107,19 @@ void Scene::onUpdate(Time dt)
         auto &render = ent.getComponent<RenderComponent>();
 
         if(render.m_texture)
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        }
         else
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        }
     }
     Renderer2D::EndScene();
 }

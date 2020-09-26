@@ -64,9 +64,19 @@ void EditController::onUpdate(Time dt)
         }
 
         if(render.m_texture)
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        }
         else
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        }
     }
 
     // Draw special entities
@@ -76,6 +86,7 @@ void EditController::onUpdate(Time dt)
     {
         auto ent = getTarget();
         auto &transform = ent.getComponent<TransformComponent>();
+        // TODO: Make bounding box
         // Draw Border
         Renderer2D::DrawRect(transform.translate, transform.scale);
     }

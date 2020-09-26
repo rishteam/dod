@@ -43,14 +43,6 @@ EditorLayer::EditorLayer()
 class CameraController : public ScriptableEntity
 {
 public:
-    void onCreate() override
-    {
-        RL_INFO("onCreate()");
-    }
-    void onDestroy() override
-    {
-        RL_INFO("onDestroy()");
-    }
     void onUpdate(Time dt) override
     {
         auto &trans = getComponent<TransformComponent>().translate;
@@ -69,6 +61,17 @@ public:
     }
 };
 
+class SpriteRoatate : public ScriptableEntity
+{
+public:
+    void onUpdate(Time dt) override
+    {
+        auto &trans = getComponent<TransformComponent>();
+        trans.rotate += 100.f * dt.asSeconds();
+        trans.rotate = std::fmod(trans.rotate, 360.f);
+    }
+};
+
 void EditorLayer::onAttach()
 {
     RL_CORE_INFO("[EditorLayer] onAttach");
@@ -81,9 +84,13 @@ void EditorLayer::onAttach()
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 
-    debugEntity = m_scene->createEntity("DebugCamera");
+    Entity debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+
+    debugEntity = m_scene->createEntity("DebugSprite");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 }
 
 void EditorLayer::onDetach()
@@ -162,8 +169,10 @@ void EditorLayer::onImGuiRender()
         m_sceneHierarchyPanel->addTarget(ent);
     }
 
+    // Update SceneHierarchyPanel
     m_sceneHierarchyPanel->onImGuiRender();
 
+    // When SceneHierarchyPanel selected one entity
     if (m_sceneHierarchyPanel->selectedSize() == 1 &&
         m_sceneHierarchyPanel->isSelected())
     {
@@ -223,12 +232,11 @@ void EditorLayer::onImGuiRender()
     {
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            // TODO: make sure switch scene affect the panels
             m_editorScene->copySceneTo(m_runtimeScene);
 
             switchCurrentScene(m_runtimeScene);
 
-            if(m_sceneState != SceneState::Play)
+            if(m_sceneState != SceneState::Play) // if switch
                 m_scene->onScenePlay();
 
             m_sceneState = SceneState::Play;
@@ -241,7 +249,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_STOP))
         {
-            if(m_sceneState != SceneState::Editor)
+            if(m_sceneState != SceneState::Editor) // if switch
                 m_scene->onSceneStop();
 
             switchCurrentScene(m_editorScene);
