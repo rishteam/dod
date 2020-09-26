@@ -8,6 +8,11 @@ float rl::PhysicsWorld::height;
 // world coordinate
 Vec2 rl::PhysicsWorld::m_center = Vec2(0, 0);
 
+rl::PhysicsWorld::PhysicsWorld(Vec2 gravity_)
+{
+    gravity = gravity_;
+}
+
 rl::PhysicsWorld::PhysicsWorld(Vec2 gravity_, float width_, float height_)
 {
     gravity = gravity_;

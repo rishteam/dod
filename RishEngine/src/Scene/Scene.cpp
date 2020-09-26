@@ -79,27 +79,75 @@ void Scene::onUpdate(Time dt)
         }
     });
 
-//    //check the trigger of collide
-//    auto group = m_registry.group<TransformComponent, BoxCollider2D>();
-//    for(auto entity : group)
+    //RigidBody2D Component
+    //add physics object to world
+    auto group1 = m_registry.view<TransformComponent, RigidBody2DComponent>();
+    for(auto entity : group1)
+    {
+        Entity ent{entity, this};
+        auto &UUID = ent.getComponent<TagComponent>().id;
+        auto &transform = ent.getComponent<TransformComponent>();
+        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
+
+        auto Physics_obj = MakeRef<RigidBody2D>(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
+        mapPhysics_obj[UUID] = Physics_obj;
+        PhysicsWorld.Add(Physics_obj);
+    }
+
+    PhysicsWorld.Step(dt);
+
+    //RigidBody2D Component
+    //update physics object to world
+    auto group2 = m_registry.view<TransformComponent, RigidBody2DComponent>();
+    for(auto entity : group1)
+    {
+        Entity ent{entity, this};
+        auto &UUID = ent.getComponent<TagComponent>().id;
+        auto &transform = ent.getComponent<TransformComponent>();
+        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
+        transform.translate.x = mapPhysics_obj[UUID]->position.x;
+        transform.translate.y = mapPhysics_obj[UUID]->position.y;
+        transform.scale.x = mapPhysics_obj[UUID]->wh.x;
+        transform.scale.y = mapPhysics_obj[UUID]->wh.y;
+    }
+
+
+//check the trigger of collide
+//    auto group2 = m_registry.group<TransformComponent, BoxCollider2DComponent>();
+//    for(auto entity : group2)
 //    {
+//        Entity ent{entity, this};
+//
+//        auto &transform = ent.getComponent<TransformComponent>();
+//        auto &box2D = ent.getComponent<BoxCollider2DComponent>();
+//
+//        box2D.x = transform.translate.x;
+//        box2D.y = transform.translate.y;
+//        box2D.w = transform.scale.x;
+//        box2D.h = transform.scale.y;
+//
+//
 //
 //    }
-//
+
 //    //Joint
 //    auto group2 = m_registry.group<TransformComponent, Joint>();
 //    for(auto entity : group)
 //    {
 //
 //    }
-//
-//
-//    //RigidBody2D Component
-//    auto group3 = m_registry.group<TransformComponent, RigidBody2D>();
-//    for(auto entity : group)
+
+//    auto group3 = m_registry.view<TransformComponent, RigidBody2DComponent>();
+//    for(auto entity : group1)
 //    {
+//        Entity ent{entity, this};
+//        auto &transform = ent.getComponent<TransformComponent>();
+//        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
 //
+//
+//        PhysicsWorld.Add(obj);
 //    }
+
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();

@@ -7,6 +7,9 @@
 #include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
 //
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/Component.h>
+
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
 
@@ -73,6 +76,12 @@ private:
 	entt::registry m_registry;
 
 	Entity createEntity(const UUID &id, const std::string &name);
+
+    ////////////////////////////////////////////////////////////////
+    // Physics
+    ////////////////////////////////////////////////////////////////
+    PhysicsWorld PhysicsWorld{Vec2(0.0f, -9.8f)};
+    std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysics_obj;
 
     ////////////////////////////////////////////////////////////////
 	// friend class

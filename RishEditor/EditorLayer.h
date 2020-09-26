@@ -28,6 +28,7 @@ private:
 
     // Debug
     Entity debugEntity;
+    Entity physicsTest;
 
     //////////////////////////////////////////
     // Editor Layer

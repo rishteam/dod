@@ -14,6 +14,8 @@ namespace rl {
 
 class RL_API PhysicsWorld {
 public:
+    PhysicsWorld(Vec2 gravity_);
+
     PhysicsWorld(Vec2 gravity_, float width_, float height_);
 
     void Add(const Ref<RigidBody2D> &body);

@@ -82,7 +82,10 @@ void EditorLayer::onAttach()
 
     debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+    //
+    physicsTest = m_scene->createEntity("PhysicsTest");
 }
 
 void EditorLayer::onDetach()
