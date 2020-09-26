@@ -3,6 +3,7 @@
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Math/AABB.h>
 #include <Rish/ImGui.h>
+#include <Rish/Effect/Particle/ParticleSystem.h>
 
 #include "EditController.h"
 
@@ -30,6 +31,8 @@ void EditController::onUpdate(Time dt)
     m_cameraController->setState(m_sceneWindowFocused);
     m_cameraController->onUpdate(dt);
     m_editorGrid.onUpdate();
+
+    ParticleSystem::render(getContext()->m_registry);
 
     auto transGroup = getContext()->m_registry.group<TransformComponent, RenderComponent>();
     for(auto entity: transGroup)

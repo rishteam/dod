@@ -88,6 +88,9 @@ add_library(RishEngine
     # Time
     src/Core/Time.cpp
 
+    # Effect
+    src/Effect/Particle/ParticleSystem.cpp
+
     # Renderer
     src/Renderer/Shader.cpp
     src/Renderer/VertexArray.cpp

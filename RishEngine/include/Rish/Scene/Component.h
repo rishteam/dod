@@ -9,6 +9,7 @@
 #include <Rish/Renderer/Texture2D.h>
 //
 #include <Rish/Scene/SceneCamera.h>
+#include <Rish/Core/Time.h>
 
 #include <cereal/cereal.hpp>
 
@@ -226,7 +227,7 @@ struct EmitData {
 // TODO move to other file?
 struct Particle {
 
-    uint32_t startlife;
+    uint32_t startLife;
 
     glm::vec2 pos;
 
@@ -256,7 +257,17 @@ struct Particle {
 
     bool draw = false;
 
+    // ID for static_vortex
+    int staticID;
+
     Particle() = default;
+
+    Particle(int ID) : staticID(ID){}
+
+    bool operator==(const Particle &rhs) const
+    {
+        return staticID == rhs.staticID;
+    }
 };
 
 struct ParticleComponent {
@@ -264,7 +275,7 @@ struct ParticleComponent {
     /**************** Particle Attribute *****************/
 
     // Emitter active
-    bool active = false;
+    bool active = true;
 
     // Determine particle pos range
     // disX = 100 -> emitter pos center +- 100 will generate particle
@@ -273,25 +284,25 @@ struct ParticleComponent {
     float disY = 0.f;
 
     // Particle restrain in the range of angle
-    glm::vec2 angleRange {0.f, 0.f};
+    glm::vec2 angleRange {80.f, 110.f};
 
     // The color when a particle generate
-    glm::vec4 startColor = {0.f, 0.f, 0.f, 0.f};
+    glm::vec4 startColor = {1.f, 0.3921568691730499f, 1.f, 1.f};
 
     // The color when a particle die
-    glm::vec4 endColor = {0.f, 0.f, 0.f, 0.f};
+    glm::vec4 endColor = {0.8235294222831726f, 0.8235294222831726f, 0.8235294222831726f, 0.f};
 
     // The speed when a particle generate
-    float startSpeed = 0.f;
+    float startSpeed = 1.f;
 
     // The speed when a particle die
-    float endSpeed = 0.f;
+    float endSpeed = 1.f;
 
     // The size when a particle generate
     float startSize = 0.f;
 
     // The size when a particle die
-    float endSize = 0.f;
+    float endSize = 1.f;
 
     // The speed that the particle texture rotate
     float rotateSpeed = 0.f;
@@ -301,13 +312,13 @@ struct ParticleComponent {
     int emissionRate = 0;
 
     // Least generate per frame
-    uint32_t emitNumber = 0;
+    uint32_t emitNumber = 3;
 
     // Offset of random
-    uint32_t emitVariance = 0;
+    uint32_t emitVariance = 2;
 
     // Particle life
-    uint32_t maxParticleLife = 0;
+    uint32_t maxParticleLife = 80;
 
     // Use to cal pool size
     uint32_t maxParticlesPerFrame = 0;
@@ -322,7 +333,7 @@ struct ParticleComponent {
     float life_store = -1;
 
     // Particle generate per sleep time
-    Time sleepTime;
+    float sleepTime = -1;
 
     // Timer that control emitter life and sleep time
     // Clock???
@@ -331,16 +342,16 @@ struct ParticleComponent {
 
     // Random control
     // XXRand -> XX random range
-    glm::vec2 startSpeedRand = {0.f, 0.f};
-    glm::vec2 endSpeedRand = {0.f, 0.f};
-    glm::vec2 startSizeRand = {0.f, 0.f};
-    glm::vec2 endSizeRand = {0.f, 0.f};
-    glm::vec2 rotSpeedRand = {0.f, 0.f};
-    glm::vec2 emitVarianceRand = {0.f, 0.f};
-    glm::vec2 lifeRand = {0.f, 0.f};
+    glm::vec2 startSpeedRand = {0.f, 1.f};
+    glm::vec2 endSpeedRand = {0.f, 1.f};
+    glm::vec2 startSizeRand = {0.f, 1.f};
+    glm::vec2 endSizeRand = {1.f, 1.f};
+    glm::vec2 rotSpeedRand = {-1.f, 1.f};
+    glm::vec2 emitVarianceRand = {0.f, 1.f};
+    glm::vec2 lifeRand = {0.5f, 1.f};
 
     // When respawn particle, need to find first unusedParticle
-    int unusedParticle = 0;
+    int lastUnusedParticle = 0;
 
     // Particle texture
     std::shared_ptr<Texture2D> texture;
@@ -386,10 +397,10 @@ struct ParticleComponent {
     float vortexEndSpeed = 0.f;
 
     // Vortex Start Size
-    float vortexStartSize = 0.f;
+    float vortexStartSize = 20.f;
 
     // Vortex End SIze
-    float vortexEndSize = 0.f;
+    float vortexEndSize = 20.f;
 
     // When respawn vortex, find first unused vortex
     int lastUnusedVortex = 0;
@@ -398,20 +409,20 @@ struct ParticleComponent {
     int vortexEmissionRate = 0;
 
     // Least Vortex generate per frame
-    uint32_t vortexEmitNumber = 0;
+    uint32_t vortexEmitNumber = 1;
 
     // Vortex life
-    uint32_t vortexMaxParticleLife = 0;
+    uint32_t vortexMaxParticleLife = 100;
 
     // Vortex Pool size
     int vortexPoolSize = 0;
 
     // Random control
-    glm::vec2 vortexStartSpeedRand = { 0.f, 0.f};
-    glm::vec2 vortexEndSpeedRand = {0.f, 0.f};
-    glm::vec2 vortexLifeRand = {0.f, 0.f};
-    glm::vec2 vortexStartSizeRand = {0.f, 0.f};
-    glm::vec2 vortexEndSizeRand = {0.f, 0.f};
+    glm::vec2 vortexStartSpeedRand = { 0.f, 1.f};
+    glm::vec2 vortexEndSpeedRand = {0.f, 1.f};
+    glm::vec2 vortexLifeRand = {0.5f, 1.f};
+    glm::vec2 vortexStartSizeRand = {0.f, 1.f};
+    glm::vec2 vortexEndSizeRand = {1.f, 1.f};
 
     // The vel that effect particle;
     glm::vec2 vortexTurbulence = {0.f, 0.f};
@@ -419,9 +430,14 @@ struct ParticleComponent {
     float vortexSleepTime = 0;
     Clock vortexSleepTimer;
 
+    std::string texturePath = "assets/texture/1.png";
+    std::shared_ptr<Texture2D> vortexTexture;
 
-    std::shared_ptr<Texture2D> vortexTexture = std::make_shared<Texture2D>("assets/texture/1.png", false);
+    // TODO hotfix
+    bool loadTexure = true;
 
+    ParticleComponent() = default;
+    ParticleComponent(std::string texturePath) : texturePath(texturePath) {}
     ParticleComponent(std::shared_ptr<Texture2D> texture) : texture(texture){}
 };
 

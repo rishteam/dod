@@ -7,6 +7,8 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/ScriptableEntity.h>
 //
+#include "Rish/Effect/Particle/ParticleSystem.h"
+//
 #include <Rish/Utils/uuid.h>
 //
 #include <Rish/ImGui.h>
@@ -66,8 +68,7 @@ void Scene::onUpdate(Time dt)
     });
 
     // Particle System update
-
-    // Particle System render
+    ParticleSystem::onUpdate(m_registry, dt);
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
@@ -90,6 +91,9 @@ void Scene::onUpdate(Time dt)
 
     auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+
+    ParticleSystem::render(m_registry);
+
     for(auto entity : cameraGroup)
     {
         Entity ent{entity, this};
