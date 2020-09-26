@@ -7,6 +7,9 @@
 #include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
 //
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/Component.h>
+
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
 
@@ -47,6 +50,7 @@ public:
 	void onUpdate(Time dt);
 
 	void onScenePlay();
+	void onScenePause();
 	void onSceneStop();
 
 	void copySceneTo(Ref<Scene> &target);
@@ -55,8 +59,17 @@ public:
 
 	void onImGuiRender();
 
+    enum class SceneState
+    {
+        Editor = 0,
+        Play,
+        Pause
+    };
+	SceneState getSceneState() const { return m_sceneState; }
+
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
 	bool m_debugCamera = false;
+	bool m_debugPhysics = true;
 private:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
@@ -72,7 +85,15 @@ private:
 	static int entityNumber;
 	entt::registry m_registry;
 
+    SceneState m_sceneState = SceneState::Editor;
+
 	Entity createEntity(const UUID &id, const std::string &name);
+
+    ////////////////////////////////////////////////////////////////
+    // Physics
+    ////////////////////////////////////////////////////////////////
+    PhysicsWorld PhysicsWorld{Vec2(0.0f, -9.8f)};
+    std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysics_obj;
 
     ////////////////////////////////////////////////////////////////
 	// friend class
