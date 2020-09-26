@@ -30,14 +30,6 @@ private:
     // Editor Layer
     //////////////////////////////////////////
 
-    enum class SceneState
-    {
-        Editor = 0,
-        Play,
-        Pause
-    };
-    SceneState m_sceneState = SceneState::Editor;
-
     //////////////////////////////////////////
     // Scene
     //////////////////////////////////////////

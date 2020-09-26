@@ -79,6 +79,75 @@ void Scene::onUpdate(Time dt)
         }
     });
 
+    if(m_sceneState == SceneState::Play)
+        PhysicsWorld.Step(dt);
+
+    // RigidBody2D Component
+    // update physics object to world
+    auto group2 = m_registry.view<TransformComponent, RigidBody2DComponent>();
+    for(auto entity : group2)
+    {
+        Entity ent{entity, this};
+        auto &UUID = ent.getComponent<TagComponent>().id;
+        auto &transform = ent.getComponent<TransformComponent>();
+        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
+
+        if(mapPhysics_obj.count(UUID))
+        {
+            auto &phy = mapPhysics_obj[UUID];
+            // after physics calculate and update position
+            transform.translate.x = phy->position.x;
+            transform.translate.y = phy->position.y;
+            transform.scale.x = phy->wh.x;
+            transform.scale.y = phy->wh.y;
+            // update rigidbody2D component value
+            rigidbody2D.angularVelocity = phy->torque;
+            rigidbody2D.angle = phy->angle;
+            rigidbody2D.velocity = phy->velocity;
+            rigidbody2D.force = phy->force;
+            rigidbody2D.torque = phy->torque;
+            rigidbody2D.friction = phy->friction;
+        }
+    }
+
+
+//check the trigger of collide
+//    auto group2 = m_registry.group<TransformComponent, BoxCollider2DComponent>();
+//    for(auto entity : group2)
+//    {
+//        Entity ent{entity, this};
+//
+//        auto &transform = ent.getComponent<TransformComponent>();
+//        auto &box2D = ent.getComponent<BoxCollider2DComponent>();
+//
+//        box2D.x = transform.translate.x;
+//        box2D.y = transform.translate.y;
+//        box2D.w = transform.scale.x;
+//        box2D.h = transform.scale.y;
+//
+//
+//
+//    }
+
+//    //Joint
+//    auto group2 = m_registry.group<TransformComponent, Joint>();
+//    for(auto entity : group)
+//    {
+//
+//    }
+
+//    auto group3 = m_registry.view<TransformComponent, RigidBody2DComponent>();
+//    for(auto entity : group1)
+//    {
+//        Entity ent{entity, this};
+//        auto &transform = ent.getComponent<TransformComponent>();
+//        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
+//
+//
+//        PhysicsWorld.Add(obj);
+//    }
+
+
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
@@ -126,6 +195,7 @@ void Scene::onUpdate(Time dt)
 
 void Scene::onScenePlay()
 {
+    m_sceneState = SceneState::Play;
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
         if (!nsc.instance) {
@@ -134,14 +204,43 @@ void Scene::onScenePlay()
             nsc.instance->onCreate();
         }
     });
+
+    // RigidBody2D Component
+    // add physics object to world
+    auto group = m_registry.view<TransformComponent, RigidBody2DComponent>();
+    for(auto entity : group)
+    {
+        Entity ent{entity, this};
+        auto &UUID = ent.getComponent<TagComponent>().id;
+        auto &transform = ent.getComponent<TransformComponent>();
+        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
+
+        //if the UUID exist, append new physics obj
+        if(!mapPhysics_obj.count(UUID))
+        {
+            auto physicsObj = MakeRef<RigidBody2D>(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
+            mapPhysics_obj[UUID] = physicsObj;
+            PhysicsWorld.Add(physicsObj);
+        }
+    }
+}
+
+void Scene::onScenePause()
+{
+    m_sceneState = SceneState::Pause;
 }
 
 void Scene::onSceneStop()
 {
+    m_sceneState = SceneState::Editor;
+
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
         nsc.deleteScript(&nsc);
     });
+
+    PhysicsWorld.Clear();
+    mapPhysics_obj.clear();
 }
 
 void Scene::copySceneTo(Ref<Scene> &target)
@@ -162,6 +261,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap);
 }
 
 void Scene::onImGuiRender()
@@ -200,6 +300,20 @@ void Scene::onImGuiRender()
         ImGui::Text("Size = %.2f", m_mainCamera.m_orthoSize);
         ImGui::Text("Near = %.2f, Far = %.2f", m_mainCamera.m_orthoNear, m_mainCamera.m_orthoFar);
         ImGui::Text("Aspect = %.2f", m_mainCamera.m_aspect);
+        ImGui::End();
+    }
+
+    if(m_debugPhysics)
+    {
+        ImGui::Begin("Physics");
+        for(auto && [uuid, body] : mapPhysics_obj)
+        {
+            if(ImGui::TreeNode(uuid.to_string().c_str()))
+            {
+                ImGui::Text("%.f %.f %.f %.f", body->position.x, body->position.y, body->wh.x, body->wh.y);
+                ImGui::TreePop();
+            }
+        }
         ImGui::End();
     }
 }

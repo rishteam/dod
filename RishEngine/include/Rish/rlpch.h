@@ -14,6 +14,9 @@
 #include <functional>
 #include <chrono>
 #include <typeinfo>
+#include <cfloat>
+#include <cassert>
+#include <limits>
 
 #include <string>
 #include <sstream>

@@ -2,6 +2,11 @@
 
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/RigidBody2D.h>
+
+
+using namespace rl;
 
 class ExampleSandboxLayer : public rl::Layer
 {
@@ -15,5 +20,8 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
-
+    float x,y,w,h,m;
+    Ref<Scene> m_scene;
+    Ref<PhysicsWorld> m_world;
+    OrthographicCameraController m_cameraController;
 };
