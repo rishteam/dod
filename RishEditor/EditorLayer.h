@@ -26,9 +26,6 @@ public:
 private:
     void onImGuiMainMenuRender();
 
-    // Debug
-    Entity debugEntity;
-
     //////////////////////////////////////////
     // Editor Layer
     //////////////////////////////////////////

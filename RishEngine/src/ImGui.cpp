@@ -106,6 +106,31 @@ void ImGui::EndDockspace()
     ImGui::End();
 }
 
+bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::string> &v, int popup_max_height_in_items)
+{
+    // TODO: preformance?
+    const char* *strList = new const char*[v.size()];
+    //
+    for(int i = 0; i < v.size(); i++)
+        strList[i] = v[i].c_str();
+    bool res = Combo(label, current_item, strList, v.size(), popup_max_height_in_items);
+    delete [] strList;
+    return res;
+}
+
+void ImGui::HelpMarker(const char *desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
 ImVec2 operator+(const ImVec2 &lhs, const ImVec2 &rhs)
 {
     return ImVec2{lhs.x+rhs.x, lhs.y+rhs.y};

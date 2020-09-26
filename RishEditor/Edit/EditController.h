@@ -45,10 +45,16 @@ private:
 
     bool m_sceneWindowFocused = false; ///< Is Scene window focused?
     bool m_sceneWindowHovered = false; ///< Is Scene window hovered?
+
+    // Helper functions
+    void drawCameraIconAndBorder(const Ref<Scene> &scene);
+
 public:
-    bool m_debugEditorGrid = false;
+    bool m_debugEditorGrid       = false;
     bool m_debugCameraController = false;
     bool m_debugEditorController = false;
+    bool m_debugShowIcon         = true;
+
 };
 
 } // end of namespace rl
