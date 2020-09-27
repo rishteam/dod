@@ -88,13 +88,16 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-    debugEntity = m_scene->createEntity("DebugSprite");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//    debugEntity = m_scene->createEntity("DebugSprite");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_scene->createEntity("PhysicsTest");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
+//    debugEntity = m_scene->createEntity("PhysicsTest");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<RigidBody2DComponent>();
+
+    debugEntity = m_scene->createEntity("ParticleTest");
+    debugEntity.addComponent<ParticleComponent>();
 }
 
 void EditorLayer::onDetach()

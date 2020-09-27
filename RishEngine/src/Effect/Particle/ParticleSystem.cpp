@@ -8,7 +8,6 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
     RL_CORE_TRACE("ParticleSystem onUpdate");
 
     auto view = registry.view<TransformComponent, ParticleComponent>();
-
     for(auto entity : view)
     {
         auto &emitter   = registry.get<ParticleComponent>(entity);
@@ -35,7 +34,14 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
                 emitter.lastUnusedVortex = 0;
             }
         }
-        //
+
+        // TODO: remove me
+        if(emitter.loadTexure)
+        {
+            emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
+            emitter.loadTexure = false;
+        }
+
 
         if (emitter.active)
         {
@@ -93,6 +99,7 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
                 emitter.sleepTimer.restart();
             }
         }
+
         // if emitter still has life
         // for ImGui change
         // TODO Move to other place
@@ -111,6 +118,7 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
                 emitter.lifeTimer.restart();
             }
         }
+
         // Update Dynamic vortex
         if(emitter.vortexType == DYNAMIC_VORTEX && emitter.vortexSensitive)
         {
@@ -132,6 +140,7 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
                 }
             }
         }
+
         // Update particles
         for(int i = 0 ; i < emitter.poolSize ; i++)
         {
@@ -210,7 +219,7 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
     }
 }
 
-void ParticleSystem::render(entt::registry &registry)
+void ParticleSystem::onRender(entt::registry &registry)
 {
     auto view = registry.view<TransformComponent, ParticleComponent>();
 
@@ -218,12 +227,6 @@ void ParticleSystem::render(entt::registry &registry)
     {
         auto &transform = registry.get<TransformComponent>(entity);
         auto &emitter   = registry.get<ParticleComponent>(entity);
-
-        if(emitter.loadTexure)
-        {
-            emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
-            emitter.loadTexure = false;
-        }
 
         for(auto &particle: emitter.particles)
         {
@@ -258,10 +261,7 @@ void ParticleSystem::render(entt::registry &registry)
                 }
             }
         }
-
-
     }
-
 }
 
 float ParticleSystem::randomFloat(float min, float max)
@@ -305,8 +305,8 @@ void ParticleSystem::respawnParticle(ParticleComponent &emitter, TransformCompon
     float startSpeed         = emitter.startSpeed * randomFloat(emitter.startSpeedRand.x, emitter.startSpeedRand.y);
     float endSpeed           = emitter.endSpeed   * randomFloat(emitter.endSpeedRand.x, emitter.endSpeedRand.y);
     float randAngle          = randomFloat(emitter.angleRange.x, emitter.angleRange.y);
-    float randStartSize      = emitter.startSize * randomFloat(emitter.startSizeRand.x, emitter.startSizeRand.y);
-    float randEndSize        = emitter.endSize   * randomFloat(emitter.endSizeRand.x, emitter.endSizeRand.y);
+    float randStartSize      = emitter.startSize  * randomFloat(emitter.startSizeRand.x, emitter.startSizeRand.y);
+    float randEndSize        = emitter.endSize    * randomFloat(emitter.endSizeRand.x, emitter.endSizeRand.y);
     float randRadius         = randomFloat(randStartSize, randEndSize/2);
     float randLife           = emitter.maxParticleLife * randomFloat(emitter.lifeRand.x, emitter.lifeRand.y);
     float randRotateSpeed    = emitter.rotateSpeed * randomFloat(emitter.rotSpeedRand.x, emitter.rotSpeedRand.y);
@@ -394,6 +394,3 @@ glm::vec4 ParticleSystem::RGBAInterpolation(glm::vec4 startColor, float timestep
 }
 
 }
-
-
-

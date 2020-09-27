@@ -171,12 +171,9 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
 template<>
 void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 {
-    if(!m_targetEntity.hasComponent<ParticleComponent>()) return;
-
-    if(ImGui::CollapsingHeader("ParticleComponent", ImGuiTreeNodeFlags_DefaultOpen)){
-
-        if(drawEditComponentRightClickMenu<ParticleComponent>())
-            return ;
+    BeginDrawEditComponent(ParticleComponent);
+    {
+        DrawRightClickMenu(ParticleComponent, false);
 
         auto &transform = m_targetEntity.getComponent<TransformComponent>();
         auto &emitter   = m_targetEntity.getComponent<ParticleComponent>();
@@ -186,9 +183,13 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
             std::string tpath;
             if(ImGui::Button("Select"))
             {
-                if(FileDialog::SelectSingleFile(nullptr, nullptr, tpath));
-                emitter.texturePath = tpath;
-                emitter.texture     = Texture2D::LoadTextureVFS(emitter.texturePath);
+                if(FileDialog::SelectSingleFile(nullptr, nullptr, tpath))
+                {
+                    emitter.texturePath = tpath;
+                    emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
+                    // TODO: remove me
+                    emitter.loadTexure = false;
+                }
             }
 
             ImGui::SameLine();
@@ -399,7 +400,7 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 
         }
     }
-
+    EndDrawEditComponent();
 }
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)

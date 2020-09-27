@@ -178,7 +178,8 @@ void Scene::onUpdate(Time dt)
 
 
     // Particle System update
-    ParticleSystem::onUpdate(m_registry, dt);
+    if(m_sceneState == SceneState::Play)
+        ParticleSystem::onUpdate(m_registry, dt);
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
@@ -202,8 +203,9 @@ void Scene::onUpdate(Time dt)
     auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
 
-    ParticleSystem::render(m_registry);
+    ParticleSystem::onRender(m_registry);
 
+    // Draw RenderComponent
     for(auto entity : cameraGroup)
     {
         Entity ent{entity, this};
@@ -225,6 +227,7 @@ void Scene::onUpdate(Time dt)
                 Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
         }
     }
+
     Renderer2D::EndScene();
 }
 
@@ -296,6 +299,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap);
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap);
     // Copy other states
     target->m_entNameToNumMap = m_entNameToNumMap;
