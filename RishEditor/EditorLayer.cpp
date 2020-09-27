@@ -9,6 +9,7 @@
 #include <Rish/Scene/ScriptableEntity.h>
 
 #include <Rish/ImGui.h>
+#include <imgui_internal.h>
 
 #include "EditorLayer.h"
 
@@ -19,12 +20,15 @@ EditorLayer::EditorLayer()
 {
 	VFS::Mount("shader", "assets/editor/shader");
 	VFS::Mount("texture", "assets/editor/texture");
+    VFS::Mount("icon", "assets/editor/icon");
 
     ImGui::LoadIniSettingsFromDisk("RishEditor/imgui.ini");
 
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
-    m_scene = MakeRef<Scene>();
+    m_editorScene = MakeRef<Scene>();
+    m_scene = m_editorScene;
+    m_runtimeScene = MakeRef<Scene>();
     //
     m_editController = MakeRef<EditController>();
     m_panelList.push_back(m_editController);
@@ -39,14 +43,6 @@ EditorLayer::EditorLayer()
 class CameraController : public ScriptableEntity
 {
 public:
-    void onCreate() override
-    {
-        RL_INFO("onCreate()");
-    }
-    void onDestroy() override
-    {
-        RL_INFO("onDestroy()");
-    }
     void onUpdate(Time dt) override
     {
         auto &trans = getComponent<TransformComponent>().translate;
@@ -65,6 +61,17 @@ public:
     }
 };
 
+class SpriteRoatate : public ScriptableEntity
+{
+public:
+    void onUpdate(Time dt) override
+    {
+        auto &trans = getComponent<TransformComponent>();
+        trans.rotate += 100.f * dt.asSeconds();
+        trans.rotate = std::fmod(trans.rotate, 360.f);
+    }
+};
+
 void EditorLayer::onAttach()
 {
     RL_CORE_INFO("[EditorLayer] onAttach");
@@ -77,9 +84,17 @@ void EditorLayer::onAttach()
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 
-    debugEntity = m_scene->createEntity();
+    Entity debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+
+    debugEntity = m_scene->createEntity("DebugSprite");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+
+    debugEntity = m_scene->createEntity("PhysicsTest");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
 }
 
 void EditorLayer::onDetach()
@@ -94,6 +109,21 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
+    switch(m_scene->getSceneState())
+    {
+        case Scene::SceneState::Editor:
+
+        break;
+
+        case Scene::SceneState::Play:
+
+        break;
+
+        case Scene::SceneState::Pause:
+
+        break;
+    }
+    //
     auto cameraController = m_editController->getCameraController();
 
     // Resize the framebuffer if user resize the viewport
@@ -102,7 +132,8 @@ void EditorLayer::onUpdate(Time dt)
     if(m_sceneViewportPanelSize != framebufferSize &&
         m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
     {
-        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x, (uint32_t)m_sceneViewportPanelSize.y);
+        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x,
+                                    (uint32_t)m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
     // TODO: Rendering Queue
@@ -134,6 +165,7 @@ void EditorLayer::onImGuiRender()
     // Menu Bar
     onImGuiMainMenuRender();
 
+    // Select from editor
     if(m_editController->isSelected())
     {
         auto ent = m_editController->getTarget();
@@ -141,8 +173,10 @@ void EditorLayer::onImGuiRender()
         m_sceneHierarchyPanel->addTarget(ent);
     }
 
+    // Update SceneHierarchyPanel
     m_sceneHierarchyPanel->onImGuiRender();
 
+    // When SceneHierarchyPanel selected one entity
     if (m_sceneHierarchyPanel->selectedSize() == 1 &&
         m_sceneHierarchyPanel->isSelected())
     {
@@ -200,13 +234,26 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
     {
-        // TODO: item width??
-        float buttonWidth = 100.f;
-        ImGui::PushItemWidth(buttonWidth);
-        ImGui::Button(ICON_FA_PLAY);
+        if(ImGui::Button(ICON_FA_PLAY))
+        {
+            m_editorScene->copySceneTo(m_runtimeScene);
+
+            switchCurrentScene(m_runtimeScene);
+
+            m_scene->onScenePlay();
+        }
         ImGui::SameLine();
-        ImGui::Button(ICON_FA_PAUSE);
-        ImGui::PopItemWidth();
+        if(ImGui::Button(ICON_FA_PAUSE))
+        {
+            m_scene->onScenePause();
+        }
+        ImGui::SameLine();
+        if(ImGui::Button(ICON_FA_STOP))
+        {
+            m_scene->onSceneStop();
+
+            switchCurrentScene(m_editorScene);
+        }
     }
     ImGui::End();
 
@@ -273,8 +320,7 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    for(auto & panel : m_panelList)
-                        panel->setContext(m_scene);
+                    setContextToPanels(m_scene);
                 }
                 else
                 {
@@ -335,6 +381,8 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
             ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
             ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
+            ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
+            ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
             ImGui::EndMenu();
         }
 
@@ -345,6 +393,23 @@ void EditorLayer::onImGuiMainMenuRender()
 void EditorLayer::onEvent(rl::Event& e)
 {
     m_editController->onEvent(e);
+}
+
+void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
+{
+    for(auto & panel : m_panelList)
+        panel->setContext(scene);
+}
+
+void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
+{
+    m_scene = scene;
+    setContextToPanels(scene);
+
+    // Reset Editor Panel target
+    m_editController->resetTarget();
+    m_sceneHierarchyPanel->resetTarget();
+    m_componentEditPanel->resetTarget();
 }
 
 }

@@ -28,7 +28,7 @@ public:
     void drawEditComponentWidget() { RL_CORE_ASSERT(false, "Not supported class"); }
 
     template<typename T>
-    bool drawEditComponentrightClickMenu(bool disableDelete=false)
+    bool drawEditComponentRightClickMenu(bool disableDelete=false)
     {
         bool res = false;
         if(ImGui::BeginPopupContextItem()) // Right-click menu

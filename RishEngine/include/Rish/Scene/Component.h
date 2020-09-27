@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/VFS.h>
+#include <Rish/Core/Time.h>
 //
 #include <Rish/Renderer/Buffer.h>
 #include <Rish/Renderer/VertexArray.h>
@@ -9,7 +10,8 @@
 #include <Rish/Renderer/Texture2D.h>
 //
 #include <Rish/Scene/SceneCamera.h>
-#include <Rish/Core/Time.h>
+//
+#include <Rish/Utils/uuid.h>
 
 #include <cereal/cereal.hpp>
 
@@ -64,7 +66,7 @@ namespace rl {
 struct TagComponent
 {
 	std::string tag{};
-	std::string id{};
+	UUID id{};
 
 	TagComponent() = default;
 	TagComponent(const std::string& t) : tag(t) {}
@@ -84,8 +86,9 @@ private:
  */
 struct TransformComponent
 {
-    glm::vec3 translate {0.0f, 0.0f, 0.0f};
-	glm::vec3 scale {1.f, 1.f, 1.f};
+    glm::vec3 translate {0.0f, 0.0f, 0.0f};  ///< Translation
+	glm::vec3 scale {1.f, 1.f, 1.f};         ///< Scale in three axis
+	float rotate = 0.f;                                 ///< Rotation in degrees
 
 	TransformComponent() = default;
 
@@ -94,9 +97,11 @@ private:
 	template <class Archive>
 	void serialize(Archive &ar)
 	{
-		ar( cereal::make_nvp("Translate", translate),
-			cereal::make_nvp("Scale", scale)
-		);
+	    ar(
+            CEREAL_NVP(translate),
+            CEREAL_NVP(scale),
+            CEREAL_NVP(rotate)
+        );
 	}
 };
 
@@ -105,6 +110,7 @@ private:
  */
 struct RenderComponent
 {
+    // TODO: delete these
 	std::string vertPath = "/shader/vertexSrc.glsl";
 	std::string fragPath = "/shader/fragSrc.glsl";
 	std::shared_ptr<rl::Shader> m_shader;

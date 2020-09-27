@@ -1,13 +1,32 @@
 #include <Rish/Core/Application.h>
 #include <Rish/Core/Time.h>
+//
 #include <Rish/Renderer/Renderer2D.h>
+//
 #include <Rish/Math/AABB.h>
+#include <Rish/Math/BoundingBox.h>
+//
 #include <Rish/ImGui.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 
 #include "EditController.h"
 
 namespace rl {
+
+Ref<Texture2D> s_cameraIcon;
+void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene)
+{
+    auto view = scene->m_registry.view<CameraComponent>();
+    for(auto entity : view)
+    {
+        Entity ent{entity, scene.get()};
+        auto &transform = ent.getComponent<TransformComponent>();
+
+        if(m_debugShowIcon)
+            Renderer2D::DrawQuad(transform.translate, {0.2f, 0.2f}, s_cameraIcon);
+        Renderer2D::DrawRect(transform.translate, transform.scale);
+    }
+}
 
 EditController::EditController()
 {
@@ -19,6 +38,8 @@ void EditController::onAttach(const Ref<Scene> &scene)
     m_cameraController = MakeRef<OrthographicCameraController>(
         Application::Get().getWindow().getAspectRatio());
     m_editorGrid.onAttach(m_cameraController);
+
+    s_cameraIcon = Texture2D::LoadTextureVFS("/icon/cameraIcon.png");
 }
 
 void EditController::onDetach()
@@ -34,7 +55,8 @@ void EditController::onUpdate(Time dt)
 
     ParticleSystem::render(getContext()->m_registry);
 
-    auto transGroup = getContext()->m_registry.group<TransformComponent, RenderComponent>();
+    auto scene = getContext();
+    auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
     for(auto entity: transGroup)
     {
         auto &transform = transGroup.get<TransformComponent>(entity);
@@ -49,16 +71,32 @@ void EditController::onUpdate(Time dt)
         }
 
         if(render.m_texture)
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+        }
         else
-            Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        {
+            if(transform.rotate != 0.f)
+                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color, transform.rotate);
+            else
+                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+        }
     }
+
+    // Draw special entities
+    drawCameraIconAndBorder(scene);
+
     if(isSelected())
     {
         auto ent = getTarget();
         auto &transform = ent.getComponent<TransformComponent>();
+        // Get bounding box
+        auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
         // Draw Border
-        Renderer2D::DrawRect(transform.translate, transform.scale);
+        Renderer2D::DrawRect(bound.getPosition(), bound.getScale());
     }
 }
 

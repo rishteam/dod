@@ -31,5 +31,19 @@ std::string generate_uuid_v4()
     return ss.str();
 }
 
+} // end of namespace uuid
+
+UUID::UUID()
+    : m_UUID(uuid::generate_uuid_v4())
+{
+
 }
+
+} // end of namespace rl
+
+namespace std {
+
+//template<>
+//struct hash<rl::uuid::
+
 }

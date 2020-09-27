@@ -33,7 +33,7 @@ void ParticleSystem::onUpdate(rl::Time dt)
 
 void ParticleSystem::onRender(rl::OrthographicCamera &camera)
 {
-    rl::Renderer2D::BeginScene(camera, nullptr);
+    rl::Renderer2D::BeginScene(camera, true);
     for(auto &p : m_pool)
     {
         if(!p.active) continue;

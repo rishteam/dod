@@ -7,6 +7,9 @@
 #include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
 //
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/Component.h>
+
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
 
@@ -35,9 +38,16 @@ public:
 
 	/**
 	 * @brief Destroy a Entity object
-	 * @param entity Entity
+	 * @param entity Target
 	 */
 	void destroyEntity(const Entity& entity);
+
+	/**
+	 * @brief Duplicate a Entity
+	 * @param src Target
+	 * @return Duplicate entity
+	 */
+	Entity duplicateEntity(Entity src);
 
 	/**
 	 * @brief Update Entity behavior
@@ -46,13 +56,26 @@ public:
 	 */
 	void onUpdate(Time dt);
 
+	void onScenePlay();
+	void onScenePause();
+	void onSceneStop();
+
+	void copySceneTo(Ref<Scene> &target);
+
 	void onViewportResize(uint32_t width, uint32_t height);
 
 	void onImGuiRender();
 
+    enum class SceneState
+    {
+        Editor = 0,
+        Play,
+        Pause
+    };
+	SceneState getSceneState() const { return m_sceneState; }
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
-
 	bool m_debugCamera = false;
+	bool m_debugPhysics = true;
 private:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
@@ -67,6 +90,17 @@ private:
     ////////////////////////////////////////////////////////////////
 	static int entityNumber;
 	entt::registry m_registry;
+
+    SceneState m_sceneState = SceneState::Editor;
+
+	Entity createEntity(const UUID &id, const std::string &name);
+	std::unordered_map<std::string, size_t> m_entNameToNumMap{};
+
+    ////////////////////////////////////////////////////////////////
+    // Physics
+    ////////////////////////////////////////////////////////////////
+    PhysicsWorld PhysicsWorld{Vec2(0.0f, -9.8f)};
+    std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysics_obj;
 
     ////////////////////////////////////////////////////////////////
 	// friend class

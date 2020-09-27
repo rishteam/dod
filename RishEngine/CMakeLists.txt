@@ -91,6 +91,16 @@ add_library(RishEngine
     # Effect
     src/Effect/Particle/ParticleSystem.cpp
 
+    # Box
+    src/Collider/Box.cpp
+
+    # Physics
+    src/Physics/Arbiter.cpp
+    src/Physics/Joint.cpp
+    src/Physics/PhysicsWorld.cpp
+    src/Physics/RigidBody2D.cpp
+    src/Physics/vector_math.cpp
+
     # Renderer
     src/Renderer/Shader.cpp
     src/Renderer/VertexArray.cpp
@@ -114,6 +124,7 @@ add_library(RishEngine
 
     src/ImGui.cpp
     src/Math/AABB.cpp
+    src/Math/BoundingBox.cpp
 )
 
 # alias

@@ -5,6 +5,7 @@
 #include <Rish/Scene/Entity.h>
 
 #include <entt/entt.hpp>
+#include <utility>
 
 namespace rl {
 
@@ -34,6 +35,16 @@ public:
             if(entity.hasComponent<T>())
                 entity.removeComponent<T>();
         };
+    }
+
+    template<typename T>
+    static void registerComponent(AddComponentFunction addFunc, DelComponentFunction delFunc)
+    {
+        // TODO: use std::string_view
+        auto name = entt::type_info<T>::name();
+        std::string type_name{name.begin(), name.end()};
+        s_typeNameToAddFunction[type_name] = std::move(addFunc);
+        s_typeNameToDelFunction[type_name] = std::move(delFunc);
     }
 
     static void addComponent(Entity entity, std::string type);

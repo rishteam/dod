@@ -4,6 +4,7 @@
 
 namespace rl {
 
+// TODO: Make ScriptableEntity register
 class ScriptableEntity
 {
 public:
@@ -32,6 +33,7 @@ private:
 struct NativeScriptComponent
 {
     ScriptableEntity *instance = nullptr;
+    std::string scriptName     = "DefaultScript";
 
     using NewFunc    = ScriptableEntity* (*)();
     using DeleteFunc = void (*)(NativeScriptComponent*);
@@ -42,6 +44,7 @@ struct NativeScriptComponent
     template<typename T>
     void bind()
     {
+        scriptName = entt::type_info<T>::name();
         newScript = []() {
             return static_cast<ScriptableEntity*>(new T());
         };
