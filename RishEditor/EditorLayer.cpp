@@ -88,13 +88,28 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-    debugEntity = m_scene->createEntity("DebugSprite");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//    debugEntity = m_scene->createEntity("DebugSprite");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_scene->createEntity("PhysicsTest");
+    debugEntity = m_scene->createEntity("Physics 1");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<BoxCollider2DComponent>();
+
+    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
+    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
+    rigbd.mass = MAX_float;
+    box.x = 0.0f;
+    box.y = 0.0f;
+    box.w = 1.0f;
+    box.h = 1.0f;
+
+    debugEntity = m_scene->createEntity("Physics 2");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+//    debugEntity.addComponent<BoxCollider2DComponent>();
+
 }
 
 void EditorLayer::onDetach()

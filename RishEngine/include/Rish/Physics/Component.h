@@ -50,8 +50,6 @@ struct BoxCollider2DComponent{
     float y;
     float w;
     float h;
-    bool isSimulate = false;
-    bool isTrigger = true;
 
 private:
     friend class cereal::access;
@@ -62,9 +60,7 @@ private:
                 CEREAL_NVP(x),
                 CEREAL_NVP(y),
                 CEREAL_NVP(w),
-                CEREAL_NVP(h),
-                CEREAL_NVP(isSimulate),
-                CEREAL_NVP(isTrigger)
+                CEREAL_NVP(h)
         );
     }
 
