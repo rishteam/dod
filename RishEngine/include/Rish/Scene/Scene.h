@@ -38,9 +38,16 @@ public:
 
 	/**
 	 * @brief Destroy a Entity object
-	 * @param entity Entity
+	 * @param entity Target
 	 */
 	void destroyEntity(const Entity& entity);
+
+	/**
+	 * @brief Duplicate a Entity
+	 * @param src Target
+	 * @return Duplicate entity
+	 */
+	Entity duplicateEntity(Entity src);
 
 	/**
 	 * @brief Update Entity behavior
@@ -66,7 +73,6 @@ public:
         Pause
     };
 	SceneState getSceneState() const { return m_sceneState; }
-
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
 	bool m_debugCamera = false;
 	bool m_debugPhysics = true;
@@ -88,6 +94,7 @@ private:
     SceneState m_sceneState = SceneState::Editor;
 
 	Entity createEntity(const UUID &id, const std::string &name);
+	std::unordered_map<std::string, size_t> m_entNameToNumMap{};
 
     ////////////////////////////////////////////////////////////////
     // Physics

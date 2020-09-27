@@ -1,7 +1,11 @@
 #include <Rish/Core/Application.h>
 #include <Rish/Core/Time.h>
+//
 #include <Rish/Renderer/Renderer2D.h>
+//
 #include <Rish/Math/AABB.h>
+#include <Rish/Math/BoundingBox.h>
+//
 #include <Rish/ImGui.h>
 
 #include "EditController.h"
@@ -86,9 +90,10 @@ void EditController::onUpdate(Time dt)
     {
         auto ent = getTarget();
         auto &transform = ent.getComponent<TransformComponent>();
-        // TODO: Make bounding box
+        // Get bounding box
+        auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
         // Draw Border
-        Renderer2D::DrawRect(transform.translate, transform.scale);
+        Renderer2D::DrawRect(bound.getPosition(), bound.getScale());
     }
 }
 
