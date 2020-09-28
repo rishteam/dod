@@ -79,22 +79,22 @@ void Scene::onUpdate(Time dt)
         }
     });
 
-    // update collide state
+    // hax boxCollider change coordinate
     auto group4 = m_registry.view<TransformComponent, BoxCollider2DComponent>();
     for(auto entity : group4)
     {
         Entity ent{entity, this};
         auto &UUID = ent.getComponent<TagComponent>().id;
         auto &transform = ent.getComponent<TransformComponent>();
-        auto &boxCollider = ent.getComponent<BoxCollider2DComponent>();
 
         // if it has boxCollider component then update Physics coordinate
         if(mapBoxColliderObj.count(UUID)){
             auto &phy = mapPhysicsObj[UUID];
-            phy->position.x = transform.translate.x + boxCollider.x;
-            phy->position.y = transform.translate.y + boxCollider.y;
-            phy->wh.x = boxCollider.w;
-            phy->wh.y = boxCollider.h;
+            auto &boxc = mapBoxColliderObj[UUID];
+            phy->position.x = transform.translate.x + boxc->x;
+            phy->position.y = transform.translate.y + boxc->y;
+            phy->wh.x = boxc->w;
+            phy->wh.y = boxc->h;
         }
     }
 
@@ -102,25 +102,24 @@ void Scene::onUpdate(Time dt)
         PhysicsWorld.Step(dt);
     }
 
+    // if it has BoxCollider component, return to transform coordinate
     auto group2 = m_registry.view<TransformComponent, BoxCollider2DComponent>();
     for(auto entity : group2)
     {
         Entity ent{entity, this};
         auto &UUID = ent.getComponent<TagComponent>().id;
         auto &transform = ent.getComponent<TransformComponent>();
-        auto &boxCollider = ent.getComponent<BoxCollider2DComponent>();
         if(mapBoxColliderObj.count(UUID))
         {
             auto &phy = mapPhysicsObj[UUID];
             auto &boxc = mapBoxColliderObj[UUID];
-            float offset_x = phy->position.x - boxc->x;
-            float offset_y = phy->position.y - boxc->y;
+            float offset_x = phy->position.x - (transform.translate.x + boxc->x);
+            float offset_y = phy->position.y - (transform.translate.y + boxc->y);
             transform.translate.x += offset_x;
             transform.translate.y += offset_y;
-            boxCollider.x = phy->position.x;
-            boxCollider.y = phy->position.y;
         }
     }
+
     // RigidBody2D Component
     // update physics object to world
     auto group3 = m_registry.view<TransformComponent, RigidBody2DComponent>();
@@ -134,29 +133,23 @@ void Scene::onUpdate(Time dt)
         if(mapPhysicsObj.count(UUID) && !mapBoxColliderObj.count(UUID))
         {
             auto &phy = mapPhysicsObj[UUID];
-            //has boxCollider Component
-                // after physics calculate and update position
-                transform.translate.x = phy->position.x;
-                transform.translate.y = phy->position.y;
-                transform.scale.x = phy->wh.x;
-                transform.scale.y = phy->wh.y;
-                // update rigidbody2D component value
-                rigidbody2D.angularVelocity = phy->torque;
-                rigidbody2D.angle = phy->angle;
-                rigidbody2D.velocity = phy->velocity;
-                rigidbody2D.force = phy->force;
-                rigidbody2D.torque = phy->torque;
-                rigidbody2D.friction = phy->friction;
+            // has boxCollider Component
+            // after physics calculate and update position
+            transform.translate.x = phy->position.x;
+            transform.translate.y = phy->position.y;
+            transform.scale.x = phy->wh.x;
+            transform.scale.y = phy->wh.y;
+            // update rigidbody2D component value
+            rigidbody2D.angularVelocity = phy->torque;
+            rigidbody2D.angle = phy->angle;
+            rigidbody2D.velocity = phy->velocity;
+            rigidbody2D.force = phy->force;
+            rigidbody2D.torque = phy->torque;
+            rigidbody2D.friction = phy->friction;
         }
     }
 
-
-    //Joint
-//    auto group2 = m_registry.group<TransformComponent, Joint>();
-//    for(auto entity : group)
-//    {
-//
-//    }
+    //---------------------------------------------------------
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
@@ -201,16 +194,6 @@ void Scene::onUpdate(Time dt)
         }
     }
 
-    // TODO: move these code
-    auto view = m_registry.view<BoxCollider2DComponent, RenderComponent>();
-    for(auto entity : view)
-    {
-        Entity ent{entity, this};
-        auto &boxcollider = ent.getComponent<BoxCollider2DComponent>();
-        auto &render = ent.getComponent<RenderComponent>();
-        Renderer2D::DrawQuad({boxcollider.x, boxcollider.y}, { boxcollider.w, boxcollider.y}, render.m_texture, render.color);
-    }
-
 
     Renderer2D::EndScene();
 }
@@ -237,7 +220,7 @@ void Scene::onScenePlay()
         auto &transform = ent.getComponent<TransformComponent>();
         auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
 
-        //if the UUID exist, append new physics obj
+        // if UUID not exist, append new physics obj
         if(!mapPhysicsObj.count(UUID))
         {
             auto physicsObj = MakeRef<RigidBody2D>(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
@@ -254,15 +237,15 @@ void Scene::onScenePlay()
         Entity ent{entity, this};
 
         auto &UUID = ent.getComponent<TagComponent>().id;
-        auto &transform = ent.getComponent<TransformComponent>();
         auto &boxCollider = ent.getComponent<BoxCollider2DComponent>();
+        auto &transform = ent.getComponent<TransformComponent>();
 
+        // if UUID not exist, append box obj
         if(!mapBoxColliderObj.count(UUID)) {
-            auto box = MakeRef<Box>(transform.translate.x + boxCollider.x, transform.translate.y + boxCollider.y, boxCollider.w, boxCollider.h);
+            auto box = MakeRef<Box>(boxCollider.x, boxCollider.y, boxCollider.w, boxCollider.h);
             mapBoxColliderObj[UUID] = box;
         }
     }
-
 
 }
 
@@ -283,6 +266,7 @@ void Scene::onSceneStop()
     //clear physics object
     PhysicsWorld.Clear();
     mapPhysicsObj.clear();
+    mapBoxColliderObj.clear();
 }
 
 void Scene::copySceneTo(Ref<Scene> &target)
@@ -353,12 +337,27 @@ void Scene::onImGuiRender()
         {
             if(ImGui::TreeNode(uuid.to_string().c_str()))
             {
-                ImGui::Text("%.f %.f %.f %.f", body->position.x, body->position.y, body->wh.x, body->wh.y);
+                ImGui::Text("%.f %.f %.f %.f\n", body->position.x, body->position.y, body->wh.x, body->wh.y);
+                ImGui::Text("mass: %.f\n", body->mass);
                 ImGui::TreePop();
             }
         }
-        ImGui::Text("box_collider_cnt: %d", mapBoxColliderObj.size());
         ImGui::End();
+
+
+        ImGui::Begin("Collider");
+        for(auto && [uuid, box] : mapBoxColliderObj)
+        {
+            if(ImGui::TreeNode(uuid.to_string().c_str()))
+            {
+                ImGui::Text("%.f %.f %.f %.f\n", box->x, box->y, box->w, box->h);
+                ImGui::TreePop();
+            }
+        }
+        ImGui::End();
+
+
+
     }
 }
 

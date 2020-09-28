@@ -100,7 +100,7 @@ void EditorLayer::onAttach()
     auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
     auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
     rigbd.mass = MAX_float;
-    box.x = 0.0f;
+    box.x = 3.0f;
     box.y = 0.0f;
     box.w = 1.0f;
     box.h = 1.0f;
