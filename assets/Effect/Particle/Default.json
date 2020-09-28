@@ -2,15 +2,15 @@
     "value0": {
         "angleRange": {
             "x": 0.0,
-            "y": 360.0
+            "y": 120.0
         },
         "startSpeed": 0.0,
         "endSpeed": 0.800000011920929,
         "startSize": 0.0,
         "endSize": 0.5,
-        "rotateSpeed": 0.0,
-        "emitNumber": 3,
-        "emitVariance": 2,
+        "rotateSpeed": 0.4,
+        "emitNumber": 50,
+        "emitVariance": 20,
         "maxParticleLife": 80,
         "life": -1.0,
         "sleepTime": -1.0,
@@ -52,7 +52,7 @@
         },
         "disX": 0.0,
         "disY": 0.0,
-        "texturePath": "assets/texture/1.png",
+        "texturePath": "assets/texture/3.png",
         "vortexSensitive": false,
         "vortexPos": {
             "x": 0.0,

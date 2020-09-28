@@ -197,6 +197,20 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
             else
                 ImGui::Dummy(ImVec2(64, 64));
 
+
+            ImGui::Text("EmitData");
+            std::string dataPath;
+            if(ImGui::Button("Select##dataPath"))
+            {
+                if(FileDialog::SelectSingleFile(nullptr, nullptr, dataPath))
+                {
+                    emitter.dataPath = dataPath;
+                    emitter.loadEmitData();
+                }
+            }
+            ImGui::SameLine();
+            ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
+
             ImGui::ColorEdit4("Start Color", glm::value_ptr(emitter.startColor));
             ImGui::ColorEdit4("End Color", glm::value_ptr(emitter.endColor));
 

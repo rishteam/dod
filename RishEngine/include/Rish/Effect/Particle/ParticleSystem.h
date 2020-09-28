@@ -16,15 +16,12 @@ public:
     static void onUpdate(entt::registry& registry, float dt);
     static void onRender(entt::registry& registry, Scene::SceneState state = Scene::SceneState::Editor);
 
-//    static void initEmitter(entt::registry& registry, entt::entity entity, EmitData data);
-
-    static void initEmitter(std::string test);
+    static bool loadEmitData();
 
 private:
     // TODO: remove
     static float randomFloat(float min, float max);
 
-    static bool preview;
     // Particle
     static uint32_t firstUnusedParticle(entt::registry& registry, entt::entity& entity);
     static void respawnParticle(ParticleComponent& emitter, TransformComponent& transform, int unusedParticle);

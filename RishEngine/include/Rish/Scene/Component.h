@@ -336,25 +336,25 @@ struct ParticleComponent {
     float disY = 0.f;
 
     // Particle restrain in the range of angle
-    glm::vec2 angleRange {80.f, 110.f};
+    glm::vec2 angleRange {0.f, 360.f};
 
     // The color when a particle generate
-    glm::vec4 startColor = {0.f, 0.f, 0.f, 1.f};
+    glm::vec4 startColor = {1.f, 0.3921568691730499f, 0.f, 1.f};
 
     // The color when a particle die
-    glm::vec4 endColor = {0.f, 0.f, 0.f, 0.f};
+    glm::vec4 endColor = {0.8235294222831726f, 0.8235294222831726f, 0.8235294222831726f, 0.f};
 
     // The speed when a particle generate
-    float startSpeed = 1.f;
+    float startSpeed = 0.f;
 
     // The speed when a particle die
-    float endSpeed = 1.f;
+    float endSpeed = 0.8f;
 
     // The size when a particle generate
     float startSize = 0.f;
 
     // The size when a particle die
-    float endSize = 1.f;
+    float endSize = 0.5f;
 
     // The speed that the particle texture rotate
     float rotateSpeed = 0.f;
@@ -486,11 +486,10 @@ struct ParticleComponent {
 
     std::string dataPath = "";
 
-    // TODO Remove me?
-    void init()
+    // TODO Move To ParticleSystem?
+    void loadEmitData()
     {
-        RL_CORE_TRACE("Particle Component Init");
-
+        RL_CORE_TRACE("Emitter Load Data");
         EmitData data;
 
         if(!dataPath.empty())
@@ -572,6 +571,21 @@ struct ParticleComponent {
         vortexEndSizeRand    = data.vortexEndSizeRand;
         vortexLifeRand       = data.vortexLifeRand;
 
+        texturePath          = data.texturePath;
+
+        texture = Texture2D::LoadTextureVFS(texturePath);
+    }
+
+
+    // TODO Remove me?
+    void init()
+    {
+        RL_CORE_TRACE("Particle Component Init");
+        maxParticlesPerFrame = emitNumber + emitVariance;
+        poolSize             = maxParticlesPerFrame * (maxParticleLife + 1);
+        particles.resize(poolSize);
+        dynamic_vortexes.resize(vortexPoolSize);
+        static_vortexes.resize(1);
         texture = Texture2D::LoadTextureVFS(texturePath);
     }
 
