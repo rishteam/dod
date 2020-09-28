@@ -137,6 +137,9 @@ void EditorLayer::onUpdate(Time dt)
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
     // TODO: Rendering Queue
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Editor
+    /////////////////////////////////////////////////////////////////////////////////////////////
     Renderer2D::ResetStats();
     m_editorFramebuffer->bind();
     {
