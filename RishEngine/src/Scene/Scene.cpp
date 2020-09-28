@@ -101,6 +101,7 @@ Entity Scene::duplicateEntity(Entity src)
 void Scene::onUpdate(Time dt)
 {
     m_registry.view<NativeScriptComponent>().each([=](auto entity, auto &nsc) {
+        RL_UNUSED(entity);
         if(nsc.instance) {
             nsc.instance->onUpdate(dt);
         }
@@ -136,44 +137,6 @@ void Scene::onUpdate(Time dt)
             rigidbody2D.friction = phy->friction;
         }
     }
-
-
-//check the trigger of collide
-//    auto group2 = m_registry.group<TransformComponent, BoxCollider2DComponent>();
-//    for(auto entity : group2)
-//    {
-//        Entity ent{entity, this};
-//
-//        auto &transform = ent.getComponent<TransformComponent>();
-//        auto &box2D = ent.getComponent<BoxCollider2DComponent>();
-//
-//        box2D.x = transform.translate.x;
-//        box2D.y = transform.translate.y;
-//        box2D.w = transform.scale.x;
-//        box2D.h = transform.scale.y;
-//
-//
-//
-//    }
-
-//    //Joint
-//    auto group2 = m_registry.group<TransformComponent, Joint>();
-//    for(auto entity : group)
-//    {
-//
-//    }
-
-//    auto group3 = m_registry.view<TransformComponent, RigidBody2DComponent>();
-//    for(auto entity : group1)
-//    {
-//        Entity ent{entity, this};
-//        auto &transform = ent.getComponent<TransformComponent>();
-//        auto &rigidbody2D = ent.getComponent<RigidBody2DComponent>();
-//
-//
-//        PhysicsWorld.Add(obj);
-//    }
-
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
@@ -223,6 +186,8 @@ void Scene::onUpdate(Time dt)
 void Scene::onScenePlay()
 {
     m_sceneState = SceneState::Play;
+
+    // Initialize the NativeScriptComponent
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
         if (!nsc.instance) {
@@ -261,8 +226,10 @@ void Scene::onSceneStop()
 {
     m_sceneState = SceneState::Editor;
 
+    // Destroy the NativeScriptComponent
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
+        nsc.instance->onDestroy();
         nsc.deleteScript(&nsc);
     });
 

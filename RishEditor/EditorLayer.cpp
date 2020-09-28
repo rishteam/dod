@@ -7,6 +7,7 @@
 #include <Rish/Utils/FileDialog.h>
 
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/ScriptableManager.h>
 
 #include <Rish/ImGui.h>
 #include <imgui_internal.h>
@@ -84,13 +85,20 @@ void EditorLayer::onAttach()
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 
+    // Test
+    ScriptableManager::Register<SpriteRoatate>();
+    ScriptableManager::Register<CameraController>();
+
     Entity debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
     debugEntity = m_scene->createEntity("DebugSprite");
     debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+    auto &ns = debugEntity.addComponent<NativeScriptComponent>();
+    ScriptableManager::Bind(ns, entt::type_info<SpriteRoatate>::name());
+
 
     debugEntity = m_scene->createEntity("PhysicsTest");
     debugEntity.addComponent<RenderComponent>();
@@ -136,6 +144,7 @@ void EditorLayer::onUpdate(Time dt)
                                     (uint32_t)m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
+
     // TODO: Rendering Queue
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Editor
@@ -152,6 +161,9 @@ void EditorLayer::onUpdate(Time dt)
     }
     m_editorFramebuffer->unbind();
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Scene
+    /////////////////////////////////////////////////////////////////////////////////////////////
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});

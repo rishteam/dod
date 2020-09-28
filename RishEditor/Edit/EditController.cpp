@@ -13,7 +13,7 @@
 namespace rl {
 
 Ref<Texture2D> s_cameraIcon;
-void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene)
+void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene) const
 {
     auto view = scene->m_registry.view<CameraComponent>();
     for(auto entity : view)

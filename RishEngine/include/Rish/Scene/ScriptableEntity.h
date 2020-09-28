@@ -53,6 +53,13 @@ struct NativeScriptComponent
             nsc->instance = nullptr;
         };
     }
+
+    void unbind()
+    {
+        scriptName = "DefaultScript";
+        newScript = nullptr;
+        deleteScript = nullptr;
+    }
 };
 
 } // end of namespace rl
