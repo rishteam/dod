@@ -187,8 +187,6 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                 {
                     emitter.texturePath = tpath;
                     emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
-                    // TODO: remove me
-                    emitter.loadTexure = false;
                 }
             }
 
@@ -236,9 +234,30 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
             ImGui::Separator();
 
             ImGui::PushItemWidth(100);
-            ImGui::DragScalar("Emit Number", ImGuiDataType_U32, &emitter.emitNumber, 1.f, 0, 0, "%d");
-            ImGui::DragScalar("Emit Variance", ImGuiDataType_U32, &emitter.emitVariance, 1.f, 0, 0, "%d");
-            ImGui::DragScalar("Particle Life", ImGuiDataType_U32, &emitter.maxParticleLife, 1.f, 0,0, "%d");
+
+            bool calSize = false;
+            if(ImGui::DragScalar("Emit Number", ImGuiDataType_U32, &emitter.emitNumber, 1.f, 0, 0, "%d"))
+            {
+                calSize = true;
+            }
+
+            if(ImGui::DragScalar("Emit Variance", ImGuiDataType_U32, &emitter.emitVariance, 1.f, 0, 0, "%d"))
+            {
+                calSize = true;
+            }
+
+            if(ImGui::DragScalar("Particle Life", ImGuiDataType_U32, &emitter.maxParticleLife, 1.f, 0,0, "%d"))
+            {
+                calSize = true;
+            }
+            if(calSize)
+            {
+                emitter.poolSize = (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1);
+                emitter.particles.clear();
+                emitter.particles.resize(emitter.poolSize);
+                emitter.lastUnusedParticle = 0;
+            }
+
             ImGui::Text("Particle Pool Size: %d", emitter.poolSize);
             ImGui::DragFloat("Sleep Time", &emitter.sleepTime, 0.1f, -1);
             ImGui::PopItemWidth();
@@ -430,8 +449,6 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RenderComponent>();
         drawEditComponentWidget<CameraComponent>();
         drawEditComponentWidget<NativeScriptComponent>();
-
-        //TODO: Add Particle Component
         drawEditComponentWidget<ParticleComponent>();
 
         // Popup

@@ -3,9 +3,81 @@
 
 namespace rl {
 
+bool ParticleSystem::preview = true;
+
+void ParticleSystem::initEmitter(std::string test)
+{
+    RL_CORE_TRACE("Init Emitter {}", test);
+}
+
+//void ParticleSystem::initEmitter(entt::registry &registry, entt::entity entity, EmitData data)
+//{
+////    auto &emitter   = registry.get<ParticleComponent>(entity);
+////    auto &transform = registry.get<TransformComponent>(entity);
+////
+////    emitter.angleRange           = data.angleRange;
+////    emitter.startSpeed           = data.startSpeed;
+////    emitter.endSpeed             = data.endSpeed;
+////    emitter.startSize            = data.startSize;
+////    emitter.endSize              = data.endSize;
+////    emitter.rotateSpeed          = data.rotateSpeed;
+////    emitter.emitNumber           = data.emitNumber;
+////    emitter.emitVariance         = data.emitVariance;
+////    emitter.maxParticleLife      = data.maxParticleLife;
+////    emitter.maxParticlesPerFrame = data.emitNumber + data.emitVariance;
+////    emitter.poolSize             = emitter.maxParticlesPerFrame * (emitter.maxParticleLife + 1);
+////    emitter.particles.resize(emitter.poolSize);
+////    emitter.startColor           = data.startColor;
+////    emitter.endColor             = data.endColor;
+////    emitter.active               = true;
+////    emitter.life_store           = emitter.life = data.life;
+////    emitter.sleepTime            = data.sleepTime;
+////    emitter.rotSpeedRand         = data.rotSpeedRand;
+////    emitter.startSpeedRand       = data.startSpeedRand;
+////    emitter.endSpeedRand         = data.endSpeedRand;
+////    emitter.emitVarianceRand     = data.emitVarianceRand;
+////    emitter.startSizeRand        = data.startSizeRand;
+////    emitter.endSizeRand          = data.endSizeRand;
+////    emitter.lifeRand             = data.lifeRand;
+////    emitter.disX                 = data.disX;
+////    emitter.disY                 = data.disY;
+////
+////    emitter.vortexSensitive      = data.vortexSensitive;
+////    emitter.static_vortexes.resize(1);
+////    if(emitter.vortexSensitive)
+////    {
+////        for(auto vortex : emitter.static_vortexes)
+////        {
+////            vortex.pos = transform.translate + vortex.pos;
+////            vortex.turbulence = data.vortexTurbulence;
+////            vortex.currentSize = data.vortexStartSize;
+////        }
+////    }
+////
+////    emitter.vortexAngleRange      = data.vortexAngleRange;
+////    emitter.vortexStartSpeed      = data.vortexStartSpeed;
+////    emitter.vortexEndSpeed        = data.vortexEndSpeed;
+////    emitter.vortexStartSize       = data.vortexStartSize;
+////    emitter.vortexEndSize         = data.vortexEndSize;
+////    emitter.vortexEmitNumber      = data.vortexEmitNumber;
+////    emitter.vortexEmissionRate    = data.vortexEmitNumber;
+////    emitter.vortexMaxParticleLife = data.vortexMaxParticleLife;
+////
+////    emitter.vortexPoolSize       = data.vortexEmitNumber*3;
+////    emitter.dynamic_vortexes.resize(emitter.vortexPoolSize);
+////    emitter.vortexSleepTime      = data.vortexSleepTime;
+////    emitter.vortexStartSpeedRand = data.vortexStartSpeedRand;
+////    emitter.vortexEndSpeedRand   = data.vortexEndSpeedRand;
+////    emitter.vortexStartSizeRand  = data.vortexStartSizeRand;
+////    emitter.vortexEndSizeRand    = data.vortexEndSizeRand;
+////    emitter.vortexLifeRand       = data.vortexLifeRand;
+//}
+
 void ParticleSystem::onUpdate(entt::registry &registry, float dt)
 {
     RL_CORE_TRACE("ParticleSystem onUpdate");
+
+    preview = false;
 
     auto view = registry.view<TransformComponent, ParticleComponent>();
     for(auto entity : view)
@@ -16,13 +88,13 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
         // Dirty Flag
         // if change EmitNumber/EmitVariance on ImGui then recal
         // TODO Move to other place
-        if(emitter.poolSize != (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1))
-        {
-            emitter.poolSize = (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1);
-            emitter.particles.clear();
-            emitter.particles.resize(emitter.poolSize);
-            emitter.lastUnusedParticle = 0;
-        }
+//        if(emitter.poolSize != (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1))
+//        {
+//            emitter.poolSize = (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1);
+//            emitter.particles.clear();
+//            emitter.particles.resize(emitter.poolSize);
+//            emitter.lastUnusedParticle = 0;
+//        }
 
         if(emitter.vortexSensitive && (emitter.vortexType == DYNAMIC_VORTEX)) {
 
@@ -34,14 +106,6 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
                 emitter.lastUnusedVortex = 0;
             }
         }
-
-        // TODO: remove me
-        if(emitter.loadTexure)
-        {
-            emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
-            emitter.loadTexure = false;
-        }
-
 
         if (emitter.active)
         {
@@ -219,7 +283,7 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
     }
 }
 
-void ParticleSystem::onRender(entt::registry &registry)
+void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
 {
     auto view = registry.view<TransformComponent, ParticleComponent>();
 
@@ -228,10 +292,16 @@ void ParticleSystem::onRender(entt::registry &registry)
         auto &transform = registry.get<TransformComponent>(entity);
         auto &emitter   = registry.get<ParticleComponent>(entity);
 
+        if(state == Scene::SceneState::Editor)
+        {
+            Renderer2D::DrawQuad(transform.translate, transform.scale, emitter.texture);
+            return;
+        }
+
         for(auto &particle: emitter.particles)
         {
             Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
-                                        particle.currentColor, glm::radians(particle.angle));
+                                        particle.currentColor, particle.angle);
 //            RL_CORE_TRACE("{}", particle.pos.x);
         }
         // TODO Vortex render;

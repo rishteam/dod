@@ -20,6 +20,9 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
+
+    // TODO Remove me?
+    m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
     RL_CORE_INFO("Construct Scene");
 }
 
@@ -203,7 +206,7 @@ void Scene::onUpdate(Time dt)
     auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
 
-    ParticleSystem::onRender(m_registry);
+    ParticleSystem::onRender(m_registry, m_sceneState);
 
     // Draw RenderComponent
     for(auto entity : cameraGroup)
