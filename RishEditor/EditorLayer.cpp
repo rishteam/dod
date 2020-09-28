@@ -251,11 +251,14 @@ void EditorLayer::onImGuiRender()
     {
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            m_editorScene->copySceneTo(m_runtimeScene);
-
-            switchCurrentScene(m_runtimeScene);
-
-            m_scene->onScenePlay();
+            if(m_scene->getSceneState() == Scene::SceneState::Editor)
+            {
+                m_editorScene->copySceneTo(m_runtimeScene);
+                switchCurrentScene(m_runtimeScene);
+                m_scene->onScenePlay();
+            }
+            else
+                m_scene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
         }
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_PAUSE))
@@ -265,9 +268,11 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_STOP))
         {
-            m_scene->onSceneStop();
-
-            switchCurrentScene(m_editorScene);
+            if(m_scene->getSceneState() == Scene::SceneState::Play)
+            {
+                m_scene->onSceneStop();
+                switchCurrentScene(m_editorScene);
+            }
         }
     }
     ImGui::End();

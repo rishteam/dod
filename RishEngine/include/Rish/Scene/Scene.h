@@ -66,6 +66,7 @@ public:
         Pause
     };
 	SceneState getSceneState() const { return m_sceneState; }
+	void setSceneState(SceneState state) { m_sceneState = state; }
 
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
 	bool m_debugCamera = false;
