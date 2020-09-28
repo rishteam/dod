@@ -377,12 +377,21 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Debug"))
         {
-            ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
-            ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
-            ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
-            ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
-            ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
-            ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
+            if(ImGui::BeginMenu("Edit Controller"))
+            {
+                ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
+                ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
+                ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
+                ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
+                ImGui::EndMenu();
+            }
+            if(ImGui::BeginMenu("Scene"))
+            {
+                ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
+                ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
+                ImGui::MenuItem("Camera Component Debug", nullptr, &m_scene->m_debugCameraComponent);
+                ImGui::EndMenu();
+            }
             ImGui::EndMenu();
         }
 

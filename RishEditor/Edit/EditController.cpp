@@ -23,7 +23,7 @@ void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene)
 
         if(m_debugShowIcon)
             Renderer2D::DrawQuad(transform.translate, {0.2f, 0.2f}, s_cameraIcon);
-        Renderer2D::DrawRect(transform.translate, transform.scale);
+        Renderer2D::DrawRect(transform.translate, transform.scale, {1.f, 0.f, 0.f, 1.f});
     }
 }
 

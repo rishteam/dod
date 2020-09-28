@@ -346,6 +346,27 @@ void Scene::onImGuiRender()
         }
         ImGui::End();
     }
+
+    if(m_debugCameraComponent)
+    {
+        ImGui::Begin("CameraComponent");
+        auto view = m_registry.view<CameraComponent>();
+        for(auto entity : view)
+        {
+            Entity ent{entity, this};
+            //
+            auto &tag = ent.getComponent<TagComponent>();
+            auto &transform = ent.getComponent<TransformComponent>();
+            if(ImGui::TreeNode(tag.id.to_string().c_str()))
+            {
+                ImGui::Text("transform = %.2f %.2f %.2f", transform.translate.x, transform.translate.y, transform.translate.z);
+                ImGui::Text("scale     = %.2f %.2f %.2f", transform.scale.x, transform.scale.y, transform.scale.z);
+                ImGui::Text("rotate    = %.2f", transform.rotate);
+                ImGui::TreePop();
+            }
+        }
+        ImGui::End();
+    }
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)
