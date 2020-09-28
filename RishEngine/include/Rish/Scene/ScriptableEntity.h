@@ -27,13 +27,17 @@ private:
     friend class Scene;
 };
 
+class EmptyScript : public ScriptableEntity
+{
+};
+
 /**
  * @brief Native Script Component
  */
 struct NativeScriptComponent
 {
     ScriptableEntity *instance = nullptr;
-    std::string scriptName     = "DefaultScript";
+    std::string scriptName     = "";
 
     using NewFunc    = ScriptableEntity* (*)();
     using DeleteFunc = void (*)(NativeScriptComponent*);

@@ -95,10 +95,7 @@ void EditorLayer::onAttach()
 
     debugEntity = m_scene->createEntity("DebugSprite");
     debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
-    auto &ns = debugEntity.addComponent<NativeScriptComponent>();
-    ScriptableManager::Bind(ns, entt::type_info<SpriteRoatate>::name());
-
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
     debugEntity = m_scene->createEntity("PhysicsTest");
     debugEntity.addComponent<RenderComponent>();
