@@ -86,6 +86,16 @@ void EditController::onUpdate(Time dt)
     // Draw special entities
     drawCameraIconAndBorder(scene);
 
+    // draw boxcollider
+    auto view = scene->m_registry.view<BoxCollider2DComponent>();
+    for(auto entity : view)
+    {
+        Entity ent{entity, scene.get()};
+        auto &boxcollider = ent.getComponent<BoxCollider2DComponent>();
+        auto &transform = ent.getComponent<TransformComponent>();
+        Renderer2D::DrawRect({transform.translate.x + boxcollider.x, transform.translate.y + boxcollider.y}, { boxcollider.w, boxcollider.h},  {1.0f, 1.0f, 0.0f, 1.f});
+    }
+
     if(isSelected())
     {
         auto ent = getTarget();

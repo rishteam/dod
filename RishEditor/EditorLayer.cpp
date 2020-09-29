@@ -93,13 +93,35 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-    debugEntity = m_scene->createEntity("DebugSprite");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//    debugEntity = m_scene->createEntity("DebugSprite");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_scene->createEntity("PhysicsTest");
+    debugEntity = m_scene->createEntity("static physcis");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<BoxCollider2DComponent>();
+
+    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
+    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
+    rigbd.mass = MAX_float;
+    box.x = 0.0f;
+    box.y = 0.0f;
+    box.w = 3.0f;
+    box.h = 3.0f;
+
+    debugEntity = m_scene->createEntity("Physics 2");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+
+    debugEntity = m_scene->createEntity("Physics 3");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+
+    debugEntity = m_scene->createEntity("Physics 4");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+
 }
 
 void EditorLayer::onDetach()
@@ -248,11 +270,14 @@ void EditorLayer::onImGuiRender()
     {
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            m_editorScene->copySceneTo(m_runtimeScene);
-
-            switchCurrentScene(m_runtimeScene);
-
-            m_scene->onScenePlay();
+            if(m_scene->getSceneState() == Scene::SceneState::Editor)
+            {
+                m_editorScene->copySceneTo(m_runtimeScene);
+                switchCurrentScene(m_runtimeScene);
+                m_scene->onScenePlay();
+            }
+            else
+                m_scene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
         }
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_PAUSE))
@@ -262,9 +287,11 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_STOP))
         {
-            m_scene->onSceneStop();
-
-            switchCurrentScene(m_editorScene);
+            if(m_scene->getSceneState() == Scene::SceneState::Play)
+            {
+                m_scene->onSceneStop();
+                switchCurrentScene(m_editorScene);
+            }
         }
     }
     ImGui::End();

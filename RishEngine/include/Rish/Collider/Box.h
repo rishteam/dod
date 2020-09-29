@@ -20,12 +20,10 @@ namespace rl {
 
             bool isCollide(Ref<Box> &b);
 
-            bool simulate = false;
             std::deque<Vec2> corner;
             std::deque<Vec2> Vertices;
             std::deque<Vec2> SAT;
 
-        private:
             float x, y, w, h;
             float rotation = 0.0f;
     };

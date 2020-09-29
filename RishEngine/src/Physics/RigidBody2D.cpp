@@ -26,10 +26,17 @@ rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
     }
 }
 
+
 void rl::RigidBody2D::setAngle(float rad)
 {
     angle = rad;
 }
+
+void rl::RigidBody2D::setisCollide(bool state)
+{
+    isCollide = state;
+}
+
 
 std::pair<Vec2, float> rl::RigidBody2D::getPhysicsData()
 {
