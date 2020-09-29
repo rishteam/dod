@@ -2,6 +2,7 @@
 
 #include <Rish/Utils/FileDialog.h>
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/ScriptableManager.h>
 
 #include <Rish/ImGui.h>
 
@@ -159,8 +160,22 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
     {
         DrawRightClickMenu(NativeScriptComponent, false);
         //
-        auto &scriptName =  m_targetEntity.getComponent<NativeScriptComponent>().scriptName;
-        ImGui::Text("Script = %s", scriptName.c_str());
+        auto &script     = m_targetEntity.getComponent<NativeScriptComponent>();
+        //
+        static int currentScript = 0;
+        const auto &optionList = ScriptableManager::GetScriptNames();
+        //
+        auto cur = std::find(optionList.begin(), optionList.end(), script.scriptName);
+        if(cur != optionList.end() && ScriptableManager::GetName<EmptyScript>() != *cur)
+        {
+            currentScript = cur - optionList.begin();
+        }
+        //
+        if(ImGui::Combo("Script", &currentScript, optionList))
+        {
+            ScriptableManager::Unbind(script);
+            ScriptableManager::Bind(script, optionList[currentScript]);
+        }
     }
     EndDrawEditComponent();
 }

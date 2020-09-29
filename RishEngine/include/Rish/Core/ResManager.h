@@ -190,7 +190,7 @@ inline sf::Texture &ResManager<sf::Texture>::getDefaultResource()
 //    RL_TRACE("load missing texture");
     if (!exists("default_texture"))
     {
-        load("default_texture", "assets/missing_texture.png");
+        loadVFS("default_texture", "/texture/missing_texture.png");
     }
     return get("default_texture");
 }
@@ -207,7 +207,7 @@ inline sf::Image &ResManager<sf::Image>::getDefaultResource()
 //    RL_TRACE("Load missing image");
     if (!exists("default_image"))
     {
-        load("default_image", "assets/missing_texture.png");
+        loadVFS("default_image", "/texture/missing_texture.png");
     }
     return get("default_image");
 }

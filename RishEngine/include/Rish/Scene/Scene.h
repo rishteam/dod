@@ -74,8 +74,11 @@ public:
     };
 	SceneState getSceneState() const { return m_sceneState; }
 	const SceneCamera& getMainCamera() const { return m_mainCamera; }
-	bool m_debugCamera = false;
-	bool m_debugPhysics = true;
+
+	//
+	bool m_debugCamera          = false;
+	bool m_debugPhysics         = true;
+	bool m_debugCameraComponent = false;
 private:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
