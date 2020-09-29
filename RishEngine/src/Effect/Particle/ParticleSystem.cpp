@@ -13,21 +13,6 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
         auto &emitter   = registry.get<ParticleComponent>(entity);
         auto &transform = registry.get<TransformComponent>(entity);
 
-        // Dirty Flag
-        // if change EmitNumber/EmitVariance on ImGui then recal
-        // TODO Move to other place
-
-        if(emitter.vortexSensitive && (emitter.vortexType == DYNAMIC_VORTEX)) {
-
-            if(emitter.vortexPoolSize != emitter.vortexEmitNumber*3){
-
-                emitter.vortexPoolSize = emitter.vortexEmitNumber*3;
-                emitter.dynamic_vortexes.clear();
-                emitter.dynamic_vortexes.resize(emitter.vortexPoolSize);
-                emitter.lastUnusedVortex = 0;
-            }
-        }
-
         if (emitter.active)
         {
             // cal the num that should respawn this frame
@@ -85,22 +70,12 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
             }
         }
 
-        // if emitter still has life
-        // for ImGui change
-        // TODO Move to other place
         if(emitter.life > 0.f)
         {
             // exceeded
             if(emitter.lifeTimer.getElapsedTime() >= emitter.life)
             {
                 emitter.active = false;
-            }
-
-            if(emitter.life != emitter.life_store)
-            {
-                emitter.active = true;
-                emitter.life_store = emitter.life;
-                emitter.lifeTimer.restart();
             }
         }
 
@@ -212,11 +187,12 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
     {
         auto &transform = registry.get<TransformComponent>(entity);
         auto &emitter   = registry.get<ParticleComponent>(entity);
+        auto &tag       = registry.get<TagComponent>(entity);
 
         if(state == Scene::SceneState::Editor)
         {
             Renderer2D::DrawQuad(transform.translate, {(emitter.startSize+emitter.endSize)/2, (emitter.startSize+emitter.endSize)/2}, emitter.texture);
-            return;
+            continue;
         }
 
         for(auto &particle: emitter.particles)
@@ -224,7 +200,7 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
             Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
                                         particle.currentColor, particle.angle);
         }
-        // TODO Vortex render;
+        // TODO Change Direction;
         if(emitter.vortexSensitive)
         {
             if(emitter.vortexType == STATIC_VORTEX)

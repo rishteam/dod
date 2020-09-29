@@ -576,7 +576,6 @@ struct ParticleComponent {
         texture = Texture2D::LoadTextureVFS(texturePath);
     }
 
-
     // TODO Remove me?
     void init()
     {

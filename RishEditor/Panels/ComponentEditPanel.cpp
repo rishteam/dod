@@ -390,7 +390,13 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     ImGui::DragFloat("Vortex End Size", &emitter.vortexEndSize, 1.f, 0.f, 0.f, "%.2f");
 
                     const ImU32 emitMin = 0, emitMax = 50, vortexLife = 1;
-                    ImGui::DragScalar("Vortex Particle Life", ImGuiDataType_U32, &emitter.vortexMaxParticleLife, 1.f, &vortexLife, 0, "%d");
+                    if(ImGui::DragScalar("Vortex Particle Life", ImGuiDataType_U32, &emitter.vortexMaxParticleLife, 1.f, &vortexLife, 0, "%d"))
+                    {
+                        emitter.vortexPoolSize = emitter.vortexEmitNumber*3;
+                        emitter.dynamic_vortexes.clear();
+                        emitter.dynamic_vortexes.resize(emitter.vortexPoolSize);
+                        emitter.lastUnusedVortex = 0;
+                    }
                     ImGui::DragScalar("Emit Per Sec", ImGuiDataType_U32, &emitter.vortexEmitNumber, 1.f, &emitMin, 0, "%d");
                     ImGui::Text("Particle Pool Size: %d", emitter.vortexPoolSize);
                     ImGui::Checkbox("Draw Vortex", &emitter.drawVortex);
@@ -430,7 +436,6 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     ImGui::PopItemWidth();
                 }
             }
-
         }
     }
     EndDrawEditComponent();
