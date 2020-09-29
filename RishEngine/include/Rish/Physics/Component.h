@@ -46,10 +46,10 @@ private:
 
 struct BoxCollider2DComponent{
     BoxCollider2DComponent() = default;
-    float x;
-    float y;
-    float w;
-    float h;
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
 
 private:
     friend class cereal::access;

@@ -92,7 +92,7 @@ void EditorLayer::onAttach()
 //    debugEntity.addComponent<RenderComponent>();
 //    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_scene->createEntity("Physics 1");
+    debugEntity = m_scene->createEntity("static physcis");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<BoxCollider2DComponent>();
@@ -100,15 +100,22 @@ void EditorLayer::onAttach()
     auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
     auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
     rigbd.mass = MAX_float;
-    box.x = 3.0f;
+    box.x = 0.0f;
     box.y = 0.0f;
-    box.w = 1.0f;
-    box.h = 1.0f;
+    box.w = 3.0f;
+    box.h = 3.0f;
 
     debugEntity = m_scene->createEntity("Physics 2");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
-//    debugEntity.addComponent<BoxCollider2DComponent>();
+
+    debugEntity = m_scene->createEntity("Physics 3");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+
+    debugEntity = m_scene->createEntity("Physics 4");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
 
 }
 

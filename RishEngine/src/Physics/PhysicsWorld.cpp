@@ -1,7 +1,7 @@
 #include <Rish/Physics/PhysicsWorld.h>
 
 bool rl::PhysicsWorld::accumulateImpulses = true;
-bool rl::PhysicsWorld::warmStarting = true;
+bool rl::PhysicsWorld::warmStarting = false;
 bool rl::PhysicsWorld::positionCorrection = true;
 float rl::PhysicsWorld::width;
 float rl::PhysicsWorld::height;

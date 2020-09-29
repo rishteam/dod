@@ -133,6 +133,7 @@ void Scene::onUpdate(Time dt)
                 transform.translate.y = phy->position.y;
                 transform.scale.x = phy->wh.x;
                 transform.scale.y = phy->wh.y;
+                transform.rotate = glm::degrees(phy->angle);
                 // update rigidbody2D component value
                 rigidbody2D.angularVelocity = phy->torque;
                 rigidbody2D.angle = phy->angle;
@@ -254,6 +255,7 @@ void Scene::onScenePlay()
         auto &transform = ent.getComponent<TransformComponent>();
 
         // if UUID not exist, append box obj
+
         if(!mapBoxColliderObj.count(UUID)) {
             auto box = MakeRef<Box>(boxCollider.x, boxCollider.y, boxCollider.w, boxCollider.h);
             mapBoxColliderObj[UUID] = box;
