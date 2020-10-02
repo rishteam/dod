@@ -336,7 +336,7 @@ struct ParticleComponent {
     float disY = 0.f;
 
     // Particle restrain in the range of angle
-    glm::vec2 angleRange {0.f, 360.f};
+    glm::vec2 angleRange {80.f, 110.f};
 
     // The color when a particle generate
     glm::vec4 startColor = {1.f, 0.3921568691730499f, 0.f, 1.f};
@@ -348,13 +348,13 @@ struct ParticleComponent {
     float startSpeed = 0.f;
 
     // The speed when a particle die
-    float endSpeed = 0.8f;
+    float endSpeed = 200.8f;
 
     // The size when a particle generate
     float startSize = 0.f;
 
     // The size when a particle die
-    float endSize = 0.5f;
+    float endSize = 80.0f;
 
     // The speed that the particle texture rotate
     float rotateSpeed = 0.f;
