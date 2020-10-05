@@ -14,7 +14,7 @@
 namespace rl {
 
 Ref<Texture2D> s_cameraIcon;
-void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene)
+void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene) const
 {
     auto view = scene->m_registry.view<CameraComponent>();
     for(auto entity : view)
@@ -24,7 +24,7 @@ void EditController::drawCameraIconAndBorder(const Ref<Scene> &scene)
 
         if(m_debugShowIcon)
             Renderer2D::DrawQuad(transform.translate, {0.2f, 0.2f}, s_cameraIcon);
-        Renderer2D::DrawRect(transform.translate, transform.scale);
+        Renderer2D::DrawRect(transform.translate, transform.scale, {1.f, 0.f, 0.f, 1.f});
     }
 }
 
@@ -89,6 +89,16 @@ void EditController::onUpdate(Time dt)
 
     // Draw special entities
     drawCameraIconAndBorder(scene);
+
+    // draw boxcollider
+    auto view = scene->m_registry.view<BoxCollider2DComponent>();
+    for(auto entity : view)
+    {
+        Entity ent{entity, scene.get()};
+        auto &boxcollider = ent.getComponent<BoxCollider2DComponent>();
+        auto &transform = ent.getComponent<TransformComponent>();
+        Renderer2D::DrawRect({transform.translate.x + boxcollider.x, transform.translate.y + boxcollider.y}, { boxcollider.w, boxcollider.h},  {1.0f, 1.0f, 0.0f, 1.f});
+    }
 
     if(isSelected())
     {

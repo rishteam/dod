@@ -47,7 +47,7 @@ private:
     bool m_sceneWindowHovered = false; ///< Is Scene window hovered?
 
     // Helper functions
-    void drawCameraIconAndBorder(const Ref<Scene> &scene);
+    void drawCameraIconAndBorder(const Ref<Scene> &scene) const;
 
 public:
     bool m_debugEditorGrid       = false;
