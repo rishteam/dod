@@ -28,6 +28,8 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     ComponentManager::registerComponent<RenderComponent>();
     ComponentManager::registerComponent<CameraComponent>();
     ComponentManager::registerComponent<NativeScriptComponent>();
+    ComponentManager::registerComponent<RigidBody2DComponent>();
+    ComponentManager::registerComponent<BoxCollider2DComponent>();
 }
 
 } // end of namespace rl

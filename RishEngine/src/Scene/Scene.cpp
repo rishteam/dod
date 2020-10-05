@@ -80,6 +80,7 @@ void Scene::onUpdate(Time dt)
     });
 
     // hax boxCollider change coordinate
+    // TODO: tomorrow fix the component
     if(m_sceneState == SceneState::Play) {
         auto group4 = m_registry.view<TransformComponent, BoxCollider2DComponent>();
         for (auto entity : group4) {
@@ -97,6 +98,8 @@ void Scene::onUpdate(Time dt)
                 phy->wh.y = boxc->h;
             }
         }
+
+        // TODO: to physics engine helper funciton
 
         PhysicsWorld.Step(dt);
 

@@ -8,6 +8,12 @@ namespace rl {
  * @brief RigidBody2D
  */
 struct RigidBody2DComponent{
+
+    enum class BodyType {
+        Static = 0,
+        Dynamic
+    };
+
     RigidBody2DComponent() = default;
     //角速度
     float angularVelocity = 0.0f;
@@ -23,7 +29,6 @@ struct RigidBody2DComponent{
     float friction = 0.0f;
     //質量，質量倒數
     float mass = 10.0f;
-    bool isCollide = false;
 
 
 private:
@@ -38,8 +43,7 @@ private:
             CEREAL_NVP(force),
             CEREAL_NVP(torque),
             CEREAL_NVP(friction),
-            CEREAL_NVP(mass),
-            CEREAL_NVP(isCollide)
+            CEREAL_NVP(mass)
         );
     }
 };

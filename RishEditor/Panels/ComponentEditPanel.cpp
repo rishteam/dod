@@ -165,6 +165,60 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
     EndDrawEditComponent();
 }
 
+template<>
+void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
+{
+    BeginDrawEditComponent(RigidBody2DComponent);
+    {
+        DrawRightClickMenu(RigidBody2DComponent, false);
+        static const char *bodyType[2] = {"Static", "Dynamic"};
+        static int bodyTypeNowSelect = 1;
+        auto &rigid = m_targetEntity.getComponent<RigidBody2DComponent>();
+        float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
+        float forceVector[2] = {rigid.force.x, rigid.force.y};
+        ImGui::Text("Physics Parameter");
+        {
+            ImGui::InputFloat("Mass", &rigid.mass, 1.0f, 5.0f, "%.2f");
+            ImGui::InputFloat("Friction", &rigid.friction, 1.0f, 5.0f, "%.2f");
+            ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
+            ImGui::DragFloat2("Force", forceVector, 1.0f);
+            rigid.velocity.x = velocityVector[0];
+            rigid.velocity.y = velocityVector[1];
+            rigid.force.x = forceVector[0];
+            rigid.force.y = forceVector[1];
+            ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
+            ImGui::Text("Torque: %.2f", rigid.torque);
+        }
+        ImGui::Separator();
+        ImGui::Text("Body Type");
+        {
+            ImGui::Combo("Body type", &bodyTypeNowSelect, bodyType, 2);
+            if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
+            {
+               rigid.mass = MAX_float;
+            }
+        }
+
+        // TODO: Vec2 change to glm::Vec2
+        // velocity, force
+
+    }
+    EndDrawEditComponent();
+}
+
+template<>
+void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
+{
+    BeginDrawEditComponent(BoxCollider2DComponent);
+    {
+        DrawRightClickMenu(BoxCollider2DComponent, false);
+        auto &rigid = m_targetEntity.getComponent<BoxCollider2DComponent>();
+        ImGui::Text("BoxCollider2D Component");
+    }
+    EndDrawEditComponent();
+}
+
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -186,13 +240,13 @@ void ComponentEditPanel::onImGuiRender()
     ImGui::BeginChild("EntityComponentEdit");
     {
         // TODO: Make this into dispatcher
-        //
         drawEditComponentWidget<TagComponent>();
         drawEditComponentWidget<TransformComponent>();
         drawEditComponentWidget<RenderComponent>();
         drawEditComponentWidget<CameraComponent>();
         drawEditComponentWidget<NativeScriptComponent>();
-
+        drawEditComponentWidget<RigidBody2DComponent>();
+        drawEditComponentWidget<BoxCollider2DComponent>();
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
         {
