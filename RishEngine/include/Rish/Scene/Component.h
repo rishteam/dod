@@ -482,7 +482,7 @@ struct ParticleComponent {
     float vortexSleepTime = 0;
     Clock vortexSleepTimer;
 
-    std::string texturePath = "assets/texture/1.png";
+    std::string texturePath = "assets/texture/texture.png";
 
     std::string dataPath = "";
 

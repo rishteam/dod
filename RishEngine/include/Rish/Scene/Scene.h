@@ -81,7 +81,9 @@ public:
 	bool m_debugCamera          = false;
 	bool m_debugPhysics         = true;
 	bool m_debugCameraComponent = false;
-private:
+
+	// TODO: FIX ME
+//private:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
     ////////////////////////////////////////////////////////////////
@@ -119,6 +121,7 @@ private:
     friend class EditController;
 
     friend class ParticleSystem;
+    friend class ExampleSandboxLayer;
 
     ////////////////////////////////////////////////////////////////
     // Serialization functions

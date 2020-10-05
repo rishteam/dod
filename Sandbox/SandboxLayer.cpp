@@ -1,4 +1,5 @@
 #include "SandboxLayer.h"
+#include <Rish/Effect/Particle/ParticleSystem.h>
 
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("ExampleSandboxLayer"),
@@ -17,6 +18,9 @@ void ExampleSandboxLayer::onAttach()
     auto cur = rl::FileSystem::GetCurrentDirectoryPath();
     m_scene = rl::MakeRef<rl::Scene>();
     m_world = rl::MakeRef<rl::PhysicsWorld>(Vec2(0.0f, -9.8f), 800.0f, 600.0f);
+
+    auto particleEntity = m_scene->createEntity("particle");
+    particleEntity.addComponent<ParticleComponent>();
 }
 
 void ExampleSandboxLayer::onDetach()
@@ -27,33 +31,40 @@ void ExampleSandboxLayer::onDetach()
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
-    Renderer2D::BeginScene(m_cameraController.getCamera());
+    // TODO : BlendFunc
+    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+    Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     m_world->timeStep = dt;
 
+    ParticleSystem::onUpdate(m_scene->m_registry, dt);
+    ParticleSystem::onRender(m_scene->m_registry, m_scene->getSceneState());
+
     //simulate
-    m_world->Step(dt);
-
-    //draw box
-    for(auto obj : m_world->bodies)
-    {
-        Renderer2D::DrawRotatedQuad({obj->position.x, obj->position.y}, { obj->wh.x, obj->wh.y}, {1, 0, 0, 0.5}, glm::degrees(obj->angle));
-    }
-    for(auto jit : m_world->joints)
-    {
-        Mat22 R1(jit->b1->angle);
-        Mat22 R2(jit->b2->angle);
-
-        Vec2 x1 = jit->b1->position;
-        Vec2 p1 = x1 + R1 * jit->localAnchor1;
-
-        Vec2 x2 = jit->b2->position;
-        Vec2 p2 = x2 + R2 * jit->localAnchor2;
-
-        Renderer2D::DrawLine({x1.x, x1.y}, {p1.x, p1.y}, {1, 1, 1, 0.5});
-        Renderer2D::DrawLine({x2.x, x2.y}, {p2.x, p2.y}, {1, 1, 1, 0.5});
-    }
+//    m_world->Step(dt);
+//
+//    //draw box
+//    for(auto obj : m_world->bodies)
+//    {
+//        Renderer2D::DrawRotatedQuad({obj->position.x, obj->position.y}, { obj->wh.x, obj->wh.y}, {1, 0, 0, 0.5}, glm::degrees(obj->angle));
+//    }
+//    for(auto jit : m_world->joints)
+//    {
+//        Mat22 R1(jit->b1->angle);
+//        Mat22 R2(jit->b2->angle);
+//
+//        Vec2 x1 = jit->b1->position;
+//        Vec2 p1 = x1 + R1 * jit->localAnchor1;
+//
+//        Vec2 x2 = jit->b2->position;
+//        Vec2 p2 = x2 + R2 * jit->localAnchor2;
+//
+//        Renderer2D::DrawLine({x1.x, x1.y}, {p1.x, p1.y}, {1, 1, 1, 0.5});
+//        Renderer2D::DrawLine({x2.x, x2.y}, {p2.x, p2.y}, {1, 1, 1, 0.5});
+//    }
 
     Renderer2D::EndScene();
+    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+    // TODO : Set Back to Default
 }
 
 void ExampleSandboxLayer::onImGuiRender()

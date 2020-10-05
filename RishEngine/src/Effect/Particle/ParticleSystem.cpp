@@ -191,11 +191,12 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
         auto &emitter   = registry.get<ParticleComponent>(entity);
         auto &tag       = registry.get<TagComponent>(entity);
 
-        if(state == Scene::SceneState::Editor)
-        {
-            Renderer2D::DrawQuad(transform.translate, {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
-            continue;
-        }
+        // TODO Fix Me
+//        if(state == Scene::SceneState::Editor)
+//        {
+//            Renderer2D::DrawQuad(transform.translate, {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
+//            continue;
+//        }
 
         for(auto &particle: emitter.particles)
         {
