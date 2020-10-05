@@ -121,6 +121,7 @@ add_library(RishEngine
     src/Scene/Entity.cpp
     src/Scene/ComponentManager.cpp
     src/Scene/SceneCamera.cpp
+    src/Scene/ScriptableManager.cpp
 
     src/ImGui.cpp
     src/Math/AABB.cpp

@@ -1,7 +1,7 @@
 #include <Rish/Physics/PhysicsWorld.h>
 
 bool rl::PhysicsWorld::accumulateImpulses = true;
-bool rl::PhysicsWorld::warmStarting = true;
+bool rl::PhysicsWorld::warmStarting = false;
 bool rl::PhysicsWorld::positionCorrection = true;
 float rl::PhysicsWorld::width;
 float rl::PhysicsWorld::height;
@@ -96,6 +96,9 @@ void rl::PhysicsWorld::BoardPhase()
     {
         for(int j = i+1; j < bodies.size(); j++)
         {
+            if(!bodies.at(i)->isCollide || !bodies.at(j)->isCollide)
+                continue;
+
             if(bodies.at(i)->invMass == 0.0f && bodies.at(j)->invMass == 0.0f)
                 continue;
 
@@ -107,6 +110,7 @@ void rl::PhysicsWorld::BoardPhase()
             // SAT collision
             auto box1 = MakeRef<Box>(bodies.at(i));
             auto box2 = MakeRef<Box>(bodies.at(j));
+
             if(box1->isCollide(box2))
             {
                 //add new arbiter

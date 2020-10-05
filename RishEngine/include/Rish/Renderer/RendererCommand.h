@@ -61,11 +61,43 @@ public:
         LessEqual,
         Equal
     };
+
     /**
      * @brief Set depth function
      * @param option
      */
     static void SetDepthFunc(DepthFunc option);
+
+    /**
+     * @brief Blend Function options
+     * @details <https://www.cnblogs.com/ylwn817/archive/2012/09/07/2675285.html>
+     */
+    enum class BlendFactor
+    {
+        Zero,
+        One,
+        SrcColor,
+        DstColor,
+        OneMinusSrcColor,
+        OneMinusDstColor,
+        SrcAlpha,
+        DstAlpha,
+        OneMinusSrcAlpha,
+        OneMinusDstAlpha
+    };
+
+    /**
+     * @brief Turn on/off Blend
+     * @param state 
+     */
+    static void SetBlendMode(bool state);
+
+    /**
+     * @brief Set Blend Function
+     * @param src Source Factor
+     * @param dst Destination Factor
+     */
+    static void SetBlendFunc(BlendFactor src, BlendFactor dst);
 
     /**
      * @brief Clear the render target

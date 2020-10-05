@@ -7,6 +7,8 @@
 #include <Rish/Utils/FileDialog.h>
 
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/ScriptableManager.h>
+#include <Rish/Effect/Particle/ParticleSystem.h>
 
 #include <Rish/ImGui.h>
 #include <imgui_internal.h>
@@ -84,14 +86,39 @@ void EditorLayer::onAttach()
     for(auto &panel : m_panelList)
         panel->onAttach(m_scene);
 
+    // Test
+    ScriptableManager::Register<SpriteRoatate>();
+    ScriptableManager::Register<CameraController>();
+
     Entity debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-//    debugEntity = m_scene->createEntity("DebugSprite");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+    debugEntity = m_scene->createEntity("DebugSprite");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
+    debugEntity = m_scene->createEntity("static physcis");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<BoxCollider2DComponent>();
+
+    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
+    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
+    rigbd.mass = MAX_float;
+    box.x = 0.0f;
+    box.y = 0.0f;
+    box.w = 3.0f;
+    box.h = 3.0f;
+
+//    debugEntity = m_scene->createEntity("Physics 2");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<RigidBody2DComponent>();
+//
+//    debugEntity = m_scene->createEntity("Physics 3");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<RigidBody2DComponent>();
+//
 //    debugEntity = m_scene->createEntity("PhysicsTest");
 //    debugEntity.addComponent<RenderComponent>();
 //    debugEntity.addComponent<RigidBody2DComponent>();
@@ -110,21 +137,19 @@ void EditorLayer::onDetach()
         panel->onDetach();
 }
 
-void EditorLayer::onUpdate(Time dt)
-{
-    switch(m_scene->getSceneState())
-    {
+void EditorLayer::onUpdate(Time dt) {
+    switch (m_scene->getSceneState()) {
         case Scene::SceneState::Editor:
 
-        break;
+            break;
 
         case Scene::SceneState::Play:
 
-        break;
+            break;
 
         case Scene::SceneState::Pause:
 
-        break;
+            break;
     }
     //
     auto cameraController = m_editController->getCameraController();
@@ -132,14 +157,17 @@ void EditorLayer::onUpdate(Time dt)
     // Resize the framebuffer if user resize the viewport
     auto framebufferSpec = m_editorFramebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
-    if(m_sceneViewportPanelSize != framebufferSize &&
-        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
-    {
-        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x,
-                                    (uint32_t)m_sceneViewportPanelSize.y);
+    if (m_sceneViewportPanelSize != framebufferSize &&
+        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f) {
+        m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
+                                    (uint32_t) m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
+
     // TODO: Rendering Queue
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Editor
+    /////////////////////////////////////////////////////////////////////////////////////////////
     Renderer2D::ResetStats();
     m_editorFramebuffer->bind();
     {
@@ -150,8 +178,12 @@ void EditorLayer::onUpdate(Time dt)
         m_editController->onUpdate(dt);
         Renderer2D::EndScene();
     }
+
     m_editorFramebuffer->unbind();
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Scene
+    /////////////////////////////////////////////////////////////////////////////////////////////
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
@@ -239,11 +271,14 @@ void EditorLayer::onImGuiRender()
     {
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            m_editorScene->copySceneTo(m_runtimeScene);
-
-            switchCurrentScene(m_runtimeScene);
-
-            m_scene->onScenePlay();
+            if(m_scene->getSceneState() == Scene::SceneState::Editor)
+            {
+                m_editorScene->copySceneTo(m_runtimeScene);
+                switchCurrentScene(m_runtimeScene);
+                m_scene->onScenePlay();
+            }
+            else
+                m_scene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
         }
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_PAUSE))
@@ -253,9 +288,11 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_STOP))
         {
-            m_scene->onSceneStop();
-
-            switchCurrentScene(m_editorScene);
+            if(m_scene->getSceneState() == Scene::SceneState::Play)
+            {
+                m_scene->onSceneStop();
+                switchCurrentScene(m_editorScene);
+            }
         }
     }
     ImGui::End();
@@ -380,12 +417,21 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Debug"))
         {
-            ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
-            ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
-            ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
-            ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
-            ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
-            ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
+            if(ImGui::BeginMenu("Edit Controller"))
+            {
+                ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
+                ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
+                ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
+                ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
+                ImGui::EndMenu();
+            }
+            if(ImGui::BeginMenu("Scene"))
+            {
+                ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
+                ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
+                ImGui::MenuItem("Camera Component Debug", nullptr, &m_scene->m_debugCameraComponent);
+                ImGui::EndMenu();
+            }
             ImGui::EndMenu();
         }
 

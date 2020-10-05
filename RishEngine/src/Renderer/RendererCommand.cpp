@@ -28,8 +28,8 @@ void RenderCommand::Init()
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 #endif
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    SetBlendMode(true);
+    SetBlendFunc(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
 //    SetDepthTest(false);
 }
@@ -103,6 +103,89 @@ void RenderCommand::SetLineSmooth(bool state)
         glEnable(GL_LINE_SMOOTH);
     else
         glDisable(GL_LINE_SMOOTH);
+}
+
+void RenderCommand::SetBlendMode(bool state)
+{
+    if(state)
+        glEnable(GL_BLEND);
+    else
+        glDisable(GL_BLEND);
+}
+
+void RenderCommand::SetBlendFunc(BlendFactor src, BlendFactor dst)
+{
+    GLenum s{};
+    switch (src)
+    {
+        case BlendFactor::Zero:
+            s = GL_ZERO;
+            break;
+        case BlendFactor::One:
+            s = GL_ONE;
+            break;
+        case BlendFactor::SrcColor:
+            s = GL_SRC_COLOR;
+            break;
+        case BlendFactor::DstColor:
+            s = GL_DST_COLOR;
+            break;
+        case BlendFactor::OneMinusSrcColor:
+            s = GL_ONE_MINUS_SRC_COLOR;
+            break;
+        case BlendFactor::OneMinusDstColor:
+            s = GL_ONE_MINUS_DST_COLOR;
+            break;
+        case BlendFactor::SrcAlpha:
+            s = GL_SRC_ALPHA;
+            break;
+        case BlendFactor::DstAlpha:
+            s = GL_DST_ALPHA;
+            break;
+        case BlendFactor::OneMinusSrcAlpha:
+            s = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        case BlendFactor::OneMinusDstAlpha:
+            s = GL_ONE_MINUS_DST_ALPHA;
+            break;
+    }
+    //
+    GLenum d{};
+    switch (dst)
+    {
+        case BlendFactor::Zero:
+            d = GL_ZERO;
+            break;
+        case BlendFactor::One:
+            d = GL_ONE;
+            break;
+        case BlendFactor::SrcColor:
+            d = GL_SRC_COLOR;
+            break;
+        case BlendFactor::DstColor:
+            d = GL_DST_COLOR;
+            break;
+        case BlendFactor::OneMinusSrcColor:
+            d = GL_ONE_MINUS_SRC_COLOR;
+            break;
+        case BlendFactor::OneMinusDstColor:
+            d = GL_ONE_MINUS_DST_COLOR;
+            break;
+        case BlendFactor::SrcAlpha:
+            d = GL_SRC_ALPHA;
+            break;
+        case BlendFactor::DstAlpha:
+            d = GL_DST_ALPHA;
+            break;
+        case BlendFactor::OneMinusSrcAlpha:
+            d = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        case BlendFactor::OneMinusDstAlpha:
+            d = GL_ONE_MINUS_DST_ALPHA;
+            break;
+    }
+    //
+    glBlendFunc(s, d);
 }
 
 }

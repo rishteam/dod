@@ -175,7 +175,6 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt)
                 particle.currentRotSpeed += particle.startRotSpeed * 0.1;
                 particle.angle += dt * particle.currentRotSpeed;
                 particle.angle = fmod(particle.angle, 360.f);
-                RL_CORE_TRACE("{}", particle.currentRotSpeed);
             }
         }
     }
@@ -230,6 +229,7 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
             }
         }
     }
+
 }
 
 float ParticleSystem::randomFloat(float min, float max)
@@ -342,7 +342,6 @@ void ParticleSystem::respawnVortex(ParticleComponent &emitter, TransformComponen
     vortex.turbulence = emitter.vortexTurbulence;
 
     vortex.life = vortex.startLife = randLife;
-    RL_CORE_TRACE("{}", vortex.life);
     vortex.startSize = vortex.currentSize = startSize;
     vortex.endSize = endSize;
     vortex.timeStep = 0.f;

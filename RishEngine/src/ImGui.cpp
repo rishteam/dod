@@ -118,6 +118,18 @@ bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::s
     return res;
 }
 
+bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::string_view> &v,
+                  int popup_max_height_in_items)
+{
+    const char* *strList = new const char*[v.size()];
+    //
+    for(int i = 0; i < v.size(); i++)
+        strList[i] = v[i].data();
+    bool res = Combo(label, current_item, strList, v.size(), popup_max_height_in_items);
+    delete [] strList;
+    return res;
+}
+
 void ImGui::HelpMarker(const char *desc)
 {
     ImGui::TextDisabled("(?)");

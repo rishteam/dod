@@ -48,6 +48,7 @@ void HelpMarker(const char* desc);
 //
 // Support STL containers
 bool Combo(const char *label, int *current_item, const std::vector<std::string> &v, int popup_max_height_in_items = -1);
+bool Combo(const char *label, int *current_item, const std::vector<std::string_view> &v, int popup_max_height_in_items = -1);
 
 } // end of namespace ImGui
 
