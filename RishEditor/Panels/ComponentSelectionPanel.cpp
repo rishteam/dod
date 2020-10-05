@@ -16,7 +16,7 @@ void ComponentSelectionPanel::onImGuiRender()
     {
         if (ImGui::Selectable(k.c_str()+4))
         {
-            ComponentManager::addComponent(getSelectedEntity(), k);
+            ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
         }
     }
 }

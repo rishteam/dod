@@ -60,6 +60,12 @@ public:
         if(Input::IsKeyPressed(Keyboard::D))
             trans.x += speed * dt.asSeconds();
     }
+
+    void onImGuiRender() override
+    {
+        auto &trans = getComponent<TransformComponent>().translate;
+        ImGui::DragFloat3("Translate", glm::value_ptr(trans));
+    }
 };
 
 class SpriteRoatate : public ScriptableEntity
@@ -70,6 +76,10 @@ public:
         auto &trans = getComponent<TransformComponent>();
         trans.rotate += 100.f * dt.asSeconds();
         trans.rotate = std::fmod(trans.rotate, 360.f);
+    }
+
+    void onImGuiRender() override
+    {
     }
 };
 

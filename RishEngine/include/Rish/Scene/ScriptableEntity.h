@@ -19,7 +19,8 @@ public:
 protected:
     virtual void onCreate() {}
     virtual void onDestroy() {}
-    virtual void onUpdate(Time dt) {}
+    virtual void onUpdate(Time dt) = 0;
+    virtual void onImGuiRender() = 0;
 
 private:
     Entity m_entity;
@@ -29,6 +30,9 @@ private:
 
 class EmptyScript : public ScriptableEntity
 {
+public:
+    virtual void onUpdate(Time dt) {}
+    virtual void onImGuiRender() {}
 };
 
 /**
@@ -39,6 +43,7 @@ struct NativeScriptComponent
     ScriptableEntity *instance = nullptr;
     std::string scriptName     = "";
 
+    // type alias
     using NewFunc    = ScriptableEntity* (*)();
     using DeleteFunc = void (*)(NativeScriptComponent*);
 

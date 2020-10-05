@@ -16,12 +16,15 @@ public:
     template<typename T>
     static void Register()
     {
+        // Register the type to the list
         std::string typeName = std::string{entt::type_info<T>::name()};
         s_typeName.emplace_back(typeName);
-        //
+        // Set the binding function
         s_scriptBindMap[typeName] = [](NativeScriptComponent &script) {
             script.bind<T>();
         };
+
+        auto &bindFunc = s_scriptBindMap[typeName];
     }
 
     static bool Bind(NativeScriptComponent &script, const std::string &typeName)
@@ -49,9 +52,9 @@ public:
     using BindFunc=void (*)(NativeScriptComponent &);
     using TypeToBindFuncMap = std::unordered_map<std::string, BindFunc>;
 private:
-    static TypeToBindFuncMap s_scriptBindMap;
+    static TypeToBindFuncMap s_scriptBindMap;   ///< Type Name Mapping
 
-    static std::vector<std::string> s_typeName;
+    static std::vector<std::string> s_typeName; ///< Type Name list
 
     static const std::vector<std::string>& GetScriptNames()
     {

@@ -47,8 +47,8 @@ public:
         s_typeNameToDelFunction[type_name] = std::move(delFunc);
     }
 
-    static void addComponent(Entity entity, std::string type);
-    static void delComponent(Entity entity, std::string type);
+    static void addComponentByTypeName(Entity entity, const std::string& type);
+    static void delComponentByTypeName(Entity entity, const std::string& type);
 
     using AddMapping=std::unordered_map<std::string, AddComponentFunction>;
     using DelMapping=std::unordered_map<std::string, DelComponentFunction>;
