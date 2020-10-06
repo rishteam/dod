@@ -53,9 +53,6 @@ void EditController::onUpdate(Time dt)
     m_cameraController->onUpdate(dt);
     m_editorGrid.onUpdate();
 
-    // TODO: Move me to EditLayer
-//    ParticleSystem::onRender(getContext()->m_registry, getContext()->m_sceneState);
-
     auto scene = getContext();
     auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
     for(auto entity: transGroup)

@@ -180,7 +180,7 @@ void EditorLayer::onUpdate(Time dt) {
 
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
         Renderer2D::BeginScene(cameraController->getCamera());
-        ParticleSystem::onRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState);
+        m_editController->m_simulateParticle ? ParticleSystem::onRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState) : ParticleSystem::onRender(m_editController->getContext()->m_registry, Scene::SceneState::Editor);
         Renderer2D::EndScene();
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
@@ -429,6 +429,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
                 ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
                 ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
+                ImGui::MenuItem("Simulate Particle In Editor", nullptr, &m_editController->m_simulateParticle);
                 ImGui::EndMenu();
             }
             if(ImGui::BeginMenu("Scene"))

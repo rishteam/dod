@@ -54,6 +54,7 @@ public:
     bool m_debugCameraController = false;
     bool m_debugEditorController = false;
     bool m_debugShowIcon         = true;
+    bool m_simulateParticle      = false;
 
 };
 

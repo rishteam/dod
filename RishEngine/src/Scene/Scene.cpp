@@ -199,8 +199,7 @@ void Scene::onUpdate(Time dt)
     }
 
     // Particle System update
-    if(m_sceneState == SceneState::Play)
-        ParticleSystem::onUpdate(m_registry, dt);
+    ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();

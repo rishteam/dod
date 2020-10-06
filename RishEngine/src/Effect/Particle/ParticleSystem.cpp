@@ -3,9 +3,9 @@
 
 namespace rl {
 
-void ParticleSystem::onUpdate(entt::registry &registry, float dt)
+void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneState state)
 {
-    RL_CORE_TRACE("ParticleSystem onUpdate");
+    if(state != Scene::SceneState::Play) return;
 
     auto view = registry.view<TransformComponent, ParticleComponent>();
     for(auto entity : view)

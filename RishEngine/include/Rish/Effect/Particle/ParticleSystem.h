@@ -13,10 +13,8 @@ class RL_API ParticleSystem
 public:
     ParticleSystem() = default;
 
-    static void onUpdate(entt::registry& registry, float dt);
+    static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state = Scene::SceneState::Editor);
     static void onRender(entt::registry& registry, Scene::SceneState state = Scene::SceneState::Editor);
-
-    static bool loadEmitData();
 
 private:
     // TODO: remove
