@@ -246,16 +246,14 @@ void Scene::onUpdate(Time dt)
                 Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
         }
     }
-
     Renderer2D::EndScene();
 
+    // Draw Particle system
     RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
     ParticleSystem::onRender(m_registry, m_sceneState);
     Renderer2D::EndScene();
     RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-
-
 }
 
 void Scene::onScenePlay()

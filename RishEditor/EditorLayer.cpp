@@ -94,22 +94,22 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-    debugEntity = m_scene->createEntity("DebugSprite");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//    debugEntity = m_scene->createEntity("DebugSprite");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//
+//    debugEntity = m_scene->createEntity("static physcis");
+//    debugEntity.addComponent<RenderComponent>();
+//    debugEntity.addComponent<RigidBody2DComponent>();
+//    debugEntity.addComponent<BoxCollider2DComponent>();
 
-    debugEntity = m_scene->createEntity("static physcis");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    debugEntity.addComponent<BoxCollider2DComponent>();
-
-    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
-    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
-    rigbd.mass = MAX_float;
-    box.x = 0.0f;
-    box.y = 0.0f;
-    box.w = 3.0f;
-    box.h = 3.0f;
+//    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
+//    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
+//    rigbd.mass = MAX_float;
+//    box.x = 0.0f;
+//    box.y = 0.0f;
+//    box.w = 3.0f;
+//    box.h = 3.0f;
 
 //    debugEntity = m_scene->createEntity("Physics 2");
 //    debugEntity.addComponent<RenderComponent>();
@@ -177,6 +177,12 @@ void EditorLayer::onUpdate(Time dt) {
         Renderer2D::BeginScene(cameraController->getCamera());
         m_editController->onUpdate(dt);
         Renderer2D::EndScene();
+
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+        Renderer2D::BeginScene(cameraController->getCamera());
+        ParticleSystem::onRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState);
+        Renderer2D::EndScene();
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
 
     m_editorFramebuffer->unbind();
