@@ -583,6 +583,7 @@ struct ParticleComponent {
         maxParticlesPerFrame = emitNumber + emitVariance;
         poolSize             = maxParticlesPerFrame * (maxParticleLife + 1);
         particles.resize(poolSize);
+        vortexPoolSize = vortexEmitNumber*3;
         dynamic_vortexes.resize(vortexPoolSize);
         static_vortexes.resize(1);
         texture = Texture2D::LoadTextureVFS(texturePath);

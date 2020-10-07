@@ -400,9 +400,9 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     ImGui::SameLine();
                     ImGui::DragFloat("Vortex TurbulenceY", &emitter.vortexTurbulence.y, 0.1f, 0.f, 0.f, "%.1f");
 
-                    ImGui::DragFloat("Vortex Start Size", &emitter.vortexStartSize, 1.f, 0.f, 0.f, "%.2f");
+                    ImGui::DragFloat("Vortex Start Size", &emitter.vortexStartSize, 0.05f, 0.f, 0.f, "%.2f");
                     ImGui::SameLine();
-                    ImGui::DragFloat("Vortex End Size", &emitter.vortexEndSize, 1.f, 0.f, 0.f, "%.2f");
+                    ImGui::DragFloat("Vortex End Size", &emitter.vortexEndSize, 0.05f, 0.f, 0.f, "%.2f");
 
                     const ImU32 emitMin = 0, emitMax = 50, vortexLife = 1;
                     if(ImGui::DragScalar("Vortex Particle Life", ImGuiDataType_U32, &emitter.vortexMaxParticleLife, 1.f, &vortexLife, 0, "%d"))
@@ -418,7 +418,10 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 
                     ImGui::PopItemWidth();
 
-                    ImGui::DragFloat("Vortex Sleep Time", &emitter.vortexSleepTime, 0.5f, 1.f, 0.f, "%.1f");
+                    if(ImGui::DragFloat("Vortex Sleep Time", &emitter.vortexSleepTime, 0.5f, -1.f, FLT_MAX, "%.1f"))
+                    {
+                        emitter.vortexSleepTimer.restart();
+                    }
 
                     ImGui::Separator();
                     ImGui::Text("Random Control");
@@ -436,15 +439,15 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     ImGui::SameLine();
                     ImGui::Text("VortexRandom End Speed");
 
-                    ImGui::DragFloat("##vortexStartSizex", &emitter.vortexStartSizeRand.x, .1f, 0.f, 100.f, "%.1f");
+                    ImGui::DragFloat("##vortexStartSizex", &emitter.vortexStartSizeRand.x, .05f, 0.f, 100.f, "%.3f");
                     ImGui::SameLine();
-                    ImGui::DragFloat("##vortexStartSizey", &emitter.vortexStartSizeRand.y, .1f, 0.f, 100.f, "%.1f");
+                    ImGui::DragFloat("##vortexStartSizey", &emitter.vortexStartSizeRand.y, .05f, 0.f, 100.f, "%.3f");
                     ImGui::SameLine();
                     ImGui::Text("Vortex Random Start Size");
 
-                    ImGui::DragFloat("##vortexEndSizex", &emitter.vortexEndSizeRand.x, .1f, 0.f, 100.f, "%.1f");
+                    ImGui::DragFloat("##vortexEndSizex", &emitter.vortexEndSizeRand.x, .05f, 0.f, 100.f, "%.1f");
                     ImGui::SameLine();
-                    ImGui::DragFloat("##vortexEndSizey", &emitter.vortexEndSizeRand.y, .1f, 0.f, 100.f, "%.1f");
+                    ImGui::DragFloat("##vortexEndSizey", &emitter.vortexEndSizeRand.y, .05f, 0.f, 100.f, "%.1f");
                     ImGui::SameLine();
                     ImGui::Text("Vortex Random End Size");
 

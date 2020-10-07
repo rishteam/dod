@@ -86,9 +86,9 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
             {
                 if(vortex.life > 0.f)
                 {
-                    vortex.currentSize  = interpolateBetweenRange(vortex.startSize, vortex.timeStep, vortex.endSize)/100;
-                    vortex.currentVel.x = interpolateBetweenRange(vortex.startVel.x, vortex.timeStep, vortex.endVel.x)/10;
-                    vortex.currentVel.y = interpolateBetweenRange(vortex.startVel.y, vortex.timeStep, vortex.endVel.y)/10;
+                    vortex.currentSize  = interpolateBetweenRange(vortex.startSize, vortex.timeStep, vortex.endSize);
+                    vortex.currentVel.x = interpolateBetweenRange(vortex.startVel.x, vortex.timeStep, vortex.endVel.x);
+                    vortex.currentVel.y = interpolateBetweenRange(vortex.startVel.y, vortex.timeStep, vortex.endVel.y);
 
                     vortex.pos.x += vortex.currentVel.x * dt;
                     vortex.pos.y += vortex.currentVel.y * dt;
@@ -109,9 +109,9 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
                 // Update
                 // Interpolate values
                 // 利用差質法算出目前的資訊
-                particle.currentSize  = interpolateBetweenRange(particle.startSize, particle.timeStep, particle.endSize)/100;
-                particle.currentVel.x = interpolateBetweenRange(particle.startVel.x, particle.timeStep, particle.endVel.x)/10;
-                particle.currentVel.y = interpolateBetweenRange(particle.startVel.y, particle.timeStep, particle.endVel.y)/10;
+                particle.currentSize  = interpolateBetweenRange(particle.startSize, particle.timeStep, particle.endSize);
+                particle.currentVel.x = interpolateBetweenRange(particle.startVel.x, particle.timeStep, particle.endVel.x);
+                particle.currentVel.y = interpolateBetweenRange(particle.startVel.y, particle.timeStep, particle.endVel.y);
                 particle.currentColor = RGBAInterpolation(particle.startColor, particle.timeStep, particle.endColor);
 
                 // 計算受vortex影響的結果
@@ -127,17 +127,20 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
                     {
                         for(auto vortex : emitter.static_vortexes)
                         {
-                            if(vortex.currentSize == 0.f)
+                            float vortexScaleSize = vortex.currentSize * 0.001;
+
+                            if(vortex.currentSize == 0.f || vortex.turbulence == glm::vec2(0, 0))
                                 continue;
 
                             float dx = particle.pos.x - vortex.pos.x;
                             float dy = particle.pos.y - vortex.pos.y;
-                            float vx = -dy * vortex.turbulence.x;
+                            float vx = dy * vortex.turbulence.x;
                             float vy = dx * vortex.turbulence.y;
-                            factor_ = 1.0f/ (1.0f + (dx*dx + dy*dy)/vortex.currentSize*0.1);
+                            factor_ = 1.0f/ (1.0f + (dx*dx + dy*dy)/(vortexScaleSize));
 
                             vortexEffectX += (vx - particle.currentVel.x) * factor_;
                             vortexEffectY += (vy - particle.currentVel.y) * factor_;
+
                         }
                     }
 
@@ -145,13 +148,18 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
                     {
                         for(auto vortex : emitter.dynamic_vortexes)
                         {
+                            float vortexScaleSize = vortex.currentSize * 0.1;
+
+                            if(vortex.currentSize == 0.f || vortex.turbulence == glm::vec2(0, 0))
+                                continue;
+
                             if(vortex.life > 0.f)
                             {
                                 float dx = particle.pos.x - vortex.pos.x;
                                 float dy = particle.pos.y - vortex.pos.y;
                                 float vx = -dy * vortex.turbulence.x;
                                 float vy = dx * vortex.turbulence.y;
-                                factor_ = 1.0f/ (1.0f + (dx*dx + dy*dy)/(vortex.currentSize*0.1));
+                                factor_ = 1.0f/ (1.0f + (dx*dx + dy*dy)/(vortexScaleSize));
                                 float lifeFactor = vortex.life/emitter.vortexMaxParticleLife;
                                 factor_ *= (1-lifeFactor)*lifeFactor*4;
 
@@ -165,7 +173,6 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
                 particle.pos.x += vortexEffectX + particle.currentVel.x * dt;
                 particle.pos.y += vortexEffectY + particle.currentVel.y * dt;
                 particle.life--;
-//                RL_CORE_TRACE("{}", particle.life);
                 // 計算差值的time
                 particle.timeStep+= (1.0f/(float)particle.startLife);
                 if(particle.timeStep >= 1.f)
@@ -210,8 +217,8 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
                 {
                     if(vortex.draw)
                     {
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.currentVel.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.currentVel.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
+                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
+                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
                     }
                 }
             }
@@ -222,8 +229,8 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
                 {
                     if(vortex.life > 0.f)
                     {
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.currentVel.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.currentVel.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
+                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
+                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
                     }
                 }
             }
@@ -282,13 +289,13 @@ void ParticleSystem::respawnParticle(ParticleComponent &emitter, TransformCompon
     glm::vec3 distance       = {randomFloat(emitter.disX, -emitter.disX), randomFloat(emitter.disY, -emitter.disY), 0.f};
 
     particle.pos             = transform.translate + distance;
-    particle.startVel        = {startSpeed * cos(glm::radians(randAngle)), startSpeed * sin(glm::radians(randAngle))};
-    particle.endVel          = {endSpeed   * cos(glm::radians(randAngle)), endSpeed   * sin(glm::radians(randAngle))};
+    particle.startVel        = {startSpeed * cos(glm::radians(randAngle)) * 0.1, startSpeed * sin(glm::radians(randAngle)) * 0.1};
+    particle.endVel          = {endSpeed   * cos(glm::radians(randAngle)) * 0.1, endSpeed   * sin(glm::radians(randAngle)) * 0.1};
     particle.angle           = randRotAngle;
     particle.startRotSpeed   = particle.currentRotSpeed = randRotateSpeed;
     particle.life            = particle.startLife       = randLife;
-    particle.currentSize     = particle.startSize       = randRadius;
-    particle.endSize         = randEndSize;
+    particle.currentSize     = particle.startSize       = randRadius * 0.01;
+    particle.endSize         = randEndSize * 0.01;
     particle.timeStep        = 0.f;
 
     particle.startColor      = emitter.startColor;
@@ -337,13 +344,13 @@ void ParticleSystem::respawnVortex(ParticleComponent &emitter, TransformComponen
     glm::vec3 distance = {randomFloat(emitter.vortexDisX, -emitter.vortexDisX), randomFloat(emitter.vortexDisY, -emitter.vortexDisY), 0.f};
 
     vortex.pos        = transform.translate + distance;
-    vortex.startVel   = {startSpeed * cos(glm::radians(randomAngle)), startSpeed * sin(glm::radians(randomAngle))};
-    vortex.endVel     = {endSpeed   * cos(glm::radians(randomAngle)), endSpeed   * sin(glm::radians(randomAngle))};
+    vortex.startVel   = {startSpeed * cos(glm::radians(randomAngle))*10, startSpeed * sin(glm::radians(randomAngle))*10};
+    vortex.endVel     = {endSpeed   * cos(glm::radians(randomAngle))*10, endSpeed   * sin(glm::radians(randomAngle))*10};
     vortex.turbulence = emitter.vortexTurbulence;
 
     vortex.life = vortex.startLife = randLife;
-    vortex.startSize = vortex.currentSize = startSize;
-    vortex.endSize = endSize;
+    vortex.startSize = vortex.currentSize = startSize * 0.01;
+    vortex.endSize = endSize * 0.001;
     vortex.timeStep = 0.f;
 }
 
