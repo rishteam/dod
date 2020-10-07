@@ -47,25 +47,44 @@ public:
     void onUpdate(Time dt) override
     {
         auto &trans = getComponent<TransformComponent>().translate;
-        RL_INFO("onUpdate() {}", dt.asSeconds());
+//        RL_INFO("onUpdate() {}", dt.asSeconds());
 
-        float speed = 10.f;
-
-        if(Input::IsKeyPressed(Keyboard::W))
-            trans.y += speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::S))
-            trans.y -= speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::A))
-            trans.x -= speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::D))
-            trans.x += speed * dt.asSeconds();
+        if(m_inverted)
+        {
+            if(Input::IsKeyPressed(Keyboard::S))
+                trans.y += m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::W))
+                trans.y -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::D))
+                trans.x -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::A))
+                trans.x += m_speed * dt.asSeconds();
+        }
+        else
+        {
+            if(Input::IsKeyPressed(Keyboard::W))
+                trans.y += m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::S))
+                trans.y -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::A))
+                trans.x -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::D))
+                trans.x += m_speed * dt.asSeconds();
+        }
     }
 
     void onImGuiRender() override
     {
         auto &trans = getComponent<TransformComponent>().translate;
         ImGui::DragFloat3("Translate", glm::value_ptr(trans));
+        ImGui::DragFloat("Speed", &m_speed);
+
+        ImGui::Checkbox("Inverted", &m_inverted);
     }
+
+private:
+    float m_speed = 10.f;
+    bool m_inverted = false;
 };
 
 class SpriteRoatate : public ScriptableEntity
@@ -278,6 +297,7 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
     {
+        // Play button
         if(ImGui::Button(ICON_FA_PLAY))
         {
             if(m_scene->getSceneState() == Scene::SceneState::Editor)
@@ -290,11 +310,15 @@ void EditorLayer::onImGuiRender()
                 m_scene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
         }
         ImGui::SameLine();
+
+        // Pause button
         if(ImGui::Button(ICON_FA_PAUSE))
         {
             m_scene->onScenePause();
         }
         ImGui::SameLine();
+
+        // Stop button
         if(ImGui::Button(ICON_FA_STOP))
         {
             if(m_scene->getSceneState() == Scene::SceneState::Play)

@@ -23,8 +23,10 @@ public:
         s_scriptBindMap[typeName] = [](NativeScriptComponent &script) {
             script.bind<T>();
         };
+    }
 
-        auto &bindFunc = s_scriptBindMap[typeName];
+    static void Shutdown()
+    {
     }
 
     static bool Bind(NativeScriptComponent &script, const std::string &typeName)
@@ -51,9 +53,9 @@ public:
     //
     using BindFunc=void (*)(NativeScriptComponent &);
     using TypeToBindFuncMap = std::unordered_map<std::string, BindFunc>;
+
 private:
     static TypeToBindFuncMap s_scriptBindMap;   ///< Type Name Mapping
-
     static std::vector<std::string> s_typeName; ///< Type Name list
 
     static const std::vector<std::string>& GetScriptNames()

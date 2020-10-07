@@ -4,7 +4,9 @@
 
 namespace rl {
 
-// TODO: Make ScriptableEntity register
+/**
+ * @brief Scriptable Entity
+ */
 class ScriptableEntity
 {
 public:
@@ -16,11 +18,19 @@ public:
         return m_entity.getComponent<T>();
     }
 
-protected:
     virtual void onCreate() {}
     virtual void onDestroy() {}
     virtual void onUpdate(Time dt) = 0;
     virtual void onImGuiRender() = 0;
+
+    /**
+     * @brief Is the ScriptableEntity has a valid rl::Entity
+     * @return
+     */
+    bool haveValidEntity() const
+    {
+        return (bool)m_entity;
+    }
 
 private:
     Entity m_entity;
@@ -42,32 +52,20 @@ struct NativeScriptComponent
 {
     ScriptableEntity *instance = nullptr;
     std::string scriptName     = "";
+    bool valid = false;
 
-    // type alias
-    using NewFunc    = ScriptableEntity* (*)();
-    using DeleteFunc = void (*)(NativeScriptComponent*);
-
-    NewFunc newScript       = nullptr;
-    DeleteFunc deleteScript = nullptr;
-
-    template<typename T>
-    void bind()
+    template<typename T, typename ... Args>
+    void bind(Args&& ... args)
     {
         scriptName = entt::type_info<T>::name();
-        newScript = []() {
-            return static_cast<ScriptableEntity*>(new T());
-        };
-        deleteScript = [](NativeScriptComponent *nsc) {
-            delete nsc->instance;
-            nsc->instance = nullptr;
-        };
+        instance = new T(std::forward<Args>(args)...);
     }
-
+//
     void unbind()
     {
         scriptName = "DefaultScript";
-        newScript = nullptr;
-        deleteScript = nullptr;
+        delete instance;
+        instance = nullptr;
     }
 };
 

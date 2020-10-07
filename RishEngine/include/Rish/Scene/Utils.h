@@ -17,6 +17,7 @@ void CopyComponent(entt::registry &dst, entt::registry &src,
         // Get destination entity by id
         auto id = src.get<TagComponent>(srcEnt).id;
         auto dstEnt = enttMap[id];
+
         // Copy the component to destination entity
         auto &srcComponent = src.get<T>(srcEnt);
         dst.emplace_or_replace<T>(dstEnt, srcComponent);

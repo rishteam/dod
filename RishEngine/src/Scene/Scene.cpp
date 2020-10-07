@@ -100,9 +100,10 @@ Entity Scene::duplicateEntity(Entity src)
 
 void Scene::onUpdate(Time dt)
 {
-    m_registry.view<NativeScriptComponent>().each([=](auto entity, auto &nsc) {
-        RL_UNUSED(entity);
-        if(nsc.instance) {
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
+        nsc.instance->m_entity = Entity{entityID, this};
+        if(nsc.valid)
+        {
             nsc.instance->onUpdate(dt);
         }
     });
@@ -235,7 +236,6 @@ void Scene::onUpdate(Time dt)
         }
     }
 
-
     Renderer2D::EndScene();
 }
 
@@ -246,11 +246,9 @@ void Scene::onScenePlay()
     // Initialize the NativeScriptComponent
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
-        if (!nsc.instance) {
-            nsc.instance = nsc.newScript();
-            nsc.instance->m_entity = Entity{entityID, this};
-            nsc.instance->onCreate();
-        }
+        RL_UNUSED(entityID);
+        nsc.instance->onCreate();
+        nsc.valid = true;
     });
 
     // RigidBody2D Component
@@ -306,7 +304,7 @@ void Scene::onSceneStop()
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
         nsc.instance->onDestroy();
-        nsc.deleteScript(&nsc);
+        nsc.valid = false;
     });
 
     //clear physics object

@@ -164,19 +164,23 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
         //
         static int currentScript = 0;
         const auto &scriptList = ScriptableManager::GetScriptNames();
-        //
+
+        // Current select script
         auto cur = std::find(scriptList.begin(), scriptList.end(), scriptComponent.scriptName);
         if(cur != scriptList.end() && ScriptableManager::GetName<EmptyScript>() != *cur)
         {
             currentScript = cur - scriptList.begin();
         }
-        //
+
+        // Drop down combo
         if(ImGui::Combo("Script", &currentScript, scriptList))
         {
             ScriptableManager::Unbind(scriptComponent);
             ScriptableManager::Bind(scriptComponent, scriptList[currentScript]);
         }
+
         // Script Fields
+        scriptComponent.instance->onImGuiRender();
     }
     EndDrawEditComponent();
 }
