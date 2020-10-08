@@ -258,7 +258,7 @@ struct EmitData {
         ar(cereal::make_nvp("disY", disY));
         ar(cereal::make_nvp("texturePath", texturePath));
         ar(cereal::make_nvp("vortexSensitive", vortexSensitive));
-        ar(cereal::make_nvp("vortexPos", vortexPos));
+        ar(cereal::make_nvp("vortexOffset", vortexPos));
         ar(cereal::make_nvp("vortexAngleRange", vortexAngleRange));
         ar(cereal::make_nvp("vortexStartSpeed", vortexStartSpeed));
         ar(cereal::make_nvp("vortexEndSpeed", vortexEndSpeed));
@@ -619,7 +619,7 @@ struct ParticleComponent {
         ar(cereal::make_nvp("disY", disY));
         ar(cereal::make_nvp("texturePath", texturePath));
         ar(cereal::make_nvp("vortexSensitive", vortexSensitive));
-        ar(cereal::make_nvp("vortexPos", vortexPos));
+        ar(cereal::make_nvp("vortexOffset", vortexPos));
         ar(cereal::make_nvp("vortexAngleRange", vortexAngleRange));
         ar(cereal::make_nvp("vortexStartSpeed", vortexStartSpeed));
         ar(cereal::make_nvp("vortexEndSpeed", vortexEndSpeed));

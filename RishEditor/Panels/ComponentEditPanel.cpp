@@ -126,8 +126,6 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
         static int aspectNowSelect = 0;
         static float size = 5.f, near = -1.0f, far = 1.0f;
 
-
-
         // Primary
         ImGui::Checkbox("Primary", &camera.primary);
         ImGui::Checkbox("Fixed Aspect", &camera.lockAspect);
@@ -288,10 +286,18 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
             }
 
             ImGui::Text("Particle Pool Size: %d", emitter.poolSize);
-            ImGui::DragFloat("Sleep Time", &emitter.sleepTime, 0.1f, -1);
+            if(ImGui::DragFloat("Sleep Time", &emitter.sleepTime, 0.1f, -1.f, FLT_MAX, "%.2f"))
+            {
+                emitter.active = true;
+                emitter.sleepTimer.restart();
+            }
             ImGui::PopItemWidth();
 
-            ImGui::DragFloat("Emitter Life", &emitter.life, 1.f, 0.f, 0.f, "%.1f");
+            if(ImGui::DragFloat("Emitter Life", &emitter.life, 1.f, 0.f, 0.f, "%.1f"))
+            {
+                emitter.lifeTimer.restart();
+                emitter.active = true;
+            }
             ImGui::Separator();
             ImGui::Text("Random Control");
             ImGui::PushItemWidth(75);
@@ -384,9 +390,14 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                 else {
 
                     ImGui::PushItemWidth(100);
-                    ImGui::DragFloat("Vortex DistanceX", &emitter.vortexDisX, 1.f, 0.f, 0.f, "%.1f");
+
+                    ImGui::DragFloat("Vortex Offset##X", &emitter.vortexPos.x, 0.1f, 0.f, 0.f, "%.2f");
                     ImGui::SameLine();
-                    ImGui::DragFloat("Vortex DistanceY", &emitter.vortexDisY, 1.f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat("Vortex Offset##Y", &emitter.vortexPos.y, 0.1f, 0.f, 0.f, "%.2f");
+
+                    ImGui::DragFloat("Vortex DistanceX", &emitter.vortexDisX, .1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex DistanceY", &emitter.vortexDisY, .1f, 0.f, 0.f, "%.1f");
 
                     ImGui::DragFloat("Vortex AngleX", &emitter.vortexAngleRange.x, 0.5f, 0.f, 360.f, "%.2f");
                     ImGui::SameLine();
@@ -421,6 +432,7 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     if(ImGui::DragFloat("Vortex Sleep Time", &emitter.vortexSleepTime, 0.5f, -1.f, FLT_MAX, "%.1f"))
                     {
                         emitter.vortexSleepTimer.restart();
+                        emitter.vortexActive = true;
                     }
 
                     ImGui::Separator();

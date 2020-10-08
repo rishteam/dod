@@ -208,7 +208,7 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
             Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
                                         particle.currentColor, particle.angle);
         }
-        // TODO Change Direction;
+
         if(emitter.vortexSensitive)
         {
             if(emitter.vortexType == STATIC_VORTEX)
@@ -229,8 +229,8 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
                 {
                     if(vortex.life > 0.f)
                     {
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
+                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize*100, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
+                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize*100}, glm::vec4{0.f, 1.f, 0.f, 1.f});
                     }
                 }
             }
@@ -343,14 +343,14 @@ void ParticleSystem::respawnVortex(ParticleComponent &emitter, TransformComponen
     
     glm::vec3 distance = {randomFloat(emitter.vortexDisX, -emitter.vortexDisX), randomFloat(emitter.vortexDisY, -emitter.vortexDisY), 0.f};
 
-    vortex.pos        = transform.translate + distance;
+    vortex.pos        = transform.translate + distance + glm::vec3(emitter.vortexPos, 0.f);
     vortex.startVel   = {startSpeed * cos(glm::radians(randomAngle))*10, startSpeed * sin(glm::radians(randomAngle))*10};
     vortex.endVel     = {endSpeed   * cos(glm::radians(randomAngle))*10, endSpeed   * sin(glm::radians(randomAngle))*10};
     vortex.turbulence = emitter.vortexTurbulence;
 
     vortex.life = vortex.startLife = randLife;
     vortex.startSize = vortex.currentSize = startSize * 0.01;
-    vortex.endSize = endSize * 0.001;
+    vortex.endSize = endSize * 0.01;
     vortex.timeStep = 0.f;
 }
 
