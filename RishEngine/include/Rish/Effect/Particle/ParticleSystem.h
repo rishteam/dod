@@ -15,6 +15,7 @@ public:
 
     static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state = Scene::SceneState::Editor);
     static void onRender(entt::registry& registry, Scene::SceneState state = Scene::SceneState::Editor);
+    static void onEditorRender(entt::registry& registry, Scene::SceneState state = Scene::SceneState::Editor);
 
 private:
     // TODO: remove

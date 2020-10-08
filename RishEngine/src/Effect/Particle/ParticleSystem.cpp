@@ -208,6 +208,30 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
             Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
                                         particle.currentColor, particle.angle);
         }
+    }
+}
+
+void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState state)
+{
+    auto view = registry.view<TransformComponent, ParticleComponent>();
+
+    for (auto &entity: view)
+    {
+        auto &transform = registry.get<TransformComponent>(entity);
+        auto &emitter   = registry.get<ParticleComponent>(entity);
+        auto &tag       = registry.get<TagComponent>(entity);
+
+        if(state == Scene::SceneState::Editor)
+        {
+            Renderer2D::DrawQuad(transform.translate, {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
+            continue;
+        }
+
+        for(auto &particle: emitter.particles)
+        {
+            Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
+                                        particle.currentColor, particle.angle);
+        }
 
         if(emitter.vortexSensitive)
         {
@@ -236,7 +260,6 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
             }
         }
     }
-
 }
 
 float ParticleSystem::randomFloat(float min, float max)

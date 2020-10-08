@@ -180,7 +180,7 @@ void EditorLayer::onUpdate(Time dt) {
 
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
         Renderer2D::BeginScene(cameraController->getCamera());
-        m_editController->m_simulateParticle ? ParticleSystem::onRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState) : ParticleSystem::onRender(m_editController->getContext()->m_registry, Scene::SceneState::Editor);
+        m_editController->m_simulateParticle ? ParticleSystem::onEditorRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState) : ParticleSystem::onRender(m_editController->getContext()->m_registry, Scene::SceneState::Editor);
         Renderer2D::EndScene();
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
