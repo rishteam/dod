@@ -180,7 +180,7 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
                 //
                 // 計算rotate速度跟角度
                 particle.currentRotSpeed += particle.startRotSpeed * 0.1;
-                particle.angle += dt * particle.currentRotSpeed;
+                particle.angle += dt * particle.currentRotSpeed*10;
                 particle.angle = fmod(particle.angle, 360.f);
             }
         }
@@ -205,8 +205,8 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
 
         for(auto &particle: emitter.particles)
         {
-            Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
-                                        particle.currentColor, particle.angle);
+            if(particle.life > 0) Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
+                                              particle.currentColor, particle.angle);
         }
     }
 }
@@ -227,10 +227,11 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
             continue;
         }
 
+
         for(auto &particle: emitter.particles)
         {
-            Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
-                                        particle.currentColor, particle.angle);
+            if(particle.life > 0) Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
+                                              particle.currentColor, particle.angle);
         }
 
         if(emitter.vortexSensitive)
@@ -311,7 +312,7 @@ void ParticleSystem::respawnParticle(ParticleComponent &emitter, TransformCompon
     float randRotAngle       = randomFloat(0.f, emitter.rotateSpeed == 0? 0.f : 360.f);
     glm::vec3 distance       = {randomFloat(emitter.disX, -emitter.disX), randomFloat(emitter.disY, -emitter.disY), 0.f};
 
-    particle.pos             = transform.translate + distance;
+    particle.pos             = transform.translate + distance + glm::vec3(emitter.offset, 0);
     particle.startVel        = {startSpeed * cos(glm::radians(randAngle)) * 0.1, startSpeed * sin(glm::radians(randAngle)) * 0.1};
     particle.endVel          = {endSpeed   * cos(glm::radians(randAngle)) * 0.1, endSpeed   * sin(glm::radians(randAngle)) * 0.1};
     particle.angle           = randRotAngle;
@@ -357,19 +358,20 @@ void ParticleSystem::respawnVortex(ParticleComponent &emitter, TransformComponen
 {
     auto &vortex = emitter.dynamic_vortexes[unusedVortex];
 
-    float randomAngle = randomFloat(emitter.vortexAngleRange.x, emitter.vortexAngleRange.y);
-    float startSpeed  = emitter.vortexStartSpeed * randomFloat(emitter.vortexStartSpeedRand.x, emitter.vortexStartSpeedRand.y);
-    float endSpeed    = emitter.vortexEndSpeed * randomFloat(emitter.vortexEndSpeedRand.x, emitter.vortexEndSpeedRand.y);
-    float startSize   = emitter.vortexStartSize * randomFloat(emitter.vortexStartSizeRand.x, emitter.vortexStartSizeRand.y);
-    float endSize     = emitter.vortexEndSize * randomFloat(emitter.vortexEndSizeRand.x, emitter.vortexEndSizeRand.y);
-    float randLife    = emitter.vortexMaxParticleLife * randomFloat(emitter.vortexLifeRand.x, emitter.vortexLifeRand.y);
-    
+    float randomAngle    = randomFloat(emitter.vortexAngleRange.x, emitter.vortexAngleRange.y);
+    float startSpeed     = emitter.vortexStartSpeed * randomFloat(emitter.vortexStartSpeedRand.x, emitter.vortexStartSpeedRand.y);
+    float endSpeed       = emitter.vortexEndSpeed * randomFloat(emitter.vortexEndSpeedRand.x, emitter.vortexEndSpeedRand.y);
+    float startSize      = emitter.vortexStartSize * randomFloat(emitter.vortexStartSizeRand.x, emitter.vortexStartSizeRand.y);
+    float endSize        = emitter.vortexEndSize * randomFloat(emitter.vortexEndSizeRand.x, emitter.vortexEndSizeRand.y);
+    float randLife       = emitter.vortexMaxParticleLife * randomFloat(emitter.vortexLifeRand.x, emitter.vortexLifeRand.y);
+    glm::vec2 randTurbulence = emitter.vortexTurbulence * randomFloat(emitter.vortexTurbulenceRand.x, emitter.vortexTurbulenceRand.y);
+
     glm::vec3 distance = {randomFloat(emitter.vortexDisX, -emitter.vortexDisX), randomFloat(emitter.vortexDisY, -emitter.vortexDisY), 0.f};
 
     vortex.pos        = transform.translate + distance + glm::vec3(emitter.vortexPos, 0.f);
     vortex.startVel   = {startSpeed * cos(glm::radians(randomAngle))*10, startSpeed * sin(glm::radians(randomAngle))*10};
     vortex.endVel     = {endSpeed   * cos(glm::radians(randomAngle))*10, endSpeed   * sin(glm::radians(randomAngle))*10};
-    vortex.turbulence = emitter.vortexTurbulence;
+    vortex.turbulence = randTurbulence;
 
     vortex.life = vortex.startLife = randLife;
     vortex.startSize = vortex.currentSize = startSize * 0.01;

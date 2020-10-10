@@ -8,21 +8,21 @@
             "x": 0.0,
             "y": 360.0
         },
-        "startSpeed": 20.0,
-        "endSpeed": 30.0,
-        "startSize": 20.0,
-        "endSize": 30.0,
+        "startSpeed": 15.0,
+        "endSpeed": 15.0,
+        "startSize": 30.0,
+        "endSize": 80.0,
         "rotateSpeed": 50.0,
-        "emitNumber": 100,
-        "emitVariance": 300,
-        "maxParticleLife": 300,
+        "emitNumber": 5,
+        "emitVariance": 3,
+        "maxParticleLife": 150,
         "life": -1.0,
         "sleepTime": -1.0,
         "startColor": {
             "x": 0.8235294117647058,
-            "y": 0.39215686274509803,
-            "z": 0.0,
-            "w": 1.0
+            "y": 0.8235294117647058,
+            "z": 0.8235294117647058,
+            "w": 0.23809523809523808
         },
         "endColor": {
             "x": 0.8235294117647058,
@@ -56,7 +56,7 @@
         },
         "disX": 0.0,
         "disY": 0.0,
-        "texturePath": "assets/texture/texture.png",
+        "texturePath": "assets/texture/smoke.png",
         "vortexSensitive": false,
         "vortexType": 0,
         "vortexPos": {

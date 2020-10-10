@@ -175,6 +175,7 @@ private:
 // TODO move to other file?
 struct EmitData {
 
+    glm::vec2 offset = {0.f, 0.f};
     float disX = 0.f;
     float disY = 0.f;
 
@@ -209,6 +210,7 @@ struct EmitData {
 
     bool vortexSensitive = false;
 
+    int vortexType = 0;
     glm::vec2 vortexPos = {0.f, -50.f};
     glm::vec2 vortexAngleRange = {250.f, 280.f};
 
@@ -231,10 +233,12 @@ struct EmitData {
     glm::vec2 vortexLifeRand = {0.5f, 1.f};
     glm::vec2 vortexStartSizeRand = {0.f, 1.f};
     glm::vec2 vortexEndSizeRand = {1.f, 1.f};
+    glm::vec2 vortexTurbulenceRand = {0.f, 1.f};
 
     template<typename Archrive>
     void serialize(Archrive &ar)
     {
+        ar(cereal::make_nvp("offset", offset));
         ar(cereal::make_nvp("angleRange", angleRange));
         ar(cereal::make_nvp("startSpeed", startSpeed));
         ar(cereal::make_nvp("endSpeed", endSpeed));
@@ -258,6 +262,7 @@ struct EmitData {
         ar(cereal::make_nvp("disY", disY));
         ar(cereal::make_nvp("texturePath", texturePath));
         ar(cereal::make_nvp("vortexSensitive", vortexSensitive));
+        ar(cereal::make_nvp("vortexType", vortexType));
         ar(cereal::make_nvp("vortexOffset", vortexPos));
         ar(cereal::make_nvp("vortexAngleRange", vortexAngleRange));
         ar(cereal::make_nvp("vortexStartSpeed", vortexStartSpeed));
@@ -273,6 +278,7 @@ struct EmitData {
         ar(cereal::make_nvp("vortexLifeRand", vortexLifeRand));
         ar(cereal::make_nvp("vortexStartSizeRand", vortexStartSizeRand));
         ar(cereal::make_nvp("vortexEndSizeRand", vortexEndSizeRand));
+        ar(cereal::make_nvp("vortexTurbulence", vortexTurbulence));
     }
 };
 
@@ -326,9 +332,13 @@ struct ParticleComponent {
 
     /**************** Particle Attribute *****************/
 
+    #define MAX_PARTICLE_POOLSIZE 100000
+
     // Emitter active
     bool active = true;
 
+    // pos offset
+    glm::vec2 offset = {0.f, 0.f};
     // Determine particle pos range
     // disX = 100 -> emitter pos center +- 100 will generate particle
     float disX = 0.f;
@@ -475,6 +485,7 @@ struct ParticleComponent {
     glm::vec2 vortexLifeRand = {0.5f, 1.f};
     glm::vec2 vortexStartSizeRand = {0.f, 1.f};
     glm::vec2 vortexEndSizeRand = {1.f, 1.f};
+    glm::vec2 vortexTurbulenceRand = {0.f, 1.f};
 
     // The vel that effect particle;
     glm::vec2 vortexTurbulence = {0.f, 0.f};
@@ -525,7 +536,7 @@ struct ParticleComponent {
         emitVariance         = data.emitVariance;
         maxParticleLife      = data.maxParticleLife;
         maxParticlesPerFrame = data.emitNumber + data.emitVariance;
-        poolSize             = maxParticlesPerFrame * (maxParticleLife + 1);
+        poolSize             = maxParticlesPerFrame * (maxParticleLife + 1) > MAX_PARTICLE_POOLSIZE ? MAX_PARTICLE_POOLSIZE : maxParticlesPerFrame * (maxParticleLife + 1);
         particles.resize(poolSize);
         startColor           = data.startColor;
         endColor             = data.endColor;
@@ -543,6 +554,7 @@ struct ParticleComponent {
         disY                 = data.disY;
 
         vortexSensitive      = data.vortexSensitive;
+        vortexType           = data.vortexType;
         static_vortexes.resize(1);
         if(vortexSensitive)
         {
@@ -553,6 +565,7 @@ struct ParticleComponent {
             }
         }
 
+        vortexPos             = data.vortexPos; // offset
         vortexAngleRange      = data.vortexAngleRange;
         vortexStartSpeed      = data.vortexStartSpeed;
         vortexEndSpeed        = data.vortexEndSpeed;
@@ -564,6 +577,8 @@ struct ParticleComponent {
 
         vortexPoolSize       = data.vortexEmitNumber*3;
         dynamic_vortexes.resize(vortexPoolSize);
+
+        vortexTurbulence     = data.vortexTurbulence;
         vortexSleepTime      = data.vortexSleepTime;
         vortexStartSpeedRand = data.vortexStartSpeedRand;
         vortexEndSpeedRand   = data.vortexEndSpeedRand;
@@ -596,6 +611,7 @@ struct ParticleComponent {
     template<typename Archrive>
     void serialize(Archrive &ar)
     {
+        ar(cereal::make_nvp("offset", offset));
         ar(cereal::make_nvp("angleRange", angleRange));
         ar(cereal::make_nvp("startSpeed", startSpeed));
         ar(cereal::make_nvp("endSpeed", endSpeed));
@@ -619,6 +635,7 @@ struct ParticleComponent {
         ar(cereal::make_nvp("disY", disY));
         ar(cereal::make_nvp("texturePath", texturePath));
         ar(cereal::make_nvp("vortexSensitive", vortexSensitive));
+        ar(cereal::make_nvp("vortexType", vortexType));
         ar(cereal::make_nvp("vortexOffset", vortexPos));
         ar(cereal::make_nvp("vortexAngleRange", vortexAngleRange));
         ar(cereal::make_nvp("vortexStartSpeed", vortexStartSpeed));
@@ -634,6 +651,7 @@ struct ParticleComponent {
         ar(cereal::make_nvp("vortexLifeRand", vortexLifeRand));
         ar(cereal::make_nvp("vortexStartSizeRand", vortexStartSizeRand));
         ar(cereal::make_nvp("vortexEndSizeRand", vortexEndSizeRand));
+        ar(cereal::make_nvp("vortexTurbulence", vortexTurbulence));
     }
 };
 

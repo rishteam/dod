@@ -17,7 +17,7 @@
         "emitVariance": 300,
         "maxParticleLife": 300,
         "life": -1.0,
-        "sleepTime": -1.0,
+        "sleepTime": 2.0,
         "startColor": {
             "x": 0.8235294117647058,
             "y": 0.39215686274509803,

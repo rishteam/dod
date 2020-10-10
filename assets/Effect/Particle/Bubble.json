@@ -5,29 +5,29 @@
             "y": 0.0
         },
         "angleRange": {
-            "x": 0.0,
-            "y": 360.0
+            "x": 50.0,
+            "y": 270.0
         },
-        "startSpeed": 20.0,
-        "endSpeed": 30.0,
-        "startSize": 20.0,
-        "endSize": 30.0,
-        "rotateSpeed": 50.0,
-        "emitNumber": 100,
-        "emitVariance": 300,
-        "maxParticleLife": 300,
+        "startSpeed": 10.0,
+        "endSpeed": 0.0,
+        "startSize": 40.0,
+        "endSize": 0.0,
+        "rotateSpeed": 80.0,
+        "emitNumber": 5,
+        "emitVariance": 0,
+        "maxParticleLife": 180,
         "life": -1.0,
-        "sleepTime": -1.0,
+        "sleepTime": 0.0,
         "startColor": {
-            "x": 0.8235294117647058,
-            "y": 0.39215686274509803,
-            "z": 0.0,
+            "x": 0.1843137254901961,
+            "y": 0.5529411764705883,
+            "z": 1.0,
             "w": 1.0
         },
         "endColor": {
-            "x": 0.8235294117647058,
-            "y": 0.8235294117647058,
-            "z": 0.8235294117647058,
+            "x": 0.2235294117647059,
+            "y": 1.0,
+            "z": 0.0784313725490196,
             "w": 0.0
         },
         "rotSpeedRand": {
@@ -56,7 +56,7 @@
         },
         "disX": 0.0,
         "disY": 0.0,
-        "texturePath": "assets/texture/texture.png",
+        "texturePath": "assets/texture/texture2.png",
         "vortexSensitive": false,
         "vortexType": 0,
         "vortexPos": {
