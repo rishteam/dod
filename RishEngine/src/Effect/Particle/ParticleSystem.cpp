@@ -223,7 +223,7 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
 
         if(state == Scene::SceneState::Editor)
         {
-            Renderer2D::DrawQuad(transform.translate, {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
+            Renderer2D::DrawQuad(transform.translate + glm::vec3 (emitter.offset, 0), {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
             continue;
         }
 

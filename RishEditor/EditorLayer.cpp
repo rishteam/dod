@@ -94,34 +94,34 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-//    debugEntity = m_scene->createEntity("DebugSprite");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
-//
-//    debugEntity = m_scene->createEntity("static physcis");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<RigidBody2DComponent>();
-//    debugEntity.addComponent<BoxCollider2DComponent>();
+    debugEntity = m_scene->createEntity("DebugSprite");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-//    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
-//    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
-//    rigbd.mass = MAX_float;
-//    box.x = 0.0f;
-//    box.y = 0.0f;
-//    box.w = 3.0f;
-//    box.h = 3.0f;
+    debugEntity = m_scene->createEntity("static physcis");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<BoxCollider2DComponent>();
 
-//    debugEntity = m_scene->createEntity("Physics 2");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<RigidBody2DComponent>();
-//
-//    debugEntity = m_scene->createEntity("Physics 3");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<RigidBody2DComponent>();
-//
-//    debugEntity = m_scene->createEntity("PhysicsTest");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<RigidBody2DComponent>();
+    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
+    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
+    rigbd.mass = MAX_float;
+    box.x = 0.0f;
+    box.y = 0.0f;
+    box.w = 3.0f;
+    box.h = 3.0f;
+
+    debugEntity = m_scene->createEntity("Physics 2");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+
+    debugEntity = m_scene->createEntity("Physics 3");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+
+    debugEntity = m_scene->createEntity("PhysicsTest");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
 
     debugEntity = m_scene->createEntity("ParticleTest");
     debugEntity.addComponent<ParticleComponent>();
@@ -345,7 +345,10 @@ void EditorLayer::onImGuiMainMenuRender()
                 try
                 {
                     cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_scene));
+                    inputArchive(cereal::make_nvp("Scene", m_editorScene));
+                    // TODO : Not Sure is this Correct
+                    m_scene = m_editorScene;
+                    setContextToPanels(m_editorScene);
                 }
                 catch (cereal::RapidJSONException &e)
                 {
@@ -384,7 +387,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: Maybe implement a function return ofstream from rl::FileSystem
                 std::ofstream os(m_scenePath);
                 cereal::JSONOutputArchive outputArchive(os);
-                outputArchive(cereal::make_nvp("Scene", m_scene));
+                outputArchive(cereal::make_nvp("Scene", m_editorScene));
             }
 
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
@@ -395,7 +398,7 @@ void EditorLayer::onImGuiMainMenuRender()
                     // TODO: Maybe implement a function return ofstream from rl::FileSystem
                     std::ofstream os(path);
                     cereal::JSONOutputArchive outputArchive(os);
-                    outputArchive(cereal::make_nvp("Scene", m_scene));
+                    outputArchive(cereal::make_nvp("Scene", m_editorScene));
                 }
             }
 

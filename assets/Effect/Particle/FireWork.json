@@ -1,6 +1,6 @@
 {
-    "value0": {
-        "dataPath": "C:/Users/lpc0503/Desktop/dod/assets/Effect/Particle/Burst",
+    "Emit Data": {
+        "dataPath": "C:\\Users\\lpc0503\\Desktop\\dod\\assets\\Effect\\Particle\\Firework.json",
         "offset": {
             "x": 0.0,
             "y": 0.0
@@ -10,25 +10,25 @@
             "y": 360.0
         },
         "startSpeed": 20.0,
-        "endSpeed": 30.0,
-        "startSize": 20.0,
-        "endSize": 30.0,
-        "rotateSpeed": 50.0,
-        "emitNumber": 100,
-        "emitVariance": 300,
-        "maxParticleLife": 300,
+        "endSpeed": -40.0,
+        "startSize": 50.0,
+        "endSize": 0.0,
+        "rotateSpeed": 0.0,
+        "emitNumber": 50,
+        "emitVariance": 50,
+        "maxParticleLife": 200,
         "life": -1.0,
-        "sleepTime": 2.0,
+        "sleepTime": -1.0,
         "startColor": {
-            "x": 0.8235294117647058,
-            "y": 0.39215686274509803,
+            "x": 1.0,
+            "y": 0.3921568691730499,
             "z": 0.0,
             "w": 1.0
         },
         "endColor": {
-            "x": 0.8235294117647058,
-            "y": 0.8235294117647058,
-            "z": 0.8235294117647058,
+            "x": 0.8235294222831726,
+            "y": 0.8235294222831726,
+            "z": 0.8235294222831726,
             "w": 0.0
         },
         "rotSpeedRand": {
@@ -36,11 +36,11 @@
             "y": 1.0
         },
         "startSpeedRand": {
-            "x": 0.0,
+            "x": 1.0,
             "y": 1.0
         },
         "endSpeedRand": {
-            "x": 0.0,
+            "x": 1.0,
             "y": 1.0
         },
         "emitVarianceRand": {
@@ -60,25 +60,25 @@
         "texturePath": "assets/texture/texture.png",
         "vortexSensitive": false,
         "vortexType": 0,
-        "vortexPos": {
+        "vortexOffset": {
             "x": 0.0,
-            "y": -50.0
+            "y": 0.0
         },
         "vortexAngleRange": {
-            "x": 250.0,
-            "y": 280.0
+            "x": 0.0,
+            "y": 0.0
         },
-        "vortexStartSpeed": 200.0,
-        "vortexEndSpeed": 200.0,
-        "vortexStartSize": 0.10000000149011612,
-        "vortexEndSize": 0.10000000149011612,
-        "vortexEmitNumber": 50,
-        "vortexMaxParticleLife": 80,
+        "vortexStartSpeed": 0.0,
+        "vortexEndSpeed": 0.0,
+        "vortexStartSize": 20.0,
+        "vortexEndSize": 20.0,
+        "vortexEmitNumber": 1,
+        "vortexMaxParticleLife": 100,
         "vortexTurbulence": {
-            "x": 100.0,
-            "y": 50.0
+            "x": 0.0,
+            "y": 0.0
         },
-        "vortexSleepTime": 1.0,
+        "vortexSleepTime": 0.0,
         "vortexStartSpeedRand": {
             "x": 0.0,
             "y": 1.0
@@ -99,9 +99,9 @@
             "x": 1.0,
             "y": 1.0
         },
-        "vortexTurbulenceRand": {
-            "x": 0,
-            "y": 1
+        "vortexTurbulence": {
+            "x": 0.0,
+            "y": 0.0
         }
     }
 }

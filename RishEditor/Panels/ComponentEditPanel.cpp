@@ -475,6 +475,18 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     ImGui::PopItemWidth();
                 }
             }
+
+            if(ImGui::Button("Save Emit Data as")) {
+
+                std::string path;
+                if(FileDialog::SelectSaveFile(nullptr, nullptr, path)) {
+
+                    emitter.dataPath = path;
+                    std::ofstream os(path);
+                    cereal::JSONOutputArchive outputArchive(os);
+                    outputArchive(cereal::make_nvp("Emit Data", emitter));
+                }
+            }
         }
     }
     EndDrawEditComponent();

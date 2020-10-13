@@ -235,9 +235,12 @@ struct EmitData {
     glm::vec2 vortexEndSizeRand = {1.f, 1.f};
     glm::vec2 vortexTurbulenceRand = {0.f, 1.f};
 
+    std::string dataPath = "";
+
     template<typename Archrive>
     void serialize(Archrive &ar)
     {
+        ar(cereal::make_nvp("dataPath", dataPath));
         ar(cereal::make_nvp("offset", offset));
         ar(cereal::make_nvp("angleRange", angleRange));
         ar(cereal::make_nvp("startSpeed", startSpeed));
@@ -595,13 +598,14 @@ struct ParticleComponent {
     void init()
     {
         RL_CORE_TRACE("Particle Component Init");
+        RL_CORE_TRACE("texture path {}", texturePath);
+        texture = Texture2D::LoadTextureVFS(texturePath);
         maxParticlesPerFrame = emitNumber + emitVariance;
         poolSize             = maxParticlesPerFrame * (maxParticleLife + 1);
         particles.resize(poolSize);
         vortexPoolSize = vortexEmitNumber*3;
         dynamic_vortexes.resize(vortexPoolSize);
         static_vortexes.resize(1);
-        texture = Texture2D::LoadTextureVFS(texturePath);
     }
 
     ParticleComponent() = default;
@@ -611,6 +615,7 @@ struct ParticleComponent {
     template<typename Archrive>
     void serialize(Archrive &ar)
     {
+        ar(cereal::make_nvp("dataPath", dataPath));
         ar(cereal::make_nvp("offset", offset));
         ar(cereal::make_nvp("angleRange", angleRange));
         ar(cereal::make_nvp("startSpeed", startSpeed));

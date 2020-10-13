@@ -136,7 +136,8 @@ public:
                 TagComponent,
                 TransformComponent,
                 RenderComponent,
-                CameraComponent
+                CameraComponent,
+                ParticleComponent
             >(ar);
 	}
 
@@ -148,7 +149,8 @@ public:
                 TagComponent,
 			    TransformComponent,
 			    RenderComponent,
-			    CameraComponent
+			    CameraComponent,
+			    ParticleComponent
             >(ar);
 	}
 };

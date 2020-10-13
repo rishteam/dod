@@ -102,6 +102,7 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<CameraComponent>(ent, src);
     CopyComponentToEntityIfExists<NativeScriptComponent>(ent, src);
     CopyComponentToEntityIfExists<RigidBody2DComponent>(ent, src);
+    CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
 }
 
 void Scene::onUpdate(Time dt)

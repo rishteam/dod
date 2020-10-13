@@ -1,5 +1,6 @@
 {
     "value0": {
+        "dataPath": "C:/Users/lpc0503/Desktop/dod/assets/Effect/Particle/Fire",
         "offset": {
             "x": 0.0,
             "y": 0.0
@@ -15,7 +16,7 @@
         "rotateSpeed": 0.0,
         "emitNumber": 3,
         "emitVariance": 2,
-        "maxParticleLife": 400,
+        "maxParticleLife": 200,
         "life": -1.0,
         "sleepTime": 0.0,
         "startColor": {

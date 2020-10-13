@@ -1,5 +1,6 @@
 {
     "value0": {
+        "dataPath": "C:/Users/lpc0503/Desktop/dod/assets/Effect/Particle/Smoke",
         "offset": {
             "x": 0.0,
             "y": 0.0
@@ -11,11 +12,11 @@
         "startSpeed": 15.0,
         "endSpeed": 15.0,
         "startSize": 30.0,
-        "endSize": 80.0,
+        "endSize": 40.0,
         "rotateSpeed": 50.0,
         "emitNumber": 5,
         "emitVariance": 3,
-        "maxParticleLife": 150,
+        "maxParticleLife": 80,
         "life": -1.0,
         "sleepTime": -1.0,
         "startColor": {

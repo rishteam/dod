@@ -1,5 +1,6 @@
 {
     "value0": {
+        "dataPath": "C:/Users/lpc0503/Desktop/dod/assets/Effect/Particle/Snow",
         "offset": {
             "x": 0.0,
             "y": 0.0
@@ -15,7 +16,7 @@
         "rotateSpeed": 20.0,
         "emitNumber": 50,
         "emitVariance": 100,
-        "maxParticleLife": 100,
+        "maxParticleLife": 1000,
         "life": -1.0,
         "sleepTime": 2.0,
         "startColor": {
