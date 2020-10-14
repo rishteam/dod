@@ -89,13 +89,13 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
 
-    debugEntity = m_scene->createEntity("static RigidBody");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    debugEntity.addComponent<BoxCollider2DComponent>();
+    Entity debugEntity2 = m_scene->createEntity("static RigidBody");
+    debugEntity2.addComponent<RenderComponent>();
+    debugEntity2.addComponent<RigidBody2DComponent>();
+    debugEntity2.addComponent<BoxCollider2DComponent>();
 
-    auto &staticRigidBody = debugEntity.getComponent<RigidBody2DComponent>();
-    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
+    auto &staticRigidBody = debugEntity2.getComponent<RigidBody2DComponent>();
+    auto &box = debugEntity2.getComponent<BoxCollider2DComponent>();
     staticRigidBody.mass = MAX_float;
     staticRigidBody.friction = 0.2f;
     box.x = 0.0f;
@@ -103,27 +103,27 @@ void EditorLayer::onAttach()
     box.w = 3.0f;
     box.h = 3.0f;
 
-    debugEntity = m_scene->createEntity("RigidBody 2");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    debugEntity.addComponent<BoxCollider2DComponent>();
-    auto &RigidBody2 = debugEntity.getComponent<RigidBody2DComponent>();
-    auto &box2 = debugEntity.getComponent<BoxCollider2DComponent>();
+    Entity debugEntity3 = m_scene->createEntity("RigidBody 2");
+    debugEntity3.addComponent<RenderComponent>();
+    debugEntity3.addComponent<RigidBody2DComponent>();
+    debugEntity3.addComponent<BoxCollider2DComponent>();
+    auto &RigidBody2 = debugEntity3.getComponent<RigidBody2DComponent>();
+    auto &box2 = debugEntity3.getComponent<BoxCollider2DComponent>();
     RigidBody2.friction = 0.2f;
     box2.w = 1.0f;
     box2.h = 1.0f;
 
-    debugEntity = m_scene->createEntity("RigidBody 3");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    auto &RigidBody3 = debugEntity.getComponent<RigidBody2DComponent>();
+    Entity debugEntity4 = m_scene->createEntity("RigidBody 3");
+    debugEntity4.addComponent<RenderComponent>();
+    debugEntity4.addComponent<RigidBody2DComponent>();
+    auto &RigidBody3 = debugEntity4.getComponent<RigidBody2DComponent>();
     RigidBody3.friction = 0.2f;
 
 
-    debugEntity = m_scene->createEntity("RigidBody 4");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    auto &RigidBody4 = debugEntity.getComponent<RigidBody2DComponent>();
+    Entity debugEntity5 = m_scene->createEntity("RigidBody 4");
+    debugEntity5.addComponent<RenderComponent>();
+    debugEntity5.addComponent<RigidBody2DComponent>();
+    auto &RigidBody4 = debugEntity5.getComponent<RigidBody2DComponent>();
     RigidBody4.friction = 0.2f;
 
 
