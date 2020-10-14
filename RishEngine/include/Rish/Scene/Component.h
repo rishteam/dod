@@ -540,7 +540,9 @@ struct ParticleComponent {
         maxParticleLife      = data.maxParticleLife;
         maxParticlesPerFrame = data.emitNumber + data.emitVariance;
         poolSize             = maxParticlesPerFrame * (maxParticleLife + 1) > MAX_PARTICLE_POOLSIZE ? MAX_PARTICLE_POOLSIZE : maxParticlesPerFrame * (maxParticleLife + 1);
+        particles.clear();
         particles.resize(poolSize);
+//        particles.clear();
         startColor           = data.startColor;
         endColor             = data.endColor;
         active               = true;

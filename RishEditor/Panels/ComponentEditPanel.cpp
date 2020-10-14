@@ -212,15 +212,27 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 
 
             ImGui::Text("EmitData");
-            std::string dataPath;
-            if(ImGui::Button("Select##dataPath"))
+            std::vector<File> file;
+            FileSystem::List("assets/Effect/Particle", file);
+
+            std::vector<std::string> filename;
+            for(auto f : file) filename.push_back(f.getFilename());
+
+            static int currentEmitData = -1;
+            if(ImGui::Combo("Select Emit Data", &currentEmitData, filename))
             {
-                if(FileDialog::SelectSingleFile(nullptr, nullptr, dataPath))
-                {
-                    emitter.dataPath = dataPath;
-                    emitter.loadEmitData();
-                }
+                emitter.dataPath = file[currentEmitData].getPath();
+                emitter.loadEmitData();
             }
+
+//            if(ImGui::Button("Select##dataPath"))
+//            {
+//                if(FileDialog::SelectSingleFile(nullptr, nullptr, dataPath))
+//                {
+//                    emitter.dataPath = dataPath;
+//                    emitter.loadEmitData();
+//                }
+//            }
             ImGui::SameLine();
             ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
 
