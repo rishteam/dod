@@ -36,9 +36,9 @@ private:
 	Ref<Framebuffer> m_editorFramebuffer;
     //
 	Ref<Framebuffer> m_sceneFramebuffer;
-    Ref<Scene> m_scene;        /// Current Scene
-    Ref<Scene> m_editorScene;  /// Editor Scene
-    Ref<Scene> m_runtimeScene; /// Runtime Scene
+    Ref<Scene> m_currentScene;        ///< Current Scene
+    Ref<Scene> m_editorScene;         ///< Editor Scene
+    Ref<Scene> m_runtimeScene;        ///< Runtime Scene
 	//
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
@@ -59,6 +59,8 @@ private:
     // Common Widgets
     //////////////////////////////////////////
 	ErrorModal m_errorModal;
+
+	bool m_debugScene = true;
 };
 
 }

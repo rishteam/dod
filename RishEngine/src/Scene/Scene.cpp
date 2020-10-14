@@ -8,6 +8,8 @@
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/Utils.h>
 //
+#include <Rish/Debug/DebugWindow.h>
+//
 #include <Rish/Utils/uuid.h>
 //
 #include <Rish/ImGui.h>
@@ -246,7 +248,7 @@ void Scene::onScenePlay()
     // Initialize the NativeScriptComponent
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
-        RL_UNUSED(entityID);
+        Entity ent{entityID, this};
         nsc.instance->onCreate();
         nsc.valid = true;
     });
@@ -303,11 +305,12 @@ void Scene::onSceneStop()
     // Destroy the NativeScriptComponent
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
+        Entity ent{entityID, this};
         nsc.instance->onDestroy();
         nsc.valid = false;
     });
 
-    //clear physics object
+    // clear physics object
     PhysicsWorld.Clear();
     mapPhysicsObj.clear();
     mapBoxColliderObj.clear();
@@ -315,9 +318,10 @@ void Scene::onSceneStop()
 
 void Scene::copySceneTo(Ref<Scene> &target)
 {
-    std::unordered_map<UUID, entt::entity> targetEnttMap;
+    std::unordered_map<UUID, entt::entity> targetEnttMap{};
     //
     target->m_registry.clear();
+
     // Copy all entities by UUID
     auto view = m_registry.view<TagComponent>();
     for(auto ent : view)
@@ -326,13 +330,15 @@ void Scene::copySceneTo(Ref<Scene> &target)
         Entity targetEnt = target->createEntity(tag.id, tag.tag);
         targetEnttMap[tag.id] = targetEnt.getEntityID();
     }
+
     // Copy components
-    CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap);
-    CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap);
-    CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap);
-    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap);
-    CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap);
-    CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
+
     // Copy other states
     target->m_entNameToNumMap = m_entNameToNumMap;
     target->mapPhysicsObj = mapPhysicsObj;
@@ -342,39 +348,7 @@ void Scene::onImGuiRender()
 {
     if(m_debugCamera)
     {
-        ImGui::Begin("Scene Debug");
-        ImGui::Text("Projection");
-        auto proj = m_mainCamera.getProjection();
-        for(int i = 0; i < 4; i++)
-        {
-            ImGui::PushID(i);
-            for(int j = 0; j < 4; j++)
-            {
-                ImGui::PushID(j);
-                ImGui::Text("%.2f", static_cast<double>(proj[i][j])); ImGui::SameLine();
-                ImGui::PopID();
-            }
-            ImGui::NewLine();
-            ImGui::PopID();
-        }
-        ImGui::Separator();
-        ImGui::Text("Camera Transform");
-        for(int i = 0; i < 4; i++)
-        {
-            ImGui::PushID(i);
-            for(int j = 0; j < 4; j++)
-            {
-                ImGui::PushID(j);
-                ImGui::Text("%.2f", static_cast<double>(m_mainCameraTransform[i][j])); ImGui::SameLine();
-                ImGui::PopID();
-            }
-            ImGui::NewLine();
-            ImGui::PopID();
-        }
-        ImGui::Text("Size = %.2f", m_mainCamera.m_orthoSize);
-        ImGui::Text("Near = %.2f, Far = %.2f", m_mainCamera.m_orthoNear, m_mainCamera.m_orthoFar);
-        ImGui::Text("Aspect = %.2f", m_mainCamera.m_aspect);
-        ImGui::End();
+        DrawSceneCameraDebugWindow(m_mainCamera, m_mainCameraTransform);
     }
 
     if(m_debugPhysics)
@@ -411,26 +385,6 @@ void Scene::onImGuiRender()
 
     }
 
-    if(m_debugCameraComponent)
-    {
-        ImGui::Begin("CameraComponent");
-        auto view = m_registry.view<CameraComponent>();
-        for(auto entity : view)
-        {
-            Entity ent{entity, this};
-            //
-            auto &tag = ent.getComponent<TagComponent>();
-            auto &transform = ent.getComponent<TransformComponent>();
-            if(ImGui::TreeNode(tag.id.to_string().c_str()))
-            {
-                ImGui::Text("transform = %.2f %.2f %.2f", transform.translate.x, transform.translate.y, transform.translate.z);
-                ImGui::Text("scale     = %.2f %.2f %.2f", transform.scale.x, transform.scale.y, transform.scale.z);
-                ImGui::Text("rotate    = %.2f", transform.rotate);
-                ImGui::TreePop();
-            }
-        }
-        ImGui::End();
-    }
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)

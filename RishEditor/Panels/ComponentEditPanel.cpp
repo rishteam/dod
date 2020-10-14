@@ -175,8 +175,7 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
         // Drop down combo
         if(ImGui::Combo("Script", &currentScript, scriptList))
         {
-            ScriptableManager::Unbind(scriptComponent);
-            ScriptableManager::Bind(scriptComponent, scriptList[currentScript]);
+            ScriptableManager::Bind(m_targetEntity, scriptList[currentScript]);
         }
 
         // Script Fields
