@@ -87,46 +87,60 @@ void EditorLayer::onAttach()
     Entity debugEntity = m_scene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+    
+    Entity debugEntity1 = m_scene->createEntity("RigidBody 1");
+    debugEntity1.addComponent<RenderComponent>();
+    debugEntity1.addComponent<RigidBody2DComponent>();
+    debugEntity1.addComponent<BoxCollider2DComponent>();
+    auto &staticRigidBody = debugEntity1.getComponent<RigidBody2DComponent>();
+    auto &box = debugEntity1.getComponent<BoxCollider2DComponent>();
+    auto &trans = debugEntity1.getComponent<TransformComponent>();
+    staticRigidBody.mass = MAX_float;
+    trans.translate.x = 0.0f;
+    trans.translate.y = 0.0f;
+    box.w = 6.0f;
+    box.h = 4.0f;
 
-
-    Entity debugEntity2 = m_scene->createEntity("static RigidBody");
+    Entity debugEntity2 = m_scene->createEntity("RigidBody 2");
     debugEntity2.addComponent<RenderComponent>();
     debugEntity2.addComponent<RigidBody2DComponent>();
     debugEntity2.addComponent<BoxCollider2DComponent>();
+    auto &RigidBody2 = debugEntity2.getComponent<RigidBody2DComponent>();
+    auto &box2 = debugEntity2.getComponent<BoxCollider2DComponent>();
+    auto &trans2 = debugEntity2.getComponent<TransformComponent>();
+    trans2.translate.x = -0.5f;
+    trans2.translate.y = 2.5f;
 
-    auto &staticRigidBody = debugEntity2.getComponent<RigidBody2DComponent>();
-    auto &box = debugEntity2.getComponent<BoxCollider2DComponent>();
-    staticRigidBody.mass = MAX_float;
-    staticRigidBody.friction = 0.2f;
-    box.x = 0.0f;
-    box.y = 0.0f;
-    box.w = 3.0f;
-    box.h = 3.0f;
 
-    Entity debugEntity3 = m_scene->createEntity("RigidBody 2");
+    Entity debugEntity3 = m_scene->createEntity("RigidBody 3");
     debugEntity3.addComponent<RenderComponent>();
     debugEntity3.addComponent<RigidBody2DComponent>();
     debugEntity3.addComponent<BoxCollider2DComponent>();
-    auto &RigidBody2 = debugEntity3.getComponent<RigidBody2DComponent>();
-    auto &box2 = debugEntity3.getComponent<BoxCollider2DComponent>();
-    RigidBody2.friction = 0.2f;
-    box2.w = 1.0f;
-    box2.h = 1.0f;
+    auto &RigidBody3 = debugEntity3.getComponent<RigidBody2DComponent>();
+    auto &box3 = debugEntity3.getComponent<BoxCollider2DComponent>();
+    auto &trans3 = debugEntity3.getComponent<TransformComponent>();
+    trans3.translate.x = -1.5f;
+    trans3.translate.y = 2.5f;
 
-    Entity debugEntity4 = m_scene->createEntity("RigidBody 3");
+    Entity debugEntity4 = m_scene->createEntity("RigidBody 4");
     debugEntity4.addComponent<RenderComponent>();
     debugEntity4.addComponent<RigidBody2DComponent>();
-    auto &RigidBody3 = debugEntity4.getComponent<RigidBody2DComponent>();
-    RigidBody3.friction = 0.2f;
+    debugEntity4.addComponent<BoxCollider2DComponent>();
+    auto &RigidBody4 = debugEntity4.getComponent<RigidBody2DComponent>();
+    auto &box4 = debugEntity4.getComponent<BoxCollider2DComponent>();
+    auto &trans4 = debugEntity4.getComponent<TransformComponent>();
+    trans4.translate.x = 0.5f;
+    trans4.translate.y = 2.5f;
 
-
-    Entity debugEntity5 = m_scene->createEntity("RigidBody 4");
+    Entity debugEntity5 = m_scene->createEntity("RigidBody 5");
     debugEntity5.addComponent<RenderComponent>();
     debugEntity5.addComponent<RigidBody2DComponent>();
-    auto &RigidBody4 = debugEntity5.getComponent<RigidBody2DComponent>();
-    RigidBody4.friction = 0.2f;
-
-
+    debugEntity5.addComponent<BoxCollider2DComponent>();
+    auto &RigidBody5 = debugEntity5.getComponent<RigidBody2DComponent>();
+    auto &box5 = debugEntity5.getComponent<BoxCollider2DComponent>();
+    auto &trans5 = debugEntity5.getComponent<TransformComponent>();
+    trans5.translate.x = 1.5f;
+    trans5.translate.y = 2.5f;
 }
 
 void EditorLayer::onDetach()

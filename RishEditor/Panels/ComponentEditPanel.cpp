@@ -171,16 +171,16 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
     BeginDrawEditComponent(RigidBody2DComponent);
     {
         DrawRightClickMenu(RigidBody2DComponent, false);
-        static const char *bodyType[2] = {"Static", "Dynamic"};
-        static int bodyTypeNowSelect = 1;
+        static const char *BodyTypeString[2] = {"Static", "Dynamic"};
         auto &rigid = m_targetEntity.getComponent<RigidBody2DComponent>();
+        int bodyTypeNowSelect = static_cast<int>(rigid.BodyTypeState);
         float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
         float forceVector[2] = {rigid.force.x, rigid.force.y};
         ImGui::Text("Physics Parameter");
         {
             // can control the physics parameter
             ImGui::InputFloat("Mass", &rigid.mass, 1.0f, 5.0f, "%.2f");
-            ImGui::InputFloat("Friction", &rigid.friction, 1.0f, 5.0f, "%.2f");
+            ImGui::InputFloat("Friction", &rigid.friction, 0.1f, 0.2f, "%.2f");
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
             ImGui::DragFloat2("Force", forceVector, 1.0f);
             rigid.velocity.x = velocityVector[0];
@@ -194,10 +194,15 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         ImGui::Separator();
         ImGui::Text("Body Type");
         {
-            ImGui::Combo("Body type", &bodyTypeNowSelect, bodyType, 2);
+            ImGui::Combo("Body type", &bodyTypeNowSelect, BodyTypeString, 2);
             if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
             {
                rigid.mass = MAX_float;
+               rigid.BodyTypeState = RigidBody2DComponent::BodyType::Static;
+            }
+            else
+            {
+                rigid.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
             }
         }
 
@@ -219,15 +224,12 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
         float translate[2] = {collider.x, collider.y};
         float scale[2] = {collider.w, collider.h};
 
-        ImGui::Text("BoxCollider2D Component");
-        {
-            ImGui::DragFloat2("(x, y)", translate, 1.0f);
-            ImGui::DragFloat2("(w, h)", scale, 1.0f);
-            collider.x = translate[0];
-            collider.y = translate[1];
-            collider.w = scale[0];
-            collider.h = scale[1];
-        }
+        ImGui::DragFloat2("(x, y)", translate, 0.5f);
+        ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
+        collider.x = translate[0];
+        collider.y = translate[1];
+        collider.w = scale[0];
+        collider.h = scale[1];
     }
     EndDrawEditComponent();
 }
