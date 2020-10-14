@@ -47,7 +47,7 @@ public:
 
         if(!m_eventHandlers.count(e.type))
         {
-            RL_CORE_WARN("Unhandled event occured: {}", m_EventTypeName[e.type]);
+//            RL_CORE_WARN("Unhandled event occured: {}", m_EventTypeName[e.type]);
             return;
         }
         m_eventHandlers[e.type](e);

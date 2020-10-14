@@ -106,27 +106,27 @@ void ImGui::EndDockspace()
     ImGui::End();
 }
 
+std::vector<char*> strList;
 bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::string> &v, int popup_max_height_in_items)
 {
     // TODO: preformance?
-    const char* *strList = new const char*[v.size()];
+    strList.resize(v.size());
     //
     for(int i = 0; i < v.size(); i++)
-        strList[i] = v[i].c_str();
-    bool res = Combo(label, current_item, strList, v.size(), popup_max_height_in_items);
-    delete [] strList;
+        strList[i] = (char*)v[i].c_str();
+    bool res = Combo(label, current_item, &strList[0], v.size(), popup_max_height_in_items);
     return res;
 }
 
 bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::string_view> &v,
                   int popup_max_height_in_items)
 {
-    const char* *strList = new const char*[v.size()];
+//    const char* *strList = new const char*[v.size()];
+    strList.resize(v.size());
     //
     for(int i = 0; i < v.size(); i++)
-        strList[i] = v[i].data();
-    bool res = Combo(label, current_item, strList, v.size(), popup_max_height_in_items);
-    delete [] strList;
+        strList[i] = (char*)v[i].data();
+    bool res = Combo(label, current_item, &strList[0], v.size(), popup_max_height_in_items);
     return res;
 }
 

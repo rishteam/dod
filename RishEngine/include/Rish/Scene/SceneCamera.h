@@ -31,6 +31,7 @@ private:
 
     // Friend class
     friend class Scene;
+    friend void DrawSceneCameraDebugWindow(const SceneCamera &camera, const glm::mat4 &trans);
 
     // Serialization function
     friend cereal::access;
@@ -40,9 +41,9 @@ private:
         ar(
             cereal::base_class<Camera>(this),
             cereal::make_nvp("orthoSize", m_orthoSize),
-            cereal::make_nvp("orthoSize", m_orthoNear),
-            cereal::make_nvp("orthoSize", m_orthoFar),
-            cereal::make_nvp("orthoSize", m_aspect)
+            cereal::make_nvp("orthoNear", m_orthoNear),
+            cereal::make_nvp("orthoFar", m_orthoFar),
+            cereal::make_nvp("aspect", m_aspect)
         );
     }
 };

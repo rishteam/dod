@@ -160,22 +160,26 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
     {
         DrawRightClickMenu(NativeScriptComponent, false);
         //
-        auto &script     = m_targetEntity.getComponent<NativeScriptComponent>();
+        auto &scriptComponent = m_targetEntity.getComponent<NativeScriptComponent>();
         //
         static int currentScript = 0;
-        const auto &optionList = ScriptableManager::GetScriptNames();
-        //
-        auto cur = std::find(optionList.begin(), optionList.end(), script.scriptName);
-        if(cur != optionList.end() && ScriptableManager::GetName<EmptyScript>() != *cur)
+        const auto &scriptList = ScriptableManager::GetScriptNames();
+
+        // Current select script
+        auto cur = std::find(scriptList.begin(), scriptList.end(), scriptComponent.scriptName);
+        if(cur != scriptList.end() && ScriptableManager::GetName<EmptyScript>() != *cur)
         {
-            currentScript = cur - optionList.begin();
+            currentScript = cur - scriptList.begin();
         }
-        //
-        if(ImGui::Combo("Script", &currentScript, optionList))
+
+        // Drop down combo
+        if(ImGui::Combo("Script", &currentScript, scriptList))
         {
-            ScriptableManager::Unbind(script);
-            ScriptableManager::Bind(script, optionList[currentScript]);
+            ScriptableManager::Bind(m_targetEntity, scriptList[currentScript]);
         }
+
+        // Script Fields
+        scriptComponent.instance->onImGuiRender();
     }
     EndDrawEditComponent();
 }

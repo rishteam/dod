@@ -9,6 +9,8 @@
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 
+#include <Rish/Debug/DebugWindow.h>
+
 #include <Rish/ImGui.h>
 #include <imgui_internal.h>
 
@@ -28,8 +30,8 @@ EditorLayer::EditorLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_editorScene = MakeRef<Scene>();
-    m_scene = m_editorScene;
-    m_runtimeScene = MakeRef<Scene>();
+    m_currentScene = m_editorScene;
+    m_runtimeScene = nullptr;
     //
     m_editController = MakeRef<EditController>();
     m_panelList.push_back(m_editController);
@@ -47,19 +49,44 @@ public:
     void onUpdate(Time dt) override
     {
         auto &trans = getComponent<TransformComponent>().translate;
-        RL_INFO("onUpdate() {}", dt.asSeconds());
+//        RL_INFO("onUpdate() {}", dt.asSeconds());
 
-        float speed = 10.f;
-
-        if(Input::IsKeyPressed(Keyboard::W))
-            trans.y += speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::S))
-            trans.y -= speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::A))
-            trans.x -= speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::D))
-            trans.x += speed * dt.asSeconds();
+        if(m_inverted)
+        {
+            if(Input::IsKeyPressed(Keyboard::S))
+                trans.y += m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::W))
+                trans.y -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::D))
+                trans.x -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::A))
+                trans.x += m_speed * dt.asSeconds();
+        }
+        else
+        {
+            if(Input::IsKeyPressed(Keyboard::W))
+                trans.y += m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::S))
+                trans.y -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::A))
+                trans.x -= m_speed * dt.asSeconds();
+            if(Input::IsKeyPressed(Keyboard::D))
+                trans.x += m_speed * dt.asSeconds();
+        }
     }
+
+    void onImGuiRender() override
+    {
+        auto &trans = getComponent<TransformComponent>().translate;
+        ImGui::DragFloat3("Translate", glm::value_ptr(trans));
+        ImGui::DragFloat("Speed", &m_speed);
+
+        ImGui::Checkbox("Inverted", &m_inverted);
+    }
+
+private:
+    float m_speed = 10.f;
+    bool m_inverted = false;
 };
 
 class SpriteRoatate : public ScriptableEntity
@@ -70,6 +97,10 @@ public:
         auto &trans = getComponent<TransformComponent>();
         trans.rotate += 100.f * dt.asSeconds();
         trans.rotate = std::fmod(trans.rotate, 360.f);
+    }
+
+    void onImGuiRender() override
+    {
     }
 };
 
@@ -83,21 +114,21 @@ void EditorLayer::onAttach()
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
     // Attach all panels
     for(auto &panel : m_panelList)
-        panel->onAttach(m_scene);
+        panel->onAttach(m_currentScene);
 
     // Test
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
 
-    Entity debugEntity = m_scene->createEntity("DebugCamera");
+    Entity debugEntity = m_currentScene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-//    debugEntity = m_scene->createEntity("DebugSprite");
+//    debugEntity = m_currentScene->createEntity("DebugSprite");
 //    debugEntity.addComponent<RenderComponent>();
 //    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_scene->createEntity("static physcis");
+    debugEntity = m_currentScene->createEntity("static physcis");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<BoxCollider2DComponent>();
@@ -110,15 +141,16 @@ void EditorLayer::onAttach()
     box.w = 3.0f;
     box.h = 3.0f;
 
-    debugEntity = m_scene->createEntity("Physics 2");
+    debugEntity = m_currentScene->createEntity("Physics 2");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+
+    debugEntity = m_currentScene->createEntity("Physics 3");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
 
-    debugEntity = m_scene->createEntity("Physics 3");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-
-    debugEntity = m_scene->createEntity("Physics 4");
+    debugEntity = m_currentScene->createEntity("Physics 4");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
 
@@ -136,21 +168,6 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(Time dt)
 {
-    switch(m_scene->getSceneState())
-    {
-        case Scene::SceneState::Editor:
-
-        break;
-
-        case Scene::SceneState::Play:
-
-        break;
-
-        case Scene::SceneState::Pause:
-
-        break;
-    }
-    //
     auto cameraController = m_editController->getCameraController();
 
     // Resize the framebuffer if user resize the viewport
@@ -188,7 +205,7 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
-        m_scene->onUpdate(dt);
+        m_currentScene->onUpdate(dt);
     }
     m_sceneFramebuffer->unbind();
 }
@@ -247,10 +264,10 @@ void EditorLayer::onImGuiRender()
         size = ImGui::GetContentRegionAvail();
         float fullH{};
         fullH = size.y;
-        size.y = size.x * 1.f / m_scene->getMainCamera().getAspect();
+        size.y = size.x * 1.f / m_currentScene->getMainCamera().getAspect();
         float dummyH = (fullH - size.y) / 2.f;
 
-        m_scene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
+        m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
 
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});
@@ -259,7 +276,7 @@ void EditorLayer::onImGuiRender()
     ImGui::End();
 	ImGui::PopStyleVar();
 
-	m_scene->onImGuiRender();
+	m_currentScene->onImGuiRender();
 
     ImGui::Begin("Entity Manager");
     {
@@ -268,29 +285,36 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav);
     {
+        // Play button
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            if(m_scene->getSceneState() == Scene::SceneState::Editor)
+            if(m_currentScene->getSceneState() == Scene::SceneState::Editor)
             {
+                m_runtimeScene = MakeRef<Scene>();
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
-                m_scene->onScenePlay();
+                m_currentScene->onScenePlay();
             }
             else
-                m_scene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
+                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
         }
         ImGui::SameLine();
+
+        // Pause button
         if(ImGui::Button(ICON_FA_PAUSE))
         {
-            m_scene->onScenePause();
+            m_currentScene->onScenePause();
         }
         ImGui::SameLine();
+
+        // Stop button
         if(ImGui::Button(ICON_FA_STOP))
         {
-            if(m_scene->getSceneState() == Scene::SceneState::Play)
+            if(m_currentScene->getSceneState() == Scene::SceneState::Play)
             {
-                m_scene->onSceneStop();
+                m_currentScene->onSceneStop();
                 switchCurrentScene(m_editorScene);
+                m_runtimeScene.reset();
             }
         }
     }
@@ -307,6 +331,17 @@ void EditorLayer::onImGuiRender()
 	ImGui::EndDockspace();
 
 	m_errorModal.onImGuiRender();
+
+	// TODO: this is for DEBUG use move me plz
+	if(m_debugScene)
+    {
+	    ImGui::Begin("Scene Debug");
+        ImGui::Text("CurrentScene: %p", (void*)m_currentScene.get());
+        ImGui::Separator();
+        DrawSceneDebugWindow("EditorScene", m_editorScene);
+        DrawSceneDebugWindow("RuntimeScene", m_runtimeScene);
+	    ImGui::End();
+    }
 }
 
 void EditorLayer::onImGuiMainMenuRender()
@@ -338,7 +373,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 try
                 {
                     cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_scene));
+                    inputArchive(cereal::make_nvp("Scene", m_currentScene));
                 }
                 catch (cereal::RapidJSONException &e)
                 {
@@ -359,7 +394,7 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    setContextToPanels(m_scene);
+                    setContextToPanels(m_currentScene);
                 }
                 else
                 {
@@ -377,7 +412,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: Maybe implement a function return ofstream from rl::FileSystem
                 std::ofstream os(m_scenePath);
                 cereal::JSONOutputArchive outputArchive(os);
-                outputArchive(cereal::make_nvp("Scene", m_scene));
+                outputArchive(cereal::make_nvp("Scene", m_currentScene));
             }
 
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
@@ -388,7 +423,7 @@ void EditorLayer::onImGuiMainMenuRender()
                     // TODO: Maybe implement a function return ofstream from rl::FileSystem
                     std::ofstream os(path);
                     cereal::JSONOutputArchive outputArchive(os);
-                    outputArchive(cereal::make_nvp("Scene", m_scene));
+                    outputArchive(cereal::make_nvp("Scene", m_currentScene));
                 }
             }
 
@@ -426,9 +461,9 @@ void EditorLayer::onImGuiMainMenuRender()
             }
             if(ImGui::BeginMenu("Scene"))
             {
-                ImGui::MenuItem("Scene Camera", nullptr, &m_scene->m_debugCamera);
-                ImGui::MenuItem("Physics Debug", nullptr, &m_scene->m_debugPhysics);
-                ImGui::MenuItem("Camera Component Debug", nullptr, &m_scene->m_debugCameraComponent);
+                ImGui::MenuItem("Scene", nullptr, &m_debugScene);
+                ImGui::MenuItem("Scene Camera", nullptr, &m_currentScene->m_debugCamera);
+                ImGui::MenuItem("Physics Debug", nullptr, &m_currentScene->m_debugPhysics);
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();
@@ -451,9 +486,10 @@ void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
 
 void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
 {
-    m_scene = scene;
+    m_currentScene = scene;
     setContextToPanels(scene);
 
+    // TODO: Preserve the target
     // Reset Editor Panel target
     m_editController->resetTarget();
     m_sceneHierarchyPanel->resetTarget();

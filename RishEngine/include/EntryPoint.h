@@ -5,7 +5,8 @@
  */
 #pragma once
 
-#define LOG_VERBOSE 0
+//#define LOG_VERBOSE
+//#define LOG_DUP
 
 extern rl::Application* rl::CreateApplication();
 
@@ -21,10 +22,12 @@ int main(int argc, char **argv)
     getchar();
 #endif
     //
-#if LOG_VERBOSE
-    auto LoggerSetting = rl::Logger::LoggerType::IgnoreDup | rl::Logger::LoggerType::FileInfo | rl::Logger::LoggerType::FunctionInfo;
-#else
-    auto LoggerSetting = rl::Logger::LoggerType::IgnoreDup;
+    auto LoggerSetting = rl::Logger::LoggerType::Default;
+#ifdef LOG_VERBOSE
+    LoggerSetting |= rl::Logger::LoggerType::FileInfo | rl::Logger::LoggerType::FunctionInfo;
+#endif
+#ifdef LOG_IGNORE_DUP
+    LoggerSetting |= rl::Logger::LoggerType::IgnoreDup;
 #endif
     rl::Logger::Init(LoggerSetting);
     rl::VFS::Init();

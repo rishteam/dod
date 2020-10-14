@@ -57,6 +57,8 @@ Application::~Application()
     //
     Renderer::Shutdown();
     //
+    ScriptableManager::Shutdown();
+    //
     m_window.reset(nullptr);
 }
 

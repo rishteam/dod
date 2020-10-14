@@ -32,6 +32,13 @@ public:
 		return m_scene->m_registry.get<T>(m_entityHandle);
 	}
 
+    template<typename T>
+    const T& getComponent() const
+    {
+        RL_CORE_ASSERT(hasComponent<T>(), "Entity does not have component!");
+        return m_scene->m_registry.get<T>(m_entityHandle);
+    }
+
 	template<typename T>
 	void removeComponent()
 	{
@@ -40,7 +47,7 @@ public:
 	}
 
 	template<typename T>
-	bool hasComponent()
+	bool hasComponent() const
 	{
 		return m_scene->m_registry.has<T>(m_entityHandle);
 	}
@@ -52,7 +59,9 @@ public:
 		m_scene = nullptr;
 	}
 
-	UUID getUUID() { return getComponent<TagComponent>().id; }
+	UUID getUUID() const { return getComponent<TagComponent>().id; }
+
+	std::string getName() const { return getComponent<TagComponent>().tag; }
 
 	operator bool() const
 	{
