@@ -88,6 +88,9 @@ add_library(RishEngine
     # Time
     src/Core/Time.cpp
 
+    # Effect
+    src/Effect/Particle/ParticleSystem.cpp
+
     # Box
     src/Collider/Box.cpp
 
@@ -118,10 +121,14 @@ add_library(RishEngine
     src/Scene/Entity.cpp
     src/Scene/ComponentManager.cpp
     src/Scene/SceneCamera.cpp
+    src/Scene/ScriptableManager.cpp
 
     src/ImGui.cpp
     src/Math/AABB.cpp
-        src/Math/BoundingBox.cpp src/Scene/ScriptableManager.cpp src/Debug/DebugWindow.cpp)
+    src/Math/BoundingBox.cpp
+
+    src/Debug/DebugWindow.cpp
+)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

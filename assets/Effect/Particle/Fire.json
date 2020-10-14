@@ -1,0 +1,107 @@
+{
+    "value0": {
+        "dataPath": "C:/Users/lpc0503/Desktop/dod/assets/Effect/Particle/Fire",
+        "offset": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "angleRange": {
+            "x": 80.0,
+            "y": 110.0
+        },
+        "startSpeed": 0.0,
+        "endSpeed": 40.0,
+        "startSize": 0.0,
+        "endSize": 80.0,
+        "rotateSpeed": 0.0,
+        "emitNumber": 3,
+        "emitVariance": 2,
+        "maxParticleLife": 200,
+        "life": -1.0,
+        "sleepTime": 0.0,
+        "startColor": {
+            "x": 1.0,
+            "y": 0.39215686274509803,
+            "z": 0.0,
+            "w": 1.0
+        },
+        "endColor": {
+            "x": 0.8235294117647058,
+            "y": 0.8235294117647058,
+            "z": 0.8235294117647058,
+            "w": 0.0
+        },
+        "rotSpeedRand": {
+            "x": -1.0,
+            "y": 1.0
+        },
+        "startSpeedRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "endSpeedRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "emitVarianceRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "startSizeRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "endSizeRand": {
+            "x": 1.0,
+            "y": 1.0
+        },
+        "disX": 0.0,
+        "disY": 0.0,
+        "texturePath": "assets/texture/texture.png",
+        "vortexSensitive": true,
+        "vortexType": 1,
+        "vortexOffset": {
+            "x": -0.30,
+            "y": 0.50
+        },
+        "vortexAngleRange": {
+            "x": 70.0,
+            "y": 120.0
+        },
+        "vortexStartSpeed": 0.0,
+        "vortexEndSpeed": 1.0,
+        "vortexStartSize": 0.1,
+        "vortexEndSize": 0.01,
+        "vortexEmitNumber": 2,
+        "vortexMaxParticleLife": 80,
+        "vortexTurbulence": {
+            "x": -10.0,
+            "y": -10.0
+        },
+        "vortexSleepTime": 0.5,
+        "vortexStartSpeedRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "vortexEndSpeedRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "vortexLifeRand": {
+            "x": 0.5,
+            "y": 1.0
+        },
+        "vortexStartSizeRand": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "vortexEndSizeRand": {
+            "x": 1.0,
+            "y": 1.0
+        },
+        "vortexTurbulenceRand": {
+            "x": 0,
+            "y": 1
+        }
+    }
+}

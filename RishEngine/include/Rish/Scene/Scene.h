@@ -79,7 +79,7 @@ public:
 
 	// Debug flags
 	bool m_debugCamera          = false;
-	bool m_debugPhysics         = true;
+	bool m_debugPhysics         = false;
 private:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
@@ -117,6 +117,9 @@ private:
     friend class ComponentSelectionPanel;
     friend class EditController;
 
+    friend class ParticleSystem;
+    friend class ExampleSandboxLayer;
+
     // Debug functions
     friend void DrawSceneDebugWindow(const char *name, Ref<Scene> scene);
     friend void DrawSceneCameraDebugWindow(const SceneCamera & camera, const glm::mat4 &trans);
@@ -135,7 +138,8 @@ private:
                 TagComponent,
                 TransformComponent,
                 RenderComponent,
-                CameraComponent
+                CameraComponent,
+                ParticleComponent
             >(ar);
 	}
 
@@ -147,7 +151,8 @@ private:
                 TagComponent,
 			    TransformComponent,
 			    RenderComponent,
-			    CameraComponent
+			    CameraComponent,
+			    ParticleComponent
             >(ar);
 	}
 };

@@ -4,8 +4,8 @@
 
 ParticleLayer::ParticleLayer()
     : Layer("ParticleLayer"),
-      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true),
-      m_particleSystem(1000)
+      m_cameraController((float)rl::Application::Get().getWindow().getWidth() / (float)rl::Application::Get().getWindow().getHeight(), true)
+//      m_particleSystem(1000)
 {
     RL_PROFILE_FUNCTION();
 
@@ -15,13 +15,13 @@ ParticleLayer::ParticleLayer()
 
     ImGui::LoadIniSettingsFromDisk("Sandbox/imgui.ini");
 
-    m_particle.colorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
-    m_particle.colorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
-    m_particle.sizeBegin = 0.5f, m_particle.sizeVar = 0.3f, m_particle.sizeEnd = 0.0f;
-    m_particle.lifeTime = 1.0f;
-    m_particle.velocity = { 0.0f, 0.0f };
-    m_particle.velocityVar = { 3.0f, 1.0f };
-    m_particle.position = { 0.0f, 0.0f };
+//    m_particle.colorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
+//    m_particle.colorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
+//    m_particle.sizeBegin = 0.5f, m_particle.sizeVar = 0.3f, m_particle.sizeEnd = 0.0f;
+//    m_particle.lifeTime = 1.0f;
+//    m_particle.velocity = { 0.0f, 0.0f };
+//    m_particle.velocityVar = { 3.0f, 1.0f };
+//    m_particle.position = { 0.0f, 0.0f };
 }
 
 void ParticleLayer::onAttach()
@@ -82,16 +82,16 @@ void ParticleLayer::onUpdate(rl::Time dt)
         x = (x / winW) * camBounds.getWidth() - camBounds.getWidth() * 0.5f;
         y = camBounds.getHeight() * 0.5f - (y / winH) * camBounds.getHeight();
         //
-        m_particle.position = {x + camPos.x, y + camPos.y };
+//        m_particle.position = {x + camPos.x, y + camPos.y };
 
         //
-        RL_INFO("Add particle ({}, {})", m_particle.position.x, m_particle.position.y);
+//        RL_INFO("Add particle ({}, {})", m_particle.position.x, m_particle.position.y);
 //        for (int i = 0; i < 5; i++)
 //            m_particleSystem.emit(m_particle);
     }
 
-    m_particleSystem.onUpdate(dt);
-    m_particleSystem.onRender(m_cameraController.getCamera());
+//    m_particleSystem.onUpdate(dt);
+//    m_particleSystem.onRender(m_cameraController.getCamera());
 }
 
 void ParticleLayer::onImGuiRender()

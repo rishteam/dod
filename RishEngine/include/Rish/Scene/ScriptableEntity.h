@@ -15,11 +15,9 @@ class ScriptableEntity
 public:
     ScriptableEntity()
     {
-        RL_CORE_TRACE("[Debug] ScriptableEntity(): {}", (void*)this);
     }
     virtual ~ScriptableEntity()
     {
-        RL_CORE_TRACE("[Debug] ~ScriptableEntity(): {}", (void*)this);
     }
 
     template<typename T>
@@ -43,6 +41,8 @@ private:
     friend void CopyComponent(entt::registry &dst, entt::registry &src,
                              std::unordered_map<UUID, entt::entity>& enttMap,
                              const Ref<Scene> &targetScene);
+    template<typename T>
+    friend void CopyComponentToEntityIfExists(Entity dst, Entity src);
 };
 
 class EmptyScript : public ScriptableEntity
@@ -55,7 +55,7 @@ public:
 /**
  * @brief Native Script Component
  * @details 如果要改動 NativeScriptComponent 時，請留意 Scene::copySceneTo()
- * 跟 CopyComponent<NativeScriptComponent>()
+ * 跟 CopyComponent<NativeScriptComponent>() 和 CopyComponentToEntityIfExists<NativeScriptComponent>()
  */
 struct NativeScriptComponent
 {
@@ -68,14 +68,12 @@ struct NativeScriptComponent
     /////////////////////////////////////////
     NativeScriptComponent()
     {
-//        RL_CORE_TRACE("[Debug] NativeScriptComponent()");
         bind<EmptyScript>();
     }
 
     ~NativeScriptComponent()
     {
         unbind();
-//        RL_CORE_TRACE("[Debug] ~NativeScriptComponent()");
     }
 
     /////////////////////////////////////////

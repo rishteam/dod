@@ -7,6 +7,7 @@
 #include <Rish/Math/BoundingBox.h>
 //
 #include <Rish/ImGui.h>
+#include <Rish/Effect/Particle/ParticleSystem.h>
 
 #include "EditController.h"
 

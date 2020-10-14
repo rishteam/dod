@@ -8,6 +8,7 @@
 
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
+#include <Rish/Effect/Particle/ParticleSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
 
@@ -124,9 +125,9 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-//    debugEntity = m_currentScene->createEntity("DebugSprite");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+    debugEntity = m_currentScene->createEntity("DebugSprite");
+    debugEntity.addComponent<RenderComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
     debugEntity = m_currentScene->createEntity("static physcis");
     debugEntity.addComponent<RenderComponent>();
@@ -154,6 +155,8 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
 
+    debugEntity = m_currentScene->createEntity("ParticleTest");
+    debugEntity.addComponent<ParticleComponent>();
 }
 
 void EditorLayer::onDetach()
@@ -173,11 +176,10 @@ void EditorLayer::onUpdate(Time dt)
     // Resize the framebuffer if user resize the viewport
     auto framebufferSpec = m_editorFramebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
-    if(m_sceneViewportPanelSize != framebufferSize &&
-        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
-    {
-        m_editorFramebuffer->resize((uint32_t)m_sceneViewportPanelSize.x,
-                                    (uint32_t)m_sceneViewportPanelSize.y);
+    if (m_sceneViewportPanelSize != framebufferSize &&
+        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f) {
+        m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
+                                    (uint32_t) m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
 
@@ -194,7 +196,14 @@ void EditorLayer::onUpdate(Time dt)
         Renderer2D::BeginScene(cameraController->getCamera());
         m_editController->onUpdate(dt);
         Renderer2D::EndScene();
+
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+        Renderer2D::BeginScene(cameraController->getCamera());
+        m_editController->m_simulateParticle ? ParticleSystem::onEditorRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState) : ParticleSystem::onRender(m_editController->getContext()->m_registry, Scene::SceneState::Editor);
+        Renderer2D::EndScene();
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
+
     m_editorFramebuffer->unbind();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -373,7 +382,9 @@ void EditorLayer::onImGuiMainMenuRender()
                 try
                 {
                     cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_currentScene));
+                    inputArchive(cereal::make_nvp("Scene", m_editorScene));
+                    // TODO : Not Sure is this Correct
+                    setContextToPanels(m_editorScene);
                 }
                 catch (cereal::RapidJSONException &e)
                 {
@@ -412,7 +423,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: Maybe implement a function return ofstream from rl::FileSystem
                 std::ofstream os(m_scenePath);
                 cereal::JSONOutputArchive outputArchive(os);
-                outputArchive(cereal::make_nvp("Scene", m_currentScene));
+                outputArchive(cereal::make_nvp("Scene", m_editorScene));
             }
 
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
@@ -423,7 +434,7 @@ void EditorLayer::onImGuiMainMenuRender()
                     // TODO: Maybe implement a function return ofstream from rl::FileSystem
                     std::ofstream os(path);
                     cereal::JSONOutputArchive outputArchive(os);
-                    outputArchive(cereal::make_nvp("Scene", m_currentScene));
+                    outputArchive(cereal::make_nvp("Scene", m_editorScene));
                 }
             }
 
@@ -457,6 +468,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
                 ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
                 ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
+                ImGui::MenuItem("Simulate Particle In Editor", nullptr, &m_editController->m_simulateParticle);
                 ImGui::EndMenu();
             }
             if(ImGui::BeginMenu("Scene"))

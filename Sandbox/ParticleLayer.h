@@ -3,8 +3,6 @@
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
 
-#include "ParticleSystem.h"
-
 class ParticleLayer : public rl::Layer
 {
 public:
@@ -31,7 +29,4 @@ private:
 
     glm::vec4 m_squareColor{1.f, 0.f, 0.f, 1.f};
     glm::vec4 m_clearColor{0.f, 0.f, 0.f, 1.f};
-
-    ParticleSetting m_particle;
-    ParticleSystem m_particleSystem;
 };

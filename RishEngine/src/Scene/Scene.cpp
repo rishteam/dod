@@ -2,14 +2,16 @@
 //
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/Framebuffer.h>
+#include <Rish/Renderer/RendererCommand.h>
 //
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/Utils.h>
 //
-#include <Rish/Debug/DebugWindow.h>
+#include <Rish/Effect/Particle/ParticleSystem.h>
 //
+#include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
 //
 #include <Rish/ImGui.h>
@@ -20,6 +22,9 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
+
+    // TODO Remove me?
+    m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
     RL_CORE_INFO("Construct Scene");
 }
 
@@ -77,16 +82,6 @@ void Scene::destroyEntity(const Entity &entity)
     m_registry.destroy(entity.getEntityID());
 }
 
-template<typename T>
-void CopyComponentToEntityIfExists(Entity dst, Entity src)
-{
-    if(src.hasComponent<T>())
-    {
-        auto &dstComponent = dst.addComponent<T>();
-        dstComponent = src.getComponent<T>();
-    }
-}
-
 Entity Scene::duplicateEntity(Entity src)
 {
     auto &tag = src.getComponent<TagComponent>().tag;
@@ -98,6 +93,7 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<CameraComponent>(ent, src);
     CopyComponentToEntityIfExists<NativeScriptComponent>(ent, src);
     CopyComponentToEntityIfExists<RigidBody2DComponent>(ent, src);
+    CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
 }
 
 void Scene::onUpdate(Time dt)
@@ -195,6 +191,9 @@ void Scene::onUpdate(Time dt)
         }
     }
 
+    // Particle System update
+    ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
+
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
@@ -216,6 +215,8 @@ void Scene::onUpdate(Time dt)
 
     auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+
+    // Draw RenderComponent
     for(auto entity : cameraGroup)
     {
         Entity ent{entity, this};
@@ -237,8 +238,14 @@ void Scene::onUpdate(Time dt)
                 Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
         }
     }
-
     Renderer2D::EndScene();
+
+    // Draw Particle system
+    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+    Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+    ParticleSystem::onRender(m_registry, m_sceneState);
+    Renderer2D::EndScene();
+    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
 }
 
 void Scene::onScenePlay()
@@ -336,6 +343,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
 
@@ -365,7 +373,6 @@ void Scene::onImGuiRender()
         }
         ImGui::End();
 
-
         ImGui::Begin("Collider");
         for(auto && [uuid, box] : mapBoxColliderObj)
         {
@@ -380,11 +387,7 @@ void Scene::onImGuiRender()
         ImGui::Begin("State");
             ImGui::Text("%d", this->getSceneState());
         ImGui::End();
-
-
-
     }
-
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)

@@ -60,7 +60,7 @@ private:
     //////////////////////////////////////////
 	ErrorModal m_errorModal;
 
-	bool m_debugScene = true;
+	bool m_debugScene = false;
 };
 
 }

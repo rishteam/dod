@@ -184,6 +184,330 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
     EndDrawEditComponent();
 }
 
+// TODO Particle Component
+template<>
+void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
+{
+    BeginDrawEditComponent(ParticleComponent);
+    {
+        DrawRightClickMenu(ParticleComponent, false);
+
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        auto &emitter   = m_targetEntity.getComponent<ParticleComponent>();
+
+        ImGui::Text("Texture");
+        {
+            std::string tpath;
+            if(ImGui::Button("Select"))
+            {
+                if(FileDialog::SelectSingleFile(nullptr, nullptr, tpath))
+                {
+                    emitter.texturePath = tpath;
+                    emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
+                }
+            }
+
+            ImGui::SameLine();
+            ImGui::InputText("##texturePath", &emitter.texturePath, ImGuiInputTextFlags_ReadOnly);
+            if(emitter.texture)
+                ImGui::Image(emitter.texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
+            else
+                ImGui::Dummy(ImVec2(64, 64));
+
+
+            ImGui::Text("EmitData");
+            std::vector<File> file;
+            FileSystem::List("assets/Effect/Particle", file);
+
+            std::vector<std::string> filename;
+            for(auto f : file) filename.push_back(f.getFilename());
+
+            static int currentEmitData = -1;
+            if(ImGui::Combo("Select Emit Data", &currentEmitData, filename))
+            {
+                emitter.dataPath = file[currentEmitData].getPath();
+                emitter.loadEmitData();
+            }
+
+//            if(ImGui::Button("Select##dataPath"))
+//            {
+//                if(FileDialog::SelectSingleFile(nullptr, nullptr, dataPath))
+//                {
+//                    emitter.dataPath = dataPath;
+//                    emitter.loadEmitData();
+//                }
+//            }
+            ImGui::SameLine();
+            ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::ColorEdit4("Start Color", glm::value_ptr(emitter.startColor));
+            ImGui::ColorEdit4("End Color", glm::value_ptr(emitter.endColor));
+
+            ImGui::PushItemWidth(100);
+            ImGui::DragFloat("PosX", &transform.translate.x, 0.1f, 0.f, 0.f, "%.2f");
+            ImGui::SameLine();
+            ImGui::DragFloat("PosY", &transform.translate.y, 0.1f, 0.f, 0.f, "%.2f");
+
+            ImGui::DragFloat("DistanceX", &emitter.disX, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("DistanceY", &emitter.disY, .1f, 0.f, 0.f, "%.1f");
+
+            ImGui::DragFloat("Offset##x", &emitter.offset.x, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("Offset##y", &emitter.offset.y, .1f, 0.f, 0.f, "%.1f");
+
+            ImGui::Separator();
+
+            ImGui::DragFloat("Start Size", &emitter.startSize, 0.1f, 0.f, 0.f, "%.2f");
+            ImGui::SameLine();
+            ImGui::DragFloat("End Size", &emitter.endSize, 0.1f, 0.f, 0.f, "%.2f");
+
+            ImGui::Separator();
+
+            ImGui::DragFloat("AngleX", &emitter.angleRange.x, 0.5f, 0.f, 360.f, "%.2f");
+            ImGui::SameLine();
+            ImGui::DragFloat("AngleY", &emitter.angleRange.y, 0.5f, 0.f, 360.f, "%.2f");
+
+            ImGui::Separator();
+
+            ImGui::DragFloat("Start Speed", &emitter.startSpeed, 0.1f, 0.f, 0.f, "%.2f");
+            ImGui::SameLine();
+            ImGui::DragFloat("End Speed", &emitter.endSpeed, 0.1f, 0.0f, 0.0f, "%.2f");
+
+            ImGui::Separator();
+
+            ImGui::PopItemWidth();
+
+            ImGui::DragFloat("Rotate Speed", &emitter.rotateSpeed, 0.01f, 0.0f, 0.0f, "%.2f");
+            ImGui::Separator();
+
+            ImGui::PushItemWidth(100);
+
+            bool calSize = false;
+            if(ImGui::DragScalar("Emit Number", ImGuiDataType_U32, &emitter.emitNumber, 1.f, 0, 0, "%d"))
+            {
+                calSize = true;
+            }
+
+            if(ImGui::DragScalar("Emit Variance", ImGuiDataType_U32, &emitter.emitVariance, 1.f, 0, 0, "%d"))
+            {
+                calSize = true;
+            }
+
+            if(ImGui::DragScalar("Particle Life (frame)", ImGuiDataType_U32, &emitter.maxParticleLife, 1.f, 0,0, "%d"))
+            {
+                calSize = true;
+            }
+            if(calSize)
+            {
+                emitter.poolSize = (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1);
+                emitter.particles.clear();
+                emitter.particles.resize(emitter.poolSize);
+                emitter.lastUnusedParticle = 0;
+            }
+
+            ImGui::Text("Particle Pool Size: %d", emitter.poolSize);
+            if(ImGui::DragFloat("Sleep Time", &emitter.sleepTime, 0.1f, -1.f, FLT_MAX, "%.2f"))
+            {
+                emitter.active = true;
+                emitter.sleepTimer.restart();
+            }
+            ImGui::PopItemWidth();
+
+            if(ImGui::DragFloat("Emitter Life", &emitter.life, 1.f, 0.f, 0.f, "%.1f"))
+            {
+                emitter.lifeTimer.restart();
+                emitter.active = true;
+            }
+            ImGui::Separator();
+            ImGui::Text("Random Control");
+            ImGui::PushItemWidth(75);
+            ImGui::DragFloat("##RandomControlx", &emitter.rotSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("##RandomControly", &emitter.rotSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::Text("Random Rotate Speed");
+
+            ImGui::DragFloat("##StartSpeedx", &emitter.startSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("##StartSpeedy", &emitter.startSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::Text("Random Start Speed");
+
+            ImGui::DragFloat("##endSpeedx", &emitter.endSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("##endSpeedy", &emitter.endSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::Text("Random End Speed");
+
+            ImGui::DragFloat("##emitVariancex", &emitter.emitVarianceRand.x, .1f, 0.f, 100.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("##emitVariancey", &emitter.emitVarianceRand.y, .1f, 0.f, 100.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::Text("Random Emit Variance");
+
+            ImGui::DragFloat("##startSizex", &emitter.startSizeRand.x, .1f, 0.f, 100.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("##startSizey", &emitter.startSizeRand.y, .1f, 0.f, 100.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::Text("Random Start Size");
+
+            ImGui::DragFloat("##endSizex", &emitter.endSizeRand.x, .1f, 0.f, 100.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::DragFloat("##endSizey", &emitter.endSizeRand.y, .1f, 0.f, 100.f, "%.1f");
+            ImGui::SameLine();
+            ImGui::Text("Random End Size");
+
+            ImGui::PopItemWidth();
+
+            ImGui::Checkbox("Vortex Sensitive", &emitter.vortexSensitive);
+
+            if(emitter.vortexSensitive) {
+
+                ImGui::RadioButton("Static Vortex", &emitter.vortexType, 0); ImGui::SameLine();
+                ImGui::RadioButton("Dynamic Vortex", &emitter.vortexType, 1);
+                if (emitter.vortexType == STATIC_VORTEX) {
+
+                    int id = 1;
+                    for(auto &vortex : emitter.static_vortexes) {
+
+                        ImGui::PushID(id++);
+
+                        ImGui::PushItemWidth(100);
+
+
+                        ImGui::DragFloat("Vortex DistanceX", &vortex.pos.x, 0.1f, 0.f, 0.f, "%.1f");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("Vortex DistanceY", &vortex.pos.y, 0.1, 0.f, 0.f, "%.1f");
+
+                        ImGui::DragFloat("Vortex TurbulenceX", &vortex.turbulence.x, 0.1f, 0.f, 0.f, "%.1f");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("Vortex TurbulenceY", &vortex.turbulence.y, 0.1f, 0.f, 0.f, "%.1f");
+
+                        ImGui::DragFloat("Vortex Size", &vortex.currentSize, 0.1f, 0.f, 0.f, "%.2f");
+
+                        ImGui::Checkbox("Draw vortex", &vortex.draw);
+
+                        ImGui::PopItemWidth();
+                        if(ImGui::Button("Delete")) {
+
+                            if(emitter.static_vortexes.size() > 1){
+
+                                auto it = std::find(emitter.static_vortexes.begin(), emitter.static_vortexes.end(), vortex);
+                                emitter.static_vortexes.erase(it);
+                            }
+                        }
+                        ImGui::PopID();
+                        ImGui::Separator();
+                    }
+
+                    if(ImGui::Button("Add Vortex")) {
+
+                        emitter.static_vortexes.push_back(Particle(emitter.static_vortexes.size()));
+                    }
+                }
+
+                    // Dynamic vortex
+                else {
+
+                    ImGui::PushItemWidth(100);
+
+                    ImGui::DragFloat("Vortex Offset##X", &emitter.vortexPos.x, 0.1f, 0.f, 0.f, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex Offset##Y", &emitter.vortexPos.y, 0.1f, 0.f, 0.f, "%.2f");
+
+                    ImGui::DragFloat("Vortex DistanceX", &emitter.vortexDisX, .1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex DistanceY", &emitter.vortexDisY, .1f, 0.f, 0.f, "%.1f");
+
+                    ImGui::DragFloat("Vortex AngleX", &emitter.vortexAngleRange.x, 0.5f, 0.f, 360.f, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex AngleY", &emitter.vortexAngleRange.y, 0.5f, 0.f, 360.f, "%.2f");
+
+                    ImGui::DragFloat("Vortex Start Speed", &emitter.vortexStartSpeed, 1.f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex End Speed", &emitter.vortexEndSpeed, 1.f, 0.f, 0.f, "%.1f");
+
+                    ImGui::DragFloat("Vortex TurbulenceX", &emitter.vortexTurbulence.x, 0.1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex TurbulenceY", &emitter.vortexTurbulence.y, 0.1f, 0.f, 0.f, "%.1f");
+
+                    ImGui::DragFloat("Vortex Start Size", &emitter.vortexStartSize, 0.05f, 0.f, 0.f, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("Vortex End Size", &emitter.vortexEndSize, 0.05f, 0.f, 0.f, "%.2f");
+
+                    const ImU32 emitMin = 0, emitMax = 50, vortexLife = 1;
+                    if(ImGui::DragScalar("Vortex Particle Life (frame)", ImGuiDataType_U32, &emitter.vortexMaxParticleLife, 1.f, &vortexLife, 0, "%d"))
+                    {
+                        emitter.vortexPoolSize = emitter.vortexEmitNumber*3;
+                        emitter.dynamic_vortexes.clear();
+                        emitter.dynamic_vortexes.resize(emitter.vortexPoolSize);
+                        emitter.lastUnusedVortex = 0;
+                    }
+                    ImGui::DragScalar("Emit Per Sec", ImGuiDataType_U32, &emitter.vortexEmitNumber, 1.f, &emitMin, 0, "%d");
+                    ImGui::Text("Particle Pool Size: %d", emitter.vortexPoolSize);
+                    ImGui::Checkbox("Draw Vortex", &emitter.drawVortex);
+
+                    ImGui::PopItemWidth();
+
+                    if(ImGui::DragFloat("Vortex Sleep Time", &emitter.vortexSleepTime, 0.5f, -1.f, FLT_MAX, "%.1f"))
+                    {
+                        emitter.vortexSleepTimer.restart();
+                        emitter.vortexActive = true;
+                    }
+
+                    ImGui::Separator();
+                    ImGui::Text("Random Control");
+                    ImGui::PushItemWidth(75);
+
+                    ImGui::DragFloat("##vortexStartSpeedx", &emitter.vortexStartSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("##vortexStartSpeedy", &emitter.vortexStartSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::Text("Vortex Random Start Speed");
+
+                    ImGui::DragFloat("##vortexEndSpeedx", &emitter.vortexEndSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("##vortexEndSpeedy", &emitter.vortexEndSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::Text("VortexRandom End Speed");
+
+                    ImGui::DragFloat("##vortexStartSizex", &emitter.vortexStartSizeRand.x, .05f, 0.f, 100.f, "%.3f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("##vortexStartSizey", &emitter.vortexStartSizeRand.y, .05f, 0.f, 100.f, "%.3f");
+                    ImGui::SameLine();
+                    ImGui::Text("Vortex Random Start Size");
+
+                    ImGui::DragFloat("##vortexEndSizex", &emitter.vortexEndSizeRand.x, .05f, 0.f, 100.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("##vortexEndSizey", &emitter.vortexEndSizeRand.y, .05f, 0.f, 100.f, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::Text("Vortex Random End Size");
+
+                    ImGui::DragFloat("##vortexTurbulenceRandX", &emitter.vortexTurbulenceRand.x, .05f, 0, 0, "%.1f");
+                    ImGui::SameLine();
+                    ImGui::DragFloat("##vortexTurbulenceRandY", &emitter.vortexTurbulenceRand.y, 0.05, 0, 0, "%.1f");
+
+                    ImGui::PopItemWidth();
+                }
+            }
+
+            if(ImGui::Button("Save Emit Data as")) {
+
+                std::string path;
+                if(FileDialog::SelectSaveFile(nullptr, nullptr, path)) {
+
+                    emitter.dataPath = path;
+                    std::ofstream os(path);
+                    cereal::JSONOutputArchive outputArchive(os);
+                    outputArchive(cereal::make_nvp("Emit Data", emitter));
+                }
+            }
+        }
+    }
+    EndDrawEditComponent();
+}
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -211,6 +535,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RenderComponent>();
         drawEditComponentWidget<CameraComponent>();
         drawEditComponentWidget<NativeScriptComponent>();
+        drawEditComponentWidget<ParticleComponent>();
 
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

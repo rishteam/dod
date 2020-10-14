@@ -33,8 +33,8 @@ void CopyComponent(entt::registry &dst, entt::registry &src,
 
 template<>
 void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &src,
-                   std::unordered_map<UUID, entt::entity>& enttMap,
-                   const Ref<Scene> &targetScene)
+                                          std::unordered_map<UUID, entt::entity>& enttMap,
+                                          const Ref<Scene> &targetScene)
 {
     // Copy all src entities fro src registry to dst registry
     auto view = src.view<NativeScriptComponent>();
@@ -61,6 +61,35 @@ void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &s
         // Set the instance->m_entity (Written by the copy above)
         dstComponent.instance->m_entity = dstEntity;
 
+    }
+}
+
+template<typename T>
+void CopyComponentToEntityIfExists(Entity dst, Entity src)
+{
+    if(src.hasComponent<T>())
+    {
+        auto &dstComponent = dst.addComponent<T>();
+        dstComponent = src.getComponent<T>();
+    }
+}
+
+template<>
+void CopyComponentToEntityIfExists<NativeScriptComponent>(Entity dst, Entity src)
+{
+    if(src.hasComponent<NativeScriptComponent>())
+    {
+        auto &srcComponent = src.getComponent<NativeScriptComponent>();
+        //
+        auto &dstComponent = dst.addComponent<NativeScriptComponent>();
+        // Bind the Script to dstEntity
+        ScriptableManager::Bind(dst, srcComponent.scriptName);
+
+        // Copy the values of instance
+        *dstComponent.instance = *srcComponent.instance;
+
+        // Set the instance->m_entity (Written by the copy above)
+        dstComponent.instance->m_entity = dst;
     }
 }
 

@@ -28,6 +28,7 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     ComponentManager::registerComponent<RenderComponent>();
     ComponentManager::registerComponent<CameraComponent>();
     ComponentManager::registerComponent<NativeScriptComponent>();
+    ComponentManager::registerComponent<ParticleComponent>();
 }
 
 } // end of namespace rl
