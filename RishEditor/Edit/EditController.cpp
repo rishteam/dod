@@ -89,7 +89,8 @@ void EditController::onUpdate(Time dt)
         Entity ent{entity, scene.get()};
         auto &boxcollider = ent.getComponent<BoxCollider2DComponent>();
         auto &transform = ent.getComponent<TransformComponent>();
-        Renderer2D::DrawRect({transform.translate.x + boxcollider.x, transform.translate.y + boxcollider.y}, { boxcollider.w, boxcollider.h},  {1.0f, 1.0f, 0.0f, 1.f});
+        //TODO: rotate Quad for collider
+        Renderer2D::DrawRotatedQuad({transform.translate.x + boxcollider.x, transform.translate.y + boxcollider.y}, { boxcollider.w, boxcollider.h},  {1.0f, 1.0f, 0.0f, 0.2f}, boxcollider.rotation);
     }
 
     if(isSelected())

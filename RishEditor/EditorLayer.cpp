@@ -88,34 +88,44 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
-//    debugEntity = m_scene->createEntity("DebugSprite");
-//    debugEntity.addComponent<RenderComponent>();
-//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_scene->createEntity("static physcis");
+    debugEntity = m_scene->createEntity("static RigidBody");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<BoxCollider2DComponent>();
 
-    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
+    auto &staticRigidBody = debugEntity.getComponent<RigidBody2DComponent>();
     auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
-    rigbd.mass = MAX_float;
+    staticRigidBody.mass = MAX_float;
+    staticRigidBody.friction = 0.2f;
     box.x = 0.0f;
     box.y = 0.0f;
     box.w = 3.0f;
     box.h = 3.0f;
 
-    debugEntity = m_scene->createEntity("Physics 2");
+    debugEntity = m_scene->createEntity("RigidBody 2");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<BoxCollider2DComponent>();
+    auto &RigidBody2 = debugEntity.getComponent<RigidBody2DComponent>();
+    auto &box2 = debugEntity.getComponent<BoxCollider2DComponent>();
+    RigidBody2.friction = 0.2f;
+    box2.w = 1.0f;
+    box2.h = 1.0f;
 
-    debugEntity = m_scene->createEntity("Physics 3");
+    debugEntity = m_scene->createEntity("RigidBody 3");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    auto &RigidBody3 = debugEntity.getComponent<RigidBody2DComponent>();
+    RigidBody3.friction = 0.2f;
 
-    debugEntity = m_scene->createEntity("Physics 4");
+
+    debugEntity = m_scene->createEntity("RigidBody 4");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    auto &RigidBody4 = debugEntity.getComponent<RigidBody2DComponent>();
+    RigidBody4.friction = 0.2f;
+
 
 }
 
@@ -265,7 +275,7 @@ void EditorLayer::onImGuiRender()
                 m_scene->onScenePlay();
             }
             else
-                m_scene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
+                m_scene->setSceneState(Scene::SceneState::Play); // TODO: remove me
         }
         ImGui::SameLine();
         if(ImGui::Button(ICON_FA_PAUSE))

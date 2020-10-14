@@ -178,6 +178,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         float forceVector[2] = {rigid.force.x, rigid.force.y};
         ImGui::Text("Physics Parameter");
         {
+            // can control the physics parameter
             ImGui::InputFloat("Mass", &rigid.mass, 1.0f, 5.0f, "%.2f");
             ImGui::InputFloat("Friction", &rigid.friction, 1.0f, 5.0f, "%.2f");
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
@@ -186,6 +187,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             rigid.velocity.y = velocityVector[1];
             rigid.force.x = forceVector[0];
             rigid.force.y = forceVector[1];
+            // can't control the physics parameter
             ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
             ImGui::Text("Torque: %.2f", rigid.torque);
         }
@@ -212,8 +214,20 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
     BeginDrawEditComponent(BoxCollider2DComponent);
     {
         DrawRightClickMenu(BoxCollider2DComponent, false);
-        auto &rigid = m_targetEntity.getComponent<BoxCollider2DComponent>();
+        auto &collider = m_targetEntity.getComponent<BoxCollider2DComponent>();
+        auto &trans = m_targetEntity.getComponent<TransformComponent>().scale;
+        float translate[2] = {collider.x, collider.y};
+        float scale[2] = {collider.w, collider.h};
+
         ImGui::Text("BoxCollider2D Component");
+        {
+            ImGui::DragFloat2("(x, y)", translate, 1.0f);
+            ImGui::DragFloat2("(w, h)", scale, 1.0f);
+            collider.x = translate[0];
+            collider.y = translate[1];
+            collider.w = scale[0];
+            collider.h = scale[1];
+        }
     }
     EndDrawEditComponent();
 }

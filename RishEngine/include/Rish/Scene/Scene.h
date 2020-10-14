@@ -93,7 +93,6 @@ private:
     ////////////////////////////////////////////////////////////////
     // Physics
     ////////////////////////////////////////////////////////////////
-    bool fuck = false;
     PhysicsWorld PhysicsWorld{Vec2(0.0f, -9.8f)};
     std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysicsObj;
     std::unordered_map<UUID, Ref<Box>> mapBoxColliderObj;

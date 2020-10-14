@@ -26,7 +26,7 @@ struct RigidBody2DComponent{
     //力矩
     float torque = 0.0f;
     //摩擦力
-    float friction = 0.0f;
+    float friction = 0.2f;
     //質量，質量倒數
     float mass = 10.0f;
 
@@ -54,6 +54,7 @@ struct BoxCollider2DComponent{
     float y = 0.0f;
     float w = 0.0f;
     float h = 0.0f;
+    float rotation = 0.0f;
 
 private:
     friend class cereal::access;
@@ -64,7 +65,8 @@ private:
                 CEREAL_NVP(x),
                 CEREAL_NVP(y),
                 CEREAL_NVP(w),
-                CEREAL_NVP(h)
+                CEREAL_NVP(h),
+                CEREAL_NVP(rotation)
         );
     }
 
