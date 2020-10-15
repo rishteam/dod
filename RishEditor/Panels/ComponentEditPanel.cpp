@@ -197,8 +197,8 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::Combo("Body type", &bodyTypeNowSelect, BodyTypeString, 2);
             if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
             {
-               rigid.mass = MAX_float;
-               rigid.BodyTypeState = RigidBody2DComponent::BodyType::Static;
+                rigid.mass = MAX_float;
+                rigid.BodyTypeState = RigidBody2DComponent::BodyType::Static;
             }
             else
             {
@@ -234,6 +234,43 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
     EndDrawEditComponent();
 }
 
+template<>
+void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
+{
+    BeginDrawEditComponent(Joint2DComponent);
+    {
+        DrawRightClickMenu(Joint2DComponent, false);
+
+        auto &registry = m_targetEntity.m_scene->m_registry;
+        // Build list of RigidBody2D
+        auto view = registry.view<RigidBody2DComponent>();
+        for(auto ent : view)
+        {
+            Entity entity{ent, m_targetEntity.m_scene};
+            auto &RigidBodyID = entity.getComponent<TagComponent>().id;
+            auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
+            auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
+            // List box
+            // TODO: Add RigidBody2D component list
+            const char* items[];
+            static int item_current = 1;
+            ImGui::ListBox("listbox\n(single select)", &item_current, items, IM_ARRAYSIZE(items), 4);
+
+
+            ImGui::Text("Joint2D Type");
+            {
+                ImGui::Combo("Joint2D type", &bodyTypeNowSelect, BodyTypeString, 2);
+
+            }
+
+            for(auto idx : )
+            RigidBodyName.c_str() RigidBodyID.to_string().c_str()
+        }
+//        auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
+    }
+    EndDrawEditComponent();
+}
+
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
@@ -263,6 +300,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<NativeScriptComponent>();
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
+        drawEditComponentWidget<Joint2DComponent>();
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
         {

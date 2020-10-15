@@ -69,7 +69,45 @@ private:
                 CEREAL_NVP(h)
         );
     }
-
 };
+
+struct Joint2DComponent{
+    Joint2DComponent() = default;
+
+    //can change
+    Ref<RigidBody2D> rigidBody1;
+    Ref<RigidBody2D> rigidBody2;
+    Vec2 anchor = Vec2(0.0f, 0.0f);
+
+    //fixed value
+    Vec2 localAnchor1, localAnchor2;
+    Vec2 r1, r2;
+    Vec2 P = Vec2(0.0f, 0.0f);
+    Vec2 bias = Vec2(0.0f, 0.0f);
+    float biasFactor = 0.2f;
+    float softness = 0.0f;
+
+private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(
+                CEREAL_NVP(rigidBody1),
+                CEREAL_NVP(rigidBody2),
+                CEREAL_NVP(anchor),
+                CEREAL_NVP(localAnchor1),
+                CEREAL_NVP(localAnchor2),
+                CEREAL_NVP(r1),
+                CEREAL_NVP(r2),
+                CEREAL_NVP(P),
+                CEREAL_NVP(bias),
+                CEREAL_NVP(biasFactor),
+                CEREAL_NVP(softness)
+        );
+    }
+};
+
+
 
 }
