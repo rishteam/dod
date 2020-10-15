@@ -3,10 +3,34 @@
 
 namespace rl {
 
+void ParticleSystem::onUpdate(const Ref<Scene>& scene, float dt)
+{
+    auto &registry = scene->m_registry;
+    const auto &state = scene->getSceneState();
+    //
+    onUpdate(registry, dt, state);
+}
+
+void ParticleSystem::onRender(const Ref<Scene>& scene)
+{
+    auto &registry = scene->m_registry;
+    const auto &state = scene->getSceneState();
+    //
+    onRender(registry, state);
+}
+
+void ParticleSystem::onEditorRender(const Ref<Scene>& scene)
+{
+    auto &registry = scene->m_registry;
+    const auto &state = scene->getSceneState();
+    //
+    onEditorRender(registry, state);
+}
+
 void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneState state)
 {
-    if(state != Scene::SceneState::Play) return;
-
+    RL_UNUSED(state);
+    //
     auto view = registry.view<TransformComponent, ParticleComponent>();
     for(auto entity : view)
     {
@@ -189,24 +213,22 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
 
 void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
 {
+    RL_UNUSED(state);
+    //
     auto view = registry.view<TransformComponent, ParticleComponent>();
-
     for (auto &entity: view)
     {
         auto &transform = registry.get<TransformComponent>(entity);
         auto &emitter   = registry.get<ParticleComponent>(entity);
         auto &tag       = registry.get<TagComponent>(entity);
 
-        if(state == Scene::SceneState::Editor)
-        {
-            Renderer2D::DrawQuad(transform.translate, {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
-            continue;
-        }
-
+        // Draw all living particles
         for(auto &particle: emitter.particles)
         {
-            if(particle.life > 0) Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
-                                              particle.currentColor, particle.angle);
+            if(particle.life > 0)
+                Renderer2D::DrawRotatedQuad(particle.pos,
+                    {particle.currentSize, particle.currentSize}, emitter.texture,
+                    particle.currentColor, particle.angle);
         }
     }
 }
@@ -214,7 +236,6 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
 void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState state)
 {
     auto view = registry.view<TransformComponent, ParticleComponent>();
-
     for (auto &entity: view)
     {
         auto &transform = registry.get<TransformComponent>(entity);
@@ -223,15 +244,10 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
 
         if(state == Scene::SceneState::Editor)
         {
-            Renderer2D::DrawQuad(transform.translate + glm::vec3 (emitter.offset, 0), {(emitter.startSize+emitter.endSize)/2*0.01, (emitter.startSize+emitter.endSize)/2*0.01}, emitter.texture);
-            continue;
-        }
-
-
-        for(auto &particle: emitter.particles)
-        {
-            if(particle.life > 0) Renderer2D::DrawRotatedQuad(particle.pos, {particle.currentSize, particle.currentSize}, emitter.texture,
-                                              particle.currentColor, particle.angle);
+            auto size = (emitter.startSize + emitter.endSize)/2.f * 0.01f;
+            Renderer2D::DrawQuad(transform.translate + glm::vec3(emitter.offset, 0),
+                 {size, size},
+                 emitter.texture);
         }
 
         if(emitter.vortexSensitive)

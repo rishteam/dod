@@ -42,9 +42,10 @@ void rl::PhysicsWorld::AddJoints(const Ref<Joint> &joint)
     joints.push_back(joint);
 }
 
-void rl::PhysicsWorld::Step(float delta_t)
+void rl::PhysicsWorld::Step(float dt)
 {
-    float inv_dt = delta_t > 0.0f ? 1.0f / delta_t : 0.0f;
+    float inv_dt = dt > 0.0f ? 1.0f / dt : 0.0f;
+    timeStep = dt;
 
     //Boardphase detection
     this->BoardPhase();
@@ -54,7 +55,7 @@ void rl::PhysicsWorld::Step(float delta_t)
     {
         if (bodies.at(i)->invMass == 0.0f)
             continue;
-        bodies.at(i)->ComputeForce(delta_t, gravity);
+        bodies.at(i)->ComputeForce(dt, gravity);
     }
 
     //Pre-step arbiter
@@ -84,7 +85,7 @@ void rl::PhysicsWorld::Step(float delta_t)
     // Integrate Velocities
     for(int i = 0; i < bodies.size(); i++)
     {
-        bodies.at(i)->IntegrateVelocities(delta_t);
+        bodies.at(i)->IntegrateVelocities(dt);
         bodies.at(i)->force = Vec2(0.0f,0.0f);
         bodies.at(i)->torque = 0.0f;
     }

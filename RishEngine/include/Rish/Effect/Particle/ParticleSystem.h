@@ -11,11 +11,22 @@ namespace rl {
 class RL_API ParticleSystem
 {
 public:
+    // TODO: implement me
+    enum VortexType
+    {
+        StaticVortex = 0,
+        DynamicVortex
+    };
+
     ParticleSystem() = default;
 
-    static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state = Scene::SceneState::Editor);
-    static void onRender(entt::registry& registry, Scene::SceneState state = Scene::SceneState::Editor);
-    static void onEditorRender(entt::registry& registry, Scene::SceneState state = Scene::SceneState::Editor);
+    static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state);
+    static void onRender(entt::registry& registry, Scene::SceneState state);
+    static void onEditorRender(entt::registry& registry, Scene::SceneState state);
+
+    static void onUpdate(const Ref<Scene>& scene, float dt);
+    static void onRender(const Ref<Scene>& scene);
+    static void onEditorRender(const Ref<Scene>& scene);
 
 private:
     // TODO: remove

@@ -65,6 +65,11 @@
 #include <Rish/Physics/Joint.h>
 
 /**
+ * @defgroup effects Effects Module
+ */
+#include <Rish/Effect/Particle/ParticleSystem.h>
+
+/**
  * @defgroup math Math Module
  * @brief Math related
  */

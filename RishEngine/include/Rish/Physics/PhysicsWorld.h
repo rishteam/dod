@@ -24,10 +24,11 @@ public:
 
     void Clear();
 
-    void Step(float delta_t);
+    void Step(float dt);
 
     void BoardPhase();
 
+    // TODO: Move these to the PhysicsLayer
     void demo1();
     void demo2();
     void demo3();

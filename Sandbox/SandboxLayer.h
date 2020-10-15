@@ -2,9 +2,6 @@
 
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
-#include <Rish/Physics/PhysicsWorld.h>
-#include <Rish/Physics/RigidBody2D.h>
-
 
 using namespace rl;
 
@@ -20,6 +17,5 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
-    Ref<Scene> m_scene;
-    OrthographicCameraController m_cameraController;
+
 };

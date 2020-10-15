@@ -192,7 +192,8 @@ void Scene::onUpdate(Time dt)
     }
 
     // Particle System update
-    ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
+    if(m_sceneState == SceneState::Play)
+        ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
 
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
@@ -213,29 +214,29 @@ void Scene::onUpdate(Time dt)
     // TODO: implement multiple camera
     if(!isAnyCamera) return;
 
+    // Draw RenderComponent
     auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
-
-    // Draw RenderComponent
-    for(auto entity : cameraGroup)
     {
-        Entity ent{entity, this};
-        auto &transform = ent.getComponent<TransformComponent>();
-        auto &render = ent.getComponent<RenderComponent>();
+        for (auto entity : cameraGroup) {
+            Entity ent{entity, this};
+            auto &transform = ent.getComponent<TransformComponent>();
+            auto &render = ent.getComponent<RenderComponent>();
 
-        if(render.m_texture)
-        {
-            if(transform.rotate != 0.f)
-                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color, transform.rotate);
-            else
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
-        }
-        else
-        {
-            if(transform.rotate != 0.f)
-                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color, transform.rotate);
-            else
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+            if (render.m_texture) {
+                if (transform.rotate != 0.f)
+                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
+                                                render.color, transform.rotate);
+                else
+                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
+                                         render.color);
+            } else {
+                if (transform.rotate != 0.f)
+                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color,
+                                                transform.rotate);
+                else
+                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+            }
         }
     }
     Renderer2D::EndScene();
@@ -243,7 +244,9 @@ void Scene::onUpdate(Time dt)
     // Draw Particle system
     RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
-    ParticleSystem::onRender(m_registry, m_sceneState);
+    {
+        ParticleSystem::onRender(m_registry, m_sceneState);
+    }
     Renderer2D::EndScene();
     RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
 }

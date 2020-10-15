@@ -26,8 +26,6 @@ EditorLayer::EditorLayer()
 	VFS::Mount("texture", "assets/editor/texture");
     VFS::Mount("icon", "assets/editor/icon");
 
-    ImGui::LoadIniSettingsFromDisk("RishEditor/imgui.ini");
-
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_editorScene = MakeRef<Scene>();
@@ -107,6 +105,7 @@ public:
 
 void EditorLayer::onAttach()
 {
+    ImGui::LoadIniSettingsFromDisk("assets/layout/editor.ini");
     RL_CORE_INFO("[EditorLayer] onAttach");
 	FramebufferSpecification fbspec;
 	fbspec.width = 1280;
@@ -161,9 +160,7 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onDetach()
 {
-    RL_CORE_INFO("[EditorLayer] onDetach");
-
-    ImGui::SaveIniSettingsToDisk("RishEditor/imgui.ini");
+    ImGui::SaveIniSettingsToDisk("assets/layout/editor.ini");
     // Detach all panels
     for(auto &panel : m_panelList)
         panel->onDetach();
@@ -199,7 +196,11 @@ void EditorLayer::onUpdate(Time dt)
 
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
         Renderer2D::BeginScene(cameraController->getCamera());
-        m_editController->m_simulateParticle ? ParticleSystem::onEditorRender(m_editController->getContext()->m_registry, m_editController->getContext()->m_sceneState) : ParticleSystem::onRender(m_editController->getContext()->m_registry, Scene::SceneState::Editor);
+        {
+            ParticleSystem::onEditorRender(m_currentScene);
+            if(m_editController->m_debugSimulateParticle)
+                ParticleSystem::onRender(m_currentScene);
+        }
         Renderer2D::EndScene();
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
@@ -468,7 +469,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
                 ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
                 ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);
-                ImGui::MenuItem("Simulate Particle In Editor", nullptr, &m_editController->m_simulateParticle);
+                ImGui::MenuItem("Simulate Particle In Editor", nullptr, &m_editController->m_debugSimulateParticle);
                 ImGui::EndMenu();
             }
             if(ImGui::BeginMenu("Scene"))

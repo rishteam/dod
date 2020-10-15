@@ -348,56 +348,56 @@ struct ParticleComponent {
 
     float disY = 0.f;
 
-    // Particle restrain in the range of angle
+    /// Particle restrain in the range of angle
     glm::vec2 angleRange {80.f, 110.f};
 
-    // The color when a particle generate
+    /// The color when a particle generate
     glm::vec4 startColor = {1.f, 0.3921568691730499f, 0.f, 1.f};
 
-    // The color when a particle die
+    /// The color when a particle die
     glm::vec4 endColor = {0.8235294222831726f, 0.8235294222831726f, 0.8235294222831726f, 0.f};
 
-    // The speed when a particle generate
+    /// The speed when a particle generate
     float startSpeed = 0.f;
 
-    // The speed when a particle die
+    /// The speed when a particle die
     float endSpeed = 200.8f;
 
-    // The size when a particle generate
+    /// The size when a particle generate
     float startSize = 0.f;
 
-    // The size when a particle die
+    /// The size when a particle die
     float endSize = 80.0f;
 
-    // The speed that the particle texture rotate
+    /// The speed that the particle texture rotate
     float rotateSpeed = 0.f;
 
-    // Particle generate per frame
-    // Cal by emitNumber and emitVariance
+    /// Particle generate per frame
+    /// Cal by emitNumber and emitVariance
     int emissionRate = 0;
 
-    // Least generate per frame
+    /// Least generate per frame
     uint32_t emitNumber = 3;
 
-    // Offset of random
+    /// Offset of random
     uint32_t emitVariance = 2;
 
-    // Particle life
+    /// Particle life
     uint32_t maxParticleLife = 80;
 
-    // Use to cal pool size
+    /// Use to cal pool size
     uint32_t maxParticlesPerFrame = 0;
 
-    // Particle Pool Size
+    /// Particle Pool Size
     int poolSize = 0;
 
-    // Emitter life time
+    /// Emitter life time
     float life = -1;
 
-    // For ImGui stuff. If ImGui change "life", check if life != life_store, then restart timer and active emitter
+    /// For ImGui stuff. If ImGui change "life", check if life != life_store, then restart timer and active emitter
     float life_store = -1;
 
-    // Particle generate per sleep time
+    // /Particle generate per sleep time
     float sleepTime = -1;
 
     // Timer that control emitter life and sleep time
