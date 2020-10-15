@@ -341,7 +341,7 @@ void EditorLayer::onImGuiRender()
 
 	m_errorModal.onImGuiRender();
 
-	// TODO: this is for DEBUG use move me plz
+	// Debug Scene Window
 	if(m_debugScene)
     {
 	    ImGui::Begin("Scene Debug");

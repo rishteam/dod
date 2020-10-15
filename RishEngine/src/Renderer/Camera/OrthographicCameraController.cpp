@@ -7,49 +7,51 @@
 
 namespace rl {
 
-OrthographicCameraController::OrthographicCameraController(float aspect, bool rotate)
+OrthographicCameraController::OrthographicCameraController(float aspect, bool rotate, bool moveByKeyboard)
     : m_aspect(aspect),
       m_zoom(1.f),
       m_bounds(-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom),
       m_camera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top)
 {
     m_isAbleToRotate = rotate;
+    m_enableKeyboardMove = moveByKeyboard;
 }
 
 void OrthographicCameraController::onUpdate(Time dt)
 {
     // Early out if it is not enabled
-//    if(!m_enableState)
-//        return;
+    if(!m_enableState)
+        return;
 
-    float rads = m_camera.getRotationRadians();
-    // TODO: refactor these
-    glm::mat2 rotationMatrix = {
-        std::cos(rads), std::sin(rads),
-        -std::sin(rads), std::cos(rads)
-    };
-    glm::vec2 dir[4] = {
-        {0.f,  1.f},  // W
-        {0.f, -1.f},  // S
-        {-1.f, 0.f},  // A
-        {1.f,  0.f}   // D
-    };
-    for(int i = 0; i < 4; i++)
-    {
-        dir[i] = rotationMatrix * dir[i];
-        dir[i] *= m_translateSpeed;
+    if(m_enableKeyboardMove) {
+        float rads = m_camera.getRotationRadians();
+        // TODO: refactor these
+        glm::mat2 rotationMatrix = {
+                std::cos(rads), std::sin(rads),
+                -std::sin(rads), std::cos(rads)
+        };
+        glm::vec2 dir[4] = {
+                {0.f,  1.f},  // W
+                {0.f,  -1.f},  // S
+                {-1.f, 0.f},  // A
+                {1.f,  0.f}   // D
+        };
+        for (int i = 0; i < 4; i++) {
+            dir[i] = rotationMatrix * dir[i];
+            dir[i] *= m_translateSpeed;
+        }
+
+        if (rl::Input::IsKeyPressed(rl::Keyboard::W))
+            m_position += glm::vec3(dir[0], 0.f) * dt.asSeconds();
+        else if (rl::Input::IsKeyPressed(rl::Keyboard::S))
+            m_position += glm::vec3(dir[1], 0.f) * dt.asSeconds();
+        if (rl::Input::IsKeyPressed(rl::Keyboard::A))
+            m_position += glm::vec3(dir[2], 0.f) * dt.asSeconds();
+        else if (rl::Input::IsKeyPressed(rl::Keyboard::D))
+            m_position += glm::vec3(dir[3], 0.f) * dt.asSeconds();
+
+        m_camera.setPosition(m_position);
     }
-
-//    if(rl::Input::IsKeyPressed(rl::Keyboard::W))
-//        m_position += glm::vec3(dir[0], 0.f) * dt.asSeconds();
-//    else if(rl::Input::IsKeyPressed(rl::Keyboard::S))
-//        m_position += glm::vec3(dir[1], 0.f) * dt.asSeconds();
-//    if(rl::Input::IsKeyPressed(rl::Keyboard::A))
-//        m_position += glm::vec3(dir[2], 0.f) * dt.asSeconds();
-//    else if(rl::Input::IsKeyPressed(rl::Keyboard::D))
-//        m_position += glm::vec3(dir[3], 0.f) * dt.asSeconds();
-
-    m_camera.setPosition(m_position);
 
     if(!m_isAbleToRotate)
         return;
@@ -80,6 +82,7 @@ void OrthographicCameraController::onImGuiRender()
     ImGui::Begin("OrthographicCameraController");
     ImGui::Text("Aspect: %.2f",m_aspect);
     ImGui::Checkbox("Enable Camera", &m_enableState);
+    ImGui::Checkbox("Enable Move by Keyboard", &m_enableKeyboardMove);
     //
     ImGui::DragFloat("Zoom", &m_zoom);
     //

@@ -40,12 +40,17 @@ struct OrthographicCameraBounds
 class RL_API OrthographicCameraController
 {
 public:
-    OrthographicCameraController(float aspect, bool rotate=false);
+    OrthographicCameraController(float aspect, bool rotate=false, bool moveByKeyboard=false);
+    ///////////////////////////////////////
     // Main functions
+    ///////////////////////////////////////
     void onUpdate(Time dt);
     void onEvent(Event &e);
     void onImGuiRender();
+
+    ///////////////////////////////////////
     // Events
+    ///////////////////////////////////////
     void onResize(float width, float height);
 
     void setState(bool state) { m_enableState = state; }
@@ -71,7 +76,8 @@ private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
     //
-    bool m_enableState = true;
+    bool m_enableState        = true;  ///< Is the CameraController enable?
+    bool m_enableKeyboardMove = false; ///< Is the keyboard be able to move the CameraController
     float m_aspect = 1280.f / 720.f;
     // Zoom
     float m_zoom = 1.f;

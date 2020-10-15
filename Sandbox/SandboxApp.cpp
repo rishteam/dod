@@ -1,5 +1,5 @@
 #include "SandboxLayer.h"
-#include "ParticleLayer.h"
+#include "PhysicsLayer.h"
 
 #include <RishEngine.h>
 #include <EntryPoint.h>
@@ -11,7 +11,7 @@ public:
     {
         RL_PROFILE_FUNCTION();
         pushLayer(new ExampleSandboxLayer());
-//        pushLayer(new ParticleLayer());
+//        pushLayer(new PhysicsLayer);
     }
 
     virtual ~Sandbox() override

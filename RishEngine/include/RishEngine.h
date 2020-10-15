@@ -26,8 +26,6 @@
 #include <Rish/Input/Input.h>
 
 // Utils Module
-#include <Rish/Debug/debug-trap.h>
-#include <Rish/Debug/ImGuiLogWindow.h>
 #include <Rish/Utils/FileDialog.h>
 
 /**
@@ -59,6 +57,14 @@
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
 /**
+ * @defgroup physics Physics Module
+ * @brief Physics Module
+ */
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/RigidBody2D.h>
+#include <Rish/Physics/Joint.h>
+
+/**
  * @defgroup math Math Module
  * @brief Math related
  */
@@ -74,3 +80,5 @@
 
 // Debug
 #include <Rish/Debug/Instrumentor.h>
+#include <Rish/Debug/debug-trap.h>
+#include <Rish/Debug/ImGuiLogWindow.h>

@@ -5,8 +5,7 @@ project(Sandbox)
 add_executable(${PROJECT_NAME}
     SandboxApp.cpp
     SandboxLayer.cpp
-    ParticleLayer.cpp
-)
+        PhysicsLayer.cpp PhysicsLayer.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME}

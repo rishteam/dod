@@ -36,7 +36,7 @@ void EditController::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
     m_cameraController = MakeRef<OrthographicCameraController>(
-        Application::Get().getWindow().getAspectRatio());
+        Application::Get().getWindow().getAspectRatio(), false, false);
     m_editorGrid.onAttach(m_cameraController);
 
     s_cameraIcon = Texture2D::LoadTextureVFS("/icon/cameraIcon.png");
