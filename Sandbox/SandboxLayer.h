@@ -17,5 +17,6 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
-
+    OrthographicCameraController m_cameraController;
+    float m_rotate = 0.f;
 };

@@ -564,7 +564,6 @@ void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::v
     DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
 }
 
-
 void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
     glm::vec2 t = position;
@@ -575,6 +574,26 @@ void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, cons
         {t.x + s.x, t.y + s.y},
         {t.x - s.x, t.y + s.y}
     };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {0.f - s.x, 0.f - s.y},
+        {0.f + s.x, 0.f - s.y},
+        {0.f + s.x, 0.f + s.y},
+        {0.f - s.x, 0.f + s.y}
+    };
+
+    glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(position, 0.f)) *
+                      glm::rotate(glm::mat4(1), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
+
+    for(int i = 0; i < 4; i++)
+        p[i] = trans * glm::vec4(p[i], 0.f, 0.f);
+
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
 }

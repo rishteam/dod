@@ -104,7 +104,7 @@ void EditController::onUpdate(Time dt)
         // Get bounding box
         auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
         // Draw Border
-        Renderer2D::DrawRect(bound.getPosition(), bound.getScale());
+        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
     }
 }
 
