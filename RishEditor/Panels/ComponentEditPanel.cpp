@@ -192,9 +192,8 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::Text("Torque: %.2f", rigid.torque);
         }
         ImGui::Separator();
-        ImGui::Text("Body Type");
+        if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
         {
-            ImGui::Combo("Body type", &bodyTypeNowSelect, BodyTypeString, 2);
             if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
             {
                 rigid.mass = MAX_float;
@@ -202,13 +201,10 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             }
             else
             {
+                rigid.mass = 10.0f;
                 rigid.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
             }
         }
-
-        // TODO: Vec2 change to glm::Vec2
-        // velocity, force
-
     }
     EndDrawEditComponent();
 }
@@ -239,11 +235,15 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 {
     BeginDrawEditComponent(Joint2DComponent);
     {
-        DrawRightClickMenu(Joint2DComponent, false);
-
         auto &registry = m_targetEntity.m_scene->m_registry;
-        // Build list of RigidBody2D
+        // Build list of RigidBody2D]
+        // TODO: dynamic update the RigidBody2DComponent Object
         auto view = registry.view<RigidBody2DComponent>();
+        const char* items[view.size()];
+        std::vector<UUID> UUIDList;
+        static int RigidBodyOption1 = 0;
+        static int RigidBodyOption2 = 0;
+        int ItemsCnt = 0;
         for(auto ent : view)
         {
             Entity entity{ent, m_targetEntity.m_scene};
@@ -251,23 +251,31 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
             auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
             // List box
-            // TODO: Add RigidBody2D component list
-            const char* items[];
-            static int item_current = 1;
-            ImGui::ListBox("listbox\n(single select)", &item_current, items, IM_ARRAYSIZE(items), 4);
-
-
-            ImGui::Text("Joint2D Type");
-            {
-                ImGui::Combo("Joint2D type", &bodyTypeNowSelect, BodyTypeString, 2);
-
-            }
-
-            for(auto idx : )
-            RigidBodyName.c_str() RigidBodyID.to_string().c_str()
+            std::string options = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
+            items[ItemsCnt++] = options.c_str();
+            UUIDList.push_back(RigidBodyID);
         }
-//        auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
+
+        DrawRightClickMenu(Joint2DComponent, false);
+        auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
+        float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
+
+        ImGui::Text("%s", jit.rigidBody1.to_string().c_str());
+        ImGui::Text("%s", jit.rigidBody2.to_string().c_str());
+
+        ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
+        jit.anchor.x = jitAnchor[0];
+        jit.anchor.y = jitAnchor[1];
+        ImGui::Separator();
+
+        ImGui::Text("r1: (%.f, %.f)", jit.r1.x, jit.r1.y);
+        ImGui::Text("r2: (%.f, %.f)", jit.r2.x, jit.r2.y);
+        ImGui::Text("P: (%.f, %.f)", jit.P.x, jit.P.y);
+        ImGui::Text("bias: (%.f, %.f)", jit.bias.x, jit.bias.y);
+        ImGui::Text("biasFactor: %.f", jit.biasFactor);
+        ImGui::Text("softness: %.f", jit.softness);
     }
+
     EndDrawEditComponent();
 }
 

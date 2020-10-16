@@ -126,14 +126,14 @@ void Scene::onUpdate(Time dt)
 
         // Joint Component to Physics engine joint
         auto group2 = m_registry.view<TransformComponent, Joint2DComponent>();
-        for (auto entity : group) {
+        for (auto entity : group2) {
             Entity ent{entity, this};
             auto &UUID = ent.getComponent<TagComponent>().id;
             auto &jitComponent = ent.getComponent<Joint2DComponent>();
             if(mapJointObj.count(UUID))
             {
                 auto &jit = mapJointObj[UUID];
-                jit->Set(jitComponent.rigidBody1, jitComponent.rigidBody2, jitComponent.anchor);
+                jit->Set(mapPhysicsObj[jitComponent.rigidBody1], mapPhysicsObj[jitComponent.rigidBody2], jitComponent.anchor);
             }
         }
 
@@ -196,6 +196,9 @@ void Scene::onUpdate(Time dt)
                 rigidbody2D.mass = phy->mass;
             }
         }
+
+        // TODO: Joint Data in physics engine to componennt
+
     }
     if(m_sceneState == SceneState::Pause)
     {
@@ -261,8 +264,6 @@ void Scene::onUpdate(Time dt)
                 Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
         }
     }
-
-
     Renderer2D::EndScene();
 }
 
@@ -323,7 +324,7 @@ void Scene::onScenePlay()
         auto &transform = ent.getComponent<TransformComponent>();
         auto &jit = ent.getComponent<Joint2DComponent>();
         // BoxCollider Component
-        if(!mapBoxColliderObj.count(UUID)) {
+        if(!mapJointObj.count(UUID)) {
             auto jit = MakeRef<Joint>();
             PhysicsWorld.AddJoints(jit);
             mapJointObj[UUID] = jit;
@@ -334,7 +335,6 @@ void Scene::onScenePlay()
 void Scene::onScenePause()
 {
     m_sceneState = SceneState::Pause;
-
 }
 
 void Scene::onSceneStop()
@@ -350,6 +350,7 @@ void Scene::onSceneStop()
     PhysicsWorld.Clear();
     mapPhysicsObj.clear();
     mapBoxColliderObj.clear();
+    mapJointObj.clear();
 }
 
 void Scene::copySceneTo(Ref<Scene> &target)
@@ -443,9 +444,6 @@ void Scene::onImGuiRender()
         ImGui::Begin("State");
             ImGui::Text("%d", this->getSceneState());
         ImGui::End();
-
-
-
     }
 }
 

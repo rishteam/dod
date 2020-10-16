@@ -96,18 +96,20 @@ void EditorLayer::onAttach()
     auto &box = debugEntity1.getComponent<BoxCollider2DComponent>();
     auto &trans = debugEntity1.getComponent<TransformComponent>();
     staticRigidBody.mass = MAX_float;
+
     trans.translate.x = 0.0f;
     trans.translate.y = 0.0f;
-    box.w = 6.0f;
-    box.h = 4.0f;
+    box.w = 4.0f;
+    box.h = 1.0f;
 
-    Entity debugEntity2 = m_scene->createEntity("RigidBody 2");
+   Entity debugEntity2 = m_scene->createEntity("RigidBody 2");
     debugEntity2.addComponent<RenderComponent>();
     debugEntity2.addComponent<RigidBody2DComponent>();
     debugEntity2.addComponent<BoxCollider2DComponent>();
     auto &RigidBody2 = debugEntity2.getComponent<RigidBody2DComponent>();
     auto &box2 = debugEntity2.getComponent<BoxCollider2DComponent>();
     auto &trans2 = debugEntity2.getComponent<TransformComponent>();
+    RigidBody2.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
     trans2.translate.x = -0.5f;
     trans2.translate.y = 2.5f;
 
@@ -119,6 +121,7 @@ void EditorLayer::onAttach()
     auto &RigidBody3 = debugEntity3.getComponent<RigidBody2DComponent>();
     auto &box3 = debugEntity3.getComponent<BoxCollider2DComponent>();
     auto &trans3 = debugEntity3.getComponent<TransformComponent>();
+    RigidBody3.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
     trans3.translate.x = -1.5f;
     trans3.translate.y = 2.5f;
 
@@ -129,6 +132,7 @@ void EditorLayer::onAttach()
     auto &RigidBody4 = debugEntity4.getComponent<RigidBody2DComponent>();
     auto &box4 = debugEntity4.getComponent<BoxCollider2DComponent>();
     auto &trans4 = debugEntity4.getComponent<TransformComponent>();
+    RigidBody4.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
     trans4.translate.x = 0.5f;
     trans4.translate.y = 2.5f;
 
@@ -139,8 +143,17 @@ void EditorLayer::onAttach()
     auto &RigidBody5 = debugEntity5.getComponent<RigidBody2DComponent>();
     auto &box5 = debugEntity5.getComponent<BoxCollider2DComponent>();
     auto &trans5 = debugEntity5.getComponent<TransformComponent>();
+    RigidBody5.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
     trans5.translate.x = 1.5f;
     trans5.translate.y = 2.5f;
+
+
+    Entity debugEntity6 = m_scene->createEntity("Joint");
+    debugEntity6.addComponent<Joint2DComponent>();
+    auto &jit = debugEntity6.getComponent<Joint2DComponent>();
+    jit.rigidBody1 = debugEntity2.getComponent<TagComponent>().id;
+    jit.rigidBody2 = debugEntity3.getComponent<TagComponent>().id;
+    jit.anchor = Vec2(trans3.translate.x, trans3.translate.y);
 }
 
 void EditorLayer::onDetach()

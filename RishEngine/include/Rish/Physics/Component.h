@@ -7,9 +7,11 @@ namespace rl {
 /**
  * @brief RigidBody2D
  */
-struct RigidBody2DComponent{
+struct RigidBody2DComponent
+{
 
-    enum class BodyType {
+    enum class BodyType
+    {
         Static = 0,
         Dynamic
     };
@@ -50,7 +52,8 @@ private:
     }
 };
 
-struct BoxCollider2DComponent{
+struct BoxCollider2DComponent
+{
     BoxCollider2DComponent() = default;
     float x = 0.0f;
     float y = 0.0f;
@@ -71,12 +74,13 @@ private:
     }
 };
 
-struct Joint2DComponent{
+struct Joint2DComponent
+{
     Joint2DComponent() = default;
 
     //can change
-    Ref<RigidBody2D> rigidBody1;
-    Ref<RigidBody2D> rigidBody2;
+    UUID rigidBody1;
+    UUID rigidBody2;
     Vec2 anchor = Vec2(0.0f, 0.0f);
 
     //fixed value
