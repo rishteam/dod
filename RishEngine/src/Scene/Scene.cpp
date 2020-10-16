@@ -7,6 +7,7 @@
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
 //
 #include <Rish/Effect/Particle/ParticleSystem.h>
@@ -22,9 +23,9 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
-
     // TODO Remove me?
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
+//    m_registry.on_construct<NativeScriptComponent>().connect<entt::invoke<&NativeScriptComponent::init>>();
     RL_CORE_INFO("Construct Scene");
 }
 
@@ -99,7 +100,17 @@ Entity Scene::duplicateEntity(Entity src)
 void Scene::onUpdate(Time dt)
 {
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
-        nsc.instance->m_entity = Entity{entityID, this};
+        Entity ent{entityID, this};
+        // Is bind
+        if(nsc.instance)
+        {
+            nsc.instance->m_entity = Entity{entityID, this};
+        }
+        else
+        {
+            ScriptableManager::Bind(ent, nsc.scriptName);
+        }
+
         if(nsc.valid)
         {
             nsc.instance->onUpdate(dt);
@@ -258,7 +269,6 @@ void Scene::onScenePlay()
     // Initialize the NativeScriptComponent
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
-        Entity ent{entityID, this};
         nsc.instance->onCreate();
         nsc.valid = true;
     });
@@ -330,9 +340,10 @@ void Scene::copySceneTo(Ref<Scene> &target)
 {
     std::unordered_map<UUID, entt::entity> targetEnttMap{};
     //
-    target->m_registry.clear();
+//    target->m_registry.clear();
 
     // Copy all entities by UUID
+    // TODO: use m_registry.each ?
     auto view = m_registry.view<TagComponent>();
     for(auto ent : view)
     {

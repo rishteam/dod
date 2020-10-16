@@ -179,7 +179,10 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
         }
 
         // Script Fields
-        scriptComponent.instance->onImGuiRender();
+        if(scriptComponent.instance)
+            scriptComponent.instance->onImGuiRender();
+        else
+            ImGui::Text("Fuck me plz");
     }
     EndDrawEditComponent();
 }

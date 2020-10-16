@@ -365,7 +365,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 RL_ERROR("Not implemented");
             }
 
-            if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
+            if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, m_currentScene == m_editorScene))
             {
                 // Open File
                 std::string path, content;
@@ -373,7 +373,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 {
                     content = FileSystem::ReadTextFile(path);
                     m_scenePath = path;
-                    RL_INFO("content = {}", content);
+//                    RL_INFO("content = {}", content);
                 }
 
                 // Deserialize
@@ -383,9 +383,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 try
                 {
                     cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_editorScene));
-                    // TODO : Not Sure is this Correct
-                    setContextToPanels(m_editorScene);
+                    inputArchive(cereal::make_nvp("Scene", m_currentScene));
                 }
                 catch (cereal::RapidJSONException &e)
                 {

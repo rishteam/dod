@@ -618,8 +618,8 @@ struct ParticleComponent
     ParticleComponent(std::string texturePath) : texturePath(texturePath) {}
     ParticleComponent(std::shared_ptr<Texture2D> texture) : texture(texture){}
 
-    template<typename Archrive>
-    void serialize(Archrive &ar)
+    template<typename Archive>
+    void serialize(Archive &ar)
     {
         ar(cereal::make_nvp("dataPath", dataPath));
         ar(cereal::make_nvp("offset", offset));

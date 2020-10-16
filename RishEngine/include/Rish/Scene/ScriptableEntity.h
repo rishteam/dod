@@ -15,6 +15,7 @@ class ScriptableEntity
 public:
     ScriptableEntity()
     {
+//        RL_CORE_INFO("ScriptableEntity: {}", (void *)this);
     }
     virtual ~ScriptableEntity()
     {
@@ -60,20 +61,20 @@ public:
 struct NativeScriptComponent
 {
     Ref<ScriptableEntity> instance = nullptr;
-    std::string scriptName = "";
-    bool valid = false;
+    std::string scriptName         = entt::type_info<EmptyScript>::name().data();
+    bool valid                     = false;
 
     /////////////////////////////////////////
     // Constructor / Destructor
     /////////////////////////////////////////
-    NativeScriptComponent()
-    {
-        bind<EmptyScript>();
-    }
+    NativeScriptComponent() = default;
+    ~NativeScriptComponent() = default;
 
-    ~NativeScriptComponent()
+    template<typename Archive>
+    void serialize(Archive &ar)
     {
-        unbind();
+        ar(cereal::make_nvp("script_name", scriptName),
+           cereal::make_nvp("valid", valid));
     }
 
     /////////////////////////////////////////
@@ -87,10 +88,12 @@ struct NativeScriptComponent
         //
         scriptName = entt::type_info<T>::name();
         instance = MakeRef<T>(std::forward<Args>(args)...);
+//        RL_CORE_INFO("bind():   {} {} {}", (void*)this, scriptName, (void*)instance.get());
     }
 
     void unbind()
     {
+//        RL_CORE_INFO("unbind(): {} {} {}", (void*)this, scriptName, (void*)instance.get());
         instance = nullptr;
     }
 };

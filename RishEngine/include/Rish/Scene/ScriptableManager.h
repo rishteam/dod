@@ -38,7 +38,7 @@ public:
     static bool Bind(Entity ent, const std::string &typeName)
     {
         if(!s_scriptBindMap.count(typeName)) {
-            RL_CORE_ERROR("NativeScript {} not exist", typeName);
+            RL_CORE_ERROR("NativeScript {} not exist, Did you called ScriptManager::Register<T>()?", typeName);
             return false;
         }
 

@@ -18,6 +18,7 @@ namespace rl
 
 // Forward declaration
 class Entity;
+class NativeScriptComponent;
 
 /**
  * @brief Scene object
@@ -26,6 +27,7 @@ class Entity;
 class Scene
 {
 public:
+    // TODO: Scene name
 	Scene();
 	~Scene();
 
@@ -142,7 +144,8 @@ public:
                 TransformComponent,
                 RenderComponent,
                 CameraComponent,
-                ParticleComponent
+                ParticleComponent,
+                NativeScriptComponent
             >(ar);
 	}
 
@@ -155,7 +158,8 @@ public:
 			    TransformComponent,
 			    RenderComponent,
 			    CameraComponent,
-			    ParticleComponent
+			    ParticleComponent,
+			    NativeScriptComponent
             >(ar);
 	}
 };
