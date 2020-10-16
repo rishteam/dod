@@ -128,7 +128,7 @@ add_library(RishEngine
     src/Math/BoundingBox.cpp
 
     src/Debug/DebugWindow.cpp
-)
+        src/Scene/ScriptableEntity.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

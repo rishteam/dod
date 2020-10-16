@@ -79,9 +79,10 @@
  * @defgroup scene Scene Module
  * @brief Scene
  */
-#include "Rish/Scene/Scene.h"
-#include "Rish/Scene/Entity.h"
-#include "Rish/Scene/Component.h"
+#include <Rish/Scene/Scene.h>
+#include <Rish/Scene/Entity.h>
+#include <Rish/Scene/Component.h>
+#include <Rish/Scene/ScriptableEntity.h>
 
 // Debug
 #include <Rish/Debug/Instrumentor.h>

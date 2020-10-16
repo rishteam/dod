@@ -66,4 +66,95 @@ void DrawSceneCameraDebugWindow(const SceneCamera &camera, const glm::mat4 &tran
     ImGui::End();
 }
 
+void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
+{
+    ImGui::Begin("Debug");
+    registry.each([&](auto ent) {
+        Entity entity{ent, scene};
+        std::string &tag = entity.getComponent<TagComponent>().tag;
+        std::string id = entity.getComponent<TagComponent>().id.to_string();
+        if(ImGui::TreeNodeEx(tag.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::Text("UUID = %s", id.c_str());
+
+            DrawDebugTransformComponentInfo(entity);
+            DrawDebugCameraComponentInfo(entity);
+            DrawDebugRenderComponentInfo(entity);
+            DrawDebugNativeScriptComponentInfo(entity);
+
+            ImGui::TreePop();
+        }
+    });
+    ImGui::End();
+}
+
+void DrawDebugTransformComponentInfo(Entity entity)
+{
+    auto &transform = entity.getComponent<TransformComponent>();
+    if(ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::DragFloat3("Translate", glm::value_ptr(transform.translate), 0.01f);
+        ImGui::DragFloat2("Scale", glm::value_ptr(transform.scale), 0.01f);
+        ImGui::DragFloat("Rotation", &transform.rotate, 0.1f);
+        ImGui::TreePop();
+    }
+}
+
+void DrawDebugCameraComponentInfo(Entity entity)
+{
+    if(!entity.hasComponent<CameraComponent>())
+        return;
+    auto &camera = entity.getComponent<CameraComponent>();
+    if(ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Checkbox("Primary", &camera.primary);
+        ImGui::Checkbox("Fixed Aspect", &camera.lockAspect);
+        //
+        auto &cam = camera.camera;
+        ImGui::Text("Aspect = %f", cam.getAspect());
+        ImGui::Text("Size   = %f", cam.getOrthoSize());
+
+        ImGui::TreePop();
+    }
+}
+
+void DrawDebugRenderComponentInfo(Entity entity)
+{
+    if(!entity.hasComponent<RenderComponent>())
+        return;
+    auto &render = entity.getComponent<RenderComponent>();
+    if(ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Text("path = %s", render.m_texture->getPath().c_str());
+        ImGui::Text("width = %d height = %d", render.m_texture->getWidth(), render.m_texture->getHeight());
+        ImGui::Text("tex id = %d", render.m_texture->getTextureID());
+        ImGui::TreePop();
+    }
+}
+
+void DrawDebugNativeScriptComponentInfo(Entity entity)
+{
+    if(!entity.hasComponent<NativeScriptComponent>())
+        return;
+    auto &nsc = entity.getComponent<NativeScriptComponent>();
+    if(ImGui::TreeNodeEx("NativeScript", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Text("instance = %p", (void *)nsc.instance.get());
+        ImGui::Text("script   = %s", nsc.scriptName.c_str());
+        ImGui::Text("valid    = %d", nsc.valid);
+        ImGui::Indent();
+        if(nsc.instance)
+            nsc.instance->onImGuiRender();
+        ImGui::Unindent();
+        ImGui::TreePop();
+    }
+}
+
+void DrawDebugParticleComponentInfo(Entity entity)
+{
+    if(!entity.hasComponent<ParticleComponent>())
+        return;
+
+}
+
 }

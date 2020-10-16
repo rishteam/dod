@@ -49,6 +49,7 @@ public:
 	uint32_t getWidth() const { return m_width; }
     uint32_t getHeight() const { return m_height;}
     float getAspectRatio() const { return (float)m_width / (float)m_height; }
+    std::string getPath() const {return m_path; }
 
     uint32_t getTextureID() const { return m_textureID; }
 
