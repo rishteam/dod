@@ -80,6 +80,7 @@ public:
 	// Debug flags
 	bool m_debugCamera          = false;
 	bool m_debugPhysics         = false;
+	bool m_debugScene           = false;
 
 // TODO: Remove me (because ParticleSystem)
 //private:

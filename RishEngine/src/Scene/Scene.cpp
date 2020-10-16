@@ -391,6 +391,9 @@ void Scene::onImGuiRender()
             ImGui::Text("%d", this->getSceneState());
         ImGui::End();
     }
+
+    if(m_debugScene)
+        DrawDebugSceneWindow(m_registry, this);
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)

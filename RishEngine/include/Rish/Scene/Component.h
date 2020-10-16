@@ -154,7 +154,11 @@ struct CameraComponent
     bool primary = false;
     bool lockAspect = true;
 
-    CameraComponent() = default;
+    CameraComponent()
+    {
+        camera.setOrthographic(5.f, -1.f, 1.f);
+    }
+
     CameraComponent(const CameraComponent&) = default;
 private:
     friend class cereal::access;
@@ -173,8 +177,8 @@ private:
  */
 
 // TODO move to other file?
-struct EmitData {
-
+struct EmitData
+{
     glm::vec2 offset = {0.f, 0.f};
     float disX = 0.f;
     float disY = 0.f;
@@ -286,8 +290,8 @@ struct EmitData {
 };
 
 // TODO move to other file?
-struct Particle {
-
+struct Particle
+{
     uint32_t startLife;
 
     glm::vec2 pos;
@@ -331,8 +335,8 @@ struct Particle {
     }
 };
 
-struct ParticleComponent {
-
+struct ParticleComponent
+{
     /**************** Particle Attribute *****************/
 
     #define MAX_PARTICLE_POOLSIZE 100000
