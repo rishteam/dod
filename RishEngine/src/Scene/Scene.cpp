@@ -197,8 +197,25 @@ void Scene::onUpdate(Time dt)
             }
         }
 
-        // TODO: Joint Data in physics engine to componennt
+        // TODO: Joint Data in physics engine to Component
+        auto group6 = m_registry.view<TransformComponent, Joint2DComponent>();
+        for (auto entity : group6) {
+            Entity ent{entity, this};
+            auto &UUID = ent.getComponent<TagComponent>().id;
+            auto &transform = ent.getComponent<TransformComponent>();
+            auto &jitComponent = ent.getComponent<Joint2DComponent>();
 
+            if(mapJointObj.count(UUID))
+            {
+                auto jit = mapJointObj[UUID];
+                jitComponent.r1 = jit->r1;
+                jitComponent.r2 = jit->r2;
+                jitComponent.P = jit->P;
+                jitComponent.bias = jit->bias;
+                jitComponent.biasFactor = jit->biasFactor;
+                jitComponent.softness = jit->softness;
+            }
+        }
     }
     if(m_sceneState == SceneState::Pause)
     {

@@ -237,7 +237,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
     {
         auto &registry = m_targetEntity.m_scene->m_registry;
         // Build list of RigidBody2D]
-        // TODO: dynamic update the RigidBody2DComponent Object
+        // TODO: bug for dynamic update the RigidBody2DComponent Object
         auto view = registry.view<RigidBody2DComponent>();
         const char* items[view.size()];
         std::vector<UUID> UUIDList;
@@ -259,6 +259,16 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         DrawRightClickMenu(Joint2DComponent, false);
         auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
         float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
+
+
+        if (ImGui::ListBox("RigidBody1", &RigidBodyOption1, items, IM_ARRAYSIZE(items), 4))
+        {
+            jit.rigidBody1 = UUIDList[RigidBodyOption1];
+        }
+        if (ImGui::ListBox("RigidBody2", &RigidBodyOption2, items, IM_ARRAYSIZE(items), 4))
+        {
+            jit.rigidBody2 = UUIDList[RigidBodyOption2];
+        }
 
         ImGui::Text("%s", jit.rigidBody1.to_string().c_str());
         ImGui::Text("%s", jit.rigidBody2.to_string().c_str());
