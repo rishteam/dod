@@ -84,7 +84,7 @@ public:
 struct NativeScriptComponent
 {
     Ref<ScriptableEntity> instance = nullptr;
-    std::string scriptName         = entt::type_info<EmptyScript>::name().data();
+    std::string scriptName         = std::string{entt::type_info<EmptyScript>::name()};
     bool valid                     = false;
 
     /////////////////////////////////////////
