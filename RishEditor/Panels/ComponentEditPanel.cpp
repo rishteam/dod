@@ -239,10 +239,8 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         // Build list of RigidBody2D]
         // TODO: bug for dynamic update the RigidBody2DComponent Object
         auto view = registry.view<RigidBody2DComponent>();
+        std::vector<std::pair<UUID, std::string>> OptionsList;
         const char* items[view.size()];
-        std::vector<UUID> UUIDList;
-        static int RigidBodyOption1 = 0;
-        static int RigidBodyOption2 = 0;
         int ItemsCnt = 0;
         for(auto ent : view)
         {
@@ -251,23 +249,34 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
             auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
             // List box
-            std::string options = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
-            items[ItemsCnt++] = options.c_str();
-            UUIDList.push_back(RigidBodyID);
+            std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
+            OptionsList.push_back(make_pair(RigidBodyID, options_single));
+        }
+        std::sort(OptionsList.begin(), OptionsList.end());
+
+        for(auto it : OptionsList)
+        {
+            items[ItemsCnt++] = it.second.c_str();
         }
 
         DrawRightClickMenu(Joint2DComponent, false);
         auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
         float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
-
+//        static int RigidBodyOption1 = std::find(OptionsList.begin(), OptionsList.end(), jit.rigidBody1) - OptionsList.begin();
+        static int RigidBodyOption1 = std::find_if(OptionsList.begin(), OptionsList.end(), [&jit](const std::pair<UUID, std::string> &ele) {
+            return ele.first == jit.rigidBody1;
+        }) - OptionsList.begin();
+        static int RigidBodyOption2 =std::find_if(OptionsList.begin(), OptionsList.end(), [&jit](const std::pair<UUID, std::string> &ele) {
+            return ele.first == jit.rigidBody2;
+        }) - OptionsList.begin();
 
         if (ImGui::ListBox("RigidBody1", &RigidBodyOption1, items, IM_ARRAYSIZE(items), 4))
         {
-            jit.rigidBody1 = UUIDList[RigidBodyOption1];
+            jit.rigidBody1 = OptionsList[RigidBodyOption1].first;
         }
         if (ImGui::ListBox("RigidBody2", &RigidBodyOption2, items, IM_ARRAYSIZE(items), 4))
         {
-            jit.rigidBody2 = UUIDList[RigidBodyOption2];
+            jit.rigidBody2 = OptionsList[RigidBodyOption2].first;
         }
 
         ImGui::Text("%s", jit.rigidBody1.to_string().c_str());
