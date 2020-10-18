@@ -447,13 +447,18 @@ void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
 void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
 {
     UUID id;
-    bool targetIsSet = false;
+    bool isTargetSet = false;
 
     // Get the UUID of current selection if scene is not nullptr
-    if(m_editController->getContext())
+    if(m_sceneHierarchyPanel->getContext())
     {
-        id = m_editController->getTarget().getUUID();
-        targetIsSet = true;
+        auto &ent = m_sceneHierarchyPanel->getTargets();
+        //
+        if(ent.size() == 1)
+        {
+            id = ent.begin()->getUUID();
+            isTargetSet = true;
+        }
     }
 
     // Switch the scene
@@ -465,7 +470,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     m_sceneHierarchyPanel->resetTarget();
     m_componentEditPanel->resetTarget();
 
-    if(targetIsSet)
+    if(isTargetSet)
     {
         auto entity = scene->getEntityByUUID(id);
         //
