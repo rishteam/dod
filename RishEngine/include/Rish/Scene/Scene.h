@@ -51,6 +51,8 @@ public:
 	 */
 	Entity duplicateEntity(Entity src);
 
+	Entity getEntityByUUID(UUID uuid);
+
 	/**
 	 * @brief Update Entity behavior
 	 * @param camera Camera

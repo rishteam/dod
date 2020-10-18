@@ -465,4 +465,17 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     }
 }
 
+Entity Scene::getEntityByUUID(UUID uuid)
+{
+    Entity target;
+    //
+    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
+        Entity entity{ent, this};
+        if(tag.id == uuid)
+            target = entity;
+    });
+    //
+    return target;
+}
+
 } // namespace rl
