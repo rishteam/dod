@@ -57,6 +57,7 @@ public:
  * @brief Native Script Component
  * @details 如果要改動 NativeScriptComponent 時，請留意 Scene::copySceneTo()
  * 跟 CopyComponent<NativeScriptComponent>() 和 CopyComponentToEntityIfExists<NativeScriptComponent>()
+ * `Ref<ScriptableEntity> instance` 會在 Scene::onUpdate() 的一開始被初始化
  */
 struct NativeScriptComponent
 {

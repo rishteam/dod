@@ -15,6 +15,10 @@
 #include <Rish/ImGui.h>
 #include <imgui_internal.h>
 
+// TODO: Remove ME
+#include "Script.h"
+// TODO: Remove ME
+
 #include "EditorLayer.h"
 
 namespace rl {
@@ -41,67 +45,6 @@ EditorLayer::EditorLayer()
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
 }
-
-class CameraController : public ScriptableEntity
-{
-public:
-    void onUpdate(Time dt) override
-    {
-        auto &trans = getComponent<TransformComponent>().translate;
-//        RL_INFO("onUpdate() {}", dt.asSeconds());
-
-        if(m_inverted)
-        {
-            if(Input::IsKeyPressed(Keyboard::S))
-                trans.y += m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::W))
-                trans.y -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::D))
-                trans.x -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::A))
-                trans.x += m_speed * dt.asSeconds();
-        }
-        else
-        {
-            if(Input::IsKeyPressed(Keyboard::W))
-                trans.y += m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::S))
-                trans.y -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::A))
-                trans.x -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::D))
-                trans.x += m_speed * dt.asSeconds();
-        }
-    }
-
-    void onImGuiRender() override
-    {
-        auto &trans = getComponent<TransformComponent>().translate;
-        ImGui::DragFloat3("Translate", glm::value_ptr(trans));
-        ImGui::DragFloat("Speed", &m_speed);
-
-        ImGui::Checkbox("Inverted", &m_inverted);
-    }
-
-private:
-    float m_speed = 10.f;
-    bool m_inverted = false;
-};
-
-class SpriteRoatate : public ScriptableEntity
-{
-public:
-    void onUpdate(Time dt) override
-    {
-        auto &trans = getComponent<TransformComponent>();
-        trans.rotate += 100.f * dt.asSeconds();
-        trans.rotate = std::fmod(trans.rotate, 360.f);
-    }
-
-    void onImGuiRender() override
-    {
-    }
-};
 
 void EditorLayer::onAttach()
 {

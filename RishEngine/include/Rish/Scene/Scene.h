@@ -58,6 +58,8 @@ public:
 	 */
 	void onUpdate(Time dt);
 
+	void onRuntimeInit();
+
 	void onScenePlay();
 	void onScenePause();
 	void onSceneStop();

@@ -83,6 +83,7 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Component.h>
 #include <Rish/Scene/ScriptableEntity.h>
+#include <Rish/Scene/ScriptableManager.h>
 
 // Debug
 #include <Rish/Debug/Instrumentor.h>

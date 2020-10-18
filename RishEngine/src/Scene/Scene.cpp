@@ -97,10 +97,38 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
 }
 
+void Scene::onRuntimeInit()
+{
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
+        Entity ent{entityID, this};
+        // Is bind
+        if(nsc.instance)
+        {
+            nsc.instance->m_entity = Entity{entityID, this};
+        }
+        else
+        {
+            ScriptableManager::Bind(ent, nsc.scriptName);
+        }
+    });
+
+    m_registry.view<RenderComponent>().each([=](auto ent, auto &render) {
+        Entity entity{ent, this};
+
+        if(render.init)
+        {
+            render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+            render.init = false;
+        }
+    });
+}
+
 void Scene::onUpdate(Time dt)
 {
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
         Entity ent{entityID, this};
+
+        // TODO: Refactor me out for Editor
         // Is bind
         if(nsc.instance)
         {
