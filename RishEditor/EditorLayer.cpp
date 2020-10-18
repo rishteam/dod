@@ -33,7 +33,6 @@ EditorLayer::EditorLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_editorScene = MakeRef<Scene>();
-    m_currentScene = m_editorScene;
     m_runtimeScene = nullptr;
     //
     m_editController = MakeRef<EditController>();
@@ -44,6 +43,8 @@ EditorLayer::EditorLayer()
     //
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
+    //
+    switchCurrentScene(m_editorScene);
 }
 
 void EditorLayer::onAttach()
@@ -303,9 +304,12 @@ void EditorLayer::onImGuiMainMenuRender()
     {
         if(ImGui::BeginMenu("File"))
         {
-            if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
+            if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
-                RL_ERROR("Not implemented");
+                // TODO: not save warning
+                m_editorScene = nullptr;
+                m_editorScene = MakeRef<Scene>();
+                switchCurrentScene(m_editorScene);
             }
 
             if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, m_currentScene == m_editorScene))
@@ -326,7 +330,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 try
                 {
                     cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_currentScene));
+                    inputArchive(cereal::make_nvp("Scene", m_editorScene));
                 }
                 catch (cereal::RapidJSONException &e)
                 {
@@ -347,7 +351,9 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    setContextToPanels(m_currentScene);
+                    setContextToPanels(m_editorScene);
+
+                    m_editorScene->onEditorInit();
                 }
                 else
                 {
@@ -371,7 +377,7 @@ void EditorLayer::onImGuiMainMenuRender()
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
             {
                 std::string path;
-                if(FileDialog::SelectSaveFile(nullptr, nullptr, path))
+                if(FileDialog::SelectSaveFile("sce", nullptr, path))
                 {
                     // TODO: Maybe implement a function return ofstream from rl::FileSystem
                     std::ofstream os(path);

@@ -58,6 +58,7 @@ public:
 	 */
 	void onUpdate(Time dt);
 
+	void onEditorInit();
 	void onRuntimeInit();
 
 	void onScenePlay();

@@ -8,49 +8,49 @@
                 "value2": {
                     "Tag": "DebugCamera",
                     "Id": {
-                        "uuid": "dc8b06bf-1cc1-4f2c-8504-862f0409d79c"
+                        "uuid": "48e6068c-d8cf-4aaf-8145-43f0d373ac9d"
                     }
                 },
                 "value3": 1,
                 "value4": {
                     "Tag": "DebugSprite",
                     "Id": {
-                        "uuid": "dc4c7d6d-1641-4a7f-83f4-49210104c79f"
+                        "uuid": "c628dd8a-600a-4a24-9559-2fca3f23185b"
                     }
                 },
                 "value5": 2,
                 "value6": {
                     "Tag": "static physcis",
                     "Id": {
-                        "uuid": "ee12f8b0-526e-4e9b-a945-56f376704d8e"
+                        "uuid": "87babf90-dd7d-4554-aaea-77c466dd42cc"
                     }
                 },
                 "value7": 3,
                 "value8": {
                     "Tag": "Physics 2",
                     "Id": {
-                        "uuid": "1fdce522-5ded-41e8-9ad5-c04203136bb6"
+                        "uuid": "5a8c3db0-e303-4eab-9c7e-e101148c83c1"
                     }
                 },
                 "value9": 4,
                 "value10": {
                     "Tag": "Physics 3",
                     "Id": {
-                        "uuid": "890a7830-5bc3-4747-aeef-83cd515fd5f9"
+                        "uuid": "306aef1a-13ac-4e46-abcc-1f37e9879fb5"
                     }
                 },
                 "value11": 5,
                 "value12": {
                     "Tag": "Physics 4",
                     "Id": {
-                        "uuid": "5535f10d-18e9-467a-9c84-4a45639eedd2"
+                        "uuid": "74c20ed2-1355-46cc-9494-7d2ddd6619cb"
                     }
                 },
                 "value13": 6,
                 "value14": {
                     "Tag": "ParticleTest",
                     "Id": {
-                        "uuid": "50dbff69-9cf1-41e9-80fb-1fe337010821"
+                        "uuid": "6593b11d-79bb-4d50-a92c-18d1c30077d5"
                     }
                 },
                 "value15": 7,
@@ -363,16 +363,46 @@
                 "value47": 3,
                 "value48": 0,
                 "value49": {
+                    "instance": {
+                        "polymorphic_id": 2147483649,
+                        "polymorphic_name": "rl::CameraController",
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "speed": 10.0,
+                                "inverted": false
+                            }
+                        }
+                    },
                     "script_name": "rl::CameraController",
                     "valid": false
                 },
                 "value50": 1,
                 "value51": {
+                    "instance": {
+                        "polymorphic_id": 2147483650,
+                        "polymorphic_name": "rl::SpriteRoatate",
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "mock": 126347916
+                            }
+                        }
+                    },
                     "script_name": "rl::SpriteRoatate",
                     "valid": false
                 },
                 "value52": 3,
                 "value53": {
+                    "instance": {
+                        "polymorphic_id": 2,
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "mock": 126348300
+                            }
+                        }
+                    },
                     "script_name": "rl::SpriteRoatate",
                     "valid": false
                 }

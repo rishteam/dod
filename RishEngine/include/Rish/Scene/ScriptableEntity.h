@@ -3,6 +3,8 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/ImGui.h>
 
+#include <cereal/types/polymorphic.hpp>
+
 namespace rl {
 
 class NativeScriptComponent;
@@ -15,7 +17,6 @@ class ScriptableEntity
 public:
     ScriptableEntity()
     {
-//        RL_CORE_INFO("ScriptableEntity: {}", (void *)this);
     }
     virtual ~ScriptableEntity()
     {
@@ -46,11 +47,32 @@ private:
     friend void CopyComponentToEntityIfExists(Entity dst, Entity src);
 };
 
+// This is a workaround of cereal for empty serialize function
+#define RL_SCRIPT_EMPTY_SERIALIZE() \
+    template<typename Archive>      \
+    void serialize(Archive &ar)     \
+    {                               \
+        int mock;                   \
+        ar(CEREAL_NVP(mock));       \
+    }
+
+#define RL_SCRIPT_SERIALIZE() \
+    template<typename Archive>      \
+    void serialize(Archive &ar)
+
+#define RL_SERIALIZE(name, object) \
+    ar(cereal::make_nvp(name, object))
+
+#define RL_SERIALIZE_NVP(object) \
+    ar(CEREAL_NVP(object))
+
 class EmptyScript : public ScriptableEntity
 {
 public:
     virtual void onUpdate(Time dt) {}
     virtual void onImGuiRender() { ImGui::Text("This is a Empty Script\nIt has no function."); }
+
+    RL_SCRIPT_EMPTY_SERIALIZE()
 };
 
 /**
@@ -74,7 +96,8 @@ struct NativeScriptComponent
     template<typename Archive>
     void serialize(Archive &ar)
     {
-        ar(cereal::make_nvp("script_name", scriptName),
+        ar(cereal::make_nvp("instance", instance),
+           cereal::make_nvp("script_name", scriptName),
            cereal::make_nvp("valid", valid));
     }
 
@@ -100,3 +123,9 @@ struct NativeScriptComponent
 };
 
 } // end of namespace rl
+
+#define RL_REGISTER_SCRIPT_TYPE(x) \
+    CEREAL_REGISTER_TYPE(x);       \
+    CEREAL_REGISTER_POLYMORPHIC_RELATION(rl::ScriptableEntity, x)
+
+RL_REGISTER_SCRIPT_TYPE(rl::EmptyScript)

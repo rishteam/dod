@@ -48,6 +48,12 @@ public:
         ImGui::Checkbox("Inverted", &m_inverted);
     }
 
+    RL_SCRIPT_SERIALIZE()
+    {
+        RL_SERIALIZE("speed", m_speed);
+        RL_SERIALIZE("inverted", m_inverted);
+    }
+
 private:
     float m_speed = 10.f;
     bool m_inverted = false;
@@ -66,6 +72,11 @@ public:
     void onImGuiRender() override
     {
     }
+
+    RL_SCRIPT_EMPTY_SERIALIZE()
 };
 
 }
+
+RL_REGISTER_SCRIPT_TYPE(rl::CameraController)
+RL_REGISTER_SCRIPT_TYPE(rl::SpriteRoatate)

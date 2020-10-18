@@ -123,6 +123,22 @@ void Scene::onRuntimeInit()
     });
 }
 
+void Scene::onEditorInit()
+{
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
+        Entity ent{entityID, this};
+        // Is bind
+        if(nsc.instance)
+        {
+            nsc.instance->m_entity = Entity{entityID, this};
+        }
+        else
+        {
+            ScriptableManager::Bind(ent, nsc.scriptName);
+        }
+    });
+}
+
 void Scene::onUpdate(Time dt)
 {
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
