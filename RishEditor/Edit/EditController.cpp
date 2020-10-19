@@ -89,13 +89,14 @@ void EditController::onUpdate(Time dt)
     drawCameraIconAndBorder(scene);
 
     // draw boxcollider
-    auto view = scene->m_registry.view<BoxCollider2DComponent>();
+    auto view = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
     for(auto entity : view)
     {
         Entity ent{entity, scene.get()};
-        auto &boxcollider = ent.getComponent<BoxCollider2DComponent>();
+        auto &boxc = ent.getComponent<BoxCollider2DComponent>();
         auto &transform = ent.getComponent<TransformComponent>();
-        Renderer2D::DrawRect({transform.translate.x + boxcollider.x, transform.translate.y + boxcollider.y}, { boxcollider.w, boxcollider.h},  {1.0f, 1.0f, 0.0f, 1.f});
+        //TODO: rotate Quad for collider
+        Renderer2D::DrawRotatedQuad({transform.translate.x + boxc.x, transform.translate.y + boxc.y}, { boxc.w, boxc.h},  {1.0f, 1.0f, 0.0f, 0.2f}, transform.rotate);
     }
 
     if(isSelected())

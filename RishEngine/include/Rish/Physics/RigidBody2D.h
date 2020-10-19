@@ -40,8 +40,8 @@ public:
     float mass, invMass;
     // 慣性矩，慣性矩倒數
     float I, invI;
-    // 是否碰撞
-    bool isCollide = true;
+    // 是否進行碰撞偵測
+    bool isCollider = false;
 };
 
 }

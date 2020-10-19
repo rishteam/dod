@@ -511,6 +511,146 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
     EndDrawEditComponent();
 }
 
+template<>
+void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
+{
+    BeginDrawEditComponent(RigidBody2DComponent);
+    {
+        DrawRightClickMenu(RigidBody2DComponent, false);
+        static const char *BodyTypeString[2] = {"Static", "Dynamic"};
+        auto &rigid = m_targetEntity.getComponent<RigidBody2DComponent>();
+        int bodyTypeNowSelect = static_cast<int>(rigid.BodyTypeState);
+        float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
+        float forceVector[2] = {rigid.force.x, rigid.force.y};
+        ImGui::Text("Physics Parameter");
+        {
+            // can control the physics parameter
+            ImGui::InputFloat("Mass", &rigid.mass, 1.0f, 5.0f, "%.2f");
+            ImGui::InputFloat("Friction", &rigid.friction, 0.1f, 0.2f, "%.2f");
+            ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
+            ImGui::DragFloat2("Force", forceVector, 1.0f);
+            rigid.velocity.x = velocityVector[0];
+            rigid.velocity.y = velocityVector[1];
+            rigid.force.x = forceVector[0];
+            rigid.force.y = forceVector[1];
+            // can't control the physics parameter
+            ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
+            ImGui::Text("Torque: %.2f", rigid.torque);
+        }
+        ImGui::Separator();
+        if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
+        {
+            if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
+            {
+                rigid.mass = MAX_float;
+                rigid.BodyTypeState = RigidBody2DComponent::BodyType::Static;
+            }
+            else
+            {
+                rigid.mass = 10.0f;
+                rigid.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
+            }
+        }
+    }
+    EndDrawEditComponent();
+}
+
+template<>
+void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
+{
+    BeginDrawEditComponent(BoxCollider2DComponent);
+    {
+        DrawRightClickMenu(BoxCollider2DComponent, false);
+        auto &collider = m_targetEntity.getComponent<BoxCollider2DComponent>();
+        auto &trans = m_targetEntity.getComponent<TransformComponent>().scale;
+        float translate[2] = {collider.x, collider.y};
+        float scale[2] = {collider.w, collider.h};
+
+        ImGui::DragFloat2("(x, y)", translate, 0.5f);
+        ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
+        collider.x = translate[0];
+        collider.y = translate[1];
+        collider.w = scale[0];
+        collider.h = scale[1];
+    }
+    EndDrawEditComponent();
+}
+
+template<>
+void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
+{
+    BeginDrawEditComponent(Joint2DComponent);
+    {
+        // Options List building
+        auto &registry = m_targetEntity.m_scene->m_registry;
+        auto view = registry.view<RigidBody2DComponent>();
+        std::vector<std::tuple<bool, UUID, std::string>> OptionsList;
+        for(auto ent : view)
+        {
+            Entity entity{ent, m_targetEntity.m_scene};
+            auto &RigidBodyID = entity.getComponent<TagComponent>().id;
+            auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
+            auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
+            // List box
+            std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
+            OptionsList.push_back(make_tuple(false, RigidBodyID, options_single));
+        }
+        std::sort(OptionsList.begin(), OptionsList.end());
+        // Copy to RigidBody2 OptionList
+        std::vector<std::tuple<bool, UUID, std::string>> OptionsList2(OptionsList.size());
+        std::copy(OptionsList.begin(), OptionsList.end(), OptionsList2.begin());
+
+        auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
+        float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
+
+        //RigidBody1 OptionLists
+        if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
+        {
+            for (auto item : OptionsList)
+            {
+                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                {
+                    std::get<0>(item) = true;
+                    jit.rigidBody1 = std::get<1>(item);
+                }
+            }
+            ImGui::ListBoxFooter();
+        }
+
+        //RigidBody2 OptionLists
+        if(ImGui::ListBoxHeader("RigidBody2", view.size(), 4))
+        {
+            for (auto item : OptionsList2)
+            {
+                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                {
+                    std::get<0>(item) = true;
+                    jit.rigidBody2 = std::get<1>(item);
+                }
+            }
+            ImGui::ListBoxFooter();
+        }
+
+        ImGui::Text("RigidBody1: %s", jit.rigidBody1.to_string().c_str());
+        ImGui::Text("RigidBody2: %s", jit.rigidBody2.to_string().c_str());
+
+        ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
+        jit.anchor.x = jitAnchor[0];
+        jit.anchor.y = jitAnchor[1];
+        ImGui::Separator();
+
+        ImGui::Text("r1: (%.f, %.f)", jit.r1.x, jit.r1.y);
+        ImGui::Text("r2: (%.f, %.f)", jit.r2.x, jit.r2.y);
+        ImGui::Text("P: (%.f, %.f)", jit.P.x, jit.P.y);
+        ImGui::Text("bias: (%.f, %.f)", jit.bias.x, jit.bias.y);
+        ImGui::Text("biasFactor: %.f", jit.biasFactor);
+        ImGui::Text("softness: %.f", jit.softness);
+    }
+
+    EndDrawEditComponent();
+}
+
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -532,14 +672,16 @@ void ComponentEditPanel::onImGuiRender()
     ImGui::BeginChild("EntityComponentEdit");
     {
         // TODO: Make this into dispatcher
-        //
         drawEditComponentWidget<TagComponent>();
         drawEditComponentWidget<TransformComponent>();
         drawEditComponentWidget<RenderComponent>();
         drawEditComponentWidget<CameraComponent>();
         drawEditComponentWidget<NativeScriptComponent>();
         drawEditComponentWidget<ParticleComponent>();
-
+        drawEditComponentWidget<RigidBody2DComponent>();
+        drawEditComponentWidget<BoxCollider2DComponent>();
+        drawEditComponentWidget<Joint2DComponent>();
+        
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
         {

@@ -130,6 +130,22 @@ bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::s
     return res;
 }
 
+//
+bool ImGui::ListBox(const char* label, int* current_item, const std::vector<std::string> &v, int height_in_items)
+{
+    if (ImGui::ListBoxHeader(label, v.size(), height_in_items))
+    {
+        for(int i = 0; i < v.size(); i++)
+        {
+            if(ImGui::Selectable(v[i].c_str(), *current_item == i))
+            {
+                *current_item = i;
+            }
+        }
+        ImGui::ListBoxFooter();
+    }
+}
+
 void ImGui::HelpMarker(const char *desc)
 {
     ImGui::TextDisabled("(?)");

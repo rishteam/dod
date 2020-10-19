@@ -78,7 +78,7 @@ void rl::PhysicsWorld::Step(float dt)
         }
         for (auto jit : joints)
         {
-          jit->ApplyImpulse();
+            jit->ApplyImpulse();
         }
     }
 
@@ -97,9 +97,6 @@ void rl::PhysicsWorld::BoardPhase()
     {
         for(int j = i+1; j < bodies.size(); j++)
         {
-            if(!bodies.at(i)->isCollide || !bodies.at(j)->isCollide)
-                continue;
-
             if(bodies.at(i)->invMass == 0.0f && bodies.at(j)->invMass == 0.0f)
                 continue;
 
@@ -114,6 +111,9 @@ void rl::PhysicsWorld::BoardPhase()
 
             if(box1->isCollide(box2))
             {
+                if(!bodies.at(i)->isCollider || !bodies.at(j)->isCollider)
+                    continue;
+
                 //add new arbiter
                 if (iter == arbiters.end())
                 {
