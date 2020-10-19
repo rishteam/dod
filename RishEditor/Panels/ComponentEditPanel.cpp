@@ -235,13 +235,10 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 {
     BeginDrawEditComponent(Joint2DComponent);
     {
+        // Options List building
         auto &registry = m_targetEntity.m_scene->m_registry;
-        // Build list of RigidBody2D]
-        // TODO: bug for dynamic update the RigidBody2DComponent Object
         auto view = registry.view<RigidBody2DComponent>();
-        std::vector<std::pair<UUID, std::string>> OptionsList;
-        const char* items[view.size()];
-        int ItemsCnt = 0;
+        std::vector<std::tuple<bool, UUID, std::string>> OptionsList;
         for(auto ent : view)
         {
             Entity entity{ent, m_targetEntity.m_scene};
@@ -250,37 +247,46 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
             // List box
             std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
-            OptionsList.push_back(make_pair(RigidBodyID, options_single));
+            OptionsList.push_back(make_tuple(false, RigidBodyID, options_single));
         }
         std::sort(OptionsList.begin(), OptionsList.end());
+        // Copy to RigidBody2 OptionList
+        std::vector<std::tuple<bool, UUID, std::string>> OptionsList2(OptionsList.size());
+        std::copy(OptionsList.begin(), OptionsList.end(), OptionsList2.begin());
 
-        for(auto it : OptionsList)
-        {
-            items[ItemsCnt++] = it.second.c_str();
-        }
-
-        DrawRightClickMenu(Joint2DComponent, false);
         auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
         float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
-//        static int RigidBodyOption1 = std::find(OptionsList.begin(), OptionsList.end(), jit.rigidBody1) - OptionsList.begin();
-        static int RigidBodyOption1 = std::find_if(OptionsList.begin(), OptionsList.end(), [&jit](const std::pair<UUID, std::string> &ele) {
-            return ele.first == jit.rigidBody1;
-        }) - OptionsList.begin();
-        static int RigidBodyOption2 =std::find_if(OptionsList.begin(), OptionsList.end(), [&jit](const std::pair<UUID, std::string> &ele) {
-            return ele.first == jit.rigidBody2;
-        }) - OptionsList.begin();
 
-        if (ImGui::ListBox("RigidBody1", &RigidBodyOption1, items, IM_ARRAYSIZE(items), 4))
+        //RigidBody1 OptionLists
+        if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
         {
-            jit.rigidBody1 = OptionsList[RigidBodyOption1].first;
-        }
-        if (ImGui::ListBox("RigidBody2", &RigidBodyOption2, items, IM_ARRAYSIZE(items), 4))
-        {
-            jit.rigidBody2 = OptionsList[RigidBodyOption2].first;
+            for (auto item : OptionsList)
+            {
+                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                {
+                    std::get<0>(item) = true;
+                    jit.rigidBody1 = std::get<1>(item);
+                }
+            }
+            ImGui::ListBoxFooter();
         }
 
-        ImGui::Text("%s", jit.rigidBody1.to_string().c_str());
-        ImGui::Text("%s", jit.rigidBody2.to_string().c_str());
+        //RigidBody2 OptionLists
+        if(ImGui::ListBoxHeader("RigidBody2", view.size(), 4))
+        {
+            for (auto item : OptionsList2)
+            {
+                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                {
+                    std::get<0>(item) = true;
+                    jit.rigidBody2 = std::get<1>(item);
+                }
+            }
+            ImGui::ListBoxFooter();
+        }
+
+        ImGui::Text("RigidBody1: %s", jit.rigidBody1.to_string().c_str());
+        ImGui::Text("RigidBody2: %s", jit.rigidBody2.to_string().c_str());
 
         ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
         jit.anchor.x = jitAnchor[0];
