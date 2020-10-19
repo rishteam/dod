@@ -580,19 +580,19 @@ void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, cons
 
 void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
 {
-    glm::vec2 s = size / 2.f;
     glm::vec2 p[4] = {
-        {0.f - s.x, 0.f - s.y},
-        {0.f + s.x, 0.f - s.y},
-        {0.f + s.x, 0.f + s.y},
-        {0.f - s.x, 0.f + s.y}
+        {-0.5f, -0.5f},
+        {+0.5f, -0.5f},
+        {+0.5f, +0.5f},
+        {-0.5f, +0.5f}
     };
 
-    glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(position, 0.f)) *
-                      glm::rotate(glm::mat4(1), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
+    glm::mat4 trans = glm::translate(glm::mat4(1.f), glm::vec3(position, 0.f)) *
+                      glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+                      glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
 
     for(int i = 0; i < 4; i++)
-        p[i] = trans * glm::vec4(p[i], 0.f, 0.f);
+        p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
 
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
