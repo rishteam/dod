@@ -39,6 +39,7 @@ void EditController::onAttach(const Ref<Scene> &scene)
         Application::Get().getWindow().getAspectRatio(), false, false);
     m_editorGrid.onAttach(m_cameraController);
 
+    // Icons
     s_cameraIcon = Texture2D::LoadTextureVFS("/icon/cameraIcon.png");
 }
 
@@ -133,7 +134,10 @@ void EditController::onImGuiRender()
        ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
         Entity frontEntity;
-        float maxZ{-100.f};
+        glm::vec3 minSize{std::numeric_limits<float>::max(),
+                          std::numeric_limits<float>::max(),
+                          std::numeric_limits<float>::max()};
+
         // Iterate through all entities
         m_currentScene->m_registry.each([&](auto entityID)
         {
@@ -144,10 +148,11 @@ void EditController::onImGuiRender()
 
             if(Math::AABB2DPoint(m_curEntPos, m_curSize, mposInWorld))
             {
-                // Pick the max Z one
-                if (maxZ < m_curEntPos.z) {
+                // Pick the smallest size one
+                if(minSize.x > m_curSize.x && minSize.y > m_curSize.y)
+                {
+                    minSize = m_curSize;
                     frontEntity = ent;
-                    maxZ = m_curEntPos.z;
                 }
             }
         });

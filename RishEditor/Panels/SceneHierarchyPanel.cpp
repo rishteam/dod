@@ -24,7 +24,7 @@ void SceneHierarchyPanel::onImGuiRender()
 
     // Reset selected when click empty space in the window
     if(isSelected() &&
-       ImGui::IsWindowFocused() && ImGui::IsWindowHovered() &&
+       /*ImGui::IsWindowFocused() &&*/ ImGui::IsWindowHovered() &&
        ImGui::IsAnyItemActive())
     {
         resetSelected();
