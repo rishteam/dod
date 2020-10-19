@@ -51,12 +51,17 @@ public:
 	 */
 	Entity duplicateEntity(Entity src);
 
+	Entity getEntityByUUID(UUID uuid);
+
 	/**
 	 * @brief Update Entity behavior
 	 * @param camera Camera
 	 * @param dt Delta t
 	 */
 	void onUpdate(Time dt);
+
+	void onEditorInit();
+	void onRuntimeInit();
 
 	void onScenePlay();
 	void onScenePause();

@@ -97,10 +97,54 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
 }
 
+void Scene::onRuntimeInit()
+{
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
+        Entity ent{entityID, this};
+        // Is bind
+        if(nsc.instance)
+        {
+            nsc.instance->m_entity = Entity{entityID, this};
+        }
+        else
+        {
+            ScriptableManager::Bind(ent, nsc.scriptName);
+        }
+    });
+
+    m_registry.view<RenderComponent>().each([=](auto ent, auto &render) {
+        Entity entity{ent, this};
+
+        if(render.init)
+        {
+            render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+            render.init = false;
+        }
+    });
+}
+
+void Scene::onEditorInit()
+{
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
+        Entity ent{entityID, this};
+        // Is bind
+        if(nsc.instance)
+        {
+            nsc.instance->m_entity = Entity{entityID, this};
+        }
+        else
+        {
+            ScriptableManager::Bind(ent, nsc.scriptName);
+        }
+    });
+}
+
 void Scene::onUpdate(Time dt)
 {
     m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
         Entity ent{entityID, this};
+
+        // TODO: Refactor me out for Editor
         // Is bind
         if(nsc.instance)
         {
@@ -419,6 +463,19 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
         if(!cameraComponent.lockAspect)
             cameraComponent.camera.setViewportSize(width, height);
     }
+}
+
+Entity Scene::getEntityByUUID(UUID uuid)
+{
+    Entity target;
+    //
+    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
+        Entity entity{ent, this};
+        if(tag.id == uuid)
+            target = entity;
+    });
+    //
+    return target;
 }
 
 } // namespace rl

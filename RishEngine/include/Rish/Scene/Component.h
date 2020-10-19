@@ -122,7 +122,7 @@ struct RenderComponent
 	std::shared_ptr<Texture2D> m_texture;
 
 	// states
-	bool init = true;
+	bool init = true; // TODO: Check the meaning and rename it
 
 	RenderComponent() = default;
 	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s) {}

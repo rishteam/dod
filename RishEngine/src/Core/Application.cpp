@@ -33,6 +33,7 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     VFS::Mount("shader", "assets/shader");
     VFS::Mount("fonts", "assets/fonts");
     VFS::Mount("texture", "assets/texture");
+    VFS::Mount("scene", "assets/scene");
 
     ScriptableManager::Register<EmptyScript>();
 

@@ -1,63 +1,5 @@
 #include "ScriptTestLayer.h"
-
-class TestScript : public ScriptableEntity
-{
-public:
-    TestScript()
-    {
-    }
-    ~TestScript() override
-    {
-    }
-
-    void onUpdate(Time dt) override
-    {
-        if(clk.getElapsedTime() >= 1.f)
-        {
-            RL_INFO("onUpdate = {}", dt.asSeconds());
-            clk.restart();
-        }
-    }
-
-    void onImGuiRender() override
-    {
-    }
-
-private:
-    Clock clk;
-    float m_speed = 10.f;
-};
-
-class CameraController : public ScriptableEntity
-{
-public:
-    void onUpdate(Time dt) override
-    {
-        auto &trans = getComponent<TransformComponent>().translate;
-
-        if(Input::IsKeyPressed(Keyboard::W))
-            trans.y += m_speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::S))
-            trans.y -= m_speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::A))
-            trans.x -= m_speed * dt.asSeconds();
-        if(Input::IsKeyPressed(Keyboard::D))
-            trans.x += m_speed * dt.asSeconds();
-    }
-
-    void onImGuiRender() override
-    {
-        auto &trans = getComponent<TransformComponent>().translate;
-        ImGui::DragFloat3("Translate", glm::value_ptr(trans));
-        ImGui::DragFloat("Speed", &m_speed);
-
-        ImGui::Checkbox("Inverted", &m_inverted);
-    }
-
-private:
-    float m_speed = 10.f;
-    bool m_inverted = false;
-};
+#include "Script.h"
 
 ScriptTestLayer::ScriptTestLayer()
     : Layer("ScriptTestLayer")
@@ -65,23 +7,17 @@ ScriptTestLayer::ScriptTestLayer()
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
 
+    ScriptableManager::Register<CameraController>();
+    ScriptableManager::Register<SpriteRoatate>();
+
     m_scene = MakeRef<Scene>();
 
-    auto ent = m_scene->createEntity("Test");
-    ent.addComponent<NativeScriptComponent>().bind<TestScript>();
-    auto &render = ent.addComponent<RenderComponent>();
-    render.m_texture = Texture2D::LoadTextureVFS("/texture/1.png");
-    m_testSprite = render.m_texture;
+    std::string sceneFile = VFS::ReadTextFile("/scene/test2.sce");
+    std::stringstream ss{sceneFile};
+    cereal::JSONInputArchive in(ss);
+    in(cereal::make_nvp("Scene", m_scene));
 
-    ent = m_scene->createEntity("camera");
-    ent.addComponent<NativeScriptComponent>().bind<CameraController>();
-    auto &camera = ent.addComponent<CameraComponent>();
-    camera.primary = true;
-    camera.camera.setAspect(16.f / 9.f);
-
-    auto & transform = ent.getComponent<TransformComponent>();
-    transform.scale.y = 5;
-    transform.scale.x = 5 * camera.camera.getAspect();
+    m_scene->onRuntimeInit();
 }
 
 ScriptTestLayer::~ScriptTestLayer()

@@ -57,6 +57,7 @@ void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &s
 
         // Copy the values of instance
         *dstComponent.instance = *srcComponent.instance;
+        RL_CORE_TRACE("CopyComponent<NativeScriptComponent>: dst={} src={}", (void *)dstComponent.instance.get(), (void *)srcComponent.instance.get());
 
         // Set the instance->m_entity (Written by the copy above)
         dstComponent.instance->m_entity = dstEntity;

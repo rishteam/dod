@@ -15,6 +15,10 @@
 #include <Rish/ImGui.h>
 #include <imgui_internal.h>
 
+// TODO: Remove ME
+#include "Script.h"
+// TODO: Remove ME
+
 #include "EditorLayer.h"
 
 namespace rl {
@@ -29,7 +33,6 @@ EditorLayer::EditorLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
 
     m_editorScene = MakeRef<Scene>();
-    m_currentScene = m_editorScene;
     m_runtimeScene = nullptr;
     //
     m_editController = MakeRef<EditController>();
@@ -40,68 +43,9 @@ EditorLayer::EditorLayer()
     //
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
+    //
+    switchCurrentScene(m_editorScene);
 }
-
-class CameraController : public ScriptableEntity
-{
-public:
-    void onUpdate(Time dt) override
-    {
-        auto &trans = getComponent<TransformComponent>().translate;
-//        RL_INFO("onUpdate() {}", dt.asSeconds());
-
-        if(m_inverted)
-        {
-            if(Input::IsKeyPressed(Keyboard::S))
-                trans.y += m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::W))
-                trans.y -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::D))
-                trans.x -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::A))
-                trans.x += m_speed * dt.asSeconds();
-        }
-        else
-        {
-            if(Input::IsKeyPressed(Keyboard::W))
-                trans.y += m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::S))
-                trans.y -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::A))
-                trans.x -= m_speed * dt.asSeconds();
-            if(Input::IsKeyPressed(Keyboard::D))
-                trans.x += m_speed * dt.asSeconds();
-        }
-    }
-
-    void onImGuiRender() override
-    {
-        auto &trans = getComponent<TransformComponent>().translate;
-        ImGui::DragFloat3("Translate", glm::value_ptr(trans));
-        ImGui::DragFloat("Speed", &m_speed);
-
-        ImGui::Checkbox("Inverted", &m_inverted);
-    }
-
-private:
-    float m_speed = 10.f;
-    bool m_inverted = false;
-};
-
-class SpriteRoatate : public ScriptableEntity
-{
-public:
-    void onUpdate(Time dt) override
-    {
-        auto &trans = getComponent<TransformComponent>();
-        trans.rotate += 100.f * dt.asSeconds();
-        trans.rotate = std::fmod(trans.rotate, 360.f);
-    }
-
-    void onImGuiRender() override
-    {
-    }
-};
 
 void EditorLayer::onAttach()
 {
@@ -360,9 +304,12 @@ void EditorLayer::onImGuiMainMenuRender()
     {
         if(ImGui::BeginMenu("File"))
         {
-            if(ImGui::MenuItem("New Scene", "Ctrl+N", false, false))
+            if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
-                RL_ERROR("Not implemented");
+                // TODO: not save warning
+                m_editorScene = nullptr;
+                m_editorScene = MakeRef<Scene>();
+                switchCurrentScene(m_editorScene);
             }
 
             if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, m_currentScene == m_editorScene))
@@ -383,7 +330,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 try
                 {
                     cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_currentScene));
+                    inputArchive(cereal::make_nvp("Scene", m_editorScene));
                 }
                 catch (cereal::RapidJSONException &e)
                 {
@@ -404,7 +351,9 @@ void EditorLayer::onImGuiMainMenuRender()
 
                     // Because the panels are now holding strong ref to the scene
                     // We need to reset the context
-                    setContextToPanels(m_currentScene);
+                    setContextToPanels(m_editorScene);
+
+                    m_editorScene->onEditorInit();
                 }
                 else
                 {
@@ -428,7 +377,7 @@ void EditorLayer::onImGuiMainMenuRender()
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
             {
                 std::string path;
-                if(FileDialog::SelectSaveFile(nullptr, nullptr, path))
+                if(FileDialog::SelectSaveFile("sce", nullptr, path))
                 {
                     // TODO: Maybe implement a function return ofstream from rl::FileSystem
                     std::ofstream os(path);
@@ -497,14 +446,38 @@ void EditorLayer::setContextToPanels(const Ref <Scene> &scene)
 
 void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
 {
+    UUID id;
+    bool isTargetSet = false;
+
+    // Get the UUID of current selection if scene is not nullptr
+    if(m_sceneHierarchyPanel->getContext())
+    {
+        auto &ent = m_sceneHierarchyPanel->getTargets();
+        //
+        if(ent.size() == 1)
+        {
+            id = ent.begin()->getUUID();
+            isTargetSet = true;
+        }
+    }
+
+    // Switch the scene
     m_currentScene = scene;
     setContextToPanels(scene);
 
-    // TODO: Preserve the target
     // Reset Editor Panel target
     m_editController->resetTarget();
     m_sceneHierarchyPanel->resetTarget();
     m_componentEditPanel->resetTarget();
+
+    if(isTargetSet)
+    {
+        auto entity = scene->getEntityByUUID(id);
+        //
+        m_editController->setTarget(entity);
+        m_sceneHierarchyPanel->addTarget(entity);
+        m_componentEditPanel->setTarget(entity);
+    }
 }
 
 }
