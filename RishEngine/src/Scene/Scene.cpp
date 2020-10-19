@@ -492,7 +492,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap);
+    CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
     
     // Copy other states
     target->m_entNameToNumMap = m_entNameToNumMap;
