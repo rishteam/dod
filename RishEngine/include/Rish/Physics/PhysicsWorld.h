@@ -5,6 +5,7 @@
 #include <Rish/Physics/RigidBody2D.h>
 #include <Rish/Physics/Arbiter.h>
 #include <Rish/Physics/Joint.h>
+
 #include <Rish/Physics/vector_math.h>
 
 class ArbiterKey;
@@ -14,6 +15,8 @@ namespace rl {
 
 class RL_API PhysicsWorld {
 public:
+    // TODO: object constructor
+
     PhysicsWorld(Vec2 gravity_);
 
     PhysicsWorld(Vec2 gravity_, float width_, float height_);

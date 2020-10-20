@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-
+#include <Rish/Physics/vector_math.h>
 namespace rl {
 
 /**
@@ -32,7 +32,7 @@ struct RigidBody2DComponent
     //質量，質量倒數
     float mass = 10.0f;
 
-    BodyType BodyTypeState = BodyType::Static;
+    BodyType BodyTypeState;
 
 
 private:
