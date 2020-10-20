@@ -28,9 +28,13 @@ public:
     std::string to_string() const { return m_UUID; }
     const char* to_c_str() const { return m_UUID.c_str(); }
 
-    friend bool operator==(const UUID &lhs, const UUID &rhs)
+    friend bool operator ==(const UUID &lhs, const UUID &rhs)
     {
         return lhs.m_UUID == rhs.m_UUID;
+    }
+    friend bool operator < (const UUID &lhs, const UUID &rhs)
+    {
+        return lhs.m_UUID < rhs.m_UUID;
     }
 private:
     std::string m_UUID;

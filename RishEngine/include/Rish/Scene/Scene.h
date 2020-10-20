@@ -116,6 +116,7 @@ public:
     PhysicsWorld PhysicsWorld{Vec2(0.0f, -9.8f)};
     std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysicsObj;
     std::unordered_map<UUID, Ref<Box>> mapBoxColliderObj;
+    std::unordered_map<UUID, Ref<Joint>> mapJointObj;
 
     ////////////////////////////////////////////////////////////////
 	// friend class
@@ -125,6 +126,7 @@ public:
     friend class EditorLayer;
     friend class SceneHierarchyPanel;
     friend class ComponentSelectionPanel;
+    friend class ComponentEditPanel;
     friend class EditController;
 
     friend class ParticleSystem;

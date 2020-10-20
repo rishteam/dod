@@ -1,11 +1,11 @@
-#pragma once
-#include <Rish/rlpch.h>
-
 /**
  * @file vector_math.h
  * @author  halloworld <william31212@gmail.com>
  * @brief 更詳細的向量數學計算function，繼承sf::Vector2<float>
  */
+#pragma once
+
+#include <Rish/rlpch.h>
 
 /** @brief 徑度與度度量的轉換 */
 #define M_PI 3.14159265358979323846
@@ -17,7 +17,7 @@
 #define MIN_float std::numeric_limits<float>::min()
 
 /**
- * @brief 補足sf::Vector2f無法做的計算，自行建立一個特化的Vector
+ * @brief 自行建立一個特化的Vector
  * @details 包括向量長度、內積、左右法向量等數學基本工具
  */
 class Vec2 {
@@ -79,6 +79,12 @@ public:
     {
         x *= a; y *= a;
     }
+
+    operator glm::vec2 () const
+    {
+        return glm::vec2{x, y};
+    }
+
     /**
     * @brief set Vector
     */

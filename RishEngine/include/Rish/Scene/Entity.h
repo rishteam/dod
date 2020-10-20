@@ -82,9 +82,10 @@ public:
     bool operator<=(const Entity &rhs) const { return !(rhs < *this); }
     bool operator>=(const Entity &rhs) const { return !(*this < rhs); }
 
+    // TODO: Think a more elegant solution
+    Scene *m_scene = nullptr;
 private:
 	entt::entity m_entityHandle{entt::null};
-	Scene *m_scene = nullptr;
 
 	friend struct std::hash<rl::Entity>;
 };

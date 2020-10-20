@@ -68,6 +68,7 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<CameraComponent>(true, 16.f / 9.f, 5.f);
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
+
     debugEntity = m_currentScene->createEntity("DebugSprite");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();

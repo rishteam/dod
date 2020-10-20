@@ -34,7 +34,7 @@ void rl::RigidBody2D::setAngle(float rad)
 
 void rl::RigidBody2D::setisCollide(bool state)
 {
-    isCollide = state;
+    isCollider = state;
 }
 
 
