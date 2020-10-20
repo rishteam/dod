@@ -11,13 +11,20 @@ namespace rl {
 void ComponentSelectionPanel::onImGuiRender()
 {
     // TODO: search widget
-    // TODO: child window
-    for (auto && [k, v] : ComponentManager::getAddMapping())
+    std::string filterText;
+    ImGui::InputText("##ComponentSelection", &filterText);
+
+    if(ImGui::ListBoxHeader("##Components"))
     {
-        if (ImGui::Selectable(k.c_str()+4))
-        {
-            ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+        auto &mapping = ComponentManager::getAddMapping();
+        for (auto &&[k, v] : mapping) {
+            if (ImGui::Selectable(k.c_str() + 4))
+            {
+                ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                ImGui::CloseCurrentPopup();
+            }
         }
+        ImGui::ListBoxFooter();
     }
 }
 

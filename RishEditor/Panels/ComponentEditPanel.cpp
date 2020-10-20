@@ -581,6 +581,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 {
     BeginDrawEditComponent(Joint2DComponent);
     {
+        DrawRightClickMenu(Joint2DComponent, false);
         // Options List building
         auto &registry = m_targetEntity.m_scene->m_registry;
         auto view = registry.view<RigidBody2DComponent>();
