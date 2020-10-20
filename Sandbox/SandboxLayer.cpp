@@ -34,7 +34,6 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 
 void ExampleSandboxLayer::onImGuiRender()
 {
-
 }
 
 void ExampleSandboxLayer::onEvent(rl::Event &event)

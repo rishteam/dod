@@ -36,7 +36,7 @@ public:
 	 * @param name Name
 	 * @return Entity
 	 */
-	Entity createEntity(const std::string& name = std::string());
+	Entity createEntity(const std::string& name=std::string(), const glm::vec3 &pos=glm::vec3{0.f, 0.f, 0.f});
 
 	/**
 	 * @brief Destroy a Entity object

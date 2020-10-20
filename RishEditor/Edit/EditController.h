@@ -3,15 +3,16 @@
 #include <Rish/rlpch.h>
 #include <Rish/Events/Event.h>
 
-#include "Panels/SceneTargetPanel.h"
+#include "Panels/SceneMultiTargetPanel.h"
 #include "Edit/EditorGrid.h"
 
 namespace rl {
 
-class RL_API EditController : public SceneTargetPanel
+class RL_API EditController : public SceneMultiTargetPanel
 {
 public:
     EditController();
+    EditController(const Ref<Scene> &scene) : SceneMultiTargetPanel(scene) {}
     ~EditController() override = default;
     //
     void onAttach(const Ref<Scene> &scene) override;
@@ -31,8 +32,8 @@ private:
     glm::vec3 m_curEntPos{}, m_curSize{};
 
     // Entity move
-    glm::vec3 m_moveEntityDiff{0.f};
-    bool m_isNowMovingEntity = false;
+    std::unordered_map<Entity, glm::vec3> m_moveEntityDiff{};
+    std::unordered_map<Entity, bool> m_isNowMovingEntity{};
 
     // Camera pane
     glm::vec3 m_moveCameraDiff{0.f};
@@ -43,8 +44,10 @@ private:
     glm::vec2 sceneMousePosNormalize{0.f};
     glm::vec2 sceneMousePosCenterNormalize{0.f};
 
-    bool m_sceneWindowFocused = false; ///< Is Scene window focused?
-    bool m_sceneWindowHovered = false; ///< Is Scene window hovered?
+    bool m_sceneWindowFocused        = false; ///< Is Scene window focused?
+    bool m_sceneWindowHovered        = false; ///< Is Scene window hovered?
+    bool m_scenePrevLeftMouseDown    = false;
+    bool m_scenePrevLeftMouseClicked = false;
 
     // Helper functions
     void drawCameraIconAndBorder(const Ref<Scene> &scene) const;

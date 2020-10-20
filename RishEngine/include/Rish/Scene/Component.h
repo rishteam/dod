@@ -93,7 +93,7 @@ struct TransformComponent
 	float rotate = 0.f;                                 ///< Rotation in degrees
 
 	TransformComponent() = default;
-
+    TransformComponent(const glm::vec3 &pos) : translate(pos) {}
 private:
 	friend class cereal::access;
 	template <class Archive>
@@ -157,6 +157,13 @@ struct CameraComponent
     CameraComponent()
     {
         camera.setOrthographic(5.f, -1.f, 1.f);
+    }
+
+    CameraComponent(bool isPrimary, float aspect, float size, float near=-1.f, float far=1.f)
+    {
+        camera.setOrthographic(size, near, far);
+        camera.setAspect(aspect);
+        primary = isPrimary;
     }
 
     CameraComponent(const CameraComponent&) = default;

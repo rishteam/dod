@@ -4,15 +4,16 @@
 ScriptTestLayer::ScriptTestLayer()
     : Layer("ScriptTestLayer")
 {
-    rl::VFS::Mount("shader", "Sandbox/assets");
-    rl::VFS::Mount("texture", "Sandbox/assets");
+    VFS::Mount("shader", "Sandbox/assets");
+    VFS::Mount("texture", "Sandbox/assets");
+    VFS::Mount("setting", "assets");
 
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<SpriteRoatate>();
 
     m_scene = MakeRef<Scene>();
 
-    std::string sceneFile = VFS::ReadTextFile("/scene/test2.sce");
+    std::string sceneFile = VFS::ReadTextFile("/scene/test.sce");
     std::stringstream ss{sceneFile};
     cereal::JSONInputArchive in(ss);
     in(cereal::make_nvp("Scene", m_scene));

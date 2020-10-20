@@ -34,10 +34,10 @@ Scene::~Scene()
     RL_CORE_INFO("Destruct Scene");
 }
 
-Entity Scene::createEntity(const std::string& name)
+Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 {
 	Entity entity = { m_registry.create(), this };
-	entity.addComponent<TransformComponent>();
+	entity.addComponent<TransformComponent>(pos);
 	auto &tagComponent = entity.addComponent<TagComponent>();
 	tagComponent.id = UUID();
 

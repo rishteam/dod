@@ -34,7 +34,7 @@ EditController::EditController()
 
 void EditController::onAttach(const Ref<Scene> &scene)
 {
-    SceneTargetPanel::onAttach(scene);
+    SceneMultiTargetPanel::onAttach(scene);
     m_cameraController = MakeRef<OrthographicCameraController>(
         Application::Get().getWindow().getAspectRatio(), false, false);
     m_editorGrid.onAttach(m_cameraController);
@@ -45,7 +45,7 @@ void EditController::onAttach(const Ref<Scene> &scene)
 
 void EditController::onDetach()
 {
-    SceneTargetPanel::onDetach();
+    SceneMultiTargetPanel::onDetach();
 }
 
 void EditController::onUpdate(Time dt)
@@ -98,14 +98,18 @@ void EditController::onUpdate(Time dt)
         Renderer2D::DrawRect({transform.translate.x + boxcollider.x, transform.translate.y + boxcollider.y}, { boxcollider.w, boxcollider.h},  {1.0f, 1.0f, 0.0f, 1.f});
     }
 
+    // TODO: Make the max AABB
     if(isSelected())
     {
-        auto ent = getTarget();
-        auto &transform = ent.getComponent<TransformComponent>();
-        // Get bounding box
-        auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-        // Draw Border
-        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+        auto &entSet = getTargets();
+        for(auto &ent : entSet)
+        {
+            auto &transform = ent.getComponent<TransformComponent>();
+            // Get bounding box
+            auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
+            // Draw Border
+            Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+        }
     }
 }
 
@@ -114,6 +118,8 @@ void EditController::onImGuiRender()
     // states
     m_sceneWindowFocused = ImGui::IsWindowFocused();
     m_sceneWindowHovered = ImGui::IsWindowHovered();
+    m_scenePrevLeftMouseDown    = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+    m_scenePrevLeftMouseClicked = ImGui::IsMouseClicked(ImGuiMouseButton_Left);
 
     // Get mouse positions
     ImVec2 mr = ImGui::GetMousePosRelatedToWindowNormalize();
@@ -128,12 +134,15 @@ void EditController::onImGuiRender()
             + m_cameraController->getPosition().y;
     glm::vec2 mposInWorld{xaxis, yaxis};
 
+    // Get Keyboard states
+    bool isCtrlPressed = ImGui::GetIO().KeyCtrl;
+
     // Click to select a entity
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
        ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        Entity frontEntity;
+        Entity bestMatch;
         glm::vec3 minSize{std::numeric_limits<float>::max(),
                           std::numeric_limits<float>::max(),
                           std::numeric_limits<float>::max()};
@@ -145,51 +154,64 @@ void EditController::onImGuiRender()
             // AABB
             m_curEntPos = ent.getComponent<TransformComponent>().translate;
             m_curSize = ent.getComponent<TransformComponent>().scale;
-
+            // Inside
             if(Math::AABB2DPoint(m_curEntPos, m_curSize, mposInWorld))
             {
+                if(m_entitySet.count(ent))
+                {
+                    removeTarget(ent);
+                }
                 // Pick the smallest size one
                 if(minSize.x > m_curSize.x && minSize.y > m_curSize.y)
                 {
                     minSize = m_curSize;
-                    frontEntity = ent;
+                    bestMatch = ent;
                 }
             }
         });
 
-        if(frontEntity)
+        if(bestMatch)
         {
-            setTarget(frontEntity);
+            if(!isCtrlPressed)
+                resetTarget();
+            addTarget(bestMatch);
         }
     }
 
+    // TODO: Support multiple entities move
     // Entity move
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
        ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
        isSelected())
     {
-        auto ent = getTarget();
-        auto &entPos = ent.getComponent<TransformComponent>().translate;
-        const auto &entSize = ent.getComponent<TransformComponent>().scale;
-        //
-        // No moving entity
-        if(!m_isNowMovingEntity)
+        // Iterate through all selected entities
+        for(auto ent : m_entitySet)
         {
-            if (Math::AABB2DPoint(entPos, entSize, mposInWorld)) {
-                m_moveEntityDiff = entPos - glm::vec3(mposInWorld, 0.f);
-                m_isNowMovingEntity = true;
+            auto &entPos = ent.getComponent<TransformComponent>().translate;
+            const auto &entSize = ent.getComponent<TransformComponent>().scale;
+            // The entity is not moving but selected
+            if (!m_isNowMovingEntity[ent])
+            {
+                // Is mouse inside
+                if (Math::AABB2DPoint(entPos, entSize, mposInWorld))
+                {
+                    // 當滑鼠點擊時，儲存滑鼠座標跟 entity 的差距
+                    m_moveEntityDiff[ent] = entPos - glm::vec3(mposInWorld, 0.f);
+                    m_isNowMovingEntity[ent] = true;
+                }
             }
-        }
-        else
-        {
-            entPos = glm::vec3(mposInWorld, 0.f) + m_moveEntityDiff;
+            else
+            {
+                // Moving
+                entPos = glm::vec3(mposInWorld, 0.f) + m_moveEntityDiff[ent];
+            }
         }
     }
     else
     {
-        m_isNowMovingEntity = false;
-        m_moveEntityDiff = glm::vec3{0.f};
+        m_isNowMovingEntity.clear();
+        m_moveEntityDiff.clear();
     }
 
     // Camera pane
@@ -222,7 +244,22 @@ void EditController::onImGuiRender()
     if(m_debugEditorController)
     {
         ImGui::Begin("EditController");
-
+        ImGui::Text("Entity Move");
+        ImGui::Indent();
+        for(auto ent : m_entitySet)
+        {
+            ImGui::PushID((void*)&ent);
+            ImGui::Text("%s", ent.getUUID().to_c_str());
+            ImGui::Indent();
+            ImGui::Text("m_isNowMovingEntity = %d", m_isNowMovingEntity[ent]);
+            ImGui::Text("m_moveEntityDiff = %.2f %.2f %.2f",
+                        m_moveEntityDiff[ent].x,
+                        m_moveEntityDiff[ent].y,
+                        m_moveEntityDiff[ent].z);
+            ImGui::Unindent();
+            ImGui::PopID();
+        }
+        ImGui::Unindent();
         ImGui::End();
     }
     if(m_debugEditorGrid)

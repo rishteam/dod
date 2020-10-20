@@ -62,11 +62,13 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
     if(ImGui::IsItemClicked())
     {
+        // If not pressed then clear
         if(!ImGui::GetIO().KeyCtrl)
         {
             m_entitySet.clear();
         }
 
+        // Add the target if not exist
         if(!m_entitySet.count(entity))
         {
             addTarget(entity);
