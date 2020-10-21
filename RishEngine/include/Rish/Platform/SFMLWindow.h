@@ -19,6 +19,8 @@
 #include <Rish/Events/KeyEvent.h>
 #include <Rish/Events/MouseEvent.h>
 
+#define SUPPRESS_UNHANDLE_EVENT 0
+
 namespace rl {
 
 /**
@@ -47,7 +49,9 @@ public:
 
         if(!m_eventHandlers.count(e.type))
         {
-//            RL_CORE_WARN("Unhandled event occured: {}", m_EventTypeName[e.type]);
+#if ! SUPPRESS_UNHANDLE_EVENT
+            RL_CORE_WARN("Unhandled event occured: {}", m_EventTypeName[e.type]);
+#endif
             return;
         }
         m_eventHandlers[e.type](e);
