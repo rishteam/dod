@@ -16,26 +16,25 @@ public:
     void onUpdate(Time dt) override
     {
         auto &trans = getComponent<TransformComponent>().translate;
-//        RL_INFO("onUpdate() {}", dt.asSeconds());
 
-        if (m_inverted) {
-            if (Input::IsKeyPressed(Keyboard::S))
-                trans.y += m_speed * dt.asSeconds();
-            if (Input::IsKeyPressed(Keyboard::W))
-                trans.y -= m_speed * dt.asSeconds();
-            if (Input::IsKeyPressed(Keyboard::D))
-                trans.x -= m_speed * dt.asSeconds();
-            if (Input::IsKeyPressed(Keyboard::A))
-                trans.x += m_speed * dt.asSeconds();
-        } else {
-            if (Input::IsKeyPressed(Keyboard::W))
-                trans.y += m_speed * dt.asSeconds();
-            if (Input::IsKeyPressed(Keyboard::S))
-                trans.y -= m_speed * dt.asSeconds();
-            if (Input::IsKeyPressed(Keyboard::A))
-                trans.x -= m_speed * dt.asSeconds();
-            if (Input::IsKeyPressed(Keyboard::D))
-                trans.x += m_speed * dt.asSeconds();
+        if (Input::IsKeyPressed(Keyboard::W))
+            trans.y += m_speed * dt.asSeconds();
+        if (Input::IsKeyPressed(Keyboard::S))
+            trans.y -= m_speed * dt.asSeconds();
+        if (Input::IsKeyPressed(Keyboard::A))
+            trans.x -= m_speed * dt.asSeconds();
+        if (Input::IsKeyPressed(Keyboard::D))
+            trans.x += m_speed * dt.asSeconds();
+
+//        if(Input::IsMouseButtonPressed(Mouse::Left))
+//        {
+            auto [x, y] = Input::GetMousePosition();
+//            RL_INFO("{} {}", x,  y);
+//        }
+
+        if(Input::IsKeyPressed(Keyboard::Space))
+        {
+            Input::SetMousePosition(0.5f, 0.5f);
         }
     }
 
@@ -45,13 +44,11 @@ public:
         ImGui::DragFloat3("Translate", glm::value_ptr(trans));
         ImGui::DragFloat("Speed", &m_speed);
 
-        ImGui::Checkbox("Inverted", &m_inverted);
     }
 
     RL_SCRIPT_SERIALIZE()
     {
         RL_SERIALIZE("speed", m_speed);
-        RL_SERIALIZE("inverted", m_inverted);
     }
 
 private:

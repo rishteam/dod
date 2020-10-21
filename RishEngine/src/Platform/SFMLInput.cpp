@@ -26,16 +26,34 @@ bool Input::IsMouseButtonPressed(int mbutton)
 
 std::pair<float, float> Input::GetMousePosition()
 {
-    auto *ptr = static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
-    sf::Vector2i pos = sf::Mouse::getPosition(*ptr);
-    return std::make_pair((float)pos.x, (float)pos.y);
+    sf::Window &window = *static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
+    sf::Vector2f size = {(float)window.getSize().x / 2.f, (float)window.getSize().y / 2.f};
+    sf::Vector2f pos = {(float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y};
+
+    // To center
+    pos.x = pos.x - size.x;
+    pos.y = size.y - pos.y;
+
+    // to NDC
+    pos.x /= size.x;
+    pos.y /= size.y;
+
+    return std::make_pair(pos.x, pos.y);
 }
 
 void Input::SetMousePosition(float x, float y)
 {
-    auto *ptr = static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
-    sf::Vector2i pos{static_cast<int>(x), static_cast<int>(y)};
-    sf::Mouse::setPosition(pos, *ptr);
+    sf::Window &window = *static_cast<sf::Window*>(Application::Get().getWindow().getPlatformWindow());
+    sf::Vector2f pos{x, y};
+    sf::Vector2f size = {(float)window.getSize().x / 2.f, (float)window.getSize().y / 2.f};
+
+    pos.x *= size.x;
+    pos.y *= size.y;
+
+    pos.x = pos.x + size.x;
+    pos.y = size.y - pos.y;
+
+    sf::Mouse::setPosition({(int)pos.x, (int)pos.y}, window);
 }
 
 float Input::GetMouseX()
