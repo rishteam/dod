@@ -26,6 +26,7 @@ public:
     operator const std::string () { return m_UUID; }
 
     std::string to_string() const { return m_UUID; }
+    const char* to_c_str() const { return m_UUID.c_str(); }
 
     friend bool operator ==(const UUID &lhs, const UUID &rhs)
     {

@@ -85,7 +85,9 @@ public:
     // TODO: Think a more elegant solution
     Scene *m_scene = nullptr;
 private:
-    entt::entity m_entityHandle{entt::null};
+	entt::entity m_entityHandle{entt::null};
+
+	friend struct std::hash<rl::Entity>;
 };
 
 /**
@@ -111,5 +113,20 @@ private:
  * 
  * @endcode
  */
+
+}
+
+namespace std {
+
+// TODO: hash combine
+
+template<>
+struct hash<rl::Entity>
+{
+    std::size_t operator()(const rl::Entity &entity) const
+    {
+        return hash<std::string>()(entity.getUUID().to_string());
+    }
+};
 
 }

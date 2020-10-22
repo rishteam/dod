@@ -67,7 +67,7 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<CameraController>();
 
     Entity debugEntity = m_currentScene->createEntity("DebugCamera");
-    debugEntity.addComponent<CameraComponent>();
+    debugEntity.addComponent<CameraComponent>(true, 16.f / 9.f, 5.f);
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 
 
@@ -89,20 +89,20 @@ void EditorLayer::onAttach()
     box.h = 3.0f;
     rigbd.BodyTypeState = RigidBody2DComponent::BodyType::Static;
 
-    debugEntity = m_currentScene->createEntity("Physics 2");
+    debugEntity = m_currentScene->createEntity("Physics Left", {-1.5f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
     auto &rigbd2 = debugEntity.getComponent<RigidBody2DComponent>();
     rigbd2.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
 
-    debugEntity = m_currentScene->createEntity("Physics 3");
+    debugEntity = m_currentScene->createEntity("Physics Middle", {0.f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     auto &rigbd3 = debugEntity.getComponent<RigidBody2DComponent>();
     rigbd3.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
 
-    debugEntity = m_currentScene->createEntity("Physics 4");
+    debugEntity = m_currentScene->createEntity("Physics Right", {1.5f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     auto &rigbd4 = debugEntity.getComponent<RigidBody2DComponent>();
@@ -179,34 +179,37 @@ void EditorLayer::onImGuiRender()
     ImGui::BeginDockspace("EditorDockspace");
     // Menu Bar
     onImGuiMainMenuRender();
+    //
+    // Sync the target entities set
+    static std::set<Entity> sceneHierarchyPrevSize{};
+    static std::set<Entity> editControllerPrevSize{};
 
-    // Select from editor
-    if(m_editController->isSelected())
+    m_sceneHierarchyPanel->onImGuiRender();
+    m_componentEditPanel->onImGuiRender();
+    // If SceneHierarchyPanel changed
+    if(sceneHierarchyPrevSize != m_sceneHierarchyPanel->getTargets())
     {
-        auto ent = m_editController->getTarget();
+        m_editController->resetTarget();
+        m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+    }
+    // If EditController changed
+    if(editControllerPrevSize != m_editController->getTargets())
+    {
         m_sceneHierarchyPanel->resetTarget();
-        m_sceneHierarchyPanel->addTarget(ent);
+        m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
     }
 
-    // Update SceneHierarchyPanel
-    m_sceneHierarchyPanel->onImGuiRender();
+    sceneHierarchyPrevSize = m_sceneHierarchyPanel->getTargets();
+    editControllerPrevSize = m_editController->getTargets();
 
-    // When SceneHierarchyPanel selected one entity
-    if (m_sceneHierarchyPanel->selectedSize() == 1 &&
-        m_sceneHierarchyPanel->isSelected())
+    auto &entSet = m_editController->getTargets();
+    if(entSet.size() == 1)
     {
-        auto ent = *m_sceneHierarchyPanel->getSelectedEntities().begin();
-        m_componentEditPanel->setTarget(ent);
-        m_editController->setTarget(ent);
+        m_componentEditPanel->setTarget(*entSet.begin());
     }
     else
-    {
-        m_componentEditPanel->resetSelected();
-        m_editController->resetSelected();
-    }
-
-    m_componentEditPanel->onImGuiRender();
-
+        m_componentEditPanel->resetTarget();
+    //
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
@@ -306,6 +309,8 @@ void EditorLayer::onImGuiRender()
         DrawSceneDebugWindow("EditorScene", m_editorScene);
         DrawSceneDebugWindow("RuntimeScene", m_runtimeScene);
 	    ImGui::End();
+
+        DrawDebugSceneWindow(m_currentScene->m_registry, m_currentScene.get());
     }
 }
 
@@ -485,7 +490,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     {
         auto entity = scene->getEntityByUUID(id);
         //
-        m_editController->setTarget(entity);
+        m_editController->addTarget(entity);
         m_sceneHierarchyPanel->addTarget(entity);
         m_componentEditPanel->setTarget(entity);
     }
