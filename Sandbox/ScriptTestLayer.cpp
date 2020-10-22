@@ -1,5 +1,7 @@
+#include <Rish/Script/CameraController.h>
 #include "ScriptTestLayer.h"
-#include "Script.h"
+
+#include <Rish/Script/Script.h>
 
 ScriptTestLayer::ScriptTestLayer()
     : Layer("ScriptTestLayer")

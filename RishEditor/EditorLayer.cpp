@@ -16,9 +16,9 @@
 #include <Rish/ImGui.h>
 #include <imgui_internal.h>
 
-// TODO: Remove ME
-#include "Script.h"
-// TODO: Remove ME
+#include <Rish/Scene/ScriptableManager.h>
+
+#include <Rish/Script/Script.h>
 
 #include "EditorLayer.h"
 
