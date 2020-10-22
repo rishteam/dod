@@ -42,10 +42,15 @@ public:
     static void SetKeyboardState(bool state) { s_keyboardState = state; }
     /// Enable/Disable Mouse
     static void SetMouseState(bool state) { s_mouseState = state; }
+    /// Is in editor
+    static void SetInEditor(bool state) { s_isInEditor = state; }
 
 private:
     static bool s_keyboardState;
     static bool s_mouseState;
+    //
+    static bool s_isInEditor;
+    static float s_x, s_y;
 };
 
 }

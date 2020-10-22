@@ -2,6 +2,7 @@
 
 #include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
+#include <Rish/Input/Input.h>
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Utils/FileDialog.h>
@@ -30,7 +31,7 @@ EditorLayer::EditorLayer()
 	VFS::Mount("texture", "assets/editor/texture");
     VFS::Mount("icon", "assets/editor/icon");
 
-    RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
+    Input::SetInEditor(true);
 
     m_editorScene = MakeRef<Scene>();
     m_runtimeScene = nullptr;
@@ -225,6 +226,11 @@ void EditorLayer::onImGuiRender()
         float dummyH = (fullH - size.y) / 2.f;
 
         m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
+
+        // Set in editor mouse pos for Input module
+        auto pos = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
+        pos.y = pos.y / (size.y / fullH);
+        Input::SetMousePosition(pos.x, pos.y);
 
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});

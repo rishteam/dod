@@ -37,6 +37,12 @@ public:
             if (Input::IsKeyPressed(Keyboard::D))
                 trans.x += m_speed * dt.asSeconds();
         }
+
+        if(Input::IsMouseButtonPressed(Mouse::Left))
+        {
+            auto [x, y] = Input::GetMousePosition();
+            RL_INFO("{:.2f} {:.2f}", x, y);
+        }
     }
 
     void onImGuiRender() override
