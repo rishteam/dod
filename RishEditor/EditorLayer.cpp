@@ -11,6 +11,8 @@
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 
+#include <Rish/Physics/PhysicsSystem.h>
+
 #include <Rish/Debug/DebugWindow.h>
 
 #include <Rish/ImGui.h>
@@ -74,7 +76,7 @@ void EditorLayer::onAttach()
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
 
-    debugEntity = m_currentScene->createEntity("static physcis");
+    debugEntity = m_currentScene->createEntity("static Physcis");
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
     debugEntity.addComponent<BoxCollider2DComponent>();
@@ -86,18 +88,26 @@ void EditorLayer::onAttach()
     box.y = 0.0f;
     box.w = 3.0f;
     box.h = 3.0f;
+    rigbd.BodyTypeState = RigidBody2DComponent::BodyType::Static;
 
     debugEntity = m_currentScene->createEntity("Physics Left", {-1.5f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+    auto &rigbd2 = debugEntity.getComponent<RigidBody2DComponent>();
+    rigbd2.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
 
     debugEntity = m_currentScene->createEntity("Physics Middle", {0.f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    auto &rigbd3 = debugEntity.getComponent<RigidBody2DComponent>();
+    rigbd3.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
 
     debugEntity = m_currentScene->createEntity("Physics Right", {1.5f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
+    auto &rigbd4 = debugEntity.getComponent<RigidBody2DComponent>();
+    rigbd4.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
 
     debugEntity = m_currentScene->createEntity("ParticleTest");
     debugEntity.addComponent<ParticleComponent>();
@@ -256,6 +266,7 @@ void EditorLayer::onImGuiRender()
                 m_runtimeScene = MakeRef<Scene>();
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
+                PhysicsSystem::onInit(m_currentScene);
                 m_currentScene->onScenePlay();
             }
             else

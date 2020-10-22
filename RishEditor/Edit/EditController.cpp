@@ -96,7 +96,7 @@ void EditController::onUpdate(Time dt)
         auto &boxc = ent.getComponent<BoxCollider2DComponent>();
         auto &transform = ent.getComponent<TransformComponent>();
         //TODO: rotate Quad for collider
-        Renderer2D::DrawRotatedQuad({transform.translate.x + boxc.x, transform.translate.y + boxc.y}, { boxc.w, boxc.h},  {1.0f, 1.0f, 0.0f, 0.2f}, transform.rotate);
+        Renderer2D::DrawRotatedRect({transform.translate.x + boxc.x, transform.translate.y + boxc.y}, {boxc.w, boxc.h},  {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
     }
 
     // TODO: Make the max AABB

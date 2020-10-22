@@ -105,6 +105,7 @@ add_library(RishEngine
     src/Physics/PhysicsWorld.cpp
     src/Physics/RigidBody2D.cpp
     src/Physics/vector_math.cpp
+    src/Physics/PhysicsSystem.cpp
 
     # Renderer
     src/Renderer/Shader.cpp

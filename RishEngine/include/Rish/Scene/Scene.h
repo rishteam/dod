@@ -7,9 +7,9 @@
 #include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
 //
-#include <Rish/Physics/PhysicsWorld.h>
 #include <Rish/Physics/Component.h>
-
+#include <Rish/Physics/PhysicsWorld.h>
+//
 #include <entt/entt.hpp>
 #include <cereal/cereal.hpp>
 
@@ -113,10 +113,11 @@ public:
     ////////////////////////////////////////////////////////////////
     // Physics
     ////////////////////////////////////////////////////////////////
-    PhysicsWorld PhysicsWorld{Vec2(0.0f, -9.8f)};
+    PhysicsWorld physicsWorld {Vec2(0.0f, -9.8f)};
     std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysicsObj;
     std::unordered_map<UUID, Ref<Box>> mapBoxColliderObj;
     std::unordered_map<UUID, Ref<Joint>> mapJointObj;
+
 
     ////////////////////////////////////////////////////////////////
 	// friend class
@@ -130,6 +131,7 @@ public:
     friend class EditController;
 
     friend class ParticleSystem;
+    friend class PhysicsSystem;
     friend class ExampleSandboxLayer;
 
     // Debug functions
@@ -152,7 +154,10 @@ public:
                 RenderComponent,
                 CameraComponent,
                 ParticleComponent,
-                NativeScriptComponent
+                NativeScriptComponent,
+                RigidBody2DComponent,
+                BoxCollider2DComponent,
+                Joint2DComponent
             >(ar);
 	}
 
@@ -166,7 +171,10 @@ public:
 			    RenderComponent,
 			    CameraComponent,
 			    ParticleComponent,
-			    NativeScriptComponent
+			    NativeScriptComponent,
+                RigidBody2DComponent,
+                BoxCollider2DComponent,
+                Joint2DComponent
             >(ar);
 	}
 };
