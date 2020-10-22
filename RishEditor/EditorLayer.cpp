@@ -111,6 +111,11 @@ void EditorLayer::onAttach()
 
     debugEntity = m_currentScene->createEntity("ParticleTest");
     debugEntity.addComponent<ParticleComponent>();
+
+    debugEntity = m_currentScene->createEntity("bg", {0.f, 0.f, -1.f});
+    debugEntity.getComponent<TransformComponent>().scale.x = 11.f;
+    debugEntity.getComponent<TransformComponent>().scale.y = 5.f;
+    debugEntity.addComponent<RenderComponent>().texturePath = "assets/texture/bg.jpg";
 }
 
 void EditorLayer::onDetach()
@@ -145,7 +150,7 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
-        Renderer2D::BeginScene(cameraController->getCamera());
+        Renderer2D::BeginScene(cameraController->getCamera(), true);
         m_editController->onUpdate(dt);
         Renderer2D::EndScene();
 
@@ -226,22 +231,30 @@ void EditorLayer::onImGuiRender()
     }
 	ImGui::End();
 
-    ImVec2 size; // debug
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
     {
-        size = ImGui::GetContentRegionAvail();
-        float fullH{};
-        fullH = size.y;
+        // Pull states
+        bool isGameWindowFocus = ImGui::IsWindowFocused();
+        bool isGameWindowHover = ImGui::IsWindowHovered();
+
+        // Allow input only when game window is focus and hover
+        Input::SetMouseState(isGameWindowFocus && isGameWindowHover);
+
+        // Get current window attributes
+        ImVec2 size = ImGui::GetContentRegionAvail();
+        float fullH = size.y;
         size.y = size.x * 1.f / m_currentScene->getMainCamera().getAspect();
         float dummyH = (fullH - size.y) / 2.f;
 
+        // Respond the resize to the current scene
         m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
 
-        // Set in editor mouse pos for Input module
+        // Set *in editor* mouse pos for Input module
         auto pos = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
         pos.y = pos.y / (size.y / fullH);
         Input::SetMousePosition(pos.x, pos.y);
 
+        // Draw the Game
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
@@ -492,6 +505,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     m_sceneHierarchyPanel->resetTarget();
     m_componentEditPanel->resetTarget();
 
+    // Recover the target after switch the scene if set
     if(isTargetSet)
     {
         auto entity = scene->getEntityByUUID(id);

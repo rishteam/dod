@@ -19,19 +19,18 @@ void CameraController::onUpdate(rl::Time dt)
     {
         auto [x, y] = Input::GetMousePosition();
         auto ent = GetScene().createEntity();
-        ent.addComponent<RenderComponent>();
-        ent.getComponent<TransformComponent>().translate = glm::vec3(x, y, 0.f);
+        auto &render = ent.addComponent<RenderComponent>();
     }
 }
 
 void CameraController::onCreate()
 {
-    RL_INFO("scene = {}", (void *)GetEntity().m_scene);
+
 }
 
 void CameraController::onDestroy()
 {
-    RL_INFO("scene = {}", (void *)GetEntity().m_scene);
+
 }
 
 }
