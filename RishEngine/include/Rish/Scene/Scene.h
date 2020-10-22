@@ -154,7 +154,10 @@ public:
                 RenderComponent,
                 CameraComponent,
                 ParticleComponent,
-                NativeScriptComponent
+                NativeScriptComponent,
+                RigidBody2DComponent,
+                BoxCollider2DComponent,
+                Joint2DComponent
             >(ar);
 	}
 
@@ -168,7 +171,10 @@ public:
 			    RenderComponent,
 			    CameraComponent,
 			    ParticleComponent,
-			    NativeScriptComponent
+			    NativeScriptComponent,
+                RigidBody2DComponent,
+                BoxCollider2DComponent,
+                Joint2DComponent
             >(ar);
 	}
 };

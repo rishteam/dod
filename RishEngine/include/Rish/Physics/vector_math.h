@@ -146,12 +146,22 @@ public:
      */
     void rotate_ref(float angle, Vec2 &ref);
     float x, y;
-};
 
+private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(
+                CEREAL_NVP(x),
+                CEREAL_NVP(y)
+        );
+    }
+
+};
 
 std::pair<float, float> getMinMax(Vec2 &axis, std::deque<Vec2> corner);
 int randomint(int min, int max);
-
 
 class Mat22 {
 public:

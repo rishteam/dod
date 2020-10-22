@@ -37,7 +37,6 @@ void rl::RigidBody2D::setisCollide(bool state)
     isCollider = state;
 }
 
-
 std::pair<Vec2, float> rl::RigidBody2D::getPhysicsData()
 {
     return std::make_pair(position, angle);
@@ -58,12 +57,10 @@ float rl::RigidBody2D::getfriction()
     return friction;
 }
 
-
 void rl::RigidBody2D::AddForce(const Vec2& f)
 {
     force += f;
 }
-
 
 void rl::RigidBody2D::ComputeForce(float delta_t, Vec2 gravity)
 {

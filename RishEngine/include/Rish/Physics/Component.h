@@ -16,7 +16,6 @@ struct RigidBody2DComponent
         Dynamic
     };
 
-    RigidBody2DComponent() = default;
     //角速度
     float angularVelocity = 0.0f;
     //角度
@@ -34,6 +33,7 @@ struct RigidBody2DComponent
 
     BodyType BodyTypeState;
 
+    RigidBody2DComponent() = default;
 
 private:
     friend class cereal::access;
@@ -54,12 +54,12 @@ private:
 
 struct BoxCollider2DComponent
 {
-    BoxCollider2DComponent() = default;
     float x = 0.0f;
     float y = 0.0f;
     float w = 1.0f;
     float h = 1.0f;
 
+    BoxCollider2DComponent() = default;
 private:
     friend class cereal::access;
     template<class Archive>
@@ -76,8 +76,6 @@ private:
 
 struct Joint2DComponent
 {
-    Joint2DComponent() = default;
-
     //can change
     UUID rigidBody1;
     UUID rigidBody2;
@@ -91,6 +89,7 @@ struct Joint2DComponent
     float biasFactor = 0.2f;
     float softness = 0.0f;
 
+    Joint2DComponent() = default;
 private:
     friend class cereal::access;
     template<class Archive>

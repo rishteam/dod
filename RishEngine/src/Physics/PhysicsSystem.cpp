@@ -1,7 +1,5 @@
 #include <Rish/Physics/PhysicsSystem.h>
 
-
-
 namespace rl {
 
 Ref<Scene> PhysicsSystem::s_Scene;
@@ -166,7 +164,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 rigidbody2D.mass = phy->mass;
             }
         }
-
+        // joint
         auto group6 = registry.view<TransformComponent, Joint2DComponent>();
         for (auto entity : group6)
         {
