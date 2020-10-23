@@ -52,6 +52,13 @@ private:
     // Helper functions
     void drawCameraIconAndBorder(const Ref<Scene> &scene) const;
 
+    // Gizmo
+    enum class Gizmo{
+        ZoomMode,
+        MoveMode,
+        RotationMode
+    }m_gizmoMode = Gizmo::ZoomMode;
+
 public:
     bool m_debugEditorGrid       = false;
     bool m_debugCameraController = false;

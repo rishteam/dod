@@ -103,6 +103,7 @@ void EditController::onUpdate(Time dt)
     if(isSelected())
     {
         auto &entSet = getTargets();
+
         for(auto &ent : entSet)
         {
             auto &transform = ent.getComponent<TransformComponent>();
@@ -110,7 +111,38 @@ void EditController::onUpdate(Time dt)
             auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
             // Draw Border
             Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+//            auto boundSize = std::min(bound.getScale().x,bound.getScale().y)*0.1;
+            auto boundSize = glm::vec2(.1f);
+            auto boundColor = glm::vec4(1.f, 1.f, 0.f, 1.f);
+            switch( m_gizmoMode ) {
+                case Gizmo::MoveMode : {
+                    auto moveQuadPos2 = glm::vec2(bound.getPosition() + bound.getScale() * glm::vec2(.1f));
+                    auto moveQuadPos3 = glm::vec3(moveQuadPos2.x, moveQuadPos2.y, 2.f);
+                    Renderer2D::DrawRect(bound.getPosition() + bound.getScale() * glm::vec2(.1f),glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(moveQuadPos3, bound.getScale() * glm::vec2(.2f), boundColor);
+                    Renderer2D::DrawLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(.7f, 0.f),glm::vec4(0.f, 0.f, 1.f, 1.f));
+                    Renderer2D::DrawLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
+                    break;
+                }
+                case Gizmo::ZoomMode :{
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.5f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.0f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f, -0.5f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f, -0.5f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f, -0.5f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.0f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.5f), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f,  0.5f), glm::vec2(boundSize), boundColor);
+                    break;
+                }
+                case Gizmo::RotationMode :{
+                    Renderer2D::DrawRect(bound.getPosition(), glm::vec2(boundSize), boundColor);
+                    Renderer2D::DrawLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
+                    break;
+                }
+            }
         }
+
     }
 }
 
