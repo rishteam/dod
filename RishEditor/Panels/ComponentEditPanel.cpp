@@ -124,7 +124,7 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
         static float aspectList[][2] = {{16.f, 9.f}, {4, 3}};
         static const char *aspectName[2] = {"16 : 9", "4 : 3"};
         static int aspectNowSelect = 0;
-        static float size = 5.f, near = -1.0f, far = 1.0f;
+        static float size = 5.f, near = -1000.0f, far = 1000.0f;
 
         // Primary
         ImGui::Checkbox("Primary", &camera.primary);

@@ -361,6 +361,13 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: not save warning
                 m_editorScene = nullptr;
                 m_editorScene = MakeRef<Scene>();
+
+                // Reset the target
+                m_editController->resetTarget();
+                m_sceneHierarchyPanel->resetTarget();
+                m_componentEditPanel->resetTarget();
+
+                // Switch to new scene
                 switchCurrentScene(m_editorScene);
             }
 
