@@ -329,13 +329,15 @@ void EditorLayer::onImGuiRender()
 
 	ImGui::EndDockspace();
 
+	// Modals
 	m_errorModal.onImGuiRender();
 
+	// Simple Panels
     for(auto &panel : m_simplePanelList)
         panel->onImGuiRender();
 
 	// Debug Scene Window
-	if(m_debugScene)
+	if(m_debugNativeScript)
     {
 	    ImGui::Begin("Scene Debug");
         ImGui::Text("CurrentScene: %p", (void*)m_currentScene.get());
@@ -343,8 +345,6 @@ void EditorLayer::onImGuiRender()
         DrawSceneDebugWindow("EditorScene", m_editorScene);
         DrawSceneDebugWindow("RuntimeScene", m_runtimeScene);
 	    ImGui::End();
-
-        DrawDebugSceneWindow(m_currentScene->m_registry, m_currentScene.get());
     }
 }
 
@@ -471,7 +471,12 @@ void EditorLayer::onImGuiMainMenuRender()
             }
             if(ImGui::BeginMenu("Scene"))
             {
-                ImGui::MenuItem("Scene", nullptr, &m_debugScene);
+                ImGui::MenuItem("Editor Scene", nullptr, &m_editorScene->m_debugScene);
+                if(m_runtimeScene)
+                    ImGui::MenuItem("Runtime Scene", nullptr, &m_runtimeScene->m_debugScene);
+                else
+                    ImGui::MenuItem("Runtime Scene", nullptr, nullptr, false);
+                ImGui::MenuItem("Native Script", nullptr, &m_debugNativeScript);
                 ImGui::MenuItem("Scene Camera", nullptr, &m_currentScene->m_debugCamera);
                 ImGui::MenuItem("Physics Debug", nullptr, &m_currentScene->m_debugPhysics);
                 ImGui::EndMenu();

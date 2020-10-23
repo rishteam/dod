@@ -82,31 +82,31 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
                 ImGui::Dummy(ImVec2(64, 64));
         }
 
-        ImGui::Text("Shader");
-        {
-            std::string path;
-            auto &vertPath = render.vertPath;
-            if (ImGui::Button("Select##Vert")) {
-                if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-                    vertPath = path;
-                    render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-                }
-            }
-            ImGui::SameLine();
-            ImGui::InputText("##VertexShaderPath", &vertPath, ImGuiInputTextFlags_ReadOnly);
-
-            auto &fragPath = render.fragPath;
-            if (ImGui::Button("Select##Frag"))
-            {
-                if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
-                {
-                    fragPath = path;
-                    render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-                }
-            }
-            ImGui::SameLine();
-            ImGui::InputText("##FragmentShaderPath", &fragPath, ImGuiInputTextFlags_ReadOnly);
-        }
+//        ImGui::Text("Shader");
+//        {
+//            std::string path;
+//            auto &vertPath = render.vertPath;
+//            if (ImGui::Button("Select##Vert")) {
+//                if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
+//                    vertPath = path;
+//                    render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
+//                }
+//            }
+//            ImGui::SameLine();
+//            ImGui::InputText("##VertexShaderPath", &vertPath, ImGuiInputTextFlags_ReadOnly);
+//
+//            auto &fragPath = render.fragPath;
+//            if (ImGui::Button("Select##Frag"))
+//            {
+//                if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
+//                {
+//                    fragPath = path;
+//                    render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
+//                }
+//            }
+//            ImGui::SameLine();
+//            ImGui::InputText("##FragmentShaderPath", &fragPath, ImGuiInputTextFlags_ReadOnly);
+//        }
     }
     EndDrawEditComponent();
 }

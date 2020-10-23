@@ -67,7 +67,7 @@ private:
 	Ref<AboutPanel> m_aboutPanel;
 	std::vector<Ref<Panel>> m_simplePanelList;
 
-	bool m_debugScene = false;
+	bool m_debugNativeScript = false;
 };
 
 }

@@ -25,9 +25,7 @@ int Scene::entityNumber = 0;
 
 Scene::Scene()
 {
-    // TODO Remove me?
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
-//    m_registry.on_construct<NativeScriptComponent>().connect<entt::invoke<&NativeScriptComponent::init>>();
     RL_CORE_INFO("Construct Scene");
 }
 
@@ -171,6 +169,8 @@ void Scene::onUpdate(Time dt)
     // Physics System update
     PhysicsSystem::onUpdate(m_registry, dt, m_sceneState);
 
+    // Find a primary camera
+    // TODO: implement multiple camera
     bool isAnyCamera{false};
     auto group = m_registry.view<TransformComponent, CameraComponent>();
     for(auto entity : group)
@@ -186,8 +186,6 @@ void Scene::onUpdate(Time dt)
             isAnyCamera = true;
         }
     }
-
-    // TODO: implement multiple camera
     if(!isAnyCamera) return;
 
     // Draw RenderComponent
