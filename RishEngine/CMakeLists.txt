@@ -52,6 +52,11 @@ configure_file(${PROJECT_SOURCE_DIR}/config/Config.h.in ${PROJECT_SOURCE_DIR}/in
 
 # TODO: support for dynamic linking for the engine
 
+set(RL_SCRIPT_FILES
+    ../NativeScript/Rish/Script/SpriteRotate.cpp
+    ../NativeScript/Rish/Script/CameraController.cpp
+)
+
 # Add executable
 add_library(RishEngine
     # Application
@@ -129,12 +134,18 @@ add_library(RishEngine
     src/Math/BoundingBox.cpp
 
     src/Debug/DebugWindow.cpp
-        src/Scene/ScriptableEntity.cpp)
+    src/Scene/ScriptableEntity.cpp
+
+    ${RL_SCRIPT_FILES}
+)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
 target_include_directories(RishEngine
     PUBLIC ${PROJECT_SOURCE_DIR}/include
+
+    # Scripts
+    PUBLIC ${CMAKE_SOURCE_DIR}/NativeScript
 )
 target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
 target_precompile_headers(RishEngine PUBLIC ${PROJECT_SOURCE_DIR}/include/Rish/rlpch.h) # precompiled headers

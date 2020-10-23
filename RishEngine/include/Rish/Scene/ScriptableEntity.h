@@ -22,12 +22,38 @@ public:
     {
     }
 
+    // Component
     template<typename T>
-    T& getComponent()
+    T& GetComponent()
     {
         return m_entity.getComponent<T>();
     }
 
+    template<typename T, typename ... Args>
+    T& AddComponent(Args &&... args)
+    {
+        return m_entity.addComponent<T>(std::forward<Args>(args)...);
+    }
+
+    template<typename T>
+    void RemoveComponent()
+    {
+        m_entity.removeComponent<T>();
+    }
+
+    template<typename T>
+    bool HasComponent() const
+    {
+        return m_entity.hasComponent<T>();
+    }
+
+    Entity GetEntity() const { return m_entity; }
+    Scene& GetScene() const
+    {
+        return *m_entity.m_scene;
+    }
+
+    // Main Functions
     virtual void onCreate() {}
     virtual void onDestroy() {}
     virtual void onUpdate(Time dt) = 0;

@@ -5,8 +5,16 @@ option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable static analysis with include-what-you
 if(ENABLE_CPPCHECK)
   find_program(CPPCHECK cppcheck)
   if(CPPCHECK)
-    set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=missingInclude --enable=all
-                           --inconclusive -i ${CMAKE_SOURCE_DIR}/imgui/lib)
+    set(CMAKE_CXX_CPPCHECK
+        ${CPPCHECK}
+        --suppress=missingInclude
+        --enable=all
+        --inconclusive
+        -I ${CMAKE_SOURCE_DIR}/RishEngine/src
+        -I ${CMAKE_SOURCE_DIR}/RishEngine/include
+        -I ${CMAKE_SOURCE_DIR}/Sandbox/
+        -I ${CMAKE_SOURCE_DIR}/RishEditor/
+    )
   else()
     message(SEND_ERROR "cppcheck requested but executable not found")
   endif()

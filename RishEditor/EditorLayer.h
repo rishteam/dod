@@ -4,6 +4,8 @@
 #include "Panels/ComponentEditPanel.h"
 #include "Panels/ComponentSelectionPanel.h"
 #include "Panels/ErrorModal.h"
+#include "Panels/HelpPanel.h"
+#include "Panels/AboutPanel.h"
 
 #include "Edit/EditorGrid.h"
 #include "Edit/EditController.h"
@@ -59,6 +61,11 @@ private:
     // Common Widgets
     //////////////////////////////////////////
 	ErrorModal m_errorModal;
+
+	// simple panels
+	Ref<HelpPanel> m_helpPanel;
+	Ref<AboutPanel> m_aboutPanel;
+	std::vector<Ref<Panel>> m_simplePanelList;
 
 	bool m_debugScene = false;
 };

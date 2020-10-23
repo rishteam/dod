@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     getchar();
 #endif
     //
-    auto LoggerSetting = rl::Logger::LoggerType::Default;
+    uint32_t LoggerSetting = rl::Logger::LoggerType::Default;
 #ifdef LOG_VERBOSE
     LoggerSetting |= rl::Logger::LoggerType::FileInfo | rl::Logger::LoggerType::FunctionInfo;
 #endif

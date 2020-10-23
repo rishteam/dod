@@ -168,3 +168,8 @@ ImVec2 operator-(const ImVec2 &lhs, const ImVec2 &rhs)
 {
     return ImVec2{lhs.x-rhs.x, lhs.y-rhs.y};
 }
+
+ImVec2 operator*(const ImVec2 &lhs, float f)
+{
+    return ImVec2{lhs.x * f, lhs.y * f};
+}

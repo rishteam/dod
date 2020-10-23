@@ -257,7 +257,7 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     // key pressed event
     SFML_EVENT_CALLBACK(keyPressedEvent) = [&](const sf::Event &e) {
         KeyPressedEvent keyPress(e.key.code, false);
-        RL_CORE_TRACE("{}", keyPress.toString());
+//        RL_CORE_TRACE("{}", keyPress.toString());
         m_eventCallback(keyPress);
     };
     m_SFMLEventDispatcher.addListener(sf::Event::KeyPressed, keyPressedEvent);

@@ -59,3 +59,4 @@ bool ListBox(const char* label, int* current_item, const std::vector<std::string
 
 ImVec2 operator+(const ImVec2 &lhs, const ImVec2 &rhs);
 ImVec2 operator-(const ImVec2 &lhs, const ImVec2 &rhs);
+ImVec2 operator*(const ImVec2 &lhs, float f);

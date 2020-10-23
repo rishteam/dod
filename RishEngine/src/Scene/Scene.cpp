@@ -33,7 +33,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    RL_CORE_INFO("Destruct Scene");
 }
 
 Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
@@ -193,7 +192,7 @@ void Scene::onUpdate(Time dt)
 
     // Draw RenderComponent
     auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
-    Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+    Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
     {
         for (auto entity : cameraGroup) {
             Entity ent{entity, this};
