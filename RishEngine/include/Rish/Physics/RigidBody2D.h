@@ -18,7 +18,7 @@ public:
     float getfriction();
     void IntegrateVelocities(float delta_t);
     void ComputeForce(float delta_t, Vec2 gravity);
-    void AddForce(const Vec2& f);
+    void AddForce(const Vec2& f, const Vec2 &attachPoint);
 
     // 物理世界座標
     Vec2 position;
@@ -30,8 +30,6 @@ public:
     float angle;
     // 速度
     Vec2 velocity;
-    // 力
-    Vec2 force;
     // 力矩
     float torque;
     // 摩擦力
@@ -42,6 +40,11 @@ public:
     float I, invI;
     // 是否進行碰撞偵測
     bool isCollider = false;
+    // 受力點
+    Vec2 attachPoint;
+    // 受的力
+    Vec2 force;
+
 };
 
 }

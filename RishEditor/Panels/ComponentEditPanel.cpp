@@ -522,6 +522,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         int bodyTypeNowSelect = static_cast<int>(rigid.BodyTypeState);
         float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
         float forceVector[2] = {rigid.force.x, rigid.force.y};
+        float attachPoint[2] = {rigid.attachPoint.x, rigid.attachPoint.y};
         ImGui::Text("Physics Parameter");
         {
             // can control the physics parameter
@@ -529,10 +530,13 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::InputFloat("Friction", &rigid.friction, 0.1f, 0.2f, "%.2f");
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
             ImGui::DragFloat2("Force", forceVector, 1.0f);
+            ImGui::DragFloat2("Attach Point", attachPoint, 1.0);
             rigid.velocity.x = velocityVector[0];
             rigid.velocity.y = velocityVector[1];
             rigid.force.x = forceVector[0];
             rigid.force.y = forceVector[1];
+            rigid.attachPoint.x = attachPoint[0];
+            rigid.attachPoint.y = attachPoint[1];
             // can't control the physics parameter
             ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
             ImGui::Text("Torque: %.2f", rigid.torque);

@@ -47,6 +47,7 @@ void rl::PhysicsWorld::Step(float dt)
     float inv_dt = dt > 0.0f ? 1.0f / dt : 0.0f;
     timeStep = dt;
 
+
     //Boardphase detection
     this->BoardPhase();
 
@@ -86,8 +87,6 @@ void rl::PhysicsWorld::Step(float dt)
     for(int i = 0; i < bodies.size(); i++)
     {
         bodies.at(i)->IntegrateVelocities(dt);
-        bodies.at(i)->force = Vec2(0.0f,0.0f);
-        bodies.at(i)->torque = 0.0f;
     }
 }
 
@@ -399,7 +398,6 @@ void rl::PhysicsWorld::demo8()
     j4->Set(floor, floor_box, Vec2(13.5, 6.5));
     this->AddJoints(j4);
 }
-
 void rl::PhysicsWorld::demo9()
 {
     this->Clear();
