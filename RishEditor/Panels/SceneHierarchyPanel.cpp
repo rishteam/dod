@@ -58,6 +58,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 
     ImGuiTreeNodeFlags nodeFlags = m_entitySet.count(entity) ? ImGuiTreeNodeFlags_Selected : 0;
     nodeFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
+    nodeFlags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
     if(ImGui::IsItemClicked())
