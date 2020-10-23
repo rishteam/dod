@@ -12,6 +12,8 @@ add_executable(Editor
     Panels/ComponentEditPanel.cpp
     Panels/ComponentSelectionPanel.cpp
     Panels/ErrorModal.cpp
+    Panels/HelpPanel.cpp
+    Panels/AboutPanel.cpp
 
     # Edit
     Edit/EditorGrid.cpp

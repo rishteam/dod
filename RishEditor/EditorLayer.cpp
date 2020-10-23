@@ -46,6 +46,12 @@ EditorLayer::EditorLayer()
     //
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
+    // Simple Panels
+    m_helpPanel = MakeRef<HelpPanel>();
+    m_simplePanelList.push_back(m_helpPanel);
+    //
+    m_aboutPanel = MakeRef<AboutPanel>();
+    m_simplePanelList.push_back(m_aboutPanel);
     //
     switchCurrentScene(m_editorScene);
 }
@@ -62,6 +68,9 @@ void EditorLayer::onAttach()
     // Attach all panels
     for(auto &panel : m_panelList)
         panel->onAttach(m_currentScene);
+
+    for(auto &panel : m_simplePanelList)
+        panel->onAttach();
 
     // Test
     ScriptableManager::Register<SpriteRoatate>();
@@ -123,6 +132,9 @@ void EditorLayer::onDetach()
     ImGui::SaveIniSettingsToDisk("assets/layout/editor.ini");
     // Detach all panels
     for(auto &panel : m_panelList)
+        panel->onDetach();
+    //
+    for(auto &panel : m_simplePanelList)
         panel->onDetach();
 }
 
@@ -319,6 +331,9 @@ void EditorLayer::onImGuiRender()
 
 	m_errorModal.onImGuiRender();
 
+    for(auto &panel : m_simplePanelList)
+        panel->onImGuiRender();
+
 	// Debug Scene Window
 	if(m_debugScene)
     {
@@ -460,6 +475,19 @@ void EditorLayer::onImGuiMainMenuRender()
                 ImGui::MenuItem("Scene Camera", nullptr, &m_currentScene->m_debugCamera);
                 ImGui::MenuItem("Physics Debug", nullptr, &m_currentScene->m_debugPhysics);
                 ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+
+        if(ImGui::BeginMenu("Help"))
+        {
+            if(ImGui::MenuItem("Help", nullptr))
+            {
+                m_helpPanel->showPanel();
+            }
+            if(ImGui::MenuItem("About", nullptr))
+            {
+                m_aboutPanel->showPanel();
             }
             ImGui::EndMenu();
         }
