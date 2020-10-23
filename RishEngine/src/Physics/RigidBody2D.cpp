@@ -57,9 +57,14 @@ float rl::RigidBody2D::getfriction()
     return friction;
 }
 
-void rl::RigidBody2D::AddForce(const Vec2& f)
+void rl::RigidBody2D::AddForce(const Vec2& f, const Vec2 &attachPoint)
 {
+    // Update the Linear Force
     force += f;
+
+    // Update the Torque
+    Vec2 delta = position - attachPoint;
+    torque += force.x * delta.y + force.y * delta.x;
 }
 
 void rl::RigidBody2D::ComputeForce(float delta_t, Vec2 gravity)
@@ -80,6 +85,7 @@ void rl::RigidBody2D::IntegrateVelocities(float delta_t)
     auto tmp2 = delta_t * angularVelocity;
     angle += tmp2;
 
+    // TODO: Single Time Update or Keeping Update
     this->force.Set(0.0f, 0.0f);
     this->torque = 0.0f;
 }

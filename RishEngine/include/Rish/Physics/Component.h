@@ -16,19 +16,21 @@ struct RigidBody2DComponent
         Dynamic
     };
 
-    //角速度
+    // 角速度
     float angularVelocity = 0.0f;
-    //角度
+    // 角度
     float angle = 0.0f;
-    //速度
+    // 速度
     Vec2 velocity = Vec2(0.0f, 0.0f);
-    //力
+    // 受力接觸點
+    Vec2 attachPoint = Vec2(0.0f, 0.0f);
+    // 受的力
     Vec2 force = Vec2(0.0f, 0.0f);
-    //力矩
+    // 力矩
     float torque = 0.0f;
-    //摩擦力
+    // 摩擦力
     float friction = 0.2f;
-    //質量，質量倒數
+    // 質量，質量倒數
     float mass = 10.0f;
 
     BodyType BodyTypeState;
