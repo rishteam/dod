@@ -69,6 +69,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 phy->velocity = rigidbody2D.velocity;
                 phy->force = rigidbody2D.force;
                 phy->attachPoint = rigidbody2D.attachPoint;
+                phy->keepingForce = rigidbody2D.keepingForce;
                 phy->isCollider = true;
             }
             // Only RigidBody2D
@@ -86,6 +87,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 phy->velocity = rigidbody2D.velocity;
                 phy->force = rigidbody2D.force;
                 phy->attachPoint = rigidbody2D.attachPoint;
+                phy->keepingForce = rigidbody2D.keepingForce;
                 phy->isCollider = false;
             }
         }
@@ -133,11 +135,12 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 rigidbody2D.angularVelocity = phy->angularVelocity;
                 rigidbody2D.angle = phy->angle;
                 rigidbody2D.velocity = phy->velocity;
-                rigidbody2D.force = phy->force;
                 rigidbody2D.torque = phy->torque;
                 rigidbody2D.friction = phy->friction;
+                rigidbody2D.force = phy->force;
                 rigidbody2D.mass = phy->mass;
                 rigidbody2D.attachPoint = phy->attachPoint;
+                rigidbody2D.keepingForce = phy->keepingForce;
             }
         }
 
@@ -161,11 +164,12 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 rigidbody2D.angularVelocity = phy->angularVelocity;
                 rigidbody2D.angle = phy->angle;
                 rigidbody2D.velocity = phy->velocity;
-                rigidbody2D.force = phy->force;
                 rigidbody2D.torque = phy->torque;
                 rigidbody2D.friction = phy->friction;
+                rigidbody2D.force = phy->force;
                 rigidbody2D.mass = phy->mass;
                 rigidbody2D.attachPoint = phy->attachPoint;
+                rigidbody2D.keepingForce = phy->keepingForce;
             }
         }
         // joint
@@ -211,8 +215,10 @@ void PhysicsSystem::onScenePlay(entt::registry& registry, Scene::SceneState stat
         {
             auto physicsObj = MakeRef<RigidBody2D>(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
             mapPhysicsObj[UUID] = physicsObj;
-            // Add Force
-            physicsObj->AddForce(rigidbody2D.force, rigidbody2D.attachPoint);
+            // Add Force on Point
+            auto attx = transform.translate.x + rigidbody2D.attachPoint.x;
+            auto atty = transform.translate.y + rigidbody2D.attachPoint.y;
+            physicsObj->AddForce(rigidbody2D.force, Vec2(attx, atty));
             physicsWorld.Add(physicsObj);
         }
     }

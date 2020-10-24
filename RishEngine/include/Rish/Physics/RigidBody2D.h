@@ -40,10 +40,13 @@ public:
     float I, invI;
     // 是否進行碰撞偵測
     bool isCollider = false;
+    // 持續受力
+    bool keepingForce = false;
     // 受力點
     Vec2 attachPoint;
     // 受的力
     Vec2 force;
+
 
 };
 

@@ -47,7 +47,6 @@ void rl::PhysicsWorld::Step(float dt)
     float inv_dt = dt > 0.0f ? 1.0f / dt : 0.0f;
     timeStep = dt;
 
-
     //Boardphase detection
     this->BoardPhase();
 

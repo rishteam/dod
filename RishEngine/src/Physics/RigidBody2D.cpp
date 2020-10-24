@@ -63,8 +63,8 @@ void rl::RigidBody2D::AddForce(const Vec2& f, const Vec2 &attachPoint)
     force += f;
 
     // Update the Torque
-    Vec2 delta = position - attachPoint;
-    torque += force.x * delta.y + force.y * delta.x;
+    Vec2 delta = attachPoint - position;
+    torque += Cross(delta, force);
 }
 
 void rl::RigidBody2D::ComputeForce(float delta_t, Vec2 gravity)
@@ -86,7 +86,11 @@ void rl::RigidBody2D::IntegrateVelocities(float delta_t)
     angle += tmp2;
 
     // TODO: Single Time Update or Keeping Update
-    this->force.Set(0.0f, 0.0f);
-    this->torque = 0.0f;
+    if (this->keepingForce == false)
+    {
+        this->force.Set(0.0f, 0.0f);
+        this->torque = 0.0f;
+    }
+
 }
 
