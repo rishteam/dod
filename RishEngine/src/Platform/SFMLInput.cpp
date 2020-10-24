@@ -17,6 +17,8 @@ bool Input::s_mouseState    = true;
 bool Input::s_isInEditor    = false;
 
 float Input::s_x = 0.f, Input::s_y = 0.f;
+float Input::s_centerX, Input::s_centerY;
+float Input::s_width, Input::s_height;
 
 bool Input::IsKeyPressed(int keycode)
 {
@@ -54,14 +56,17 @@ std::pair<float, float> Input::GetMousePosition()
 
 void Input::SetMousePosition(float x, float y)
 {
+    sf::Window &window = *static_cast<sf::Window *>(Application::Get().getWindow().getPlatformWindow());
+    //
     if(s_isInEditor)
     {
-        s_x = x;
-        s_y = y;
+        float setX = s_centerX + x * s_width / 2.f;
+        float setY = s_centerY + -y * s_height / 2.f;
+
+        sf::Mouse::setPosition({(int) setX, (int) setY}, window);
     }
     else
     {
-        sf::Window &window = *static_cast<sf::Window *>(Application::Get().getWindow().getPlatformWindow());
         sf::Vector2f pos{x, y};
         sf::Vector2f size = {(float) window.getSize().x / 2.f, (float) window.getSize().y / 2.f};
 
@@ -83,6 +88,20 @@ float Input::GetMouseX()
 float Input::GetMouseY()
 {
     return GetMousePosition().second;
+}
+
+void Input::SetGameWindowInEditor(float centerX, float centerY, float width, float  height)
+{
+    s_centerX = centerX;
+    s_centerY = centerY;
+    s_width = width;
+    s_height = height;
+}
+
+void Input::OnMouseMove(float x, float y)
+{
+    s_x = x;
+    s_y = y;
 }
 
 }

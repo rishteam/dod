@@ -18,8 +18,8 @@ void CameraController::onUpdate(rl::Time dt)
     if(Input::IsMouseButtonPressed(Mouse::Left))
     {
         auto [x, y] = Input::GetMousePosition();
-        auto ent = GetScene().createEntity();
-        auto &render = ent.addComponent<RenderComponent>();
+//        auto ent = GetScene().createEntity();
+//        auto &render = ent.addComponent<RenderComponent>();
     }
 }
 

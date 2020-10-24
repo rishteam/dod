@@ -201,26 +201,29 @@ void EditorLayer::onImGuiRender()
     onImGuiMainMenuRender();
     //
     // Sync the target entities set
-    static std::set<Entity> sceneHierarchyPrevSize{};
-    static std::set<Entity> editControllerPrevSize{};
+    static std::set<Entity> sceneHierarchyPrevSet{};
+    static std::set<Entity> editControllerPrevSet{};
 
+    // Update the panels
     m_sceneHierarchyPanel->onImGuiRender();
     m_componentEditPanel->onImGuiRender();
+
     // If SceneHierarchyPanel changed
-    if(sceneHierarchyPrevSize != m_sceneHierarchyPanel->getTargets())
+    if(sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
     {
         m_editController->resetTarget();
         m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
     }
+
     // If EditController changed
-    if(editControllerPrevSize != m_editController->getTargets())
+    if(editControllerPrevSet != m_editController->getTargets())
     {
         m_sceneHierarchyPanel->resetTarget();
         m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
     }
 
-    sceneHierarchyPrevSize = m_sceneHierarchyPanel->getTargets();
-    editControllerPrevSize = m_editController->getTargets();
+    sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
+    editControllerPrevSet = m_editController->getTargets();
 
     auto &entSet = m_editController->getTargets();
     if(entSet.size() == 1)
@@ -263,10 +266,12 @@ void EditorLayer::onImGuiRender()
         // Respond the resize to the current scene
         m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
 
+        ImVec2 windowCenter = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2{size.x / 2.f, fullH / 2.f};
         // Set *in editor* mouse pos for Input module
         auto pos = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
         pos.y = pos.y / (size.y / fullH);
-        Input::SetMousePosition(pos.x, pos.y);
+        Input::SetGameWindowInEditor(windowCenter.x, windowCenter.y, size.x, size.y);
+        Input::OnMouseMove(pos.x, pos.y);
 
         // Draw the Game
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();

@@ -44,6 +44,10 @@ public:
     static void SetMouseState(bool state) { s_mouseState = state; }
     /// Is in editor
     static void SetInEditor(bool state) { s_isInEditor = state; }
+    /// Set the window offset (relative to the left upper corner) and size
+    static void SetGameWindowInEditor(float centerX, float centerY, float width, float height);
+    /// On mouse move
+    static void OnMouseMove(float x, float y);
 
 private:
     static bool s_keyboardState;
@@ -51,6 +55,8 @@ private:
     //
     static bool s_isInEditor;
     static float s_x, s_y;
+    static float s_centerX, s_centerY;
+    static float s_width, s_height;
 };
 
 }
