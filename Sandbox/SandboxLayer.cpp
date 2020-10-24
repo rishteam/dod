@@ -7,6 +7,9 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
+
+    m_bg = Texture2D::LoadTextureVFS("/texture/bg.jpg");
+    m_player = Texture2D::LoadTextureVFS("/texture/1.png");
 }
 
 void ExampleSandboxLayer::onAttach()
@@ -27,7 +30,10 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
-        Renderer2D::DrawRotatedRect({0.f, 0.f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 1.f}, m_rotate);
+//        Renderer2D::DrawQuad({0.f, 0.f, -1.f}, {11.f, 8.f}, m_bg);
+        Renderer2D::DrawQuad({0.f, 0.f, 1.f}, {1.f, 1.f}, m_player);
+
+        Renderer2D::DrawRect({-2.f, 0.f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 0.5f});
     }
     Renderer2D::EndScene();
 }

@@ -164,12 +164,12 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
-        Renderer2D::BeginScene(cameraController->getCamera(), true);
+        Renderer2D::BeginScene(cameraController->getCamera(), false);
         m_editController->onUpdate(dt);
         Renderer2D::EndScene();
 
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
-        Renderer2D::BeginScene(cameraController->getCamera());
+        Renderer2D::BeginScene(cameraController->getCamera(), true);
         {
             ParticleSystem::onEditorRender(m_currentScene);
             if(m_editController->m_debugSimulateParticle)

@@ -19,4 +19,7 @@ public:
 private:
     OrthographicCameraController m_cameraController;
     float m_rotate = 0.f;
+
+    Ref<Texture2D> m_bg;
+    Ref<Texture2D> m_player;
 };

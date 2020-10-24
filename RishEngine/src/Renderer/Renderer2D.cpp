@@ -24,6 +24,16 @@ struct QuadVertex
     float texTiling;
 };
 
+struct QuadShape
+{
+    QuadVertex p[4];
+
+    friend bool operator<(const QuadShape &lhs, const QuadShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
 const size_t MaxTextures = 32;
 const size_t MaxQuadCount = 100000;
 const size_t MaxQuadVertexCount = MaxQuadCount * 4;
@@ -39,6 +49,16 @@ struct LineVertex
     glm::vec4 color;
 };
 
+struct LineShape
+{
+    LineVertex p[2];
+
+    friend bool operator<(const LineShape &lhs, const LineShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
 const size_t MaxLineCount = 500000;
 const size_t MaxLineVertexCount = MaxLineCount * 2;
 const size_t MaxLineIndexCount = MaxLineCount * 6;
@@ -49,8 +69,6 @@ struct Renderer2DData
 {
     ~Renderer2DData()
     {
-        delete [] quadBuffer;
-        delete [] lineBuffer;
     }
     ////////////////////////////////////////////////////////////////
     // Quad Renderer
@@ -62,9 +80,9 @@ struct Renderer2DData
     Ref<Texture2D> whiteTexture;
     uint32_t whiteTextureSlot = 0;
 
-    QuadVertex *quadBuffer = nullptr;
-    QuadVertex *quadBufferPtr = nullptr;
-    uint32_t quadIndexCount = 0;
+    // Quad data
+    uint32_t quadIndexCount = 0; ///< 現在有多少個 index
+    std::vector<QuadShape> quadShapeList; ///< Quad data
 
     glm::vec4 quadVertexPosition[4]{};
 
@@ -79,8 +97,7 @@ struct Renderer2DData
     Ref<VertexArray> lineVertexArray;
     Ref<Shader> lineShader;
 
-    LineVertex *lineBuffer = nullptr;
-    LineVertex *lineBufferPtr = nullptr;
+    std::vector<LineShape> lineShapeList; ///< Line data
     uint32_t lineIndexCount = 0;
 
     ////////////////////////////////////////////////////////////////
@@ -109,8 +126,8 @@ void Renderer2D::Init()
     ////////////////////////////////////////////////////////////////
     {
         s_data->quadVertexArray = VertexArray::Create();
-        // vertex
-        s_data->quadBuffer = new QuadVertex[MaxQuadVertexCount];
+
+        // Initialize Vertex Buffer
         Ref <VertexBuffer> quadVertexBuffer = VertexBuffer::Create(MaxQuadVertexCount * sizeof(QuadVertex));
         quadVertexBuffer->setLayout(BufferLayout{
                 {ShaderDataType::Float3, "a_Position"},
@@ -120,7 +137,10 @@ void Renderer2D::Init()
                 {ShaderDataType::Float,  "a_Tiling"}
         });
         s_data->quadVertexArray->setVertexBuffer(quadVertexBuffer);
-        // index
+
+        s_data->quadShapeList.reserve(MaxQuadCount);
+
+        // Initialize Index Buffer
         uint32_t *quadIndices = new uint32_t[MaxQuadIndexCount];
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         uint32_t offset = 0;
@@ -130,14 +150,16 @@ void Renderer2D::Init()
                 quadIndices[i + j] = pattern[j] + offset;
             offset += 4;
         }
-
+        // Create the Index Buffer
         Ref <IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
         s_data->quadVertexArray->setIndexBuffer(squareIB);
-        delete[] quadIndices;
-        //
+        delete[] quadIndices; // deltete cpu side
+
+        // Create default white texture
         s_data->whiteTexture = rl::Texture2D::Create(1, 1);
         s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
         s_data->textureSlots[0] = s_data->whiteTexture;
+
         // texture shader
         s_data->quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
         int sampler[MaxTextures];
@@ -157,21 +179,26 @@ void Renderer2D::Init()
     ////////////////////////////////////////////////////////////////
     {
         s_data->lineVertexArray = VertexArray::Create();
-        s_data->lineBuffer = new LineVertex[MaxLineVertexCount];
-        // vertex
+
+        // Initialize Vertex Buffer
         Ref<VertexBuffer> lineVB = VertexBuffer::Create(sizeof(LineVertex) * MaxLineVertexCount);
         lineVB->setLayout(BufferLayout{
             {ShaderDataType::Float3, "a_Position"},
             {ShaderDataType::Float4, "a_Color"}
         });
         s_data->lineVertexArray->setVertexBuffer(lineVB);
-        // index
+        // Reserve size for line data list
+        s_data->lineShapeList.reserve(MaxLineVertexCount);
+
+        // Initialize Index Buffer
         uint32_t *lineIndices = new uint32_t[MaxLineIndexCount];
         for(int i = 0; i < MaxLineIndexCount; i++)
             lineIndices[i] = i;
+        // Set IB
         Ref<IndexBuffer> lineIB = IndexBuffer::Create(lineIndices, MaxLineIndexCount);
         s_data->lineVertexArray->setIndexBuffer(lineIB);
         delete [] lineIndices;
+
         // shader
         s_data->lineShader = Shader::LoadShaderVFS("/shader/line.vs", "/shader/line.fs");
     }
@@ -197,14 +224,14 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
 
     // Quad
     {
-        s_data->quadBufferPtr = s_data->quadBuffer;
         s_data->quadIndexCount = 0;
+        s_data->quadShapeList.clear();
     }
 
     // Line
     {
-        s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
+        s_data->lineShapeList.clear();
     }
 }
 
@@ -223,14 +250,14 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
 
     // Quad
     {
-        s_data->quadBufferPtr = s_data->quadBuffer;
         s_data->quadIndexCount = 0;
+        s_data->quadShapeList.clear();
     }
 
     // Line
     {
-        s_data->lineBufferPtr = s_data->lineBuffer;
         s_data->lineIndexCount = 0;
+        s_data->lineShapeList.clear();
     }
 }
 
@@ -242,34 +269,48 @@ void Renderer2D::EndScene()
     if(s_data->lineIndexCount)
     {
         // send accumulated VB
-        size_t lineBufferCurrentSize = (s_data->lineBufferPtr - s_data->lineBuffer) * sizeof(LineVertex);
-        s_data->lineVertexArray->getVertexBuffer()->setData(s_data->lineBuffer, lineBufferCurrentSize);
+        auto &lineList = s_data->lineShapeList;
+        // Sort by z-axis
+        if(s_data->depthTest)
+            sort(lineList.begin(), lineList.end());
+        // set the VB
+        s_data->lineVertexArray->getVertexBuffer()->setData(&lineList[0].p[0], lineList.size() * sizeof(LineShape));
+
         // Shader
         s_data->lineShader->bind();
-        s_data->lineShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
-            s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
+        s_data->lineShader->setMat4("u_ViewProjection",
+            s_data->isEditorCamera ?
+                s_data->orthoCamera.getViewProjectionMatrix() :
+                s_data->m_viewProjMatrix);
+
         // Draw
         s_data->lineVertexArray->bind();
         RenderCommand::SetLineThickness(1.f);
         RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount, s_data->depthTest);
         s_data->lineVertexArray->unbind();
+
         // Reset
         s_data->lineIndexCount = 0;
-
         s_data->renderStats.DrawCount++;
     }
 
     // Quad
     if(s_data->quadIndexCount)
     {
-        // send accumulated VB
-        size_t quadBufferCurrentSize = (s_data->quadBufferPtr - s_data->quadBuffer) * sizeof(QuadVertex);
-        s_data->quadVertexArray->getVertexBuffer()->setData(s_data->quadBuffer, quadBufferCurrentSize);
+        // Send accumulated VB
+        auto &quadList = s_data->quadShapeList;
+        // Sort by z-axis
+        if(s_data->depthTest)
+            sort(quadList.begin(), quadList.end());
+        // set the VB
+        s_data->quadVertexArray->getVertexBuffer()->setData(&quadList[0].p[0], quadList.size() * sizeof(QuadShape));
 
         // Shader
         s_data->quadTexShader->bind();
-        s_data->quadTexShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
-               s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
+        s_data->quadTexShader->setMat4("u_ViewProjection",
+           s_data->isEditorCamera ?
+               s_data->orthoCamera.getViewProjectionMatrix() :
+               s_data->m_viewProjMatrix);
 
         // Bind texture slots
         for(int i = 0; i < s_data->textureSlotAddIndex; i++)
@@ -283,7 +324,7 @@ void Renderer2D::EndScene()
         // Reset
         s_data->quadIndexCount = 0;
         s_data->textureSlotAddIndex = 1;
-
+        //
         s_data->renderStats.DrawCount++;
     }
 
@@ -517,19 +558,23 @@ void Renderer2D::SubmitQuad(const glm::vec4 *position, const glm::vec4 &color,
                             const glm::vec2 *texCoords, float texIndex,
                             float texTiling)
 {
+    QuadShape submitQuad{};
     // Add vertices of a quad to buffer
     for(int i = 0; i < 4; i++)
     {
-        s_data->quadBufferPtr->position = position[i];
-        s_data->quadBufferPtr->color = color;
-        s_data->quadBufferPtr->texCoord = texCoords[i];
-        s_data->quadBufferPtr->texIndex = texIndex;
-        s_data->quadBufferPtr->texTiling = texTiling;
-        s_data->quadBufferPtr++;
+        QuadVertex tmp{};
+        tmp.position    = position[i];
+        tmp.color       = color;
+        tmp.texCoord    = texCoords[i];
+        tmp.texIndex    = texIndex;
+        tmp.texTiling   = texTiling;
+        submitQuad.p[i] = tmp;
     }
     //
     s_data->quadIndexCount += 6;
     s_data->renderStats.QuadCount++;
+    //
+    s_data->quadShapeList.push_back(submitQuad);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -548,12 +593,15 @@ void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
         BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 
-    s_data->lineBufferPtr->position = p0;
-    s_data->lineBufferPtr->color = color;
-    s_data->lineBufferPtr++;
-    s_data->lineBufferPtr->position = p1;
-    s_data->lineBufferPtr->color = color;
-    s_data->lineBufferPtr++;
+    LineShape submitLine{};
+    // p0
+    submitLine.p[0].position = p0;
+    submitLine.p[0].color = color;
+    // p1
+    submitLine.p[1].position = p1;
+    submitLine.p[1].color = color;
+
+    s_data->lineShapeList.push_back(submitLine);
 
     s_data->lineIndexCount += 2;
     s_data->renderStats.LineCount++;
