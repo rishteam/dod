@@ -308,19 +308,19 @@ void EditorLayer::onImGuiRender()
 
         // MoveMode button
         if( ImGui::Button(ICON_FA_ARROWS_ALT) ){
-            m_editController->gizmoModeChange(1);
+            m_editController->changeGizmoMode(EditController::Gizmo::MoveMode);
         }
         ImGui::SameLine();
 
         // ZoomMode button
         if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) ){
-            m_editController->gizmoModeChange(2);
+            m_editController->changeGizmoMode(EditController::Gizmo::ZoomMode);
         }
         ImGui::SameLine();
 
         // RotationMode button
         if( ImGui::Button(ICON_FA_CART_ARROW_DOWN) ){
-            m_editController->gizmoModeChange(3);
+            m_editController->changeGizmoMode(EditController::Gizmo::RotationMode);
         }
         ImGui::SameLine();
 

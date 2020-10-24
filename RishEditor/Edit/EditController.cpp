@@ -475,18 +475,8 @@ bool EditController::onMouseScrolled(MouseScrolledEvent &e)
     return false;
 }
 
-void EditController::gizmoModeChange(int k) {
-    switch(k) {
-        case 1:
-            m_gizmoMode = Gizmo::MoveMode;
-            break;
-        case 2:
-            m_gizmoMode = Gizmo::ZoomMode;
-            break;
-        case 3:
-            m_gizmoMode = Gizmo::RotationMode;
-            break;
-    }
+void EditController::changeGizmoMode(Gizmo gizmo) {
+    m_gizmoMode = gizmo;
 }
 
 } // end of namespace rl

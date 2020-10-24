@@ -21,9 +21,16 @@ public:
     void onImGuiRender() override;
     void onEvent(Event &e);
 
-    void gizmoModeChange(int k);
+    // Gizmo
+    enum class Gizmo{
+        MoveMode,
+        ZoomMode,
+        RotationMode
+    }m_gizmoMode = Gizmo::MoveMode;
+    void changeGizmoMode(Gizmo gizmo);
 
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
+
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
 
@@ -33,7 +40,7 @@ private:
     // Attributes of current selected entity
     glm::vec3 m_curEntPos{}, m_curSize{};
 
-    // Entity move
+    // Gizmo
     std::unordered_map<Entity, bool> m_isNowMovingEntity{};
     std::unordered_map<Entity, glm::vec3> m_oriEntityPosition{};
     std::unordered_map<Entity, glm::vec3> m_oriEntitySize{};
@@ -60,12 +67,7 @@ private:
     // Helper functions
     void drawCameraIconAndBorder(const Ref<Scene> &scene) const;
 
-    // Gizmo
-    enum class Gizmo{
-        ZoomMode,
-        MoveMode,
-        RotationMode
-    }m_gizmoMode = Gizmo::ZoomMode;
+
 
 public:
     bool m_debugEditorGrid       = false;
