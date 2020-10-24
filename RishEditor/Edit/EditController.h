@@ -21,6 +21,8 @@ public:
     void onImGuiRender() override;
     void onEvent(Event &e);
 
+    void gizmoModeChange(int k);
+
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
@@ -32,8 +34,14 @@ private:
     glm::vec3 m_curEntPos{}, m_curSize{};
 
     // Entity move
-    std::unordered_map<Entity, glm::vec3> m_moveEntityDiff{};
     std::unordered_map<Entity, bool> m_isNowMovingEntity{};
+    std::unordered_map<Entity, glm::vec3> m_oriEntityPosition{};
+    std::unordered_map<Entity, glm::vec3> m_oriEntitySize{};
+    std::unordered_map<Entity, float> m_oriEntityRotate{};
+    std::unordered_map<Entity, glm::vec3> m_oriMousePosition{};
+    std::unordered_map<Entity, float> m_oriMouseRotate{};
+    std::unordered_map<Entity, glm::vec3> m_moveEntityWeight{};
+    std::unordered_map<Entity, glm::vec3> m_zoomEntityWeight{};
 
     // Camera pane
     glm::vec3 m_moveCameraDiff{0.f};
@@ -64,7 +72,7 @@ public:
     bool m_debugCameraController = false;
     bool m_debugEditorController = false;
     bool m_debugShowIcon         = true;
-    bool m_debugSimulateParticle      = true;
+    bool m_debugSimulateParticle = true;
 
 };
 

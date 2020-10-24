@@ -304,6 +304,26 @@ void EditorLayer::onImGuiRender()
                 m_runtimeScene.reset();
             }
         }
+        ImGui::SameLine();
+
+        // MoveMode button
+        if( ImGui::Button(ICON_FA_ARROWS_ALT) ){
+            m_editController->gizmoModeChange(1);
+        }
+        ImGui::SameLine();
+
+        // ZoomMode button
+        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) ){
+            m_editController->gizmoModeChange(2);
+        }
+        ImGui::SameLine();
+
+        // RotationMode button
+        if( ImGui::Button(ICON_FA_CART_ARROW_DOWN) ){
+            m_editController->gizmoModeChange(3);
+        }
+        ImGui::SameLine();
+
     }
     ImGui::End();
 
