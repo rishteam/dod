@@ -74,6 +74,7 @@
  * @brief Math related
  */
 #include <Rish/Math/AABB.h>
+#include <Rish/Math/Random.h>
 
 /**
  * @defgroup scene Scene Module

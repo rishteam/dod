@@ -4,6 +4,7 @@
 
 #include <Rish/Core/Time.h>
 #include <Rish/Input/Input.h>
+#include <Rish/Math/Random.h>
 
 namespace rl {
 
