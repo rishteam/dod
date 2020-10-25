@@ -7,3 +7,5 @@ mingw-w64-i686-sfml
 mingw-w64-i686-fmt
 mingw-w64-i686-nlohmann-json
 mingw-w64-i686-glm
+mingw-w64-i686-doxygen
+mingw-w64-i686-cereal
