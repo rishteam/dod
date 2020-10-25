@@ -25,6 +25,7 @@ public:
     enum class Gizmo{
         MoveMode,
         ZoomMode,
+        ScaleMode,
         RotationMode
     }m_gizmoMode = Gizmo::MoveMode;
     void changeGizmoMode(Gizmo gizmo);
@@ -44,6 +45,7 @@ private:
     std::unordered_map<Entity, bool> m_isNowMovingEntity{};
     std::unordered_map<Entity, glm::vec3> m_oriEntityPosition{};
     std::unordered_map<Entity, glm::vec3> m_oriEntitySize{};
+    std::unordered_map<Entity, glm::vec3> m_oriEntityNegative{};
     std::unordered_map<Entity, float> m_oriEntityRotate{};
     std::unordered_map<Entity, glm::vec3> m_oriMousePosition{};
     std::unordered_map<Entity, float> m_oriMouseRotate{};

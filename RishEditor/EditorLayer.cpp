@@ -318,6 +318,12 @@ void EditorLayer::onImGuiRender()
         }
         ImGui::SameLine();
 
+        // Scale button
+        if( ImGui::Button(ICON_FA_FAN) ){
+            m_editController->changeGizmoMode(EditController::Gizmo::ScaleMode);
+        }
+        ImGui::SameLine();
+
         // RotationMode button
         if( ImGui::Button(ICON_FA_CART_ARROW_DOWN) ){
             m_editController->changeGizmoMode(EditController::Gizmo::RotationMode);
