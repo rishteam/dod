@@ -53,11 +53,14 @@ private:
     void drawCameraIconAndBorder(const Ref<Scene> &scene) const;
 
 public:
+    // Debug Window
     bool m_debugEditorGrid       = false;
     bool m_debugCameraController = false;
     bool m_debugEditorController = false;
     bool m_debugShowIcon         = true;
-    bool m_debugSimulateParticle      = true;
+    bool m_debugSimulateParticle = true;
+    //
+    bool m_showGrid = true;
 
 };
 
