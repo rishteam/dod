@@ -94,11 +94,101 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     // Line Renderer
     ////////////////////////////////////////////////////////////////
-    Ref<VertexArray> lineVertexArray;
-    Ref<Shader> lineShader;
+    /**
+     * @brief Line Renderer
+     * @details This should only be construct ONLY after Renderer2D is ready
+     */
+    struct LineRenderer
+    {
+        void init()
+        {
+            lineVertexArray = VertexArray::Create();
 
-    std::vector<LineShape> lineShapeList; ///< Line data
-    uint32_t lineIndexCount = 0;
+            // Initialize Vertex Buffer
+            Ref<VertexBuffer> lineVB = VertexBuffer::Create(sizeof(LineVertex) * MaxLineVertexCount);
+            lineVB->setLayout(BufferLayout{
+                    {ShaderDataType::Float3, "a_Position"},
+                    {ShaderDataType::Float4, "a_Color"}
+            });
+            lineVertexArray->setVertexBuffer(lineVB);
+            // Reserve size for line data list
+            lineShapeList.reserve(MaxLineVertexCount);
+
+            // Initialize Index Buffer
+            uint32_t *lineIndices = new uint32_t[MaxLineIndexCount];
+            for(int i = 0; i < MaxLineIndexCount; i++)
+                lineIndices[i] = i;
+            // Set IB
+            Ref<IndexBuffer> lineIB = IndexBuffer::Create(lineIndices, MaxLineIndexCount);
+            lineVertexArray->setIndexBuffer(lineIB);
+            delete [] lineIndices;
+
+            // shader
+            lineShader = Shader::LoadShaderVFS("/shader/line.vs", "/shader/line.fs");
+        }
+
+        void reset()
+        {
+            lineIndexCount = 0;
+            lineShapeList.clear();
+        }
+
+        void submit(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
+        {
+            LineShape submitLine{};
+            // p0
+            submitLine.p[0].position = p0;
+            submitLine.p[0].color = color;
+            // p1
+            submitLine.p[1].position = p1;
+            submitLine.p[1].color = color;
+
+            lineShapeList.push_back(submitLine);
+            lineIndexCount += 2;
+        }
+
+        void draw(bool DepthTest, bool IsEditorCamera,
+                  const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
+        {
+            // send accumulated VB
+            auto &lineList = lineShapeList;
+            // Sort by z-axis
+            if(DepthTest)
+                sort(lineList.begin(), lineList.end());
+            // set the VB
+            lineVertexArray->getVertexBuffer()->setData(&lineList[0].p[0], lineList.size() * sizeof(LineShape));
+
+            // Shader
+            lineShader->bind();
+            lineShader->setMat4("u_ViewProjection",
+                IsEditorCamera ?
+                    OrthoCamera.getViewProjectionMatrix() :
+                    ViewProjMatrix);
+
+            // Draw
+            lineVertexArray->bind();
+            RenderCommand::SetLineThickness(1.f);
+            RenderCommand::DrawElement(DrawLines, lineVertexArray, lineIndexCount, DepthTest);
+            lineVertexArray->unbind();
+        }
+
+        bool exceedDrawIndex() const
+        {
+            return lineIndexCount >= MaxLineCount;
+        }
+
+        operator bool() const
+        {
+            return lineIndexCount > 0;
+        }
+        //
+        Ref<VertexArray> lineVertexArray;     ///< Line renderer vertex array
+        Ref<Shader> lineShader;               ///< Line renderer shader
+        std::vector<LineShape> lineShapeList; ///< Line data
+        uint32_t lineIndexCount = 0;          ///< Index count
+    };
+    LineRenderer bgLineRenderer; ///< Background Line Renderer
+    LineRenderer fgLineRenderer; ///< Foreground Line Renderer
 
     ////////////////////////////////////////////////////////////////
     // Common
@@ -178,29 +268,8 @@ void Renderer2D::Init()
     // Line Renderer
     ////////////////////////////////////////////////////////////////
     {
-        s_data->lineVertexArray = VertexArray::Create();
-
-        // Initialize Vertex Buffer
-        Ref<VertexBuffer> lineVB = VertexBuffer::Create(sizeof(LineVertex) * MaxLineVertexCount);
-        lineVB->setLayout(BufferLayout{
-            {ShaderDataType::Float3, "a_Position"},
-            {ShaderDataType::Float4, "a_Color"}
-        });
-        s_data->lineVertexArray->setVertexBuffer(lineVB);
-        // Reserve size for line data list
-        s_data->lineShapeList.reserve(MaxLineVertexCount);
-
-        // Initialize Index Buffer
-        uint32_t *lineIndices = new uint32_t[MaxLineIndexCount];
-        for(int i = 0; i < MaxLineIndexCount; i++)
-            lineIndices[i] = i;
-        // Set IB
-        Ref<IndexBuffer> lineIB = IndexBuffer::Create(lineIndices, MaxLineIndexCount);
-        s_data->lineVertexArray->setIndexBuffer(lineIB);
-        delete [] lineIndices;
-
-        // shader
-        s_data->lineShader = Shader::LoadShaderVFS("/shader/line.vs", "/shader/line.fs");
+        s_data->fgLineRenderer.init();
+        s_data->bgLineRenderer.init();
     }
 }
 
@@ -230,8 +299,8 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
 
     // Line
     {
-        s_data->lineIndexCount = 0;
-        s_data->lineShapeList.clear();
+        s_data->fgLineRenderer.reset();
+        s_data->bgLineRenderer.reset();
     }
 }
 
@@ -256,8 +325,8 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
 
     // Line
     {
-        s_data->lineIndexCount = 0;
-        s_data->lineShapeList.clear();
+        s_data->fgLineRenderer.reset();
+        s_data->bgLineRenderer.reset();
     }
 }
 
@@ -265,32 +334,11 @@ void Renderer2D::EndScene()
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    // Line
-    if(s_data->lineIndexCount)
+    // Background Line
+    auto &bgLine = s_data->bgLineRenderer;
+    if(bgLine)
     {
-        // send accumulated VB
-        auto &lineList = s_data->lineShapeList;
-        // Sort by z-axis
-        if(s_data->depthTest)
-            sort(lineList.begin(), lineList.end());
-        // set the VB
-        s_data->lineVertexArray->getVertexBuffer()->setData(&lineList[0].p[0], lineList.size() * sizeof(LineShape));
-
-        // Shader
-        s_data->lineShader->bind();
-        s_data->lineShader->setMat4("u_ViewProjection",
-            s_data->isEditorCamera ?
-                s_data->orthoCamera.getViewProjectionMatrix() :
-                s_data->m_viewProjMatrix);
-
-        // Draw
-        s_data->lineVertexArray->bind();
-        RenderCommand::SetLineThickness(1.f);
-        RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount, s_data->depthTest);
-        s_data->lineVertexArray->unbind();
-
-        // Reset
-        s_data->lineIndexCount = 0;
+        bgLine.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
         s_data->renderStats.DrawCount++;
     }
 
@@ -325,6 +373,14 @@ void Renderer2D::EndScene()
         s_data->quadIndexCount = 0;
         s_data->textureSlotAddIndex = 1;
         //
+        s_data->renderStats.DrawCount++;
+    }
+
+    // Foreground Line
+    auto &fgLine = s_data->fgLineRenderer;
+    if(fgLine)
+    {
+        fgLine.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
         s_data->renderStats.DrawCount++;
     }
 
@@ -581,35 +637,46 @@ void Renderer2D::SubmitQuad(const glm::vec4 *position, const glm::vec4 &color,
 // Line Renderer
 ////////////////////////////////////////////////////////////////
 
-void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
+void Renderer2D::DrawBgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
     RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
-    if(s_data->lineIndexCount >= MaxLineCount)
+    if(s_data->bgLineRenderer.exceedDrawIndex())
     {
         EndScene();
         BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 
-    LineShape submitLine{};
-    // p0
-    submitLine.p[0].position = p0;
-    submitLine.p[0].color = color;
-    // p1
-    submitLine.p[1].position = p1;
-    submitLine.p[1].color = color;
-
-    s_data->lineShapeList.push_back(submitLine);
-
-    s_data->lineIndexCount += 2;
+    s_data->bgLineRenderer.submit(p0, p1, color);
     s_data->renderStats.LineCount++;
 }
 
-void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
+void Renderer2D::DrawBgLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
 {
-    DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
+    DrawBgLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
+}
+
+void Renderer2D::DrawFgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
+{
+    RL_PROFILE_RENDERER_FUNCTION();
+
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
+    if(s_data->fgLineRenderer.exceedDrawIndex())
+    {
+        EndScene();
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
+    }
+
+    s_data->fgLineRenderer.submit(p0, p1, color);
+    s_data->renderStats.LineCount++;
+}
+
+void Renderer2D::DrawFgLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
+{
+    DrawFgLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
 }
 
 void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
@@ -623,7 +690,7 @@ void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, cons
         {t.x - s.x, t.y + s.y}
     };
     for(int i = 0; i < 4; i++)
-        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
 }
 
 void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -643,7 +710,7 @@ void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &siz
         p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
 
     for(int i = 0; i < 4; i++)
-        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
 }
 
 void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color)
@@ -657,7 +724,7 @@ void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, c
         d += 360.f / pointCount;
     }
     for(int i = 0; i < pointCount; i++)
-        DrawLine(p[i], p[(i+1)%pointCount], color);
+        DrawFgLine(p[i], p[(i+1)%pointCount], color);
 }
 
 } // namespace of rl
