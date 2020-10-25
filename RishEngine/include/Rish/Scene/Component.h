@@ -156,7 +156,7 @@ struct CameraComponent
 
     CameraComponent()
     {
-        camera.setOrthographic(5.f, -1.f, 1.f);
+        camera.setOrthographic(5.f, -1000.f, 1000.f);
     }
 
     CameraComponent(bool isPrimary, float aspect, float size, float near=-1.f, float far=1.f)

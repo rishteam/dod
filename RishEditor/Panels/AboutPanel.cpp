@@ -19,6 +19,8 @@ void AboutPanel::onImGuiRender()
         ImGui::BulletText("ICEJJ");
         ImGui::BulletText("SunTalk");
         ImGui::BulletText("Halloworld");
+        ImGui::Separator();
+        ImGui::Text("https://github.com/rishteam/dod");
 
         // TODO: beautify the button
         if(ImGui::Button("Close"))

@@ -24,6 +24,16 @@ struct QuadVertex
     float texTiling;
 };
 
+struct QuadShape
+{
+    QuadVertex p[4];
+
+    friend bool operator<(const QuadShape &lhs, const QuadShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
 const size_t MaxTextures = 32;
 const size_t MaxQuadCount = 100000;
 const size_t MaxQuadVertexCount = MaxQuadCount * 4;
@@ -39,6 +49,16 @@ struct LineVertex
     glm::vec4 color;
 };
 
+struct LineShape
+{
+    LineVertex p[2];
+
+    friend bool operator<(const LineShape &lhs, const LineShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
 const size_t MaxLineCount = 500000;
 const size_t MaxLineVertexCount = MaxLineCount * 2;
 const size_t MaxLineIndexCount = MaxLineCount * 6;
@@ -49,8 +69,6 @@ struct Renderer2DData
 {
     ~Renderer2DData()
     {
-        delete [] quadBuffer;
-        delete [] lineBuffer;
     }
     ////////////////////////////////////////////////////////////////
     // Quad Renderer
@@ -62,9 +80,9 @@ struct Renderer2DData
     Ref<Texture2D> whiteTexture;
     uint32_t whiteTextureSlot = 0;
 
-    QuadVertex *quadBuffer = nullptr;
-    QuadVertex *quadBufferPtr = nullptr;
-    uint32_t quadIndexCount = 0;
+    // Quad data
+    uint32_t quadIndexCount = 0; ///< 現在有多少個 index
+    std::vector<QuadShape> quadShapeList; ///< Quad data
 
     glm::vec4 quadVertexPosition[4]{};
 
@@ -76,12 +94,101 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     // Line Renderer
     ////////////////////////////////////////////////////////////////
-    Ref<VertexArray> lineVertexArray;
-    Ref<Shader> lineShader;
+    /**
+     * @brief Line Renderer
+     * @details This should only be construct ONLY after Renderer2D is ready
+     */
+    struct LineRenderer
+    {
+        void init()
+        {
+            lineVertexArray = VertexArray::Create();
 
-    LineVertex *lineBuffer = nullptr;
-    LineVertex *lineBufferPtr = nullptr;
-    uint32_t lineIndexCount = 0;
+            // Initialize Vertex Buffer
+            Ref<VertexBuffer> lineVB = VertexBuffer::Create(sizeof(LineVertex) * MaxLineVertexCount);
+            lineVB->setLayout(BufferLayout{
+                    {ShaderDataType::Float3, "a_Position"},
+                    {ShaderDataType::Float4, "a_Color"}
+            });
+            lineVertexArray->setVertexBuffer(lineVB);
+            // Reserve size for line data list
+            lineShapeList.reserve(MaxLineVertexCount);
+
+            // Initialize Index Buffer
+            uint32_t *lineIndices = new uint32_t[MaxLineIndexCount];
+            for(int i = 0; i < MaxLineIndexCount; i++)
+                lineIndices[i] = i;
+            // Set IB
+            Ref<IndexBuffer> lineIB = IndexBuffer::Create(lineIndices, MaxLineIndexCount);
+            lineVertexArray->setIndexBuffer(lineIB);
+            delete [] lineIndices;
+
+            // shader
+            lineShader = Shader::LoadShaderVFS("/shader/line.vs", "/shader/line.fs");
+        }
+
+        void reset()
+        {
+            lineIndexCount = 0;
+            lineShapeList.clear();
+        }
+
+        void submit(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
+        {
+            LineShape submitLine{};
+            // p0
+            submitLine.p[0].position = p0;
+            submitLine.p[0].color = color;
+            // p1
+            submitLine.p[1].position = p1;
+            submitLine.p[1].color = color;
+
+            lineShapeList.push_back(submitLine);
+            lineIndexCount += 2;
+        }
+
+        void draw(bool DepthTest, bool IsEditorCamera,
+                  const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
+        {
+            // send accumulated VB
+            auto &lineList = lineShapeList;
+            // Sort by z-axis
+            if(DepthTest)
+                sort(lineList.begin(), lineList.end());
+            // set the VB
+            lineVertexArray->getVertexBuffer()->setData(&lineList[0].p[0], lineList.size() * sizeof(LineShape));
+
+            // Shader
+            lineShader->bind();
+            lineShader->setMat4("u_ViewProjection",
+                IsEditorCamera ?
+                    OrthoCamera.getViewProjectionMatrix() :
+                    ViewProjMatrix);
+
+            // Draw
+            lineVertexArray->bind();
+            RenderCommand::SetLineThickness(1.f);
+            RenderCommand::DrawElement(DrawLines, lineVertexArray, lineIndexCount, DepthTest);
+            lineVertexArray->unbind();
+        }
+
+        bool exceedDrawIndex() const
+        {
+            return lineIndexCount >= MaxLineCount;
+        }
+
+        operator bool() const
+        {
+            return lineIndexCount > 0;
+        }
+        //
+        Ref<VertexArray> lineVertexArray;     ///< Line renderer vertex array
+        Ref<Shader> lineShader;               ///< Line renderer shader
+        std::vector<LineShape> lineShapeList; ///< Line data
+        uint32_t lineIndexCount = 0;          ///< Index count
+    };
+    LineRenderer bgLineRenderer; ///< Background Line Renderer
+    LineRenderer fgLineRenderer; ///< Foreground Line Renderer
 
     ////////////////////////////////////////////////////////////////
     // Common
@@ -109,8 +216,8 @@ void Renderer2D::Init()
     ////////////////////////////////////////////////////////////////
     {
         s_data->quadVertexArray = VertexArray::Create();
-        // vertex
-        s_data->quadBuffer = new QuadVertex[MaxQuadVertexCount];
+
+        // Initialize Vertex Buffer
         Ref <VertexBuffer> quadVertexBuffer = VertexBuffer::Create(MaxQuadVertexCount * sizeof(QuadVertex));
         quadVertexBuffer->setLayout(BufferLayout{
                 {ShaderDataType::Float3, "a_Position"},
@@ -120,7 +227,10 @@ void Renderer2D::Init()
                 {ShaderDataType::Float,  "a_Tiling"}
         });
         s_data->quadVertexArray->setVertexBuffer(quadVertexBuffer);
-        // index
+
+        s_data->quadShapeList.reserve(MaxQuadCount);
+
+        // Initialize Index Buffer
         uint32_t *quadIndices = new uint32_t[MaxQuadIndexCount];
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         uint32_t offset = 0;
@@ -130,14 +240,16 @@ void Renderer2D::Init()
                 quadIndices[i + j] = pattern[j] + offset;
             offset += 4;
         }
-
+        // Create the Index Buffer
         Ref <IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
         s_data->quadVertexArray->setIndexBuffer(squareIB);
-        delete[] quadIndices;
-        //
+        delete[] quadIndices; // deltete cpu side
+
+        // Create default white texture
         s_data->whiteTexture = rl::Texture2D::Create(1, 1);
         s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
         s_data->textureSlots[0] = s_data->whiteTexture;
+
         // texture shader
         s_data->quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
         int sampler[MaxTextures];
@@ -156,24 +268,8 @@ void Renderer2D::Init()
     // Line Renderer
     ////////////////////////////////////////////////////////////////
     {
-        s_data->lineVertexArray = VertexArray::Create();
-        s_data->lineBuffer = new LineVertex[MaxLineVertexCount];
-        // vertex
-        Ref<VertexBuffer> lineVB = VertexBuffer::Create(sizeof(LineVertex) * MaxLineVertexCount);
-        lineVB->setLayout(BufferLayout{
-            {ShaderDataType::Float3, "a_Position"},
-            {ShaderDataType::Float4, "a_Color"}
-        });
-        s_data->lineVertexArray->setVertexBuffer(lineVB);
-        // index
-        uint32_t *lineIndices = new uint32_t[MaxLineIndexCount];
-        for(int i = 0; i < MaxLineIndexCount; i++)
-            lineIndices[i] = i;
-        Ref<IndexBuffer> lineIB = IndexBuffer::Create(lineIndices, MaxLineIndexCount);
-        s_data->lineVertexArray->setIndexBuffer(lineIB);
-        delete [] lineIndices;
-        // shader
-        s_data->lineShader = Shader::LoadShaderVFS("/shader/line.vs", "/shader/line.fs");
+        s_data->fgLineRenderer.init();
+        s_data->bgLineRenderer.init();
     }
 }
 
@@ -197,14 +293,14 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
 
     // Quad
     {
-        s_data->quadBufferPtr = s_data->quadBuffer;
         s_data->quadIndexCount = 0;
+        s_data->quadShapeList.clear();
     }
 
     // Line
     {
-        s_data->lineBufferPtr = s_data->lineBuffer;
-        s_data->lineIndexCount = 0;
+        s_data->fgLineRenderer.reset();
+        s_data->bgLineRenderer.reset();
     }
 }
 
@@ -223,14 +319,14 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
 
     // Quad
     {
-        s_data->quadBufferPtr = s_data->quadBuffer;
         s_data->quadIndexCount = 0;
+        s_data->quadShapeList.clear();
     }
 
     // Line
     {
-        s_data->lineBufferPtr = s_data->lineBuffer;
-        s_data->lineIndexCount = 0;
+        s_data->fgLineRenderer.reset();
+        s_data->bgLineRenderer.reset();
     }
 }
 
@@ -238,38 +334,31 @@ void Renderer2D::EndScene()
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    // Line
-    if(s_data->lineIndexCount)
+    // Background Line
+    auto &bgLine = s_data->bgLineRenderer;
+    if(bgLine)
     {
-        // send accumulated VB
-        size_t lineBufferCurrentSize = (s_data->lineBufferPtr - s_data->lineBuffer) * sizeof(LineVertex);
-        s_data->lineVertexArray->getVertexBuffer()->setData(s_data->lineBuffer, lineBufferCurrentSize);
-        // Shader
-        s_data->lineShader->bind();
-        s_data->lineShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
-            s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
-        // Draw
-        s_data->lineVertexArray->bind();
-        RenderCommand::SetLineThickness(1.f);
-        RenderCommand::DrawElement(DrawLines, s_data->lineVertexArray, s_data->lineIndexCount, s_data->depthTest);
-        s_data->lineVertexArray->unbind();
-        // Reset
-        s_data->lineIndexCount = 0;
-
+        bgLine.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
         s_data->renderStats.DrawCount++;
     }
 
     // Quad
     if(s_data->quadIndexCount)
     {
-        // send accumulated VB
-        size_t quadBufferCurrentSize = (s_data->quadBufferPtr - s_data->quadBuffer) * sizeof(QuadVertex);
-        s_data->quadVertexArray->getVertexBuffer()->setData(s_data->quadBuffer, quadBufferCurrentSize);
+        // Send accumulated VB
+        auto &quadList = s_data->quadShapeList;
+        // Sort by z-axis
+        if(s_data->depthTest)
+            sort(quadList.begin(), quadList.end());
+        // set the VB
+        s_data->quadVertexArray->getVertexBuffer()->setData(&quadList[0].p[0], quadList.size() * sizeof(QuadShape));
 
         // Shader
         s_data->quadTexShader->bind();
-        s_data->quadTexShader->setMat4("u_ViewProjection", s_data->isEditorCamera ?
-               s_data->orthoCamera.getViewProjectionMatrix() : s_data->m_viewProjMatrix);
+        s_data->quadTexShader->setMat4("u_ViewProjection",
+           s_data->isEditorCamera ?
+               s_data->orthoCamera.getViewProjectionMatrix() :
+               s_data->m_viewProjMatrix);
 
         // Bind texture slots
         for(int i = 0; i < s_data->textureSlotAddIndex; i++)
@@ -283,7 +372,15 @@ void Renderer2D::EndScene()
         // Reset
         s_data->quadIndexCount = 0;
         s_data->textureSlotAddIndex = 1;
+        //
+        s_data->renderStats.DrawCount++;
+    }
 
+    // Foreground Line
+    auto &fgLine = s_data->fgLineRenderer;
+    if(fgLine)
+    {
+        fgLine.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
         s_data->renderStats.DrawCount++;
     }
 
@@ -517,51 +614,69 @@ void Renderer2D::SubmitQuad(const glm::vec4 *position, const glm::vec4 &color,
                             const glm::vec2 *texCoords, float texIndex,
                             float texTiling)
 {
+    QuadShape submitQuad{};
     // Add vertices of a quad to buffer
     for(int i = 0; i < 4; i++)
     {
-        s_data->quadBufferPtr->position = position[i];
-        s_data->quadBufferPtr->color = color;
-        s_data->quadBufferPtr->texCoord = texCoords[i];
-        s_data->quadBufferPtr->texIndex = texIndex;
-        s_data->quadBufferPtr->texTiling = texTiling;
-        s_data->quadBufferPtr++;
+        QuadVertex tmp{};
+        tmp.position    = position[i];
+        tmp.color       = color;
+        tmp.texCoord    = texCoords[i];
+        tmp.texIndex    = texIndex;
+        tmp.texTiling   = texTiling;
+        submitQuad.p[i] = tmp;
     }
     //
     s_data->quadIndexCount += 6;
     s_data->renderStats.QuadCount++;
+    //
+    s_data->quadShapeList.push_back(submitQuad);
 }
 
 ////////////////////////////////////////////////////////////////
 // Line Renderer
 ////////////////////////////////////////////////////////////////
 
-void Renderer2D::DrawLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
+void Renderer2D::DrawBgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
     RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
-    if(s_data->lineIndexCount >= MaxLineCount)
+    if(s_data->bgLineRenderer.exceedDrawIndex())
     {
         EndScene();
         BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 
-    s_data->lineBufferPtr->position = p0;
-    s_data->lineBufferPtr->color = color;
-    s_data->lineBufferPtr++;
-    s_data->lineBufferPtr->position = p1;
-    s_data->lineBufferPtr->color = color;
-    s_data->lineBufferPtr++;
-
-    s_data->lineIndexCount += 2;
+    s_data->bgLineRenderer.submit(p0, p1, color);
     s_data->renderStats.LineCount++;
 }
 
-void Renderer2D::DrawLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
+void Renderer2D::DrawBgLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
 {
-    DrawLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
+    DrawBgLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
+}
+
+void Renderer2D::DrawFgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color)
+{
+    RL_PROFILE_RENDERER_FUNCTION();
+
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
+    if(s_data->fgLineRenderer.exceedDrawIndex())
+    {
+        EndScene();
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
+    }
+
+    s_data->fgLineRenderer.submit(p0, p1, color);
+    s_data->renderStats.LineCount++;
+}
+
+void Renderer2D::DrawFgLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color)
+{
+    DrawFgLine(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), color);
 }
 
 void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
@@ -575,7 +690,7 @@ void Renderer2D::DrawRect(const glm::vec2 &position, const glm::vec2 &size, cons
         {t.x - s.x, t.y + s.y}
     };
     for(int i = 0; i < 4; i++)
-        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
 }
 
 void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -595,7 +710,7 @@ void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &siz
         p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
 
     for(int i = 0; i < 4; i++)
-        Renderer2D::DrawLine(p[i], p[(i+1)%4], color);
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
 }
 
 void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color)
@@ -609,7 +724,95 @@ void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, c
         d += 360.f / pointCount;
     }
     for(int i = 0; i < pointCount; i++)
-        DrawLine(p[i], p[(i+1)%pointCount], color);
+        DrawFgLine(p[i], p[(i+1)%pointCount], color);
+}
+
+void Renderer2D::DrawFgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawFgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    glm::vec2 p[4] = {
+        {-0.5f, -0.5f},
+        {+0.5f, -0.5f},
+        {+0.5f, +0.5f},
+        {-0.5f, +0.5f}
+    };
+
+    glm::mat4 trans = glm::translate(glm::mat4(1.f), position) *
+                      glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+                      glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+
+    for(int i = 0; i < 4; i++)
+        p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
+
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawBgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawBgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawBgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    glm::vec2 p[4] = {
+        {-0.5f, -0.5f},
+        {+0.5f, -0.5f},
+        {+0.5f, +0.5f},
+        {-0.5f, +0.5f}
+    };
+
+    glm::mat4 trans = glm::translate(glm::mat4(1.f), position) *
+                      glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+                      glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+
+    for(int i = 0; i < 4; i++)
+        p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
+
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawBgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawFgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    DrawFgRect(glm::vec3(position, 0.f), size, color);
+}
+
+void Renderer2D::DrawFgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    DrawFgRotatedRect(glm::vec3(position, 0.f), size, color, rotate);
+}
+
+void Renderer2D::DrawBgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    DrawBgRect(glm::vec3(position, 0.f), size, color);
+}
+
+void Renderer2D::DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    DrawBgRotatedRect(glm::vec3(position, 0.f), size, color, rotate);
 }
 
 } // namespace of rl

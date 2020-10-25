@@ -258,8 +258,8 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
                 {
                     if(vortex.draw)
                     {
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
+                        Renderer2D::DrawFgLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
+                        Renderer2D::DrawFgLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize}, glm::vec4{0.f, 1.f, 0.f, 1.f});
                     }
                 }
             }
@@ -270,8 +270,8 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
                 {
                     if(vortex.life > 0.f)
                     {
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize*100, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
-                        Renderer2D::DrawLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize*100}, glm::vec4{0.f, 1.f, 0.f, 1.f});
+                        Renderer2D::DrawFgLine(vortex.pos, vortex.pos+glm::vec2{(vortex.turbulence.x < 0 ? -1 : 1)*vortex.currentSize*100, 0.f}, glm::vec4{0.f, 0.f, 1.f, 1.f});
+                        Renderer2D::DrawFgLine(vortex.pos, vortex.pos+glm::vec2{0.f, (vortex.turbulence.y < 0 ? -1 : 1)*vortex.currentSize*100}, glm::vec4{0.f, 1.f, 0.f, 1.f});
                     }
                 }
             }

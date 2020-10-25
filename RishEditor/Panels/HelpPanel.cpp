@@ -11,7 +11,43 @@ void HelpPanel::onImGuiRender()
                             ImGuiCond_Once, ImVec2(0.5f,0.5f));
     if(ImGui::Begin("Help", nullptr, ImGuiWindowFlags_NoResize))
     {
-        ImGui::Text("TODO");
+        if(ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::BulletText("Left Click to select a entity, Hold Ctrl + Left Click can select multiple entities");
+            ImGui::BulletText("Hold Right Mouse button can pan the Editor camera");
+            ImGui::TreePop();
+        }
+
+        if(ImGui::TreeNodeEx("Hierarchy", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::BulletText("Left Click to select a entity, Hold Ctrl + Left Click can select multiple entities");
+            ImGui::BulletText("Right Click on selectd entities can trigger Action menu");
+            ImGui::TreePop();
+        }
+
+        if(ImGui::TreeNodeEx("Inspector", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::BulletText("Edit the component");
+            ImGui::TreePop();
+        }
+
+        if(ImGui::TreeNodeEx("Game", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::BulletText("Edit the component");
+            ImGui::TreePop();
+        }
+
+        if(ImGui::TreeNodeEx("Toolbar", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::BulletText("Play, Pause, Stop buttons");
+            ImGui::TreePop();
+        }
+
+        if(ImGui::TreeNodeEx("Log", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::BulletText("Logs");
+            ImGui::TreePop();
+        }
 
         // TODO: beautify the button
         if(ImGui::Button("Close"))

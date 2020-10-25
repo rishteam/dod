@@ -77,26 +77,26 @@ void EditorGrid::drawGrid(float offset, const glm::vec4 &color)
 
     if(offset == 0.f)
     {
-        Renderer2D::DrawLine({0.f, bound.bottom, -1.f}, {0.f, bound.top, -1.f}, color);
-        Renderer2D::DrawLine({bound.left, 0.f, -1.f}, {bound.right, 0.f, -1.f}, color);
+        Renderer2D::DrawFgLine({0.f, bound.bottom, -1.f}, {0.f, bound.top, -1.f}, color);
+        Renderer2D::DrawFgLine({bound.left, 0.f, -1.f}, {bound.right, 0.f, -1.f}, color);
         return;
     }
 
     // straight lines
     // left
     for(float i = 0.f; i >= std::floor(bound.left); i -= offset)
-        Renderer2D::DrawLine({i, bound.bottom, -1}, {i, bound.top, -1}, color);
+        Renderer2D::DrawFgLine({i, bound.bottom, -1}, {i, bound.top, -1}, color);
     // right
     for(float i = 0.f; i < std::ceil(bound.right); i += offset)
-        Renderer2D::DrawLine({i, bound.bottom, -1}, {i, bound.top, -1}, color);
+        Renderer2D::DrawFgLine({i, bound.bottom, -1}, {i, bound.top, -1}, color);
 
     // horizontal lines
     // bottom
     for(float i = 0.f; i >= std::floor(bound.bottom); i -= offset)
-        Renderer2D::DrawLine({bound.left, i, -1}, {bound.right, i, -1}, color);
+        Renderer2D::DrawFgLine({bound.left, i, -1}, {bound.right, i, -1}, color);
     // top
     for(float i = 0.f; i < std::ceil(bound.top); i += offset)
-        Renderer2D::DrawLine({bound.left, i, -1}, {bound.right, i, -1}, color);
+        Renderer2D::DrawFgLine({bound.left, i, -1}, {bound.right, i, -1}, color);
 }
 
 }
