@@ -66,9 +66,12 @@ public:
 
     struct Stats
     {
-        uint32_t QuadCount = 0; /// Draw quad count
-        uint32_t LineCount = 0; /// Draw line count
-        uint32_t DrawCount = 0; /// Draw call count
+        uint32_t QuadCount = 0;     ///< Draw quad count
+        uint32_t LineCount = 0;     ///< Draw line count
+        uint32_t RectCount = 0;     ///< Draw rect count
+        uint32_t CircleCount = 0;   ///< Draw Circle count
+        uint32_t TriangleCount = 0; ///< Draw triangle count
+        uint32_t DrawCount = 0;     ///< Draw call count
     };
 
     static Stats& GetStats();

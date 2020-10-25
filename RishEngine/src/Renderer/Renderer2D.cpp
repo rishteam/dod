@@ -70,26 +70,138 @@ struct Renderer2DData
     ~Renderer2DData()
     {
     }
-    ////////////////////////////////////////////////////////////////
-    // Quad Renderer
-    ////////////////////////////////////////////////////////////////
-    Ref<VertexArray> quadVertexArray;
-    Ref<Shader> quadTexShader;
 
+    ////////////////////////////////////////////////////////////////
+    // Texture
+    ////////////////////////////////////////////////////////////////
     // Texture for empty-texture
     Ref<Texture2D> whiteTexture;
     uint32_t whiteTextureSlot = 0;
-
-    // Quad data
-    uint32_t quadIndexCount = 0; ///< 現在有多少個 index
-    std::vector<QuadShape> quadShapeList; ///< Quad data
-
-    glm::vec4 quadVertexPosition[4]{};
 
     // TODO: Use asset handle to uniquely identify a asset
     // (slot -> textureID)
     std::array<Ref<Texture2D>, MaxTextures> textureSlots;
     uint32_t textureSlotAddIndex = 1;
+
+    ////////////////////////////////////////////////////////////////
+    // Quad Renderer
+    ////////////////////////////////////////////////////////////////
+    /**
+     * @brief Quad Renderer
+     * @details This should only be construct ONLY after Renderer2D is ready
+     */
+    struct QuadRenderer
+    {
+        void init()
+        {
+            quadVertexArray = VertexArray::Create();
+
+            // Initialize Vertex Buffer
+            Ref <VertexBuffer> quadVertexBuffer = VertexBuffer::Create(MaxQuadVertexCount * sizeof(QuadVertex));
+            quadVertexBuffer->setLayout(BufferLayout{
+                {ShaderDataType::Float3, "a_Position"},
+                {ShaderDataType::Float4, "a_Color"},
+                {ShaderDataType::Float2, "a_TexCoord"},
+                {ShaderDataType::Float,  "a_TexIndex"},
+                {ShaderDataType::Float,  "a_Tiling"}
+            });
+            quadVertexArray->setVertexBuffer(quadVertexBuffer);
+
+            quadShapeList.reserve(MaxQuadCount);
+
+            // Initialize Index Buffer
+            auto *quadIndices = new uint32_t[MaxQuadIndexCount];
+            uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+            uint32_t offset = 0;
+            for (int i = 0; i < MaxQuadIndexCount; i += 6)
+            {
+                for (int j = 0; j < 6; j++)
+                    quadIndices[i + j] = pattern[j] + offset;
+                offset += 4;
+            }
+            // Create the Index Buffer
+            Ref<IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
+            quadVertexArray->setIndexBuffer(squareIB);
+            delete[] quadIndices; // deltete cpu side
+
+            // texture shader
+            quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
+            int sampler[MaxTextures];
+            for (int i = 0; i < MaxTextures; i++)
+                sampler[i] = i;
+            quadTexShader->bind();
+            quadTexShader->setIntArray("u_Textures", sampler, MaxTextures);
+        }
+
+        void reset()
+        {
+            quadIndexCount = 0;
+            quadShapeList.clear();
+        }
+
+        void submit(const glm::vec4 position[4], const glm::vec4 &color, const glm::vec2 texCoords[4],
+                    float texIndex, float texTiling)
+        {
+            QuadShape submitQuad{};
+            // Add vertices of a quad to buffer
+            for(int i = 0; i < 4; i++)
+            {
+                QuadVertex tmp{};
+                tmp.position    = position[i];
+                tmp.color       = color;
+                tmp.texCoord    = texCoords[i];
+                tmp.texIndex    = texIndex;
+                tmp.texTiling   = texTiling;
+                submitQuad.p[i] = tmp;
+            }
+            //
+            quadIndexCount += 6;
+            //
+            quadShapeList.push_back(submitQuad);
+        }
+
+        void draw(bool DepthTest, bool IsEditorCamera,
+                  const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
+        {
+            // Send accumulated VB
+            auto &quadList = quadShapeList;
+            // Sort by z-axis
+            if(DepthTest)
+                sort(quadList.begin(), quadList.end());
+            // set the VB
+            quadVertexArray->getVertexBuffer()->setData(&quadList[0].p[0], quadList.size() * sizeof(QuadShape));
+
+            // Shader
+            quadTexShader->bind();
+            quadTexShader->setMat4("u_ViewProjection",
+               IsEditorCamera ?
+                   OrthoCamera.getViewProjectionMatrix() :
+                   ViewProjMatrix);
+
+            // Draw
+            quadVertexArray->bind();
+            RenderCommand::DrawElement(DrawTriangles, quadVertexArray, quadIndexCount, DepthTest);
+            quadVertexArray->unbind();
+        }
+
+        operator bool() const
+        {
+            return quadIndexCount > 0;
+        }
+
+        bool exceedDrawIndex() const
+        {
+            return quadIndexCount >= MaxQuadIndexCount;
+        }
+
+        Ref<VertexArray> quadVertexArray;     ///< Line renderer vertex array
+        Ref<Shader> quadTexShader;            ///< Line renderer shader
+        uint32_t quadIndexCount = 0;          ///< 現在有多少個 index
+        std::vector<QuadShape> quadShapeList; ///< Quad data
+    };
+    QuadRenderer quadRenderer;
+
+    glm::vec4 quadVertexPosition[4]{};
 
     ////////////////////////////////////////////////////////////////
     // Line Renderer
@@ -215,48 +327,13 @@ void Renderer2D::Init()
     // Quad Renderer
     ////////////////////////////////////////////////////////////////
     {
-        s_data->quadVertexArray = VertexArray::Create();
-
-        // Initialize Vertex Buffer
-        Ref <VertexBuffer> quadVertexBuffer = VertexBuffer::Create(MaxQuadVertexCount * sizeof(QuadVertex));
-        quadVertexBuffer->setLayout(BufferLayout{
-                {ShaderDataType::Float3, "a_Position"},
-                {ShaderDataType::Float4, "a_Color"},
-                {ShaderDataType::Float2, "a_TexCoord"},
-                {ShaderDataType::Float,  "a_TexIndex"},
-                {ShaderDataType::Float,  "a_Tiling"}
-        });
-        s_data->quadVertexArray->setVertexBuffer(quadVertexBuffer);
-
-        s_data->quadShapeList.reserve(MaxQuadCount);
-
-        // Initialize Index Buffer
-        uint32_t *quadIndices = new uint32_t[MaxQuadIndexCount];
-        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
-        uint32_t offset = 0;
-        for (int i = 0; i < MaxQuadIndexCount; i += 6)
-        {
-            for (int j = 0; j < 6; j++)
-                quadIndices[i + j] = pattern[j] + offset;
-            offset += 4;
-        }
-        // Create the Index Buffer
-        Ref <IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
-        s_data->quadVertexArray->setIndexBuffer(squareIB);
-        delete[] quadIndices; // deltete cpu side
+        // Init quad renderer
+        s_data->quadRenderer.init();
 
         // Create default white texture
         s_data->whiteTexture = rl::Texture2D::Create(1, 1);
         s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
         s_data->textureSlots[0] = s_data->whiteTexture;
-
-        // texture shader
-        s_data->quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
-        int sampler[MaxTextures];
-        for (int i = 0; i < MaxTextures; i++)
-            sampler[i] = i;
-        s_data->quadTexShader->bind();
-        s_data->quadTexShader->setIntArray("u_Textures", sampler, MaxTextures);
 
         // template for quad vertex
         s_data->quadVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // bottom left
@@ -293,8 +370,7 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
 
     // Quad
     {
-        s_data->quadIndexCount = 0;
-        s_data->quadShapeList.clear();
+        s_data->quadRenderer.reset();
     }
 
     // Line
@@ -319,8 +395,7 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
 
     // Quad
     {
-        s_data->quadIndexCount = 0;
-        s_data->quadShapeList.clear();
+        s_data->quadRenderer.reset();
     }
 
     // Line
@@ -343,34 +418,16 @@ void Renderer2D::EndScene()
     }
 
     // Quad
-    if(s_data->quadIndexCount)
+    if(s_data->quadRenderer)
     {
-        // Send accumulated VB
-        auto &quadList = s_data->quadShapeList;
-        // Sort by z-axis
-        if(s_data->depthTest)
-            sort(quadList.begin(), quadList.end());
-        // set the VB
-        s_data->quadVertexArray->getVertexBuffer()->setData(&quadList[0].p[0], quadList.size() * sizeof(QuadShape));
-
-        // Shader
-        s_data->quadTexShader->bind();
-        s_data->quadTexShader->setMat4("u_ViewProjection",
-           s_data->isEditorCamera ?
-               s_data->orthoCamera.getViewProjectionMatrix() :
-               s_data->m_viewProjMatrix);
-
         // Bind texture slots
         for(int i = 0; i < s_data->textureSlotAddIndex; i++)
             s_data->textureSlots[i]->bind(i);
 
-        // Draw
-        s_data->quadVertexArray->bind();
-        RenderCommand::DrawElement(DrawTriangles, s_data->quadVertexArray, s_data->quadIndexCount, s_data->depthTest);
-        s_data->quadVertexArray->unbind();
+        s_data->quadRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
         // Reset
-        s_data->quadIndexCount = 0;
+        s_data->quadRenderer.reset();
         s_data->textureSlotAddIndex = 1;
         //
         s_data->renderStats.DrawCount++;
@@ -603,7 +660,7 @@ float Renderer2D::GetQuadTextureIndex(const Ref<Texture2D>& texture)
 void Renderer2D::FlushStatesIfExceeds()
 {
     // Split draw call if it exceeds the limits
-    if(s_data->quadIndexCount >= MaxQuadCount || s_data->textureSlotAddIndex >= MaxTextures-1)
+    if(s_data->quadRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
         BeginScene(s_data->orthoCamera, s_data->depthTest);
@@ -614,23 +671,8 @@ void Renderer2D::SubmitQuad(const glm::vec4 *position, const glm::vec4 &color,
                             const glm::vec2 *texCoords, float texIndex,
                             float texTiling)
 {
-    QuadShape submitQuad{};
-    // Add vertices of a quad to buffer
-    for(int i = 0; i < 4; i++)
-    {
-        QuadVertex tmp{};
-        tmp.position    = position[i];
-        tmp.color       = color;
-        tmp.texCoord    = texCoords[i];
-        tmp.texIndex    = texIndex;
-        tmp.texTiling   = texTiling;
-        submitQuad.p[i] = tmp;
-    }
-    //
-    s_data->quadIndexCount += 6;
+    s_data->quadRenderer.submit(position, color, texCoords, texIndex, texTiling);
     s_data->renderStats.QuadCount++;
-    //
-    s_data->quadShapeList.push_back(submitQuad);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -739,6 +781,8 @@ void Renderer2D::DrawFgRect(const glm::vec3 &position, const glm::vec2 &size, co
     };
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
+    //
+    s_data->renderStats.RectCount++;
 }
 
 void Renderer2D::DrawFgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -759,6 +803,8 @@ void Renderer2D::DrawFgRotatedRect(const glm::vec3 &position, const glm::vec2 &s
 
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
+    //
+    s_data->renderStats.RectCount++;
 }
 
 void Renderer2D::DrawBgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
@@ -773,6 +819,8 @@ void Renderer2D::DrawBgRect(const glm::vec3 &position, const glm::vec2 &size, co
     };
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawBgLine(p[i], p[(i+1)%4], color);
+    //
+    s_data->renderStats.RectCount++;
 }
 
 void Renderer2D::DrawBgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -793,6 +841,8 @@ void Renderer2D::DrawBgRotatedRect(const glm::vec3 &position, const glm::vec2 &s
 
     for(int i = 0; i < 4; i++)
         Renderer2D::DrawBgLine(p[i], p[(i+1)%4], color);
+    //
+    s_data->renderStats.RectCount++;
 }
 
 void Renderer2D::DrawFgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
