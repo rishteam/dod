@@ -727,4 +727,92 @@ void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, c
         DrawFgLine(p[i], p[(i+1)%pointCount], color);
 }
 
+void Renderer2D::DrawFgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawFgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    glm::vec2 p[4] = {
+        {-0.5f, -0.5f},
+        {+0.5f, -0.5f},
+        {+0.5f, +0.5f},
+        {-0.5f, +0.5f}
+    };
+
+    glm::mat4 trans = glm::translate(glm::mat4(1.f), position) *
+                      glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+                      glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+
+    for(int i = 0; i < 4; i++)
+        p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
+
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawBgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    glm::vec2 t = position;
+    glm::vec2 s = size / 2.f;
+    glm::vec2 p[4] = {
+        {t.x - s.x, t.y - s.y},
+        {t.x + s.x, t.y - s.y},
+        {t.x + s.x, t.y + s.y},
+        {t.x - s.x, t.y + s.y}
+    };
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawBgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawBgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    glm::vec2 p[4] = {
+        {-0.5f, -0.5f},
+        {+0.5f, -0.5f},
+        {+0.5f, +0.5f},
+        {-0.5f, +0.5f}
+    };
+
+    glm::mat4 trans = glm::translate(glm::mat4(1.f), position) *
+                      glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
+                      glm::scale(glm::mat4(1.f), {size.x, size.y, 1.f});
+
+    for(int i = 0; i < 4; i++)
+        p[i] = trans * glm::vec4(p[i], 0.f, 1.f);
+
+    for(int i = 0; i < 4; i++)
+        Renderer2D::DrawBgLine(p[i], p[(i+1)%4], color);
+}
+
+void Renderer2D::DrawFgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    DrawFgRect(glm::vec3(position, 0.f), size, color);
+}
+
+void Renderer2D::DrawFgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    DrawFgRotatedRect(glm::vec3(position, 0.f), size, color, rotate);
+}
+
+void Renderer2D::DrawBgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    DrawBgRect(glm::vec3(position, 0.f), size, color);
+}
+
+void Renderer2D::DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
+{
+    DrawBgRotatedRect(glm::vec3(position, 0.f), size, color, rotate);
+}
+
 } // namespace of rl

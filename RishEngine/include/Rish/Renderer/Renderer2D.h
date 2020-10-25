@@ -52,6 +52,16 @@ public:
     static void DrawRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
     static void DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
 
+    static void DrawFgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
+    static void DrawFgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
+    static void DrawBgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
+    static void DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
+
+    static void DrawFgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color);
+    static void DrawFgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
+    static void DrawBgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color);
+    static void DrawBgRotatedRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
+
     static void DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color=glm::vec4(1.f));
 
     struct Stats
