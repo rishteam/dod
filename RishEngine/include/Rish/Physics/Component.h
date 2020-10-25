@@ -52,7 +52,9 @@ private:
             CEREAL_NVP(mass),
             CEREAL_NVP(force),
             CEREAL_NVP(torque),
+            CEREAL_NVP(keepingForce),
             CEREAL_NVP(attachPoint)
+
         );
     }
 };
@@ -81,12 +83,12 @@ private:
 
 struct Joint2DComponent
 {
-    //can change
+    // Can Change
     UUID rigidBody1;
     UUID rigidBody2;
     Vec2 anchor = Vec2(0.0f, 0.0f);
 
-    //fixed value
+    // Fixed Value
     Vec2 localAnchor1, localAnchor2;
     Vec2 r1, r2;
     Vec2 P = Vec2(0.0f, 0.0f);

@@ -114,9 +114,14 @@ public:
     // Physics
     ////////////////////////////////////////////////////////////////
     PhysicsWorld physicsWorld {Vec2(0.0f, -9.8f)};
+    // physics engine management
     std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysicsObj;
     std::unordered_map<UUID, Ref<Box>> mapBoxColliderObj;
     std::unordered_map<UUID, Ref<Joint>> mapJointObj;
+    // physics state management
+    std::vector<std::pair<UUID, bool>> StatePhysicsObj;
+    std::vector<std::pair<UUID, bool>> StateBoxColliderObj;
+    std::vector<std::pair<UUID, bool>> StateJointObj;
 
 
     ////////////////////////////////////////////////////////////////
