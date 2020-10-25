@@ -56,7 +56,7 @@ void rl::PhysicsWorld::Step(float dt)
     {
         if (bodies.at(i)->invMass == 0.0f)
             continue;
-        bodies.at(i)->ComputeForce(dt, gravity);
+        bodies.at(i)->computeForce(dt, gravity);
     }
 
     //Pre-step arbiter
@@ -67,7 +67,7 @@ void rl::PhysicsWorld::Step(float dt)
 
     for (auto arb = arbiters.begin(); arb != arbiters.end(); ++arb)
     {
-        arb->second.PreStep(inv_dt);
+        arb->second.preStep(inv_dt);
     }
 
 
@@ -75,7 +75,7 @@ void rl::PhysicsWorld::Step(float dt)
     {
         //Apply impulse
         for (auto arb = arbiters.begin(); arb != arbiters.end(); ++arb) {
-            arb->second.ApplyImpulse();
+            arb->second.applyImpulse();
         }
         for (auto jit : joints)
         {
@@ -86,7 +86,7 @@ void rl::PhysicsWorld::Step(float dt)
     // Integrate Velocities
     for(int i = 0; i < bodies.size(); i++)
     {
-        bodies.at(i)->IntegrateVelocities(dt);
+        bodies.at(i)->integrateVelocities(dt);
     }
 }
 
@@ -121,7 +121,7 @@ void rl::PhysicsWorld::BoardPhase()
                 //update arbiter
                 else
                 {
-                    iter->second.update(newArb.contacts, newArb.numContacts);
+                    iter->second.updateContactAndCalImpluse(newArb.contacts, newArb.numContacts);
                 }
             }
             //no collision

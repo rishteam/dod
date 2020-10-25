@@ -5,9 +5,9 @@
 namespace rl {
 namespace Math {
 
-int random_int(int lower, int upper);
-float random_float(float lower, float upper);
-double random_double(double lower, double upper);
+int RandomInt(int lower, int upper);
+float RandomFloat(float lower, float upper);
+double RandomDouble(double lower, double upper);
 
 }
 

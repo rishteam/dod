@@ -1,7 +1,7 @@
 /**
  * @file vector_math.h
  * @author  halloworld <william31212@gmail.com>
- * @brief 更詳細的向量數學計算function，繼承sf::Vector2<float>
+ * @brief 更詳細的向量數學計算function
  */
 #pragma once
 

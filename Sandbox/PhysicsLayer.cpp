@@ -113,10 +113,10 @@ void PhysicsLayer::onImGuiRender()
                 Ref<RigidBody2D> box = m_world->bodies.at(i);
                 ImGui::Text("Box%d:", i);
                 ImGui::Text("[Physics] Center: (%f, %f)", box->getPhysicsData().first.x, box->getPhysicsData().first.y);
-                ImGui::Text("[Physics] width:%f, height:%f", box->getwh().x, box->getwh().y);
+                ImGui::Text("[Physics] width:%f, height:%f", box->getWidthHeight().x, box->getWidthHeight().y);
                 ImGui::Text("[Physics] mass: %f", box->getMass());
                 ImGui::Text("[Physics] angle: %f", box->getPhysicsData().second);
-                ImGui::Text("[Physics] friction: %f", box->getfriction());
+                ImGui::Text("[Physics] friction: %f", box->getFriction());
                 ImGui::Separator();
             }
         }

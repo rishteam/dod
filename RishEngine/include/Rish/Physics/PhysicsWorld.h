@@ -13,7 +13,8 @@ class Arbiter;
 
 namespace rl {
 
-class RL_API PhysicsWorld {
+class RL_API PhysicsWorld
+{
 public:
     // TODO: object constructor
 

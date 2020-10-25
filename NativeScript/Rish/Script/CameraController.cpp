@@ -17,8 +17,8 @@ void CameraController::onUpdate(rl::Time dt)
 
     if(Input::IsMouseButtonPressed(Mouse::Left))
     {
-        float x = Math::random_float(-10.f, 10.f);
-        float y = Math::random_float(-10.f, 10.f);
+        float x = Math::RandomFloat(-10.f, 10.f);
+        float y = Math::RandomFloat(-10.f, 10.f);
         auto ent = GetScene().createEntity();
         auto &transform = ent.getComponent<TransformComponent>();
         transform.translate.x = x;
