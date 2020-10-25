@@ -64,6 +64,33 @@ const size_t MaxLineVertexCount = MaxLineCount * 2;
 const size_t MaxLineIndexCount = MaxLineCount * 6;
 
 ////////////////////////////////////////////////////////////////
+// Triangle Renderer
+////////////////////////////////////////////////////////////////
+
+struct TriangleVertex
+{
+    glm::vec3 position;
+    glm::vec4 color;
+    glm::vec2 texCoord;
+    float texIndex;
+    float texTiling;
+};
+
+struct TriangleShape
+{
+    QuadVertex p[3];
+
+    friend bool operator<(const TriangleShape &lhs, const TriangleShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
+const size_t MaxTriangleCount = 100000;
+const size_t MaxTriangleVertexCount = MaxTriangleCount * 3;
+const size_t MaxTriangleIndexCount = MaxTriangleCount * 3;
+
+////////////////////////////////////////////////////////////////
 
 struct Renderer2DData
 {
@@ -204,6 +231,112 @@ struct Renderer2DData
     glm::vec4 quadVertexPosition[4]{};
 
     ////////////////////////////////////////////////////////////////
+    // Triangle Renderer
+    ////////////////////////////////////////////////////////////////
+
+    struct TriangleRenderer
+    {
+        void init()
+        {
+            triangleVertexArray = VertexArray::Create();
+
+            // Initialize Vertex Buffer
+            Ref<VertexBuffer> triVertexBuffer = VertexBuffer::Create(MaxTriangleVertexCount * sizeof(TriangleVertex));
+            triVertexBuffer->setLayout(BufferLayout{
+                {ShaderDataType::Float3, "a_Position"},
+                {ShaderDataType::Float4, "a_Color"},
+                {ShaderDataType::Float2, "a_TexCoord"},
+                {ShaderDataType::Float,  "a_TexIndex"},
+                {ShaderDataType::Float,  "a_Tiling"}
+            });
+            triangleVertexArray->setVertexBuffer(triVertexBuffer);
+            //
+            triangleShapeList.reserve(MaxTriangleCount);
+
+            // Initialize Index Buffer
+            auto *triIndices = new uint32_t[MaxTriangleIndexCount];
+            for(int i = 0; i < MaxTriangleIndexCount; i++)
+                triIndices[i] = i;
+            Ref<IndexBuffer> triIB = IndexBuffer::Create(triIndices, MaxTriangleIndexCount);
+            triangleVertexArray->setIndexBuffer(triIB);
+            delete [] triIndices;
+
+            // Shader
+            triangleShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
+            int sampler[MaxTextures];
+            for (int i = 0; i < MaxTextures; i++)
+                sampler[i] = i;
+            triangleShader->bind();
+            triangleShader->setIntArray("u_Textures", sampler, MaxTextures);
+        }
+
+        void reset()
+        {
+            triangleIndexCount = 0;
+            triangleShapeList.clear();
+        }
+
+        void submit(const glm::vec4 position[3], const glm::vec4 &color, const glm::vec2 texCoords[3],
+                    float texIndex, float texTiling)
+        {
+            TriangleShape submit{};
+            for(int i = 0; i < 3; i++)
+            {
+                submit.p[i].position  = position[i];
+                submit.p[i].color     = color;
+                submit.p[i].texCoord  = texCoords[i];
+                submit.p[i].texIndex  = texIndex;
+                submit.p[i].texTiling = texTiling;
+            }
+            //
+            triangleIndexCount += 3;
+            triangleShapeList.push_back(submit);
+        }
+
+        void draw(bool DepthTest, bool IsEditorCamera,
+                  const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
+        {
+            // Send accumulated VB
+            auto &triList = triangleShapeList;
+            // Sort by z-axis
+            if(DepthTest)
+                sort(triList.begin(), triList.end());
+            // set the VB
+            triangleVertexArray->getVertexBuffer()->setData(&triList[0].p[0], triList.size() * sizeof(TriangleShape));
+
+            // Shader
+            triangleShader->bind();
+            triangleShader->setMat4("u_ViewProjection",
+               IsEditorCamera ?
+                   OrthoCamera.getViewProjectionMatrix() :
+                   ViewProjMatrix);
+
+            // Draw
+            triangleVertexArray->bind();
+            RenderCommand::DrawElement(DrawTriangles, triangleVertexArray, triangleIndexCount, DepthTest);
+            triangleVertexArray->unbind();
+        }
+
+        operator bool() const
+        {
+            return triangleIndexCount > 0;
+        }
+
+        bool exceedDrawIndex() const
+        {
+            return triangleIndexCount >= MaxTriangleIndexCount;
+        }
+
+        Ref<VertexArray> triangleVertexArray;         ///< Line renderer vertex array
+        Ref<Shader> triangleShader;                   ///< Line renderer shader
+        uint32_t triangleIndexCount = 0;              ///< 現在有多少個 index
+        std::vector<TriangleShape> triangleShapeList; ///< Quad data
+    };
+    TriangleRenderer triangleRenderer;
+
+    glm::vec4 triVertexPosition[3]{};
+
+    ////////////////////////////////////////////////////////////////
     // Line Renderer
     ////////////////////////////////////////////////////////////////
     /**
@@ -323,6 +456,11 @@ void Renderer2D::Init()
 
     s_data = MakeScope<Renderer2DData>();
 
+    // Create default white texture
+    s_data->whiteTexture = rl::Texture2D::Create(1, 1);
+    s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
+    s_data->textureSlots[0] = s_data->whiteTexture;
+
     ////////////////////////////////////////////////////////////////
     // Quad Renderer
     ////////////////////////////////////////////////////////////////
@@ -330,23 +468,32 @@ void Renderer2D::Init()
         // Init quad renderer
         s_data->quadRenderer.init();
 
-        // Create default white texture
-        s_data->whiteTexture = rl::Texture2D::Create(1, 1);
-        s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
-        s_data->textureSlots[0] = s_data->whiteTexture;
-
         // template for quad vertex
         s_data->quadVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // bottom left
         s_data->quadVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};  // bottom right
         s_data->quadVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};  // top left
         s_data->quadVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};   // top right
     }
+
     ////////////////////////////////////////////////////////////////
     // Line Renderer
     ////////////////////////////////////////////////////////////////
     {
         s_data->fgLineRenderer.init();
         s_data->bgLineRenderer.init();
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // Triangle Renderer
+    ////////////////////////////////////////////////////////////////
+    {
+        // init
+        s_data->triangleRenderer.init();
+
+        // template for rotated
+        s_data->triVertexPosition[0] = {0.f, 0.5f, 0.f, 1.f};    // top
+        s_data->triVertexPosition[1] = {0.5f, -0.5f, 0.f, 1.f};  // lower right
+        s_data->triVertexPosition[2] = {-0.5f, -0.5f, 0.f, 1.f}; // lower left
     }
 }
 
@@ -378,6 +525,11 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
         s_data->fgLineRenderer.reset();
         s_data->bgLineRenderer.reset();
     }
+
+    // Triangle
+    {
+        s_data->triangleRenderer.reset();
+    }
 }
 
 void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
@@ -403,11 +555,18 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
         s_data->fgLineRenderer.reset();
         s_data->bgLineRenderer.reset();
     }
+
+    // Triangle
+    {
+        s_data->triangleRenderer.reset();
+    }
 }
 
 void Renderer2D::EndScene()
 {
     RL_PROFILE_RENDERER_FUNCTION();
+
+    bool resetTexture = false;
 
     // Background Line
     auto &bgLine = s_data->bgLineRenderer;
@@ -428,7 +587,23 @@ void Renderer2D::EndScene()
 
         // Reset
         s_data->quadRenderer.reset();
-        s_data->textureSlotAddIndex = 1;
+        resetTexture = true;
+        //
+        s_data->renderStats.DrawCount++;
+    }
+
+    // Triangle
+    if(s_data->triangleRenderer)
+    {
+        // Bind texture slots
+        for(int i = 0; i < s_data->textureSlotAddIndex; i++)
+            s_data->textureSlots[i]->bind(i);
+
+        s_data->triangleRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
+
+        // Reset
+        s_data->quadRenderer.reset();
+        resetTexture = true;
         //
         s_data->renderStats.DrawCount++;
     }
@@ -442,6 +617,11 @@ void Renderer2D::EndScene()
     }
 
     s_data->sceneState = false;
+
+    if(resetTexture)
+    {
+        s_data->textureSlotAddIndex = 1;
+    }
 }
 
 Renderer2D::Stats &Renderer2D::GetStats()
@@ -863,6 +1043,68 @@ void Renderer2D::DrawBgRect(const glm::vec2 &position, const glm::vec2 &size, co
 void Renderer2D::DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
 {
     DrawBgRotatedRect(glm::vec3(position, 0.f), size, color, rotate);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Triangle Renderer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Renderer2D::DrawTriangle(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    DrawTriangle(glm::vec3{position, 0.f}, size, color);
+}
+
+void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
+{
+    DrawTriangle(position, size, s_data->whiteTexture, color);
+}
+
+void Renderer2D::DrawTriangle(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
+{
+    DrawTriangle(glm::vec3{position, 0.f}, size, texture);
+}
+
+void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
+{
+    DrawTriangle(position, size, texture, glm::vec4(1.f));
+}
+
+void Renderer2D::DrawTriangle(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
+                              const glm::vec4 &color)
+{
+    DrawTriangle(glm::vec3{position, 0.f}, size, texture, color);
+}
+
+void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
+                              const glm::vec4 &color)
+{
+    RL_PROFILE_RENDERER_FUNCTION();
+
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
+    // Split draw call if it exceeds the limits
+    if(s_data->quadRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
+    {
+        EndScene();
+        BeginScene(s_data->orthoCamera, s_data->depthTest);
+    }
+
+    // Check if the texture is in slots
+    float textureIndex = GetQuadTextureIndex(texture);
+
+    glm::vec2 siz = size / 2.f;
+    glm::vec4 posi[3] = {
+        {position.x           , position.y + siz.y, position.z, 1.f}, // Upper
+        {position.x + siz.x, position.y - siz.y, position.z, 1.f}, // lower right
+        {position.x - siz.x, position.y - siz.y, position.z, 1.f}  // lower left
+    };
+    glm::vec2 texCoords[3] = {
+        {   0.f, 0.5f},
+        { 0.5f, -0.5f},
+        {-0.5f, -0.5f}
+    };
+
+    s_data->triangleRenderer.submit(posi, color, texCoords, textureIndex, 1.f);
 }
 
 } // namespace of rl
