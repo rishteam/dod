@@ -446,6 +446,7 @@ void EditController::onImGuiRender()
                     const auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
                     const glm::vec3 boundPos(bound.getPosition(), 0.f);
                     const glm::vec3 boundSize(bound.getScale(), 0.f);
+
                     // The entity is not moving but selected
                     if (!m_isNowMovingEntity[ent]) {
 
@@ -456,8 +457,7 @@ void EditController::onImGuiRender()
                                     std::atan2(mposInWorld.y - boundPos.y, mposInWorld.x - boundPos.x) * 180 / M_PI;
                         }
                     } else {
-                        auto nowRotate =
-                                std::atan2(mposInWorld.y - boundPos.y, mposInWorld.x - boundPos.x) * 180 / M_PI;
+                        auto nowRotate = std::atan2(mposInWorld.y - boundPos.y, mposInWorld.x - boundPos.x) * 180 / M_PI;
                         entRotate = m_oriEntityRotate[ent] + (nowRotate - m_oriMouseRotate[ent]);
                     };
                 }
@@ -557,7 +557,8 @@ bool EditController::onMouseScrolled(MouseScrolledEvent &e)
     return false;
 }
 
-void EditController::changeGizmoMode(Gizmo gizmo) {
+void EditController::changeGizmoMode(Gizmo gizmo)
+{
     m_gizmoMode = gizmo;
 }
 
