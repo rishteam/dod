@@ -22,16 +22,18 @@ struct RigidBody2DComponent
     float angle = 0.0f;
     // 速度
     Vec2 velocity = Vec2(0.0f, 0.0f);
+    // 持續受力
+    bool keepingForce = false;
     // 受力接觸點
     Vec2 attachPoint = Vec2(0.0f, 0.0f);
+    // 質量，質量倒數
+    float mass = 10.0f;
     // 受的力
     Vec2 force = Vec2(0.0f, 0.0f);
     // 力矩
     float torque = 0.0f;
     // 摩擦力
     float friction = 0.2f;
-    // 質量，質量倒數
-    float mass = 10.0f;
 
     BodyType BodyTypeState;
 
@@ -46,10 +48,13 @@ private:
             CEREAL_NVP(angularVelocity),
             CEREAL_NVP(angle),
             CEREAL_NVP(velocity),
+            CEREAL_NVP(friction),
+            CEREAL_NVP(mass),
             CEREAL_NVP(force),
             CEREAL_NVP(torque),
-            CEREAL_NVP(friction),
-            CEREAL_NVP(mass)
+            CEREAL_NVP(keepingForce),
+            CEREAL_NVP(attachPoint)
+
         );
     }
 };
@@ -78,12 +83,12 @@ private:
 
 struct Joint2DComponent
 {
-    //can change
+    // Can Change
     UUID rigidBody1;
     UUID rigidBody2;
     Vec2 anchor = Vec2(0.0f, 0.0f);
 
-    //fixed value
+    // Fixed Value
     Vec2 localAnchor1, localAnchor2;
     Vec2 r1, r2;
     Vec2 P = Vec2(0.0f, 0.0f);

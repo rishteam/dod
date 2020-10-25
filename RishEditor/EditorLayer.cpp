@@ -102,11 +102,9 @@ void EditorLayer::onAttach()
     debugEntity = m_currentScene->createEntity("Physics Left", {-1.5f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();
     debugEntity.addComponent<RigidBody2DComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
+//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
     auto &rigbd2 = debugEntity.getComponent<RigidBody2DComponent>();
     rigbd2.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
-    rigbd2.attachPoint.x = -2.0;
-    rigbd2.attachPoint.y = 3.25;
 
     debugEntity = m_currentScene->createEntity("Physics Middle", {0.f, 3.f, 0.f});
     debugEntity.addComponent<RenderComponent>();

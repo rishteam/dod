@@ -8,13 +8,156 @@ void PhysicsSystem::onUpdate(const Ref<Scene>& scene, float dt)
 {
     auto &registry = scene->m_registry;
     const auto &state = scene->getSceneState();
-    //
     onUpdate(registry, dt, state);
 }
 
 void PhysicsSystem::onInit(const Ref <Scene> &scene)
 {
    s_Scene = scene;
+}
+
+void PhysicsSystem::onUpdateNewPhysicsObject(entt::registry& registry, Scene::SceneState state)
+{
+    auto &physicsWorld = s_Scene->physicsWorld;
+    auto &mapJointObj = s_Scene->mapJointObj;
+    auto &mapBoxColliderObj = s_Scene->mapBoxColliderObj;
+    auto &mapPhysicsObj = s_Scene->mapPhysicsObj;
+
+    auto &StatePhysicsObj = s_Scene->StatePhysicsObj;
+    auto &StateBoxColliderObj = s_Scene->StateBoxColliderObj;
+    auto &StateJointObj = s_Scene->StateJointObj;
+
+    // All state Clear
+    for(auto statePhy : StatePhysicsObj)
+    {
+        statePhy.second = false;
+    }
+    for(auto stateboxc : StateBoxColliderObj)
+    {
+        stateboxc.second = false;
+    }
+    for(auto statejit : StateJointObj)
+    {
+        statejit.second = false;
+    }
+
+    // RigidBody2D Component
+    // add physics object in physics engine
+    auto group = registry.view<TransformComponent, RigidBody2DComponent>();
+    for(auto entity : group)
+    {
+        auto &UUID = registry.get<TagComponent>(entity).id;
+        auto &transform = registry.get<TransformComponent>(entity);
+        auto &rigidbody2D = registry.get<RigidBody2DComponent>(entity);
+
+        // if UUID not exist, append new physics obj
+        if(!mapPhysicsObj.count(UUID))
+        {
+            auto physicsObj = MakeRef<RigidBody2D>(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
+            mapPhysicsObj[UUID] = physicsObj;
+            // Add Force on Point
+            auto attx = transform.translate.x + rigidbody2D.attachPoint.x;
+            auto atty = transform.translate.y + rigidbody2D.attachPoint.y;
+            physicsObj->AddForce(rigidbody2D.force, Vec2(attx, atty));
+            physicsWorld.Add(physicsObj);
+            StatePhysicsObj.push_back(std::make_pair(UUID, true));
+        }
+    }
+
+    // BoxCollider2DComponent Component
+    // add collider in physics engine
+    auto group2 = registry.view<TransformComponent, BoxCollider2DComponent>();
+    for(auto entity : group2)
+    {
+        auto &UUID = registry.get<TagComponent>(entity).id;
+        auto &transform = registry.get<TransformComponent>(entity);
+        auto &boxc = registry.get<BoxCollider2DComponent>(entity);
+        // BoxCollider Component
+        if(!mapBoxColliderObj.count(UUID)) {
+            auto box = MakeRef<Box>(boxc.x, boxc.y, boxc.w, boxc.h);
+            mapBoxColliderObj[UUID] = box;
+            StateBoxColliderObj.push_back(std::make_pair(UUID, true));
+        }
+    }
+
+    // Joint2DComponent Component
+    // add joint in physics engine
+    auto group3 = registry.view<TransformComponent, Joint2DComponent>();
+    for(auto entity : group3)
+    {
+        auto &UUID = registry.get<TagComponent>(entity).id;
+        auto &transform = registry.get<TransformComponent>(entity);
+        auto &jit = registry.get<Joint2DComponent>(entity);
+        // BoxCollider Component
+        if(!mapJointObj.count(UUID)) {
+            auto jit = MakeRef<Joint>();
+            physicsWorld.AddJoints(jit);
+            mapJointObj[UUID] = jit;
+            StateJointObj.push_back(std::make_pair(UUID, true));
+        }
+    }
+}
+
+
+void PhysicsSystem::onCleanPhysicObject()
+{
+    auto &mapPhysicsObj = s_Scene->mapPhysicsObj;
+    auto &mapBoxColliderObj = s_Scene->mapBoxColliderObj;
+    auto &mapJointObj = s_Scene->mapJointObj;
+
+    auto &StatePhysicsObj = s_Scene->StatePhysicsObj;
+    auto &StateBoxColliderObj = s_Scene->StateBoxColliderObj;
+    auto &StateJointObj = s_Scene->StateJointObj;
+
+    for(auto statePhy : StatePhysicsObj)
+    {
+        if (!statePhy.second)
+        {
+            mapPhysicsObj.erase(mapPhysicsObj.find(statePhy.first), mapPhysicsObj.end());
+        }
+    }
+    for(auto stateboxc : StateBoxColliderObj)
+    {
+        if (!stateboxc.second)
+        {
+            mapBoxColliderObj.erase(mapBoxColliderObj.find(stateboxc.first), mapBoxColliderObj.end());
+        }
+    }
+    for(auto statejit : StateJointObj)
+    {
+        if (!statejit.second)
+        {
+            mapJointObj.erase(mapJointObj.find(statejit.first), mapJointObj.end());
+        }
+    }
+
+    std::remove_if(StatePhysicsObj.begin(),
+                 StatePhysicsObj.end(),
+                 [](auto tmp)
+                 {
+                    if(!tmp.second)
+                    {
+                        return true;
+                    }
+                 });
+    std::remove_if (StateBoxColliderObj.begin(),
+                  StateBoxColliderObj.end(),
+                  [](auto tmp)
+                  {
+                      if(!tmp.second)
+                      {
+                          return true;
+                      }
+                  });
+    std::remove_if (StateJointObj.begin(),
+                    StateJointObj.end(),
+                    [](auto tmp)
+                    {
+                        if(!tmp.second)
+                        {
+                            return true;
+                        }
+                    });
 }
 
 void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneState state)
@@ -26,6 +169,8 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
 
     if (state == Scene::SceneState::Play)
     {
+        onUpdateNewPhysicsObject(registry, state);
+        onCleanPhysicObject();
         // update BoxCollider2D component data to engine
         auto view = registry.view<TransformComponent, BoxCollider2DComponent>();
         for (auto entity : view)
@@ -69,6 +214,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 phy->velocity = rigidbody2D.velocity;
                 phy->force = rigidbody2D.force;
                 phy->attachPoint = rigidbody2D.attachPoint;
+                phy->keepingForce = rigidbody2D.keepingForce;
                 phy->isCollider = true;
             }
             // Only RigidBody2D
@@ -86,6 +232,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 phy->velocity = rigidbody2D.velocity;
                 phy->force = rigidbody2D.force;
                 phy->attachPoint = rigidbody2D.attachPoint;
+                phy->keepingForce = rigidbody2D.keepingForce;
                 phy->isCollider = false;
             }
         }
@@ -133,11 +280,12 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 rigidbody2D.angularVelocity = phy->angularVelocity;
                 rigidbody2D.angle = phy->angle;
                 rigidbody2D.velocity = phy->velocity;
-                rigidbody2D.force = phy->force;
                 rigidbody2D.torque = phy->torque;
                 rigidbody2D.friction = phy->friction;
+                rigidbody2D.force = phy->force;
                 rigidbody2D.mass = phy->mass;
                 rigidbody2D.attachPoint = phy->attachPoint;
+                rigidbody2D.keepingForce = phy->keepingForce;
             }
         }
 
@@ -161,11 +309,12 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 rigidbody2D.angularVelocity = phy->angularVelocity;
                 rigidbody2D.angle = phy->angle;
                 rigidbody2D.velocity = phy->velocity;
-                rigidbody2D.force = phy->force;
                 rigidbody2D.torque = phy->torque;
                 rigidbody2D.friction = phy->friction;
+                rigidbody2D.force = phy->force;
                 rigidbody2D.mass = phy->mass;
                 rigidbody2D.attachPoint = phy->attachPoint;
+                rigidbody2D.keepingForce = phy->keepingForce;
             }
         }
         // joint
@@ -192,61 +341,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
 
 void PhysicsSystem::onScenePlay(entt::registry& registry, Scene::SceneState state)
 {
-    auto &physicsWorld = s_Scene->physicsWorld;
-    auto &mapJointObj = s_Scene->mapJointObj;
-    auto &mapBoxColliderObj = s_Scene->mapBoxColliderObj;
-    auto &mapPhysicsObj = s_Scene->mapPhysicsObj;
-
-    // RigidBody2D Component
-    // add physics object in physics engine
-    auto group = registry.view<TransformComponent, RigidBody2DComponent>();
-    for(auto entity : group)
-    {
-        auto &UUID = registry.get<TagComponent>(entity).id;
-        auto &transform = registry.get<TransformComponent>(entity);
-        auto &rigidbody2D = registry.get<RigidBody2DComponent>(entity);
-
-        // if UUID not exist, append new physics obj
-        if(!mapPhysicsObj.count(UUID))
-        {
-            auto physicsObj = MakeRef<RigidBody2D>(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
-            mapPhysicsObj[UUID] = physicsObj;
-            // Add Force
-            physicsObj->AddForce(rigidbody2D.force, rigidbody2D.attachPoint);
-            physicsWorld.Add(physicsObj);
-        }
-    }
-
-    // BoxCollider2DComponent Component
-    // add collider in physics engine
-    auto group2 = registry.view<TransformComponent, BoxCollider2DComponent>();
-    for(auto entity : group2)
-    {
-        auto &UUID = registry.get<TagComponent>(entity).id;
-        auto &transform = registry.get<TransformComponent>(entity);
-        auto &boxc = registry.get<BoxCollider2DComponent>(entity);
-        // BoxCollider Component
-        if(!mapBoxColliderObj.count(UUID)) {
-            auto box = MakeRef<Box>(boxc.x, boxc.y, boxc.w, boxc.h);
-            mapBoxColliderObj[UUID] = box;
-        }
-    }
-
-    // Joint2DComponent Component
-    // add joint in physics engine
-    auto group3 = registry.view<TransformComponent, Joint2DComponent>();
-    for(auto entity : group3)
-    {
-        auto &UUID = registry.get<TagComponent>(entity).id;
-        auto &transform = registry.get<TransformComponent>(entity);
-        auto &jit = registry.get<Joint2DComponent>(entity);
-        // BoxCollider Component
-        if(!mapJointObj.count(UUID)) {
-            auto jit = MakeRef<Joint>();
-            physicsWorld.AddJoints(jit);
-            mapJointObj[UUID] = jit;
-        }
-    }
+    onUpdateNewPhysicsObject(registry, state);
 }
 
 void PhysicsSystem::onSceneStop()

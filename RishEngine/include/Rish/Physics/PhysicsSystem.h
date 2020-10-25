@@ -16,7 +16,10 @@ public:
     static void onUpdate(const Ref<Scene>& scene, float dt);
     static void onInit(const Ref<Scene> &scene);
 
+
     static void onImGuiRender();
+    static void onUpdateNewPhysicsObject(entt::registry& registry, Scene::SceneState state);
+    static void onCleanPhysicObject();
     static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state);
     static void onScenePlay(entt::registry& registry, Scene::SceneState state);
     static void onSceneStop();

@@ -519,10 +519,13 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         DrawRightClickMenu(RigidBody2DComponent, false);
         static const char *BodyTypeString[2] = {"Static", "Dynamic"};
         auto &rigid = m_targetEntity.getComponent<RigidBody2DComponent>();
+        auto &trans = m_targetEntity.getComponent<TransformComponent>();
         int bodyTypeNowSelect = static_cast<int>(rigid.BodyTypeState);
         float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
         float forceVector[2] = {rigid.force.x, rigid.force.y};
-        float attachPoint[2] = {rigid.attachPoint.x, rigid.attachPoint.y};
+        float attachPointX = rigid.attachPoint.x;
+        float attachPointY = rigid.attachPoint.y;
+
         ImGui::Text("Physics Parameter");
         {
             // can control the physics parameter
@@ -530,16 +533,31 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::InputFloat("Friction", &rigid.friction, 0.1f, 0.2f, "%.2f");
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
             ImGui::DragFloat2("Force", forceVector, 1.0f);
-            ImGui::DragFloat2("Attach Point", attachPoint, 1.0);
+
+            auto transPoint = trans.translate;
+            auto transWH = trans.scale;
+            ImGui::PushItemWidth(100);
+            ImGui::Text("Attach Point (x, y)");
+            ImGui::DragFloat("x", &attachPointX, 0.1, -transWH.x/2.0f, transWH.x/2.0f);
+            ImGui::SameLine();
+            ImGui::DragFloat("y", &attachPointY, 0.1, -transWH.y/2.0f, transWH.y/2.0f);
+            ImGui::PopItemWidth();
+            ImGui::Checkbox("Keeping Force", &rigid.keepingForce);
+            ImGui::SameLine();
+            if (rigid.keepingForce)
+                ImGui::Text(": On");
+            else
+                ImGui::Text(": Off");
+            ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
+            ImGui::Text("Torque: %.2f", rigid.torque);
+            // Update Value  of physics
             rigid.velocity.x = velocityVector[0];
             rigid.velocity.y = velocityVector[1];
             rigid.force.x = forceVector[0];
             rigid.force.y = forceVector[1];
-            rigid.attachPoint.x = attachPoint[0];
-            rigid.attachPoint.y = attachPoint[1];
+            rigid.attachPoint.x = attachPointX;
+            rigid.attachPoint.y = attachPointY;
             // can't control the physics parameter
-            ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
-            ImGui::Text("Torque: %.2f", rigid.torque);
         }
         ImGui::Separator();
         if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
@@ -572,6 +590,7 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
 
         ImGui::DragFloat2("(x, y)", translate, 0.5f);
         ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
+        // Update the collider value
         collider.x = translate[0];
         collider.y = translate[1];
         collider.w = scale[0];

@@ -89,7 +89,7 @@ void EditController::onUpdate(Time dt)
     drawCameraIconAndBorder(scene);
 
 
-    // draw attachPoint
+    // Draw AttachPoint
     auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
     for(auto entity : view)
     {
@@ -97,10 +97,10 @@ void EditController::onUpdate(Time dt)
         auto &rigid = ent.getComponent<RigidBody2DComponent>();
         auto &transform = ent.getComponent<TransformComponent>();
         //TODO: rotate Quad for collider
-        Renderer2D::DrawCircleLine({rigid.attachPoint.x, rigid.attachPoint.y}, 0.1,  {0.0f, 1.0f, 1.0f, 1.0f});
+        Renderer2D::DrawCircleLine({ transform.translate.x + rigid.attachPoint.x, transform.translate.y + rigid.attachPoint.y}, 0.1,  {0.160f, 0.254f, 1.0f, 1.0f});
     }
 
-    // draw boxcollider
+    // Draw BoxCollider
     auto view2 = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
     for(auto entity : view2)
     {
