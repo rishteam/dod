@@ -46,7 +46,7 @@ add_subdirectory(deps/entt)
 add_subdirectory(deps/IconFontCppHeaders)
 
 # Config generate for RishEngine
-set(CONFIG_H_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
+set(CONFIG_H_SOURCE_DIR ${CMAKE_SOURCE_DIR}/)
 string(LENGTH ${CONFIG_H_SOURCE_DIR} CONFIG_H_SOURCE_DIR_LEN)
 configure_file(${PROJECT_SOURCE_DIR}/config/Config.h.in ${PROJECT_SOURCE_DIR}/include/Rish/Config.h @ONLY)
 

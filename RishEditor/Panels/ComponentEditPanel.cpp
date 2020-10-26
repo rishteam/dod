@@ -67,8 +67,11 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
         ImGui::Text("Texture");
         {
             std::string tPath;
-            if (ImGui::Button("Select")) {
-                if (FileDialog::SelectSingleFile(nullptr, nullptr, tPath)) {
+            if (ImGui::Button("Load Texture"))
+            {
+                std::string cur = FileSystem::GetCurrentDirectory();
+                if (FileDialog::SelectSingleFile(nullptr, cur.c_str(), tPath))
+                {
                     render.texturePath = tPath;
                     render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
                 }
@@ -82,31 +85,6 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
                 ImGui::Dummy(ImVec2(64, 64));
         }
 
-//        ImGui::Text("Shader");
-//        {
-//            std::string path;
-//            auto &vertPath = render.vertPath;
-//            if (ImGui::Button("Select##Vert")) {
-//                if (FileDialog::SelectSingleFile(nullptr, nullptr, path)) {
-//                    vertPath = path;
-//                    render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-//                }
-//            }
-//            ImGui::SameLine();
-//            ImGui::InputText("##VertexShaderPath", &vertPath, ImGuiInputTextFlags_ReadOnly);
-//
-//            auto &fragPath = render.fragPath;
-//            if (ImGui::Button("Select##Frag"))
-//            {
-//                if (FileDialog::SelectSingleFile(nullptr, nullptr, path))
-//                {
-//                    fragPath = path;
-//                    render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-//                }
-//            }
-//            ImGui::SameLine();
-//            ImGui::InputText("##FragmentShaderPath", &fragPath, ImGuiInputTextFlags_ReadOnly);
-//        }
     }
     EndDrawEditComponent();
 }

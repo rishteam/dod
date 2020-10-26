@@ -62,11 +62,9 @@ void EditController::onUpdate(Time dt)
             auto &transform = transGroup.get<TransformComponent>(entity);
             auto &render = transGroup.get<RenderComponent>(entity);
 
-            // TODO: make these into entt function
             if (render.init)
             {
                 render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-                render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
                 render.init = false;
             }
 
