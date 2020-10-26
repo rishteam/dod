@@ -75,11 +75,11 @@ void EditorLayer::onAttach()
     // Test
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
+    ScriptableManager::Register<PlayerController>();
 
     Entity debugEntity = m_currentScene->createEntity("DebugCamera");
     debugEntity.addComponent<CameraComponent>(true, 16.f / 9.f, 5.f);
     debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
-
 
     debugEntity = m_currentScene->createEntity("DebugSprite");
     debugEntity.addComponent<RenderComponent>();
