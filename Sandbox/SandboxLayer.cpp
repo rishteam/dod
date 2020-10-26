@@ -30,10 +30,13 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
-//        Renderer2D::DrawQuad({0.f, 0.f, -1.f}, {11.f, 8.f}, m_bg);
-        Renderer2D::DrawQuad({0.f, 0.f, 1.f}, {1.f, 1.f}, m_player);
+//        Renderer2D::DrawQuad({0.f, 0.f, 1.f}, {1.f, 1.f}, m_player);
 
-        Renderer2D::DrawRect({-2.f, 0.f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 0.5f});
+        Renderer2D::DrawFgRect({0.f, 0.f}, {1.f, 1.f}, glm::vec4(1.f));
+        Renderer2D::DrawCircleLine({0.f, 0.f}, 1.f, glm::vec4(1.f));
+
+
+        Renderer2D::DrawTriangle({0.f, 2.f, 0.f}, {2.f, 0.f, 0.f}, {-2.f, 0.f, 0.f}, glm::vec4(1.f));
     }
     Renderer2D::EndScene();
 }

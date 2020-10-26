@@ -937,12 +937,13 @@ void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &siz
 
 void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color)
 {
+    const float r = radius / 2.f;
     const int pointCount = 30;
     glm::vec2 p[pointCount];
     float d = 0.f;
     for(auto & i : p)
     {
-        i = position + glm::vec2{radius * std::sin(glm::radians(d)), radius * std::cos(glm::radians(d))};
+        i = position + glm::vec2{r * std::sin(glm::radians(d)), r * std::cos(glm::radians(d))};
         d += 360.f / pointCount;
     }
     for(int i = 0; i < pointCount; i++)
@@ -1049,54 +1050,27 @@ void Renderer2D::DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &s
 // Triangle Renderer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Renderer2D::DrawTriangle(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
+void Renderer2D::DrawTriangle(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec4 &color)
 {
-    DrawTriangle(glm::vec3{position, 0.f}, size, color);
+    DrawTriangle(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), glm::vec3(p2, 0.f), color);
 }
 
-void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
-{
-    DrawTriangle(position, size, s_data->whiteTexture, color);
-}
-
-void Renderer2D::DrawTriangle(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
-{
-    DrawTriangle(glm::vec3{position, 0.f}, size, texture);
-}
-
-void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
-{
-    DrawTriangle(position, size, texture, glm::vec4(1.f));
-}
-
-void Renderer2D::DrawTriangle(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
-                              const glm::vec4 &color)
-{
-    DrawTriangle(glm::vec3{position, 0.f}, size, texture, color);
-}
-
-void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
-                              const glm::vec4 &color)
+void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec4 &color)
 {
     RL_PROFILE_RENDERER_FUNCTION();
-
     RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
     // Split draw call if it exceeds the limits
-    if(s_data->quadRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
+    if(s_data->triangleRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
         BeginScene(s_data->orthoCamera, s_data->depthTest);
     }
 
-    // Check if the texture is in slots
-    float textureIndex = GetQuadTextureIndex(texture);
-
-    glm::vec2 siz = size / 2.f;
     glm::vec4 posi[3] = {
-        {position.x           , position.y + siz.y, position.z, 1.f}, // Upper
-        {position.x + siz.x, position.y - siz.y, position.z, 1.f}, // lower right
-        {position.x - siz.x, position.y - siz.y, position.z, 1.f}  // lower left
+        {p0, 1.f},
+        {p1, 1.f},
+        {p2, 1.f}
     };
     glm::vec2 texCoords[3] = {
         {   0.f, 0.5f},
@@ -1104,7 +1078,7 @@ void Renderer2D::DrawTriangle(const glm::vec3 &position, const glm::vec2 &size, 
         {-0.5f, -0.5f}
     };
 
-    s_data->triangleRenderer.submit(posi, color, texCoords, textureIndex, 1.f);
+    s_data->triangleRenderer.submit(posi, color, texCoords, 0, 1.f);
 }
 
 } // namespace of rl
