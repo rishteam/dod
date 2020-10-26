@@ -935,6 +935,21 @@ void Renderer2D::DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &siz
         Renderer2D::DrawFgLine(p[i], p[(i+1)%4], color);
 }
 
+void Renderer2D::DrawCircle(const glm::vec2 &position, const float radius, const glm::vec4 &color)
+{
+    const float r = radius / 2.f;
+    const int pointCount = 30;
+    glm::vec2 p[pointCount];
+    float d = 0.f;
+    for(auto & i : p)
+    {
+        i = position + glm::vec2{r * std::sin(glm::radians(d)), r * std::cos(glm::radians(d))};
+        d += 360.f / pointCount;
+    }
+    for(int i = 0; i < pointCount; i++)
+        DrawTriangle(position, p[i], p[(i+1)%pointCount], color);
+}
+
 void Renderer2D::DrawCircleLine(const glm::vec2 &position, const float radius, const glm::vec4 &color)
 {
     const float r = radius / 2.f;
