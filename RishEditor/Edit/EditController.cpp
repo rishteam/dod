@@ -148,8 +148,13 @@ void EditController::onUpdate(Time dt)
                         auto moveQuadPos3 = glm::vec3(moveQuadPos2, 2.f);
                         Renderer2D::DrawQuad(moveQuadPos3, clickSize, clickColor);
 
-                        Renderer2D::DrawFgLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(.7f, 0.f),glm::vec4(0.f, 0.f, 1.f, 1.f));
-                        Renderer2D::DrawFgLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
+                        auto PointX = bound.getPosition() + bound.getScale() * glm::vec2(.7f, 0.f);
+                        auto PointY = bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f);
+                        Renderer2D::DrawFgLine(bound.getPosition(), PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
+                        Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,1.f),PointX+clickSize*glm::vec2(-1.f,-1.f), glm::vec4(0.f, 0.f, 1.f, 1.f));
+                        Renderer2D::DrawFgLine(bound.getPosition(),PointY,glm::vec4(1.f, 0.f, 0.f, 1.f));
+                        Renderer2D::DrawTriangle(PointY,PointY+clickSize*glm::vec2(1.f,-1.f),PointY+clickSize*glm::vec2(-1.f,-1.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
+
                         break;
                     }
                     case Gizmo::ZoomMode :{
@@ -174,16 +179,18 @@ void EditController::onUpdate(Time dt)
                         const auto pointY = entPos + glm::vec3(tmpY.x*cosR-tmpY.y*sinR, tmpY.x*sinR+tmpY.y*cosR, 0.f);
 
                         Renderer2D::DrawFgLine(entPos,pointX,glm::vec4(0.f,0.f,1.f,1.f));
-                        Renderer2D::DrawQuad(pointX,clickSize,clickColor);
+                        Renderer2D::DrawRotatedQuad(pointX,clickSize,clickColor, entRotate);
                         Renderer2D::DrawFgLine(entPos,pointY,glm::vec4(1.f,0.f,0.f,1.f));
-                        Renderer2D::DrawQuad(pointY,clickSize,clickColor);
+                        Renderer2D::DrawRotatedQuad(pointY,clickSize,clickColor, entRotate);
                         break;
                     }
                     case Gizmo::RotationMode :{
                         // Draw Circle
-                        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-                        Renderer2D::DrawQuad(bound.getPosition(), clickSize, clickColor);
-                        Renderer2D::DrawFgLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
+//                        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+//                        Renderer2D::DrawQuad(bound.getPosition(), clickSize, clickColor);
+//                        Renderer2D::DrawFgLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
+
+                        Renderer2D::DrawCircleLine(entPos, entSize.y);
 
                         const auto tmpPoint = glm::vec3(0.f, entSize.y*0.7, 1.f);
                         const auto sinR = std::sin(glm::radians(entRotate));
