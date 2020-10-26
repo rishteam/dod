@@ -64,20 +64,23 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
         auto &render = m_targetEntity.getComponent<RenderComponent>();
         ImGui::ColorEdit4("Color", glm::value_ptr(render.color));
 
+        ImGui::Separator();
+
+        ImGui::Checkbox("Use Texture", &render.useTexture);
         ImGui::Text("Texture");
         {
             std::string tPath;
             if (ImGui::Button("Load Texture"))
             {
-                std::string cur = FileSystem::GetCurrentDirectory();
+                std::string cur = FileSystem::GetCurrentDirectory() + "assets/";
                 if (FileDialog::SelectSingleFile(nullptr, cur.c_str(), tPath))
                 {
                     render.texturePath = tPath;
                     render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
                 }
             }
-
             ImGui::SameLine();
+            //
             ImGui::InputText("##texturePath", &render.texturePath, ImGuiInputTextFlags_ReadOnly);
             if(render.m_texture)
                 ImGui::Image(render.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));

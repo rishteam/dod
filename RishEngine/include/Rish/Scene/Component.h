@@ -115,6 +115,7 @@ struct RenderComponent
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
 	std::string texturePath = "assets/texture/1.png";
 	Ref<Texture2D> m_texture;
+	bool useTexture = true;
 
 	// states
 	bool init = true; // TODO: Check the meaning and rename it
@@ -127,7 +128,8 @@ private:
 	void serialize(Archive &ar)
 	{
 		ar(cereal::make_nvp("Color", color),
-		   cereal::make_nvp("Texture", texturePath)
+		   cereal::make_nvp("Texture", texturePath),
+		   cereal::make_nvp("UseTexture", useTexture)
 		);
 	}
 };

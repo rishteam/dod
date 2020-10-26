@@ -68,7 +68,7 @@ void EditController::onUpdate(Time dt)
                 render.init = false;
             }
 
-            if (render.m_texture)
+            if (render.useTexture)
             {
                 if (transform.rotate != 0.f)
                     Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
