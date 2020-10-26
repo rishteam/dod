@@ -99,4 +99,8 @@ void EditorGrid::drawGrid(float offset, const glm::vec4 &color)
         Renderer2D::DrawLine({bound.left, i, -1}, {bound.right, i, -1}, color);
 }
 
+float EditorGrid::getOffset(){
+    return currentOffset;
+}
+
 }

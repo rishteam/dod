@@ -14,6 +14,7 @@ public:
     void onAttach(const Ref<OrthographicCameraController> &cameraController) { m_cameraController = cameraController; }
     void onDetach() {}
     void onUpdate();
+    float getOffset();
 
     void onImGuiRender();
 private:
