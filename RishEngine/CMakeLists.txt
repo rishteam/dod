@@ -55,6 +55,7 @@ configure_file(${PROJECT_SOURCE_DIR}/config/Config.h.in ${PROJECT_SOURCE_DIR}/in
 set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/SpriteRotate.cpp
     ../NativeScript/Rish/Script/CameraController.cpp
+        ../NativeScript/Rish/Script/PlayerController.cpp
 )
 
 # Add executable

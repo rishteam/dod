@@ -107,7 +107,8 @@ void EditController::onUpdate(Time dt)
             auto &rigid = ent.getComponent<RigidBody2DComponent>();
             auto &transform = ent.getComponent<TransformComponent>();
             //TODO: rotate Quad for collider
-            Renderer2D::DrawCircleLine({rigid.attachPoint.x, rigid.attachPoint.y}, 0.1, {0.0f, 1.0f, 1.0f, 1.0f});
+            if(rigid.showAttachPoint)
+                Renderer2D::Renderer2D::DrawCircle({ transform.translate.x + rigid.attachPoint.x, transform.translate.y + rigid.attachPoint.y}, 0.1,  {0.160f, 0.254f, 1.0f, 1.0f});
         }
 
         // draw boxcollider

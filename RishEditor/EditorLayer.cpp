@@ -75,6 +75,7 @@ void EditorLayer::onAttach()
     // Test
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
+    ScriptableManager::Register<PlayerController>();
 }
 
 void EditorLayer::onDetach()

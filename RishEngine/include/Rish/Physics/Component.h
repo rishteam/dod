@@ -25,6 +25,8 @@ struct RigidBody2DComponent
     Vec2 velocity = Vec2(0.0f, 0.0f);
     /// 持續受力
     bool keepingForce = false;
+    /// 顯示受力接觸點
+    bool showAttachPoint = false;
     /// 受力接觸點
     Vec2 attachPoint = Vec2(0.0f, 0.0f);
     /// 質量，質量倒數
@@ -35,6 +37,7 @@ struct RigidBody2DComponent
     float torque = 0.0f;
     /// 摩擦力
     float friction = 0.2f;
+
 
     RigidBody2DComponent() = default;
 
@@ -52,8 +55,8 @@ private:
             CEREAL_NVP(force),
             CEREAL_NVP(torque),
             CEREAL_NVP(keepingForce),
-            CEREAL_NVP(attachPoint)
-
+            CEREAL_NVP(attachPoint),
+            CEREAL_NVP(showAttachPoint)
         );
     }
 };
