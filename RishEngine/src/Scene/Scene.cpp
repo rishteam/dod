@@ -164,8 +164,6 @@ void Scene::onUpdate(Time dt)
 
     // TODO: Detected collision for collider Use QuadTree
 
-
-
     // Particle System update
     if(m_sceneState == SceneState::Play)
         ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
