@@ -99,6 +99,7 @@ add_library(RishEngine
 
     # Box
     src/Collider/Box.cpp
+    src/Collider/ColliderSystem.cpp
 
     # Physics
     src/Physics/Arbiter.cpp

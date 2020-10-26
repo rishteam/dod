@@ -67,6 +67,10 @@ struct BoxCollider2DComponent
     float y = 0.0f;
     float w = 1.0f;
     float h = 1.0f;
+    // TODO: To serializable
+    UUID whoCollide;
+    bool isCollision = false;
+
 
     BoxCollider2DComponent() = default;
 private:
@@ -78,7 +82,9 @@ private:
             CEREAL_NVP(x),
             CEREAL_NVP(y),
             CEREAL_NVP(w),
-            CEREAL_NVP(h)
+            CEREAL_NVP(h),
+            CEREAL_NVP(whoCollide),
+            CEREAL_NVP(isCollision)
         );
     }
 };

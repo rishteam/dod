@@ -12,6 +12,8 @@
 //
 #include <Rish/Effect/Particle/ParticleSystem.h>
 //
+#include <Rish/Collider/ColliderSystem.h>
+//
 #include <Rish/Physics/PhysicsSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
@@ -168,6 +170,8 @@ void Scene::onUpdate(Time dt)
     if(m_sceneState == SceneState::Play)
         ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
 
+    // Collider State update
+    ColliderSystem::onUpdate(m_registry, dt, m_sceneState);
     // Physics System update
     PhysicsSystem::onUpdate(m_registry, dt, m_sceneState);
 
