@@ -20,6 +20,7 @@ public:
     const glm::vec2* getTextureCoords() const { return m_texCoords; }
 
     static Ref<SubTexture2D> CreateFromSheet(const Ref<Texture2D> &texture, const glm::vec2 pos, const glm::vec2 cellSize, const glm::vec2 spriteGridSize={1.f, 1.f});
+    static Ref<SubTexture2D> CreateFromCoordinate(const Ref<Texture2D> &texture, const glm::vec2 &leftUpper, const glm::vec2 &size);
 private:
     Ref<Texture2D> m_texture;
     glm::vec2 m_texCoords[4];
