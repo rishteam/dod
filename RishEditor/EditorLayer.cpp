@@ -75,56 +75,6 @@ void EditorLayer::onAttach()
     // Test
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
-
-    Entity debugEntity = m_currentScene->createEntity("DebugCamera");
-    debugEntity.addComponent<CameraComponent>(true, 16.f / 9.f, 5.f);
-    debugEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
-
-
-    debugEntity = m_currentScene->createEntity("DebugSprite");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
-
-    debugEntity = m_currentScene->createEntity("static Physcis");
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    debugEntity.addComponent<BoxCollider2DComponent>();
-
-    auto &rigbd = debugEntity.getComponent<RigidBody2DComponent>();
-    auto &box = debugEntity.getComponent<BoxCollider2DComponent>();
-    rigbd.mass = MAX_float;
-    box.x = 0.0f;
-    box.y = 0.0f;
-    box.w = 3.0f;
-    box.h = 3.0f;
-    rigbd.BodyTypeState = RigidBody2DComponent::BodyType::Static;
-
-    debugEntity = m_currentScene->createEntity("Physics Left", {-1.5f, 3.f, 0.f});
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-//    debugEntity.addComponent<NativeScriptComponent>().bind<SpriteRoatate>();
-    auto &rigbd2 = debugEntity.getComponent<RigidBody2DComponent>();
-    rigbd2.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
-
-    debugEntity = m_currentScene->createEntity("Physics Middle", {0.f, 3.f, 0.f});
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    auto &rigbd3 = debugEntity.getComponent<RigidBody2DComponent>();
-    rigbd3.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
-
-    debugEntity = m_currentScene->createEntity("Physics Right", {1.5f, 3.f, 0.f});
-    debugEntity.addComponent<RenderComponent>();
-    debugEntity.addComponent<RigidBody2DComponent>();
-    auto &rigbd4 = debugEntity.getComponent<RigidBody2DComponent>();
-    rigbd4.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
-
-    debugEntity = m_currentScene->createEntity("ParticleTest");
-    debugEntity.addComponent<ParticleComponent>();
-
-    debugEntity = m_currentScene->createEntity("bg", {0.f, 0.f, -1.f});
-    debugEntity.getComponent<TransformComponent>().scale.x = 11.f;
-    debugEntity.getComponent<TransformComponent>().scale.y = 5.f;
-    debugEntity.addComponent<RenderComponent>().texturePath = "assets/texture/bg.jpg";
 }
 
 void EditorLayer::onDetach()
@@ -162,9 +112,7 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
-        Renderer2D::BeginScene(cameraController->getCamera(), false);
         m_editController->onUpdate(dt);
-        Renderer2D::EndScene();
 
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
         Renderer2D::BeginScene(cameraController->getCamera(), false);
@@ -474,7 +422,12 @@ void EditorLayer::onImGuiMainMenuRender()
         {
             if(ImGui::BeginMenu("Edit Controller"))
             {
-                ImGui::MenuItem("Editor Grid", nullptr, &m_editController->m_debugEditorGrid);
+                if(ImGui::BeginMenu("Editor Grid"))
+                {
+                    ImGui::MenuItem("Show", nullptr, &m_editController->m_showGrid);
+                    ImGui::MenuItem("Debug info", nullptr, &m_editController->m_debugEditorGrid);
+                    ImGui::EndMenu();
+                }
                 ImGui::MenuItem("Editor Camera", nullptr, &m_editController->m_debugCameraController);
                 ImGui::MenuItem("Editor Controller", nullptr, &m_editController->m_debugEditorController);
                 ImGui::MenuItem("Show Icons", nullptr, &m_editController->m_debugShowIcon);

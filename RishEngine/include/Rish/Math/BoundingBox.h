@@ -4,7 +4,7 @@
 
 namespace rl {
 
-// TODO: implement
+
 struct BoundingBox2D
 {
     float x, y, w, h;

@@ -29,7 +29,7 @@ public:
     static void onEditorRender(const Ref<Scene>& scene);
 
 private:
-    // TODO: remove
+    // This function exists because it's written before the Math::Random library had been written
     static float randomFloat(float min, float max);
 
     // Particle

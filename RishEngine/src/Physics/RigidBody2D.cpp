@@ -1,6 +1,9 @@
 #include <Rish/Physics/RigidBody2D.h>
 
-rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
+namespace rl {
+
+RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_)
+{
     mass = m_;
     position = position_;
     wh = wh_;
@@ -26,38 +29,37 @@ rl::RigidBody2D::RigidBody2D(Vec2 position_, Vec2 wh_, float m_){
     }
 }
 
-
-void rl::RigidBody2D::setAngle(float rad)
+void RigidBody2D::setAngle(float rad)
 {
     angle = rad;
 }
 
-void rl::RigidBody2D::setisCollide(bool state)
+void RigidBody2D::setisCollide(bool state)
 {
     isCollider = state;
 }
 
-std::pair<Vec2, float> rl::RigidBody2D::getPhysicsData()
+std::pair<Vec2, float> RigidBody2D::getPhysicsData()
 {
     return std::make_pair(position, angle);
 }
 
-float rl::RigidBody2D::getMass()
+float RigidBody2D::getMass() const
 {
     return mass;
 }
 
-Vec2 rl::RigidBody2D::getwh()
+Vec2 RigidBody2D::getWidthHeight() const
 {
     return wh;
 }
 
-float rl::RigidBody2D::getfriction()
+float RigidBody2D::getFriction() const
 {
     return friction;
 }
 
-void rl::RigidBody2D::AddForce(const Vec2& f, const Vec2 &attachPoint)
+void RigidBody2D::AddForce(const Vec2 &f, const Vec2 &attachPoint)
 {
     // Update the Linear Force
     force += f;
@@ -67,7 +69,7 @@ void rl::RigidBody2D::AddForce(const Vec2& f, const Vec2 &attachPoint)
     torque += Cross(delta, force);
 }
 
-void rl::RigidBody2D::ComputeForce(float delta_t, Vec2 gravity)
+void RigidBody2D::computeForce(float delta_t, Vec2 gravity)
 {
     if (this->invMass == 0.0f)
         return;
@@ -78,7 +80,7 @@ void rl::RigidBody2D::ComputeForce(float delta_t, Vec2 gravity)
     }
 }
 
-void rl::RigidBody2D::IntegrateVelocities(float delta_t)
+void RigidBody2D::integrateVelocities(float delta_t)
 {
     auto tmp = delta_t * velocity;
     position += tmp;
@@ -94,3 +96,4 @@ void rl::RigidBody2D::IntegrateVelocities(float delta_t)
 
 }
 
+}

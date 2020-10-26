@@ -1,5 +1,6 @@
 #include <Rish/Effect/Particle/ParticleSystem.h>
 #include <Rish/Renderer/Renderer2D.h>
+#include <Rish/Math/Random.h>
 
 namespace rl {
 
@@ -281,10 +282,7 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
 
 float ParticleSystem::randomFloat(float min, float max)
 {
-    float random = ((float)rand()) / (float)RAND_MAX;
-    float r = random * (max - min);
-
-    return min + r;
+    return Math::RandomFloat(min, max);
 }
 
 uint32_t ParticleSystem::firstUnusedParticle(entt::registry &registry, entt::entity& entity)

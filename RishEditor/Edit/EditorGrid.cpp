@@ -10,7 +10,7 @@ EditorGrid::EditorGrid()
 {
 }
 
-void EditorGrid::onUpdate()
+void EditorGrid::onUpdate(bool show)
 {
     const auto & pos = m_cameraController->getPosition();
     // Get the camera bound with ref to current camera pos
@@ -48,10 +48,13 @@ void EditorGrid::onUpdate()
     m_currentBound.bottom += pos.y;
 
     // Draw only current and next level
-    drawGrid(currentOffset, cur);
-    drawGrid(nextOffset, startColor);
-    //
-    drawGrid(0, glm::vec4{0.8f, 0.f, 0.f, 1.0f});
+    if(show)
+    {
+        drawGrid(currentOffset, cur);
+        drawGrid(nextOffset, startColor);
+        //
+        drawGrid(0, glm::vec4{0.8f, 0.f, 0.f, 1.0f});
+    }
 }
 
 void EditorGrid::onImGuiRender()

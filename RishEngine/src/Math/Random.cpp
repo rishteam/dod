@@ -2,7 +2,7 @@
 
 namespace rl {
 
-int Math::random_int(int lower, int upper)
+int Math::RandomInt(int lower, int upper)
 {
     std::random_device rd;
     std::mt19937 gen{rd()};
@@ -10,7 +10,7 @@ int Math::random_int(int lower, int upper)
     return dis(gen);
 }
 
-float Math::random_float(float lower, float upper)
+float Math::RandomFloat(float lower, float upper)
 {
     std::random_device rd;
     std::mt19937 gen{rd()};
@@ -18,7 +18,7 @@ float Math::random_float(float lower, float upper)
     return dis(gen);
 }
 
-double Math::random_double(double lower, double upper)
+double Math::RandomDouble(double lower, double upper)
 {
     std::random_device rd;
     std::mt19937 gen{rd()};

@@ -52,78 +52,91 @@ void EditController::onUpdate(Time dt)
 {
     m_cameraController->setState(m_sceneWindowFocused);
     m_cameraController->onUpdate(dt);
-    m_editorGrid.onUpdate();
 
     auto scene = getContext();
-    auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
-    for(auto entity: transGroup)
+    Renderer2D::BeginScene(m_cameraController->getCamera(), true);
     {
-        auto &transform = transGroup.get<TransformComponent>(entity);
-        auto &render = transGroup.get<RenderComponent>(entity);
-
-        // TODO: make these into entt function
-        if(render.init)
+        auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
+        for (auto entity: transGroup)
         {
-            render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-            render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
-            render.init = false;
-        }
+            auto &transform = transGroup.get<TransformComponent>(entity);
+            auto &render = transGroup.get<RenderComponent>(entity);
 
-        if(render.m_texture)
-        {
-            if(transform.rotate != 0.f)
-                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color, transform.rotate);
+            // TODO: make these into entt function
+            if (render.init)
+            {
+                render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+                render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
+                render.init = false;
+            }
+
+            if (render.m_texture)
+            {
+                if (transform.rotate != 0.f)
+                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
+                                                render.color, transform.rotate);
+                else
+                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
+                                         render.color);
+            }
             else
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture, render.color);
+            {
+                if (transform.rotate != 0.f)
+                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color,
+                                                transform.rotate);
+                else
+                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
+            }
         }
-        else
+    }
+    Renderer2D::EndScene();
+
+    Renderer2D::BeginScene(m_cameraController->getCamera(), false);
+    {
+        m_editorGrid.onUpdate(m_showGrid);
+
+        // Draw special entities
+        drawCameraIconAndBorder(scene);
+        // TODO: Draw other special entities
+
+        // draw attachPoint
+        auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
+        for (auto entity : view)
         {
-            if(transform.rotate != 0.f)
-                Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color, transform.rotate);
-            else
-                Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-        }
-    }
-
-    // Draw special entities
-    drawCameraIconAndBorder(scene);
-
-
-    // Draw AttachPoint
-    auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
-    for(auto entity : view)
-    {
-        Entity ent{entity, scene.get()};
-        auto &rigid = ent.getComponent<RigidBody2DComponent>();
-        auto &transform = ent.getComponent<TransformComponent>();
-        //TODO: rotate Quad for collider
-        Renderer2D::DrawCircleLine({ transform.translate.x + rigid.attachPoint.x, transform.translate.y + rigid.attachPoint.y}, 0.1,  {0.160f, 0.254f, 1.0f, 1.0f});
-    }
-
-    // Draw BoxCollider
-    auto view2 = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
-    for(auto entity : view2)
-    {
-        Entity ent{entity, scene.get()};
-        auto &boxc = ent.getComponent<BoxCollider2DComponent>();
-        auto &transform = ent.getComponent<TransformComponent>();
-        //TODO: rotate Quad for collider
-        Renderer2D::DrawRotatedRect({transform.translate.x + boxc.x, transform.translate.y + boxc.y}, {boxc.w, boxc.h},  {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
-    }
-
-    // TODO: Make the max AABB
-    if(isSelected())
-    {
-        auto &entSet = getTargets();
-        for(auto &ent : entSet)
-        {
+            Entity ent{entity, scene.get()};
+            auto &rigid = ent.getComponent<RigidBody2DComponent>();
             auto &transform = ent.getComponent<TransformComponent>();
-            // Get bounding box
-            auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-            // Draw Border
-            Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+            //TODO: rotate Quad for collider
+            Renderer2D::DrawCircleLine({rigid.attachPoint.x, rigid.attachPoint.y}, 0.1, {0.0f, 1.0f, 1.0f, 1.0f});
+        }
+
+        // draw boxcollider
+        auto view2 = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
+        for (auto entity : view2)
+        {
+            Entity ent{entity, scene.get()};
+            auto &boxc = ent.getComponent<BoxCollider2DComponent>();
+            auto &transform = ent.getComponent<TransformComponent>();
+            //TODO: rotate Quad for collider
+            Renderer2D::DrawRotatedRect({transform.translate.x + boxc.x, transform.translate.y + boxc.y},
+                                        {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+        }
+
+        // TODO: Make the max AABB
+        if (isSelected())
+        {
+            auto &entSet = getTargets();
+            for (auto &ent : entSet)
+            {
+                auto &transform = ent.getComponent<TransformComponent>();
+                // Get bounding box
+                auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
+                // Draw Border
+                Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+            }
         }
     }
+    Renderer2D::EndScene();
 }
 
 void EditController::onImGuiRender()

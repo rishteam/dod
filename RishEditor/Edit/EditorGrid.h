@@ -13,9 +13,10 @@ public:
 
     void onAttach(const Ref<OrthographicCameraController> &cameraController) { m_cameraController = cameraController; }
     void onDetach() {}
-    void onUpdate();
+    void onUpdate(bool show);
 
     void onImGuiRender();
+
 private:
     void drawGrid(float offset, const glm::vec4 &color);
     //

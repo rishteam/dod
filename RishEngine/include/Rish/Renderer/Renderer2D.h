@@ -43,6 +43,9 @@ public:
     static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<SubTexture2D> &subtexture, const glm::vec4 &color, float rotate);
     static void DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<SubTexture2D> &subtexture, const glm::vec4 &color, float rotate);
 
+    static void DrawTriangle(const glm::vec2& p0, const glm::vec2& p1, const glm::vec2& p2, const glm::vec4& color);
+    static void DrawTriangle(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
+
     static void DrawBgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color);
     static void DrawBgLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color);
 
@@ -66,9 +69,12 @@ public:
 
     struct Stats
     {
-        uint32_t QuadCount = 0; /// Draw quad count
-        uint32_t LineCount = 0; /// Draw line count
-        uint32_t DrawCount = 0; /// Draw call count
+        uint32_t QuadCount = 0;     ///< Draw quad count
+        uint32_t LineCount = 0;     ///< Draw line count
+        uint32_t RectCount = 0;     ///< Draw rect count
+        uint32_t CircleCount = 0;   ///< Draw Circle count
+        uint32_t TriangleCount = 0; ///< Draw triangle count
+        uint32_t DrawCount = 0;     ///< Draw call count
     };
 
     static Stats& GetStats();

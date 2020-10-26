@@ -91,10 +91,10 @@ void Timer::Update()
 
 		if(!loopTimer->m_loopTimes)
 		{
-			m_timerList.erase(loopTimer);
+			m_timerList.erase(loopTimer++);
 		}
-
-		++loopTimer;
+		else
+		    ++loopTimer;
 	}
 }
 
