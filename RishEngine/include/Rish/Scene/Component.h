@@ -111,7 +111,7 @@ private:
 /**
  * @brief Render
  */
-struct RenderComponent
+struct SpriteRenderComponent
 {
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
 	std::string texturePath = "assets/texture/1.png";
@@ -157,9 +157,8 @@ struct RenderComponent
         }
     }
 
-	RenderComponent() = default;
+	SpriteRenderComponent() = default;
 private:
-
 	friend class cereal::access;
 	template<class Archive>
 	void serialize(Archive &ar)

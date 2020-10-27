@@ -89,7 +89,7 @@ Entity Scene::duplicateEntity(Entity src)
     auto ent = createEntity(fmt::format("{} ({})", tag, m_entNameToNumMap[tag]));
 
     CopyComponentToEntityIfExists<TransformComponent>(ent, src);
-    CopyComponentToEntityIfExists<RenderComponent>(ent, src);
+    CopyComponentToEntityIfExists<SpriteRenderComponent>(ent, src);
     CopyComponentToEntityIfExists<CameraComponent>(ent, src);
     CopyComponentToEntityIfExists<NativeScriptComponent>(ent, src);
     CopyComponentToEntityIfExists<RigidBody2DComponent>(ent, src);
@@ -113,7 +113,7 @@ void Scene::onRuntimeInit()
         }
     });
 
-    m_registry.view<RenderComponent>().each([=](auto ent, auto &render) {
+    m_registry.view<SpriteRenderComponent>().each([=](auto ent, auto &render) {
         Entity entity{ent, this};
 
         if(render.init)
@@ -192,14 +192,14 @@ void Scene::onUpdate(Time dt)
     }
     if(!isAnyCamera) return;
 
-    // Draw RenderComponent
-    auto cameraGroup = m_registry.group<TransformComponent, RenderComponent>();
+    // Draw SpriteRenderComponent
+    auto cameraGroup = m_registry.group<TransformComponent, SpriteRenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
     {
         for (auto entity : cameraGroup) {
             Entity ent{entity, this};
             auto &transform = ent.getComponent<TransformComponent>();
-            auto &render = ent.getComponent<RenderComponent>();
+            auto &render = ent.getComponent<SpriteRenderComponent>();
 
             if (render.init)
             {
@@ -302,7 +302,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
 
     // Copy components
     CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<RenderComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<SpriteRenderComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap, target);
     CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap, target);

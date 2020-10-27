@@ -56,11 +56,11 @@ void EditController::onUpdate(Time dt)
     auto scene = getContext();
     Renderer2D::BeginScene(m_cameraController->getCamera(), true);
     {
-        auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
+        auto transGroup = scene->m_registry.group<TransformComponent, SpriteRenderComponent>();
         for (auto entity: transGroup)
         {
             auto &transform = transGroup.get<TransformComponent>(entity);
-            auto &render = transGroup.get<RenderComponent>(entity);
+            auto &render = transGroup.get<SpriteRenderComponent>(entity);
 
             if (render.init)
             {

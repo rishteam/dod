@@ -21,7 +21,7 @@ ScriptTestLayer::ScriptTestLayer()
 //    in(cereal::make_nvp("Scene", m_scene));
 
     auto ent = m_scene->createEntity("A");
-    ent.addComponent<RenderComponent>();
+    ent.addComponent<SpriteRenderComponent>();
     ent.addComponent<NativeScriptComponent>().bind<CameraController>();
 
     ent = m_scene->createEntity("B");

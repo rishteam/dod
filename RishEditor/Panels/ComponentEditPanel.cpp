@@ -55,13 +55,13 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
 }
 
 template<>
-void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
+void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
 {
-    BeginDrawEditComponent(RenderComponent);
+    BeginDrawEditComponent(SpriteRenderComponent);
     {
-        DrawRightClickMenu(RenderComponent, false);
+        DrawRightClickMenu(SpriteRenderComponent, false);
         //
-        auto &render = m_targetEntity.getComponent<RenderComponent>();
+        auto &render = m_targetEntity.getComponent<SpriteRenderComponent>();
         ImGui::ColorEdit4("Color", glm::value_ptr(render.color));
 
         ImGui::Separator();
@@ -74,8 +74,6 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
             {
                 std::string cur = FileSystem::GetCurrentDirectory();
                 cur += "\\assets";
-
-                RL_INFO("{}", cur);
 
                 if (FileDialog::SelectSingleFile(nullptr, cur.c_str(), tPath))
                 {
@@ -729,7 +727,7 @@ void ComponentEditPanel::onImGuiRender()
         // TODO: Make this into dispatcher
         drawEditComponentWidget<TagComponent>();
         drawEditComponentWidget<TransformComponent>();
-        drawEditComponentWidget<RenderComponent>();
+        drawEditComponentWidget<SpriteRenderComponent>();
         drawEditComponentWidget<CameraComponent>();
         drawEditComponentWidget<NativeScriptComponent>();
         drawEditComponentWidget<ParticleComponent>();

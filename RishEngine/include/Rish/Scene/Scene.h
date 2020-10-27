@@ -156,7 +156,7 @@ public:
 		 	.component<
                 TagComponent,
                 TransformComponent,
-                RenderComponent,
+                SpriteRenderComponent,
                 CameraComponent,
                 ParticleComponent,
                 NativeScriptComponent,
@@ -173,7 +173,7 @@ public:
 			.component<
                 TagComponent,
 			    TransformComponent,
-			    RenderComponent,
+			    SpriteRenderComponent,
 			    CameraComponent,
 			    ParticleComponent,
 			    NativeScriptComponent,

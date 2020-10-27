@@ -120,9 +120,9 @@ void DrawDebugCameraComponentInfo(Entity entity)
 
 void DrawDebugRenderComponentInfo(Entity entity)
 {
-    if(!entity.hasComponent<RenderComponent>())
+    if(!entity.hasComponent<SpriteRenderComponent>())
         return;
-    auto &render = entity.getComponent<RenderComponent>();
+    auto &render = entity.getComponent<SpriteRenderComponent>();
     if(ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text("path = %s", render.m_texture->getPath().c_str());
