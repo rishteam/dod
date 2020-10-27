@@ -70,12 +70,24 @@ void EditController::onUpdate(Time dt)
 
             if (render.useTexture)
             {
-                if (transform.rotate != 0.f)
-                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                                render.color, transform.rotate);
-                else
-                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                         render.color);
+                if(render.useAsSubTexture)
+                {
+                    if (transform.rotate != 0.f)
+                        Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
+                                                    render.color, transform.rotate);
+                    else
+                        Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
+                                             render.color);
+                }
+                else // normal texture
+                {
+                    if (transform.rotate != 0.f)
+                        Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
+                                                    render.color, transform.rotate);
+                    else
+                        Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
+                                             render.color);
+                }
             }
             else
             {

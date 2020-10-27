@@ -72,22 +72,62 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
             std::string tPath;
             if (ImGui::Button("Load Texture"))
             {
-                std::string cur = FileSystem::GetCurrentDirectory() + "assets/";
+                std::string cur = FileSystem::GetCurrentDirectory();
+                cur += "\\assets";
+
+                RL_INFO("{}", cur);
+
                 if (FileDialog::SelectSingleFile(nullptr, cur.c_str(), tPath))
                 {
-                    render.texturePath = tPath;
-                    render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+                    render.loadTexture(tPath);
                 }
             }
             ImGui::SameLine();
             //
             ImGui::InputText("##texturePath", &render.texturePath, ImGuiInputTextFlags_ReadOnly);
             if(render.m_texture)
-                ImGui::Image(render.m_texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
+                ImGui::Image(render.m_texture->getTextureID(), ImVec2(64*render.m_texture->getAspectRatio(), 64), ImVec2(0, 0), ImVec2(1, -1));
             else
                 ImGui::Dummy(ImVec2(64, 64));
         }
 
+        static bool subTexture = render.useAsSubTexture;
+        static bool valueChanged = false;
+        //
+        ImGui::Checkbox("Use as SubTexture", &subTexture);
+        if(subTexture)
+        {
+            if(ImGui::RadioButton("Sheet", render.subTextureType == RenderComponent::SubTextureSheet))
+                render.subTextureType = RenderComponent::SubTextureSheet;
+            if(ImGui::RadioButton("Coordinate", render.subTextureType == RenderComponent::SubTextureCoordinate))
+                render.subTextureType = RenderComponent::SubTextureCoordinate;
+
+            if (render.subTextureType == RenderComponent::SubTextureSheet)
+            {
+                ImGui::DragFloat2("Pos", glm::value_ptr(render.pos));
+                ImGui::DragFloat2("Cell Size", glm::value_ptr(render.cellSize));
+                ImGui::DragFloat2("Sprite Grid Size", glm::value_ptr(render.spriteGridSize));
+            }
+            else if (render.subTextureType == RenderComponent::SubTextureCoordinate)
+            {
+                ImGui::DragFloat2("Left Upper", glm::value_ptr(render.leftUpper));
+                ImGui::DragFloat2("Size", glm::value_ptr(render.size));
+            }
+
+            if(ImGui::Button("Set SubTexture"))
+            {
+                valueChanged = true;
+                render.loadSubTexture();
+            }
+            if(valueChanged)
+            {
+                render.useAsSubTexture = true;
+            }
+        }
+        else
+        {
+            render.useAsSubTexture = false;
+        }
     }
     EndDrawEditComponent();
 }
