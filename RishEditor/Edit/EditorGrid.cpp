@@ -103,7 +103,7 @@ void EditorGrid::drawGrid(float offset, const glm::vec4 &color)
 }
 
 float EditorGrid::getOffset(){
-    return currentOffset;
+    return (m_currentBound.getWidth()+m_currentBound.getHeight())/10;
 }
 
 }

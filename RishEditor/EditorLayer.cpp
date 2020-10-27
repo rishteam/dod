@@ -271,6 +271,11 @@ void EditorLayer::onImGuiRender()
         }
         ImGui::SameLine();
 
+        if(ImGui::Button(ICON_FA_BORDER_ALL)){
+            m_editController->changeShowGrid();
+        }
+        ImGui::SameLine();
+
         // MoveMode button
         if(ImGui::Button(ICON_FA_ARROWS_ALT))
         {
@@ -453,7 +458,7 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 if(ImGui::BeginMenu("Editor Grid"))
                 {
-                    ImGui::MenuItem("Show", nullptr, &m_editController->m_showGrid);
+//                    ImGui::MenuItem("Show", nullptr, &m_editController->m_showGrid);
                     ImGui::MenuItem("Debug info", nullptr, &m_editController->m_debugEditorGrid);
                     ImGui::EndMenu();
                 }
