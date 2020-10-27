@@ -86,7 +86,12 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
             //
             ImGui::InputText("##texturePath", &render.texturePath, ImGuiInputTextFlags_ReadOnly);
             if(render.m_texture)
-                ImGui::Image(render.m_texture->getTextureID(), ImVec2(64*render.m_texture->getAspectRatio(), 64), ImVec2(0, 0), ImVec2(1, -1));
+            {
+                ImGui::BeginChild("texture_viewer", ImVec2(ImGui::GetWindowWidth(), 64));
+                ImGui::Image(render.m_texture->getTextureID(), ImVec2(64 * render.m_texture->getAspectRatio(), 64),
+                             ImVec2(0, 0), ImVec2(1, -1));
+                ImGui::EndChild();
+            }
             else
                 ImGui::Dummy(ImVec2(64, 64));
         }
@@ -97,21 +102,22 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
         ImGui::Checkbox("Use as SubTexture", &subTexture);
         if(subTexture)
         {
-            if(ImGui::RadioButton("Sheet", render.subTextureType == RenderComponent::SubTextureSheet))
-                render.subTextureType = RenderComponent::SubTextureSheet;
-            if(ImGui::RadioButton("Coordinate", render.subTextureType == RenderComponent::SubTextureCoordinate))
-                render.subTextureType = RenderComponent::SubTextureCoordinate;
+            auto &type = render.m_subSetting.type;
+            if(ImGui::RadioButton("Sheet", type == SubTexture2DSetting::SubTextureSheet))
+                type = SubTexture2DSetting::SubTextureSheet;
+            if(ImGui::RadioButton("Coordinate", type == SubTexture2DSetting::SubTextureCoordinate))
+                type = SubTexture2DSetting::SubTextureCoordinate;
 
-            if (render.subTextureType == RenderComponent::SubTextureSheet)
+            if (type == SubTexture2DSetting::SubTextureSheet)
             {
-                ImGui::DragFloat2("Pos", glm::value_ptr(render.pos));
-                ImGui::DragFloat2("Cell Size", glm::value_ptr(render.cellSize));
-                ImGui::DragFloat2("Sprite Grid Size", glm::value_ptr(render.spriteGridSize));
+                ImGui::DragFloat2("Pos", glm::value_ptr(render.m_subSetting.pos));
+                ImGui::DragFloat2("Cell Size", glm::value_ptr(render.m_subSetting.cellSize));
+                ImGui::DragFloat2("Sprite Grid Size", glm::value_ptr(render.m_subSetting.spriteGridSize));
             }
-            else if (render.subTextureType == RenderComponent::SubTextureCoordinate)
+            else if (type == SubTexture2DSetting::SubTextureCoordinate)
             {
-                ImGui::DragFloat2("Left Upper", glm::value_ptr(render.leftUpper));
-                ImGui::DragFloat2("Size", glm::value_ptr(render.size));
+                ImGui::DragFloat2("Left Upper", glm::value_ptr(render.m_subSetting.leftUpper));
+                ImGui::DragFloat2("Size", glm::value_ptr(render.m_subSetting.size));
             }
 
             if(ImGui::Button("Set SubTexture"))
@@ -119,6 +125,9 @@ void ComponentEditPanel::drawEditComponentWidget<RenderComponent>()
                 valueChanged = true;
                 render.loadSubTexture();
             }
+            else
+                valueChanged = false;
+            //
             if(valueChanged)
             {
                 render.useAsSubTexture = true;

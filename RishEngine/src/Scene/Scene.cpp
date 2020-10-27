@@ -201,6 +201,12 @@ void Scene::onUpdate(Time dt)
             auto &transform = ent.getComponent<TransformComponent>();
             auto &render = ent.getComponent<RenderComponent>();
 
+            if (render.init)
+            {
+                render.loadFromPath();
+                render.init = false;
+            }
+
             if (render.useTexture)
             {
                 if(render.useAsSubTexture)

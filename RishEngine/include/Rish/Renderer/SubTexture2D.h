@@ -27,4 +27,34 @@ private:
     float m_width, m_height;
 };
 
+struct SubTexture2DSetting
+{
+    enum SubTextureType
+    {
+        SubTextureSheet,
+        SubTextureCoordinate
+    };
+    SubTextureType type{};
+
+    glm::vec2 pos;
+    glm::vec2 cellSize;
+    glm::vec2 spriteGridSize{1.f, 1.f};
+
+    glm::vec2 leftUpper;
+    glm::vec2 size;
+
+    template<typename Archive>
+    void serialize(Archive &ar)
+    {
+        ar(
+            CEREAL_NVP(type),
+            CEREAL_NVP(leftUpper),
+            CEREAL_NVP(size),
+            CEREAL_NVP(pos),
+            CEREAL_NVP(cellSize),
+            CEREAL_NVP(spriteGridSize)
+        );
+    }
+};
+
 }

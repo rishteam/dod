@@ -64,7 +64,7 @@ void EditController::onUpdate(Time dt)
 
             if (render.init)
             {
-                render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
+                render.loadFromPath();
                 render.init = false;
             }
 
