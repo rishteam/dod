@@ -41,9 +41,6 @@ private:
     EditorGrid m_editorGrid;                              ///< Editor grid
     Ref<OrthographicCameraController> m_cameraController; ///< Editor camera
 
-    // Attributes of current selected entity
-    glm::vec3 m_curEntPos{}, m_curSize{};
-
     // Gizmo
     std::unordered_map<Entity, bool> m_isNowMovingEntity{};
     std::unordered_map<Entity, glm::vec3> m_oriEntityPosition{};

@@ -253,19 +253,25 @@ void EditController::onImGuiRender()
         {
             Entity ent{entityID, m_currentScene.get()};
             // AABB
-            m_curEntPos = ent.getComponent<TransformComponent>().translate;
-            m_curSize = ent.getComponent<TransformComponent>().scale;
+            auto entPos = ent.getComponent<TransformComponent>().translate;
+            auto entSize = ent.getComponent<TransformComponent>().scale;
+            auto entRotate = ent.getComponent<TransformComponent>().rotate;
+            auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+            const glm::vec3 boundPos(bound.getPosition(), 0.f);
+            const glm::vec3 boundSize(bound.getScale(), 0.f);
+            const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
+
             // Inside
-            if(Math::AABB2DPoint(m_curEntPos, m_curSize, mposInWorld))
+            if(Math::AABB2DPoint(boundPos, boundSize+clickSize, mposInWorld))
             {
                 if(m_entitySet.count(ent))
                 {
                     removeTarget(ent);
                 }
                 // Pick the smallest size one
-                if(minSize.x > m_curSize.x && minSize.y > m_curSize.y)
+                if(minSize.x > boundSize.x && minSize.y > boundSize.y)
                 {
-                    minSize = m_curSize;
+                    minSize = boundSize;
                     bestMatch = ent;
                 }
             }
@@ -276,6 +282,8 @@ void EditController::onImGuiRender()
             if(!isCtrlPressed)
                 resetTarget();
             addTarget(bestMatch);
+        }else{
+            resetSelected();
         }
     }
 
@@ -400,17 +408,6 @@ void EditController::onImGuiRender()
                                   (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent]) * m_zoomEntityWeight[ent];
                         entPos = m_oriEntityPosition[ent] +
                                  (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent]) * m_moveEntityWeight[ent];
-
-                        // zoom after rotation ( zoom will broken when scale negative and degree > 180 and degree < 0
-//                        boundSize = m_oriEntitySize[ent] + (glm::vec3(mposInWorld, 0.f)-m_oriMousePosition[ent])*m_zoomEntityWeight[ent];
-//                        boundPos = m_oriEntityPosition[ent] + (glm::vec3(mposInWorld, 0.f)-m_oriMousePosition[ent])*m_moveEntityWeight[ent];
-//
-//                        auto sinR = std::sin(entRotate*M_PI/180);
-//                        auto cosR = std::cos(entRotate*M_PI/180);
-//                        auto newX = (boundSize.x*cosR-boundSize.y*sinR)/(cosR*cosR-sinR*sinR);
-//                        auto newY = (boundSize.y*cosR-boundSize.x*sinR)/(cosR*cosR-sinR*sinR);
-//                        entSize = glm::vec3(newX,newY,0)*m_oriEntityNegative[ent];
-//                        entPos = boundPos;
 
                     };
                 }
