@@ -9,6 +9,7 @@
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
 #include <Rish/Renderer/Texture2D.h>
+#include <Rish/Renderer/SubTexture2D.h>
 //
 #include <Rish/Scene/SceneCamera.h>
 //
@@ -114,22 +115,75 @@ struct RenderComponent
 {
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
 	std::string texturePath = "assets/texture/1.png";
-	Ref<Texture2D> m_texture;
 	bool useTexture = true;
+	//
+	bool useAsSubTexture = false;
+	enum SubTextureType
+    {
+	    SubTextureSheet,
+	    SubTextureCoordinate
+    };
+	SubTextureType subTextureType{};
+
+	// Need initialize
+    Ref<Texture2D> m_texture;
+    // SubTexture
+    Ref<SubTexture2D> m_subtexture;
+    glm::vec2 pos;
+    glm::vec2 cellSize;
+    glm::vec2 spriteGridSize{1.f, 1.f};
+
+    glm::vec2 leftUpper;
+    glm::vec2 size;
 
 	// states
 	bool init = true; // TODO: Check the meaning and rename it
 
-	RenderComponent() = default;
+    void loadFromPath()
+    {
+        m_texture = Texture2D::LoadTextureVFS(texturePath);
+    }
 
+	void loadTexture(const std::string &path)
+    {
+	    texturePath = path;
+        loadFromPath();
+        if(useAsSubTexture)
+            loadSubTexture();
+    }
+
+	void loadSubTexture()
+    {
+        if (subTextureType == RenderComponent::SubTextureSheet)
+        {
+            m_subtexture = SubTexture2D::CreateFromSheet(m_texture, pos, cellSize,
+                                                                spriteGridSize);
+        }
+        else if (subTextureType == RenderComponent::SubTextureCoordinate)
+        {
+            m_subtexture = SubTexture2D::CreateFromCoordinate(m_texture, leftUpper,
+                                                                     size);
+        }
+    }
+
+	RenderComponent() = default;
 private:
+
 	friend class cereal::access;
 	template<class Archive>
 	void serialize(Archive &ar)
 	{
-		ar(cereal::make_nvp("Color", color),
+		ar(
+           cereal::make_nvp("Color", color),
 		   cereal::make_nvp("Texture", texturePath),
-		   cereal::make_nvp("UseTexture", useTexture)
+		   cereal::make_nvp("UseTexture", useTexture),
+		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+           cereal::make_nvp("SubTextureType", subTextureType),
+           CEREAL_NVP(leftUpper),
+           CEREAL_NVP(size),
+           CEREAL_NVP(pos),
+           CEREAL_NVP(cellSize),
+           CEREAL_NVP(spriteGridSize)
 		);
 	}
 };
