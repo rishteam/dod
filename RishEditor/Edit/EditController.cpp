@@ -150,9 +150,9 @@ void EditController::onUpdate(Time dt)
                         auto PointX = bound.getPosition() + bound.getScale() * glm::vec2(.7f, 0.f);
                         auto PointY = bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f);
                         Renderer2D::DrawFgLine(bound.getPosition(), PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
-                        Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,1.f),PointX+clickSize*glm::vec2(-1.f,-1.f), glm::vec4(0.f, 0.f, 1.f, 1.f));
+                        Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,.5f),PointX+clickSize*glm::vec2(-1.f,-.5f), glm::vec4(0.f, 0.f, 1.f, 1.f));
                         Renderer2D::DrawFgLine(bound.getPosition(),PointY,glm::vec4(1.f, 0.f, 0.f, 1.f));
-                        Renderer2D::DrawTriangle(PointY,PointY+clickSize*glm::vec2(1.f,-1.f),PointY+clickSize*glm::vec2(-1.f,-1.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
+                        Renderer2D::DrawTriangle(PointY,PointY+clickSize*glm::vec2(.5f,-1.f),PointY+clickSize*glm::vec2(-.5f,-1.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
 
                         break;
                     }
@@ -189,9 +189,9 @@ void EditController::onUpdate(Time dt)
 //                        Renderer2D::DrawQuad(bound.getPosition(), clickSize, clickColor);
 //                        Renderer2D::DrawFgLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
 
-                        Renderer2D::DrawCircleLine(entPos, entSize.y);
+                        Renderer2D::DrawCircleLine(entPos, std::max(entSize.x, entSize.y));
 
-                        const auto tmpPoint = glm::vec3(0.f, entSize.y*0.7, 1.f);
+                        const auto tmpPoint = glm::vec3(0.f, std::max(entSize.x, entSize.y)*0.7, 1.f);
                         const auto sinR = std::sin(glm::radians(entRotate));
                         const auto cosR = std::cos(glm::radians(entRotate));
                         Renderer2D::DrawFgLine(bound.getPosition(), glm::vec3(bound.getPosition(),0.f)+glm::vec3(tmpPoint.x*cosR-tmpPoint.y*sinR, tmpPoint.x*sinR+tmpPoint.y*cosR, 0.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
@@ -605,6 +605,11 @@ bool EditController::onMouseScrolled(MouseScrolledEvent &e)
 void EditController::changeGizmoMode(Gizmo gizmo)
 {
     m_gizmoMode = gizmo;
+}
+
+void EditController::changeShowGrid()
+{
+    m_showGrid = !m_showGrid;
 }
 
 } // end of namespace rl

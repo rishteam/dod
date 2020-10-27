@@ -30,6 +30,9 @@ public:
     }m_gizmoMode = Gizmo::MoveMode;
     void changeGizmoMode(Gizmo gizmo);
 
+    // Grid
+    void changeShowGrid();
+
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
 
 private:
@@ -69,7 +72,8 @@ private:
     // Helper functions
     void drawCameraIconAndBorder(const Ref<Scene> &scene) const;
 
-
+    // Grid
+    bool m_showGrid = true;
 
 public:
     // Debug Window
@@ -78,8 +82,6 @@ public:
     bool m_debugEditorController = false;
     bool m_debugShowIcon         = true;
     bool m_debugSimulateParticle = true;
-    //
-    bool m_showGrid = true;
 
 };
 
