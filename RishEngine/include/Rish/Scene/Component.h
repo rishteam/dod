@@ -112,24 +112,15 @@ private:
  */
 struct RenderComponent
 {
-    // TODO: delete these
-	std::string vertPath = "/shader/vertexSrc.glsl";
-	std::string fragPath = "/shader/fragSrc.glsl";
-	std::shared_ptr<rl::Shader> m_shader;
-
 	glm::vec4 color{1.0f, 1.0f, 1.0f, 1.0f};
 	std::string texturePath = "assets/texture/1.png";
-	std::shared_ptr<Texture2D> m_texture;
+	Ref<Texture2D> m_texture;
+	bool useTexture = true;
 
 	// states
 	bool init = true; // TODO: Check the meaning and rename it
 
 	RenderComponent() = default;
-	RenderComponent(const std::shared_ptr<rl::Shader> s) : m_shader(s) {}
-	RenderComponent(const std::string &vp, const std::string &fp, const glm::vec4 &c)
-		: vertPath(vp), fragPath(fp), color(c)
-	{
-	}
 
 private:
 	friend class cereal::access;
@@ -137,12 +128,10 @@ private:
 	void serialize(Archive &ar)
 	{
 		ar(cereal::make_nvp("Color", color),
-		   cereal::make_nvp("Vertex Shader", vertPath),
-		   cereal::make_nvp("Fragment Shader", fragPath),
-		   cereal::make_nvp("Texture", texturePath)
+		   cereal::make_nvp("Texture", texturePath),
+		   cereal::make_nvp("UseTexture", useTexture)
 		);
 	}
-
 };
 
 /**

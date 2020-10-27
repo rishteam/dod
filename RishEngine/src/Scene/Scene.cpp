@@ -201,7 +201,7 @@ void Scene::onUpdate(Time dt)
             auto &transform = ent.getComponent<TransformComponent>();
             auto &render = ent.getComponent<RenderComponent>();
 
-            if (render.m_texture) {
+            if (render.useTexture) {
                 if (transform.rotate != 0.f)
                     Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
                                                 render.color, transform.rotate);

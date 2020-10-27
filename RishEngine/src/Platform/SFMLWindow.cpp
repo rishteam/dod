@@ -9,6 +9,7 @@
 #include <Rish/config.h>
 #include <Rish/Platform/SFMLWindow.h>
 
+#include <Rish/Core/FileSystem.h>
 #include <Rish/Core/VFS.h>
 
 namespace rl {
@@ -449,7 +450,8 @@ void SFMLWindow::initImGui()
     icons_config.PixelSnapH = true;
 
     // TODO: deal with the path situation
-    io.Fonts->AddFontFromFileTTF( SOURCE_DIR_PATH "../assets/fonts/" FONT_ICON_FILE_NAME_FAS, 14.0f, &icons_config, icons_ranges );
+    std::string fontPath = FileSystem::GetCurrentDirectory() + "/assets/fonts/" + FONT_ICON_FILE_NAME_FAS;
+    io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 14.0f, &icons_config, icons_ranges );
     UpdateFontTexture();
 
     s_windowHasFocus = m_SFMLWindow.hasFocus();

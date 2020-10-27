@@ -62,15 +62,13 @@ void EditController::onUpdate(Time dt)
             auto &transform = transGroup.get<TransformComponent>(entity);
             auto &render = transGroup.get<RenderComponent>(entity);
 
-            // TODO: make these into entt function
             if (render.init)
             {
                 render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-                render.m_shader = Shader::LoadShaderVFS(render.vertPath, render.fragPath);
                 render.init = false;
             }
 
-            if (render.m_texture)
+            if (render.useTexture)
             {
                 if (transform.rotate != 0.f)
                     Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
