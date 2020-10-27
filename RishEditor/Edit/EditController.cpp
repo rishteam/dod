@@ -159,13 +159,13 @@ void EditController::onUpdate(Time dt)
                     case Gizmo::ZoomMode :{
                         // Draw Border
                         Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.5f), clickSize, clickColor);
+                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.5f), clickSize.x, clickColor);
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.0f), clickSize, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f, -0.5f), clickSize, clickColor);
+                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f, -0.5f), clickSize.x, clickColor);
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f, -0.5f), clickSize, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f, -0.5f), clickSize, clickColor);
+                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f, -0.5f), clickSize.x, clickColor);
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.0f), clickSize, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.5f), clickSize, clickColor);
+                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.5f), clickSize.x, clickColor);
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f,  0.5f), clickSize, clickColor);
                         break;
                     }
@@ -185,11 +185,8 @@ void EditController::onUpdate(Time dt)
                     }
                     case Gizmo::RotationMode :{
                         // Draw Circle
-//                        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-//                        Renderer2D::DrawQuad(bound.getPosition(), clickSize, clickColor);
-//                        Renderer2D::DrawFgLine(bound.getPosition(),bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f),glm::vec4(1.f, 0.f, 0.f, 1.f));
-
                         Renderer2D::DrawCircleLine(entPos, std::max(entSize.x, entSize.y));
+                        Renderer2D::DrawCircle(entPos, clickSize.x, glm::vec4(0, 0.39, 0.79, 1));
 
                         const auto tmpPoint = glm::vec3(0.f, std::max(entSize.x, entSize.y)*0.7, 1.f);
                         const auto sinR = std::sin(glm::radians(entRotate));
