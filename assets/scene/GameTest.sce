@@ -224,9 +224,32 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "/shader/vertexSrc.glsl",
-                    "Fragment Shader": "/shader/fragSrc.glsl",
-                    "Texture": "assets/texture/1.png"
+                    "Texture": "assets/texture/1.png",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
                 },
                 "value45": 1048582,
                 "value46": {
@@ -236,9 +259,32 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "/shader/vertexSrc.glsl",
-                    "Fragment Shader": "/shader/fragSrc.glsl",
-                    "Texture": "C:\\Users\\halloworld\\Desktop\\dod\\assets\\texture\\ground.png"
+                    "Texture": "assets\\texture\\ground.png",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
                 },
                 "value47": 7,
                 "value48": {
@@ -248,9 +294,32 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "/shader/vertexSrc.glsl",
-                    "Fragment Shader": "/shader/fragSrc.glsl",
-                    "Texture": "assets/texture/bg.jpg"
+                    "Texture": "assets/texture/bg.jpg",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
                 },
                 "value49": 1048579,
                 "value50": {
@@ -260,9 +329,32 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "/shader/vertexSrc.glsl",
-                    "Fragment Shader": "/shader/fragSrc.glsl",
-                    "Texture": "C:\\Users\\halloworld\\Desktop\\dod\\assets\\texture\\ground.png"
+                    "Texture": "assets\\texture\\ground.png",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
                 },
                 "value51": 4,
                 "value52": {
@@ -272,9 +364,32 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "/shader/vertexSrc.glsl",
-                    "Fragment Shader": "/shader/fragSrc.glsl",
-                    "Texture": "assets/texture/bg.jpg"
+                    "Texture": "assets/texture/bg.jpg",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
                 },
                 "value53": 5,
                 "value54": {
@@ -284,9 +399,32 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Vertex Shader": "/shader/vertexSrc.glsl",
-                    "Fragment Shader": "/shader/fragSrc.glsl",
-                    "Texture": "assets/texture/bg.jpg"
+                    "Texture": "assets/texture/bg.jpg",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
                 },
                 "value55": 1,
                 "value56": 0,
@@ -500,67 +638,42 @@
                     "x": 0.0,
                     "y": 0.0,
                     "w": 11.119999885559082,
-                    "h": 1.0,
-                    "whoCollide": {
-                        "uuid": ""
-                    },
-                    "isCollision": false
+                    "h": 1.0
                 },
                 "value80": 1,
                 "value81": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 0.5,
-                    "h": 0.5,
-                    "whoCollide": {
-                        "uuid": ""
-                    },
-                    "isCollision": false
+                    "h": 0.5
                 },
                 "value82": 1048579,
                 "value83": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 2.0,
-                    "h": 0.5,
-                    "whoCollide": {
-                        "uuid": ""
-                    },
-                    "isCollision": false
-
+                    "h": 0.5
                 },
                 "value84": 1048582,
                 "value85": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 2.5,
-                    "h": 0.5,
-                    "whoCollide": {
-                        "uuid": ""
-                    },
-                    "isCollision": false
+                    "h": 0.5
                 },
                 "value86": 8,
                 "value87": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 11.119999885559082,
-                    "h": 1.0,
-                    "whoCollide": {
-                        "uuid": ""
-                    },
-                    "isCollision": false
+                    "h": 1.0
                 },
                 "value88": 9,
                 "value89": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 11.119999885559082,
-                    "h": 1.0,
-                    "whoCollide": {
-                        "uuid": ""
-                    },
-                    "isCollision": false
+                    "h": 1.0
                 },
                 "value90": 0
             }

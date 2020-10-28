@@ -137,7 +137,7 @@ add_library(RishEngine
     src/Scene/SceneCamera.cpp
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
-    src/Scene/EntityManager.cp
+    src/Scene/EntityManager.cpp
 
     src/Math/AABB.cpp
     src/Math/BoundingBox.cpp
