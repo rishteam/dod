@@ -10,6 +10,11 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
     m_bg = Texture2D::LoadTextureVFS("/texture/bg.jpg");
     m_player = Texture2D::LoadTextureVFS("/texture/1.png");
+
+    auto path = m_bg->getPath();
+
+    RL_INFO("{}", path);
+    RL_INFO("{}", FileSystem::RelativePath(path));
 }
 
 void ExampleSandboxLayer::onAttach()

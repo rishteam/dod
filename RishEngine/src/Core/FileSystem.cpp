@@ -1,4 +1,5 @@
-#include "Rish/Core/FileSystem.h"
+#include <Rish/Core/FileSystem.h>
+#include <Rish/Utils/String.h>
 
 namespace rl {
 
@@ -204,6 +205,13 @@ std::string FileSystem::AbsolutePath(const std::string &path)
 bool FileSystem::IsAbsolutePath(const std::string &path)
 {
     return fs::path{path}.is_absolute();
+}
+
+std::string FileSystem::RelativePath(const std::string &path)
+{
+    std::string cur = GetCurrentDirectory() + "\\";
+    std::string tar = path;
+    return String::replaceFirst(tar, cur, "");
 }
 
 }

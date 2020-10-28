@@ -362,11 +362,10 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 // Open File
                 std::string path, content;
-                if(FileDialog::SelectSingleFile(nullptr, nullptr, path))
+                if(FileDialog::SelectSingleFile(nullptr, "assets", path))
                 {
                     content = FileSystem::ReadTextFile(path);
                     m_scenePath = path;
-//                    RL_INFO("content = {}", content);
                 }
 
                 // Deserialize

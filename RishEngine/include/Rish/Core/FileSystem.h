@@ -70,6 +70,12 @@ public:
 	static void SetCurrentDirectoryPath(const fs::path &path);
 
 	/**
+	 * @brief Get relative path
+	 * @param path Path string
+	 */
+	static std::string RelativePath(const std::string &path);
+
+	/**
 	 * @brief Normalize the path
 	 * @param path path
 	 * @return Normalized path

@@ -55,7 +55,7 @@ configure_file(${PROJECT_SOURCE_DIR}/config/Config.h.in ${PROJECT_SOURCE_DIR}/in
 set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/SpriteRotate.cpp
     ../NativeScript/Rish/Script/CameraController.cpp
-        ../NativeScript/Rish/Script/PlayerController.cpp
+    ../NativeScript/Rish/Script/PlayerController.cpp
 )
 
 # Add executable
@@ -80,8 +80,13 @@ add_library(RishEngine
     src/Core/Log.cpp
     src/Core/FileSystem.cpp
     src/Core/VFS.cpp
+
+    src/Debug/DebugWindow.cpp
     src/Debug/ImGuiLogWindow.cpp
+    src/ImGui.cpp
+
     src/Utils/uuid.cpp
+    src/Utils/String.cpp
 
     # fs
     src/Utils/FileDialog.cpp
@@ -129,16 +134,16 @@ add_library(RishEngine
     src/Scene/ComponentManager.cpp
     src/Scene/SceneCamera.cpp
     src/Scene/ScriptableManager.cpp
-
-    src/ImGui.cpp
-    src/Math/AABB.cpp
-    src/Math/BoundingBox.cpp
-
-    src/Debug/DebugWindow.cpp
     src/Scene/ScriptableEntity.cpp
 
+    src/Math/AABB.cpp
+    src/Math/BoundingBox.cpp
+    src/Math/Random.cpp
+
+    src/Scene/System/SpriteRenderSystem.cpp
+
     ${RL_SCRIPT_FILES}
-        src/Math/Random.cpp src/Scene/System/SpriteRenderSystem.cpp)
+)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

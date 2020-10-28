@@ -77,6 +77,7 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
 
                 if (FileDialog::SelectSingleFile(nullptr, cur.c_str(), tPath))
                 {
+                    tPath = FileSystem::RelativePath(tPath);
                     render.loadTexture(tPath);
                 }
             }
