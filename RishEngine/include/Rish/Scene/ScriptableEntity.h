@@ -63,6 +63,14 @@ public:
     virtual void onUpdate(Time dt) = 0;
     virtual void onImGuiRender() = 0;
 
+    // Virtual Copy Constructor pattern
+    // https://stackoverflow.com/questions/12255546/c-deep-copying-a-base-class-pointer
+    template<class T>
+    Ref<T> clone() const
+    {
+        return Ref<T>(new T(static_cast<T const&>(*this)));
+    }
+
 private:
     Entity m_entity;
     //
@@ -71,8 +79,8 @@ private:
     //
     template<typename T>
     friend void CopyComponent(entt::registry &dst, entt::registry &src,
-                             std::unordered_map<UUID, entt::entity>& enttMap,
-                             const Ref<Scene> &targetScene);
+                              std::unordered_map<UUID, entt::entity>& enttMap,
+                              Scene *dstScene, Scene *srcScene);
     template<typename T>
     friend void CopyComponentToEntityIfExists(Entity dst, Entity src);
 };
@@ -86,8 +94,8 @@ private:
         ar(CEREAL_NVP(mock));       \
     }
 
-#define RL_SCRIPT_SERIALIZE() \
-    template<typename Archive>      \
+#define RL_SCRIPT_SERIALIZE()    \
+    template<typename Archive>   \
     void serialize(Archive &ar)
 
 #define RL_SERIALIZE(name, object) \

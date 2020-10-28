@@ -257,8 +257,10 @@ void EditorLayer::onImGuiRender()
                 m_runtimeScene = MakeRef<Scene>();
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
+                //
                 PhysicsSystem::onInit(m_currentScene);
                 ColliderSystem::onInit(m_currentScene);
+                //
                 m_currentScene->onScenePlay();
             }
             else
@@ -286,7 +288,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         if(ImGui::Button(ICON_FA_BORDER_ALL)){
-            m_editController->changeShowGrid();
+            m_editController->toggleShowGrid();
         }
         ImGui::SameLine();
 
@@ -305,7 +307,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         // Scale button
-        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
+        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
         {
             m_editController->changeGizmoMode(EditController::Gizmo::ScaleMode);
         }

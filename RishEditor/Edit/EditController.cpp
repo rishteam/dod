@@ -576,7 +576,7 @@ void EditController::changeGizmoMode(Gizmo gizmo)
     m_gizmoMode = gizmo;
 }
 
-void EditController::changeShowGrid()
+void EditController::toggleShowGrid()
 {
     m_showGrid = !m_showGrid;
 }

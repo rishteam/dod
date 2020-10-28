@@ -31,7 +31,7 @@ public:
     void changeGizmoMode(Gizmo gizmo);
 
     // Grid
-    void changeShowGrid();
+    void toggleShowGrid();
 
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
 

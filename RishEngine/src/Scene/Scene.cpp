@@ -261,24 +261,21 @@ void Scene::copySceneTo(Ref<Scene> &target)
 //    target->m_registry.clear();
 
     // Copy all entities by UUID
-    // TODO: use m_registry.each ?
-    auto view = m_registry.view<TagComponent>();
-    for(auto ent : view)
-    {
-        auto &tag = view.get<TagComponent>(ent);
+    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
+        RL_UNUSED(ent);
         Entity targetEnt = target->createEntity(tag.id, tag.tag);
         targetEnttMap[tag.id] = targetEnt.getEntityID();
-    }
+    });
 
     // Copy components
-    CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<SpriteRenderComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
-    CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target);
+    CopyComponent<TransformComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<SpriteRenderComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<CameraComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     
     // Copy other states
     target->m_entNameToNumMap = m_entNameToNumMap;
@@ -330,7 +327,7 @@ Entity Scene::getEntityByUUID(UUID uuid)
 
 void Scene::registerAllEntities()
 {
-    m_registry.view<TagComponent>().each([=](auto ent, auto &tag) {
+    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
         Entity entity{ent, this};
         EntityManager::Register(entity);
     });

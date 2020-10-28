@@ -189,8 +189,6 @@ public:
                 BoxCollider2DComponent,
                 Joint2DComponent
             >(ar);
-
-        registerAllEntities();
 	}
 };
 
