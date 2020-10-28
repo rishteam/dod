@@ -8,6 +8,7 @@
 //
 #include <Rish/ImGui.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
+#include <Rish/Scene/System/SpriteRenderSystem.h>
 
 #include "EditController.h"
 
@@ -56,48 +57,7 @@ void EditController::onUpdate(Time dt)
     auto scene = getContext();
     Renderer2D::BeginScene(m_cameraController->getCamera(), true);
     {
-        auto transGroup = scene->m_registry.group<TransformComponent, SpriteRenderComponent>();
-        for (auto entity: transGroup)
-        {
-            auto &transform = transGroup.get<TransformComponent>(entity);
-            auto &render = transGroup.get<SpriteRenderComponent>(entity);
-
-            if (render.init)
-            {
-                render.loadFromPath();
-                render.init = false;
-            }
-
-            if (render.useTexture)
-            {
-                if(render.useAsSubTexture)
-                {
-                    if (transform.rotate != 0.f)
-                        Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
-                                                    render.color, transform.rotate);
-                    else
-                        Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
-                                             render.color);
-                }
-                else // normal texture
-                {
-                    if (transform.rotate != 0.f)
-                        Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                                    render.color, transform.rotate);
-                    else
-                        Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                             render.color);
-                }
-            }
-            else
-            {
-                if (transform.rotate != 0.f)
-                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color,
-                                                transform.rotate);
-                else
-                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-            }
-        }
+        SpriteRenderSystem::onRender(scene);
     }
     Renderer2D::EndScene();
 

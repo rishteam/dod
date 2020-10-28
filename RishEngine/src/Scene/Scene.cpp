@@ -10,6 +10,7 @@
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
 //
+#include <Rish/Scene/System/SpriteRenderSystem.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 //
 #include <Rish/Physics/PhysicsSystem.h>
@@ -142,7 +143,8 @@ void Scene::onEditorInit()
 
 void Scene::onUpdate(Time dt)
 {
-    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
+    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
+    {
         Entity ent{entityID, this};
 
         // TODO: Refactor me out for Editor
@@ -193,50 +195,9 @@ void Scene::onUpdate(Time dt)
     if(!isAnyCamera) return;
 
     // Draw SpriteRenderComponent
-    auto cameraGroup = m_registry.group<TransformComponent, SpriteRenderComponent>();
     Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
     {
-        for (auto entity : cameraGroup) {
-            Entity ent{entity, this};
-            auto &transform = ent.getComponent<TransformComponent>();
-            auto &render = ent.getComponent<SpriteRenderComponent>();
-
-            if (render.init)
-            {
-                render.loadFromPath();
-                render.init = false;
-            }
-
-            if (render.useTexture)
-            {
-                if(render.useAsSubTexture)
-                {
-                    if (transform.rotate != 0.f)
-                        Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
-                                                    render.color, transform.rotate);
-                    else
-                        Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
-                                             render.color);
-                }
-                else // normal texture
-                {
-                    if (transform.rotate != 0.f)
-                        Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                                    render.color, transform.rotate);
-                    else
-                        Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                             render.color);
-                }
-            }
-            else
-            {
-                if (transform.rotate != 0.f)
-                    Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.color,
-                                                transform.rotate);
-                else
-                    Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
-            }
-        }
+       SpriteRenderSystem::onRender(m_registry, m_sceneState);
     }
     Renderer2D::EndScene();
 

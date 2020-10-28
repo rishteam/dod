@@ -292,7 +292,8 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         // Scale button
-        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) ){
+        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
+        {
             m_editController->changeGizmoMode(EditController::Gizmo::ScaleMode);
         }
         ImGui::SameLine();
