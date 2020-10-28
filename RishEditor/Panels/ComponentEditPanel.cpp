@@ -621,6 +621,7 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
         float translate[2] = {collider.x, collider.y};
         float scale[2] = {collider.w, collider.h};
 
+
         ImGui::DragFloat2("(x, y)", translate, 0.5f);
         ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
         // Update the collider value
@@ -628,6 +629,24 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
         collider.y = translate[1];
         collider.w = scale[0];
         collider.h = scale[1];
+
+        // Collision State
+        if (collider.isCollision)
+        {
+            ImGui::Text("isCollide: True");
+            ImGui::Text("Collide Object: ");
+            for(auto idx : collider.whoCollide)
+            {
+                ImGui::Text("%s", idx.to_string().c_str());
+            }
+        }
+        else
+        {
+            ImGui::Text("isCollide: False");
+            ImGui::Text("Collide Object: None");
+        }
+
+
     }
     EndDrawEditComponent();
 }

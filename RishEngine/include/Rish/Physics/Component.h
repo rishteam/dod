@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Physics/vector_math.h>
+#include <Rish/Utils/uuid.h>
 
 namespace rl {
 
@@ -67,8 +68,11 @@ struct BoxCollider2DComponent
     float y = 0.0f;
     float w = 1.0f;
     float h = 1.0f;
+    // TODO: To serializable
+    std::vector<UUID> whoCollide;
+    bool isCollision = false;
 
-    BoxCollider2DComponent() = default;
+    BoxCollider2DComponent();
 private:
     friend class cereal::access;
     template<class Archive>

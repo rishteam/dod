@@ -104,6 +104,7 @@ add_library(RishEngine
 
     # Box
     src/Collider/Box.cpp
+    src/Collider/ColliderSystem.cpp
 
     # Physics
     src/Physics/Arbiter.cpp
@@ -112,6 +113,7 @@ add_library(RishEngine
     src/Physics/RigidBody2D.cpp
     src/Physics/vector_math.cpp
     src/Physics/PhysicsSystem.cpp
+    src/Physics/Component.cpp
 
     # Renderer
     src/Renderer/Shader.cpp
@@ -135,6 +137,7 @@ add_library(RishEngine
     src/Scene/SceneCamera.cpp
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
+    src/Scene/EntityManager.cp
 
     src/Math/AABB.cpp
     src/Math/BoundingBox.cpp

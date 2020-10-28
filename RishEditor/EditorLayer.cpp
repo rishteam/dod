@@ -11,6 +11,8 @@
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 
+#include <Rish/Collider/ColliderSystem.h>
+
 #include <Rish/Physics/PhysicsSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
@@ -256,6 +258,7 @@ void EditorLayer::onImGuiRender()
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
                 PhysicsSystem::onInit(m_currentScene);
+                ColliderSystem::onInit(m_currentScene);
                 m_currentScene->onScenePlay();
             }
             else
@@ -500,7 +503,9 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     // Recover the target after switch the scene if set
     if(isTargetSet)
     {
+        // TODO: Remove me
         auto entity = scene->getEntityByUUID(id);
+        // TODO: Change this to EntityManager
         //
         m_editController->addTarget(entity);
         m_sceneHierarchyPanel->addTarget(entity);

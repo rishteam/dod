@@ -52,6 +52,10 @@ public:
     {
         return *m_entity.m_scene;
     }
+    Entity GetEntityByHandle(entt::entity ent)
+    {
+        return Entity{ent, m_entity.m_scene};
+    }
 
     // Main Functions
     virtual void onCreate() {}

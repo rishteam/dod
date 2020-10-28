@@ -22,12 +22,15 @@ public:
 
     RL_SCRIPT_SERIALIZE()
     {
-        RL_SERIALIZE("x_force_speed", x_force_speed);
-        RL_SERIALIZE("y_force_speed", y_force_speed);
+        RL_SERIALIZE("walkAccel", walkAccel);
+        RL_SERIALIZE("jumpSpeed", jumpSpeed);
     }
 private:
-    float x_force_speed;
-    float y_force_speed;
+    float currentMaxMove = 5.0f;
+    float jumpSpeed;
+
+    float walkAccel;
+    float walkSpeedLimit;
 
 };
 
