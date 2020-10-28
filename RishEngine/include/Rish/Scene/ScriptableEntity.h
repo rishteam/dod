@@ -65,10 +65,14 @@ public:
 
     // Virtual Copy Constructor pattern
     // https://stackoverflow.com/questions/12255546/c-deep-copying-a-base-class-pointer
-    template<class T>
-    Ref<T> clone() const
+    template<class Derived>
+    Ref<Derived> clone() const
     {
-        return Ref<T>(new T(static_cast<T const&>(*this)));
+        return Ref<Derived>( // store by Ref
+            new Derived(     // new type Derived
+                static_cast<Derived const&>(*this) // cast to derived type
+            )
+        );
     }
 
 private:
