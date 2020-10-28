@@ -30,5 +30,6 @@ struct BoundingBox2D
 };
 
 BoundingBox2D CalculateBoundingBox2D(const glm::vec2 &pos, const glm::vec2 &scale, float rotate);
+BoundingBox2D CombinaBoundingBox2D(const BoundingBox2D lhs, const BoundingBox2D rhs);
 
 } // end of namespace rl

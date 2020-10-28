@@ -277,6 +277,13 @@ void EditorLayer::onImGuiRender()
         }
         ImGui::SameLine();
 
+        // SelectMode button
+        if(ImGui::Button(ICON_FA_MOUSE_POINTER))
+        {
+            m_editController->changeGizmoMode(EditController::Gizmo::SelectMode);
+        }
+        ImGui::SameLine();
+
         // MoveMode button
         if(ImGui::Button(ICON_FA_ARROWS_ALT))
         {

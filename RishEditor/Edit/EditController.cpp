@@ -138,38 +138,68 @@ void EditController::onUpdate(Time dt)
         {
             auto &entSet = getTargets();
 
-            for(auto &ent : entSet)
-            {
+            if( entSet.size() > 1 && m_gizmoMode != Gizmo::MoveMode )
+                changeGizmoMode(Gizmo::SelectMode);
 
-                const auto &entPos = ent.getComponent<TransformComponent>().translate;
-                const auto &entSize = ent.getComponent<TransformComponent>().scale;
-                const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                // Get bounding box
-                auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
-    //            auto boundSize = std::min(bound.getScale().x,bound.getScale().y)*0.1;
-                auto clickSize = glm::vec2(m_editorGrid.getOffset()/10);
-                auto clickColor = glm::vec4(1.f, 1.f, 0.f, 1.f);
-                switch( m_gizmoMode ) {
-                    case Gizmo::MoveMode : {
-                        // Draw Border
+            glm::vec2 boundPos(0.f);
+            glm::vec2 boundSize(0.f);
+
+            for(auto ent : m_entitySet) {
+                const auto &transform = ent.getComponent<TransformComponent>();
+                const BoundingBox2D entbound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
+                const BoundingBox2D nowbound(boundPos,boundSize);
+                const BoundingBox2D newbound = CombinaBoundingBox2D(nowbound,entbound);
+
+                boundPos = newbound.getPosition();
+                boundSize = newbound.getScale();
+
+            }
+
+            auto clickSize = glm::vec2(m_editorGrid.getOffset()/10);
+            auto clickColor = glm::vec4(1.f, 1.f, 0.f, 1.f);
+
+            switch( m_gizmoMode ) {
+                case Gizmo::SelectMode :{
+                    // Draw Border
+                    for(auto &ent : entSet)
+                    {
+                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
+                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
+                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
+                        // Get bounding box
+                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+
                         Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
 
-                        auto moveQuadPos2 = glm::vec2(bound.getPosition() + clickSize*glm::vec2(.5f));
-                        Renderer2D::DrawQuad(moveQuadPos2, clickSize, clickColor);
-                        auto moveQuadPos3 = glm::vec3(moveQuadPos2, 2.f);
-                        Renderer2D::DrawQuad(moveQuadPos3, clickSize, clickColor);
-
-                        auto PointX = bound.getPosition() + bound.getScale() * glm::vec2(.7f, 0.f);
-                        auto PointY = bound.getPosition() + bound.getScale() * glm::vec2(0.f, .7f);
-                        Renderer2D::DrawFgLine(bound.getPosition(), PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
-                        Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,.5f),PointX+clickSize*glm::vec2(-1.f,-.5f), glm::vec4(0.f, 0.f, 1.f, 1.f));
-                        Renderer2D::DrawFgLine(bound.getPosition(),PointY,glm::vec4(1.f, 0.f, 0.f, 1.f));
-                        Renderer2D::DrawTriangle(PointY,PointY+clickSize*glm::vec2(.5f,-1.f),PointY+clickSize*glm::vec2(-.5f,-1.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
-
-                        break;
                     }
-                    case Gizmo::ZoomMode :{
-                        // Draw Border
+                    break;
+                }
+                case Gizmo::MoveMode :{
+                    Renderer2D::DrawRect(boundPos, boundSize, glm::vec4(1.f));
+
+                    auto moveQuadPos2 = glm::vec2(boundPos + clickSize*glm::vec2(.5f));
+                    Renderer2D::DrawQuad(moveQuadPos2, clickSize, clickColor);
+                    auto moveQuadPos3 = glm::vec3(moveQuadPos2, 2.f);
+                    Renderer2D::DrawQuad(moveQuadPos3, clickSize, clickColor);
+
+                    auto PointX = boundPos + boundSize * glm::vec2(.7f, 0.f);
+                    auto PointY = boundPos + boundSize * glm::vec2(0.f, .7f);
+                    Renderer2D::DrawFgLine(boundPos, PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
+                    Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,.5f),PointX+clickSize*glm::vec2(-1.f,-.5f), glm::vec4(0.f, 0.f, 1.f, 1.f));
+                    Renderer2D::DrawFgLine(boundPos,PointY,glm::vec4(1.f, 0.f, 0.f, 1.f));
+                    Renderer2D::DrawTriangle(PointY,PointY+clickSize*glm::vec2(.5f,-1.f),PointY+clickSize*glm::vec2(-.5f,-1.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
+
+                    break;
+                }
+                case Gizmo::ZoomMode :{
+                    for(auto &ent : entSet)
+                    {
+                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
+                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
+                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
+                        // Get bounding box
+                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+
                         Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
                         Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.5f), clickSize.x, clickColor);
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.0f), clickSize, clickColor);
@@ -179,9 +209,19 @@ void EditController::onUpdate(Time dt)
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.0f), clickSize, clickColor);
                         Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.5f), clickSize.x, clickColor);
                         Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f,  0.5f), clickSize, clickColor);
-                        break;
                     }
-                    case Gizmo::ScaleMode:{
+                    break;
+                }
+                case Gizmo::ScaleMode:{
+
+                    for(auto &ent : entSet)
+                    {
+                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
+                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
+                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
+                        // Get bounding box
+                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+
                         const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f);
                         const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f);
                         const auto sinR = std::sin(entRotate*M_PI/180);
@@ -193,10 +233,18 @@ void EditController::onUpdate(Time dt)
                         Renderer2D::DrawRotatedQuad(pointX,clickSize,clickColor, entRotate);
                         Renderer2D::DrawFgLine(entPos,pointY,glm::vec4(1.f,0.f,0.f,1.f));
                         Renderer2D::DrawRotatedQuad(pointY,clickSize,clickColor, entRotate);
-                        break;
                     }
-                    case Gizmo::RotationMode :{
-                        // Draw Circle
+                    break;
+                }
+                case Gizmo::RotationMode :{
+                    for(auto &ent : entSet)
+                    {
+                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
+                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
+                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
+                        // Get bounding box
+                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+
                         Renderer2D::DrawCircleLine(entPos, std::max(entSize.x, entSize.y));
                         Renderer2D::DrawCircle(entPos, clickSize.x, glm::vec4(0, 0.39, 0.79, 1));
 
@@ -204,9 +252,8 @@ void EditController::onUpdate(Time dt)
                         const auto sinR = std::sin(glm::radians(entRotate));
                         const auto cosR = std::cos(glm::radians(entRotate));
                         Renderer2D::DrawFgLine(bound.getPosition(), glm::vec3(bound.getPosition(),0.f)+glm::vec3(tmpPoint.x*cosR-tmpPoint.y*sinR, tmpPoint.x*sinR+tmpPoint.y*cosR, 0.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
-
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -264,10 +311,6 @@ void EditController::onImGuiRender()
             // Inside
             if(Math::AABB2DPoint(boundPos, boundSize+clickSize, mposInWorld))
             {
-                if(m_entitySet.count(ent))
-                {
-                    removeTarget(ent);
-                }
                 // Pick the smallest size one
                 if(minSize.x > boundSize.x && minSize.y > boundSize.y)
                 {
@@ -283,15 +326,18 @@ void EditController::onImGuiRender()
                 resetTarget();
             addTarget(bestMatch);
         }else{
-            resetSelected();
+            if(!isCtrlPressed)
+                resetSelected();
         }
     }
 
     // TODO: Support multiple entities move
 
     // gizmoMode
-
     switch (m_gizmoMode) {
+        case Gizmo::SelectMode:{
+            break;
+        }
         case Gizmo::MoveMode:{
             // Entity move
             if (m_sceneWindowFocused &&
@@ -299,12 +345,23 @@ void EditController::onImGuiRender()
                 ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
                 isSelected()) {
                 // Iterate through all selected entities
+
+                glm::vec3 boundPos(0.f);
+                glm::vec3 boundSize(0.f);
+                for(auto ent : m_entitySet) {
+                    const auto &transform = ent.getComponent<TransformComponent>();
+                    const BoundingBox2D entbound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
+                    const BoundingBox2D nowbound(boundPos,boundSize);
+                    const BoundingBox2D newbound = CombinaBoundingBox2D(nowbound,entbound);
+
+                    boundPos = glm::vec3(newbound.getPosition(),0.f);
+                    boundSize = glm::vec3(newbound.getScale(),0.f);
+
+                }
+
                 for (auto ent : m_entitySet) {
                     auto &entPos = ent.getComponent<TransformComponent>().translate;
-                    const auto &transform = ent.getComponent<TransformComponent>();
-                    const auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-                    const glm::vec3 boundPos(bound.getPosition(), 0.f);
-                    const glm::vec3 boundSize(bound.getScale(), 0.f);
+
                     // The entity is not moving but selected
                     if (!m_isNowMovingEntity[ent]) {
                         // Is mouse inside
@@ -313,10 +370,10 @@ void EditController::onImGuiRender()
                             m_oriEntityPosition[ent] = entPos;
                             m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
                             m_isNowMovingEntity[ent] = true;
-                            if (Math::AABB2DPoint(entPos, boundSize * glm::vec3(.5f, .5f, .5f), mposInWorld)) {
+                            if (Math::AABB2DPoint(boundPos, boundSize * glm::vec3(.5f, .5f, .5f), mposInWorld)) {
                                 m_moveEntityWeight[ent] = glm::vec3(1.f);
-                            } else if (std::abs(entPos.x - mposInWorld.x) <
-                                       std::abs(entPos.y - mposInWorld.y)) { // column
+                            } else if (std::abs(boundPos.x - mposInWorld.x) <
+                                       std::abs(boundPos.y - mposInWorld.y)) { // column
                                 m_moveEntityWeight[ent] = glm::vec3(0.f, 1.f, 1.f);
                             } else { // row
                                 m_moveEntityWeight[ent] = glm::vec3(1.f, 0.f, 1.f);

@@ -23,11 +23,12 @@ public:
 
     // Gizmo
     enum class Gizmo{
+        SelectMode,
         MoveMode,
         ZoomMode,
         ScaleMode,
         RotationMode
-    }m_gizmoMode = Gizmo::MoveMode;
+    }m_gizmoMode = Gizmo::SelectMode;
     void changeGizmoMode(Gizmo gizmo);
 
     // Grid
