@@ -602,7 +602,11 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
         if (collider.isCollision)
         {
             ImGui::Text("isCollide: True");
-            ImGui::Text("Collide Object: %s", collider.whoCollide.to_string().c_str());
+            ImGui::Text("Collide Object: ");
+            for(auto idx : collider.whoCollide)
+            {
+                ImGui::Text("%s", idx.to_string().c_str());
+            }
         }
         else
         {

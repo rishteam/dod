@@ -15,13 +15,15 @@ void ColliderSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSt
     // TODO: other collider
     auto view = registry.view<TransformComponent, BoxCollider2DComponent>();
     auto &mapBoxColliderObj = s_Scene->mapBoxColliderObj;
-    // TODO: update QuadTree
 
+
+    // TODO: update QuadTree
     // Clear All State
     for (auto &box : view)
     {
         auto &boxCollider = registry.get<BoxCollider2DComponent>(box);
         boxCollider.isCollision = false;
+        boxCollider.whoCollide.clear();
     }
 
     auto view2 = registry.view<TransformComponent, BoxCollider2DComponent>();
@@ -37,24 +39,36 @@ void ColliderSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSt
             auto &boxColliderB = registry.get<BoxCollider2DComponent>(boxB);
             auto &transB = registry.get<TransformComponent>(boxB);
 
-            // UUID Same, Pass This Time
-            if(UUID_A == UUID_B)
-            {
-                break;
-            }
-
             // Update Check
             auto engineBoxA = MakeRef<Box>(transA.translate.x + boxColliderA.x, transA.translate.y + boxColliderA.y, boxColliderA.w, boxColliderA.h);
             engineBoxA->rotation = transA.rotate;
             auto engineBoxB = MakeRef<Box>(transB.translate.x + boxColliderB.x, transB.translate.y + boxColliderB.y, boxColliderB.w, boxColliderB.h);
             engineBoxB->rotation = transB.rotate;
 
+            // Existed Check
+            auto &boxAWhoCollide = boxColliderA.whoCollide;
+            auto &boxBWhoCollide = boxColliderB.whoCollide;
 
+            // UUID Same, Pass This Time
+            if(UUID_A == UUID_B)
+            {
+                continue;
+            }
+            if(std::find(boxAWhoCollide.begin(), boxAWhoCollide.end(), UUID_B) != boxAWhoCollide.end())
+            {
+                continue;
+            }
+            if(std::find(boxBWhoCollide.begin(), boxBWhoCollide.end(), UUID_A) != boxBWhoCollide.end())
+            {
+                continue;
+            }
+
+            // Check who Collide
             if (engineBoxA->isCollide(engineBoxB))
             {
-                boxColliderA.whoCollide = UUID_B;
+                boxColliderA.whoCollide.push_back(UUID_B);
                 boxColliderA.isCollision = true;
-                boxColliderB.whoCollide = UUID_A;
+                boxColliderB.whoCollide.push_back(UUID_A);
                 boxColliderB.isCollision = true;
             }
         }

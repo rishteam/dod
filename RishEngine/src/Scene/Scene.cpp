@@ -6,6 +6,7 @@
 //
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
+#include <Rish/Scene/EntityManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
@@ -55,6 +56,8 @@ Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 
     m_entNameToNumMap[tag]++;
 
+    EntityManager::Register(entity);
+
 	RL_CORE_TRACE("[Scene] Created entity {}", tag);
 	return entity;
 }
@@ -75,12 +78,15 @@ Entity Scene::createEntity(const UUID &id, const std::string &name)
 
     m_entNameToNumMap[tag]++;
 
+    EntityManager::Register(entity);
+
     RL_CORE_TRACE("[Scene] Created entity {} by id {}", tag, id.to_string());
     return entity;
 }
 
 void Scene::destroyEntity(const Entity &entity)
 {
+    EntityManager::Unregister(entity);
     m_registry.destroy(entity.getEntityID());
 }
 
@@ -326,6 +332,7 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     }
 }
 
+// TODO: Change this to EntityManager
 Entity Scene::getEntityByUUID(UUID uuid)
 {
     Entity target;
@@ -337,6 +344,14 @@ Entity Scene::getEntityByUUID(UUID uuid)
     });
     //
     return target;
+}
+
+void Scene::registerAllEntities()
+{
+    m_registry.view<TagComponent>().each([=](auto ent, auto &tag) {
+        Entity entity{ent, this};
+        EntityManager::Register(entity);
+    });
 }
 
 } // namespace rl

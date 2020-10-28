@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 #include <Rish/Physics/vector_math.h>
+#include <Rish/Utils/uuid.h>
 
 namespace rl {
 
@@ -68,10 +69,10 @@ struct BoxCollider2DComponent
     float w = 1.0f;
     float h = 1.0f;
     // TODO: To serializable
-    UUID whoCollide;
+    std::vector<UUID> whoCollide;
     bool isCollision = false;
 
-    BoxCollider2DComponent() = default;
+    BoxCollider2DComponent();
 private:
     friend class cereal::access;
     template<class Archive>
@@ -81,9 +82,7 @@ private:
             CEREAL_NVP(x),
             CEREAL_NVP(y),
             CEREAL_NVP(w),
-            CEREAL_NVP(h),
-            CEREAL_NVP(whoCollide),
-            CEREAL_NVP(isCollision)
+            CEREAL_NVP(h)
         );
     }
 };

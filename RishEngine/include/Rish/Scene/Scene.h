@@ -7,6 +7,8 @@
 #include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
 //
+#include <Rish/Utils/uuid.h>
+//
 #include <Rish/Physics/Component.h>
 #include <Rish/Physics/PhysicsWorld.h>
 //
@@ -51,7 +53,9 @@ public:
 	 */
 	Entity duplicateEntity(Entity src);
 
+    // TODO: Remove me
 	Entity getEntityByUUID(UUID uuid);
+    // TODO: Change this to EntityManager
 
 	/**
 	 * @brief Update Entity behavior
@@ -108,7 +112,7 @@ public:
     SceneState m_sceneState = SceneState::Editor;
 
 	Entity createEntity(const UUID &id, const std::string &name);
-	std::unordered_map<std::string, size_t> m_entNameToNumMap{};
+	std::unordered_map<std::string, size_t> m_entNameToNumMap{};  // TODO: think a more elegant way
 
     ////////////////////////////////////////////////////////////////
     // Physics
@@ -143,6 +147,10 @@ public:
     friend void DrawSceneDebugWindow(const char *name, Ref<Scene> scene);
     friend void DrawSceneCameraDebugWindow(const SceneCamera & camera, const glm::mat4 &trans);
 
+    /**
+     * @brief Register all entities to EntityManager
+     */
+    void registerAllEntities();
 
     ////////////////////////////////////////////////////////////////
     // Serialization functions
@@ -181,10 +189,14 @@ public:
                 BoxCollider2DComponent,
                 Joint2DComponent
             >(ar);
+
+        registerAllEntities();
 	}
 };
 
 } // namespace rl
+
+
 
 /**
  * @class rl::Scene

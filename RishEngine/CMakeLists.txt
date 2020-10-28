@@ -139,7 +139,7 @@ add_library(RishEngine
     src/Scene/ScriptableEntity.cpp
 
     ${RL_SCRIPT_FILES}
-        src/Math/Random.cpp)
+        src/Math/Random.cpp src/Physics/Component.cpp src/Scene/EntityManager.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

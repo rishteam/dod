@@ -539,7 +539,9 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     // Recover the target after switch the scene if set
     if(isTargetSet)
     {
+        // TODO: Remove me
         auto entity = scene->getEntityByUUID(id);
+        // TODO: Change this to EntityManager
         //
         m_editController->addTarget(entity);
         m_sceneHierarchyPanel->addTarget(entity);
