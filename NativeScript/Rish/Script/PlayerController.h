@@ -12,6 +12,9 @@ namespace rl {
 class PlayerController : public ScriptableEntity
 {
 public:
+
+
+
     void onCreate() override;
 
     void onDestroy() override;
