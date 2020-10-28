@@ -12,6 +12,20 @@
 
 namespace rl {
 
+struct EditorSetting
+{
+    bool isDefaultOpenSceneLoaded = false;
+    bool isDefaultOpenScene       = false;
+    std::string path;
+
+    template<typename Archive>
+    void serialize(Archive &ar)
+    {
+        ar(CEREAL_NVP(isDefaultOpenScene));
+        ar(CEREAL_NVP(path));
+    }
+};
+
 class EditorLayer : public Layer
 {
 public:
@@ -31,6 +45,14 @@ private:
     //////////////////////////////////////////
     // Editor Layer
     //////////////////////////////////////////
+    void loadSetting(const std::string &path);
+    void saveSetting();
+
+    EditorSetting m_editorSetting;
+
+    void newScene();
+    void openScene(const std::string &path);
+    void saveScene(const std::string &path);
 
     //////////////////////////////////////////
     // Scene

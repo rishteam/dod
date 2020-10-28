@@ -76,6 +76,14 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<PlayerController>();
+
+    loadSetting("setting.conf");
+
+    if(m_editorSetting.isDefaultOpenScene)
+    {
+        openScene(m_editorSetting.path);
+        m_scenePath = m_editorSetting.path;
+    }
 }
 
 void EditorLayer::onDetach()
@@ -87,6 +95,8 @@ void EditorLayer::onDetach()
     //
     for(auto &panel : m_simplePanelList)
         panel->onDetach();
+
+    saveSetting();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -345,73 +355,20 @@ void EditorLayer::onImGuiMainMenuRender()
         {
             if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
-                // TODO: not save warning
-                m_editorScene = nullptr;
-                m_editorScene = MakeRef<Scene>();
-
-                // Reset the target
-                m_editController->resetTarget();
-                m_sceneHierarchyPanel->resetTarget();
-                m_componentEditPanel->resetTarget();
-
-                // Switch to new scene
-                switchCurrentScene(m_editorScene);
+                newScene();
             }
 
-            if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, m_currentScene == m_editorScene))
+            if(ImGui::MenuItem("Open Scene", "Ctrl+O", false))
             {
+                newScene();
                 // Open File
-                bool opened = false;
                 std::string path, content;
-                if(FileDialog::SelectSingleFile(nullptr, (FileSystem::GetCurrentDirectory() + "\\assets").c_str(), path))
+                if(FileDialog::SelectSingleFile("sce",
+                                                (FileSystem::GetCurrentDirectory() + "\\assets").c_str(),
+                                                path))
                 {
-                    content = FileSystem::ReadTextFile(path);
                     m_scenePath = path;
-                    opened = true;
-                }
-
-                // If selected one file
-                if(opened)
-                {
-                    // Deserialize
-                    std::string exceptionMsg;
-                    std::stringstream oos(content);
-                    bool failLoad = false;
-                    try
-                    {
-                        cereal::JSONInputArchive inputArchive(oos);
-                        inputArchive(cereal::make_nvp("Scene", m_editorScene));
-                    }
-                    catch (cereal::RapidJSONException &e)
-                    {
-                        RL_CORE_ERROR("Failed to load scene {}", e.what());
-                        exceptionMsg = e.what();
-                        failLoad = true;
-                    }
-                    catch (cereal::Exception &e)
-                    {
-                        RL_CORE_ERROR("Failed to load scene {}", e.what());
-                        exceptionMsg = e.what();
-                        failLoad = true;
-                    }
-
-                    // If success
-                    if (!failLoad)
-                    {
-                        m_sceneLoaded = true;
-
-                        // Because the panels are now holding strong ref to the scene
-                        // We need to reset the context
-                        setContextToPanels(m_editorScene);
-
-                        m_editorScene->onEditorInit();
-                    }
-                    else
-                    {
-                        m_sceneLoaded = false;
-
-                        m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
-                    }
+                    openScene(m_scenePath);
                 }
             }
 
@@ -420,10 +377,7 @@ void EditorLayer::onImGuiMainMenuRender()
             // TODO: hot reload?
             if (ImGui::MenuItem("Save Scene", "Ctrl+S", false, m_sceneLoaded))
             {
-                // TODO: Maybe implement a function return ofstream from rl::FileSystem
-                std::ofstream os(m_scenePath);
-                cereal::JSONOutputArchive outputArchive(os);
-                outputArchive(cereal::make_nvp("Scene", m_editorScene));
+                saveScene(m_scenePath);
             }
 
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
@@ -431,10 +385,8 @@ void EditorLayer::onImGuiMainMenuRender()
                 std::string path;
                 if(FileDialog::SelectSaveFile("sce", nullptr, path))
                 {
-                    // TODO: Maybe implement a function return ofstream from rl::FileSystem
-                    std::ofstream os(path);
-                    cereal::JSONOutputArchive outputArchive(os);
-                    outputArchive(cereal::make_nvp("Scene", m_editorScene));
+                    m_scenePath = path;
+                    saveScene(m_scenePath);
                 }
             }
 
@@ -554,6 +506,98 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
         m_sceneHierarchyPanel->addTarget(entity);
         m_componentEditPanel->setTarget(entity);
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setting
+
+void EditorLayer::loadSetting(const std::string &path)
+{
+    std::string content;
+    content = FileSystem::ReadTextFile(path);
+
+    std::stringstream oos(content);
+    cereal::JSONInputArchive inputArchive(oos);
+    inputArchive(cereal::make_nvp("settings", m_editorSetting));
+}
+
+void EditorLayer::saveSetting()
+{
+    m_editorSetting.isDefaultOpenScene = true;
+    m_editorSetting.path = "assets\\scene\\test.sce";
+
+    std::ofstream fp("setting.conf");
+    cereal::JSONOutputArchive outputArchive(fp);
+    outputArchive(cereal::make_nvp("settings", m_editorSetting));
+}
+
+void EditorLayer::newScene()
+{
+    // TODO: not save warning
+    m_editorScene = nullptr;
+    m_editorScene = MakeRef<Scene>();
+
+    // Reset the target
+    m_editController->resetTarget();
+    m_sceneHierarchyPanel->resetTarget();
+    m_componentEditPanel->resetTarget();
+
+    // Switch to new scene
+    switchCurrentScene(m_editorScene);
+}
+
+void EditorLayer::openScene(const std::string &path)
+{
+    // Get content
+    std::string content = FileSystem::ReadTextFile(path);
+
+    // Deserialize
+    std::string exceptionMsg;
+    std::stringstream oos(content);
+    bool failLoad = false;
+    try
+    {
+        cereal::JSONInputArchive inputArchive(oos);
+        inputArchive(cereal::make_nvp("Scene", m_editorScene));
+    }
+    catch (cereal::RapidJSONException &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        exceptionMsg = e.what();
+        failLoad = true;
+    }
+    catch (cereal::Exception &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        exceptionMsg = e.what();
+        failLoad = true;
+    }
+
+    // If success
+    if (!failLoad)
+    {
+        m_sceneLoaded = true;
+
+        // Because the panels are now holding strong ref to the scene
+        // We need to reset the context
+        setContextToPanels(m_editorScene);
+
+        m_editorScene->onEditorInit();
+    }
+    else
+    {
+        m_sceneLoaded = false;
+
+        m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
+    }
+}
+
+void EditorLayer::saveScene(const std::string &path)
+{
+    // TODO: Maybe implement a function return ofstream from rl::FileSystem
+    std::ofstream os(path);
+    cereal::JSONOutputArchive outputArchive(os);
+    outputArchive(cereal::make_nvp("Scene", m_editorScene));
 }
 
 }

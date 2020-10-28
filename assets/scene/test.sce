@@ -27,49 +27,49 @@
                 },
                 "value7": 3,
                 "value8": {
-                    "Tag": "box",
+                    "Tag": "boxA",
                     "Id": {
                         "uuid": "6e4c224e-ccdf-4e51-97f9-c8967d22174b"
                     }
                 },
                 "value9": 1048580,
                 "value10": {
-                    "Tag": "box (2)",
+                    "Tag": "boxB",
                     "Id": {
                         "uuid": "670e8c8f-21cb-44ed-9b76-1be1e60c979b"
                     }
                 },
                 "value11": 5,
                 "value12": {
-                    "Tag": "box (2) (2)",
+                    "Tag": "boxC",
                     "Id": {
                         "uuid": "dac44efe-5506-4691-99bf-51857ee3757f"
                     }
                 },
                 "value13": 7,
                 "value14": {
-                    "Tag": "box (2) (1)",
+                    "Tag": "boxD",
                     "Id": {
                         "uuid": "e3ae84f0-a91e-4ea4-92fd-71c6b5a50097"
                     }
                 },
                 "value15": 1048582,
                 "value16": {
-                    "Tag": "box (2) (2) (1)",
+                    "Tag": "boxE",
                     "Id": {
                         "uuid": "3be5cf04-2d96-4fa7-829d-fcc058935ec1"
                     }
                 },
                 "value17": 8,
                 "value18": {
-                    "Tag": "box (2) (1) (2)",
+                    "Tag": "boxG",
                     "Id": {
                         "uuid": "87822344-d4e7-4053-9cb1-bb7bca5b800d"
                     }
                 },
                 "value19": 9,
                 "value20": {
-                    "Tag": "box (2) (2)",
+                    "Tag": "boxH",
                     "Id": {
                         "uuid": "50dc6c75-8182-4ab2-97a1-77d2686b7e9b"
                     }
@@ -78,8 +78,8 @@
                 "value22": 0,
                 "value23": {
                     "translate": {
-                        "x": 2.63615083694458,
-                        "y": 3.259817123413086,
+                        "x": 0.012045703828334809,
+                        "y": 3.2110748291015627,
                         "z": -1.0
                     },
                     "scale": {
