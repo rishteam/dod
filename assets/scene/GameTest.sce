@@ -500,42 +500,67 @@
                     "x": 0.0,
                     "y": 0.0,
                     "w": 11.119999885559082,
-                    "h": 1.0
+                    "h": 1.0,
+                    "whoCollide": {
+                        "uuid": ""
+                    },
+                    "isCollision": false
                 },
                 "value80": 1,
                 "value81": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 0.5,
-                    "h": 0.5
+                    "h": 0.5,
+                    "whoCollide": {
+                        "uuid": ""
+                    },
+                    "isCollision": false
                 },
                 "value82": 1048579,
                 "value83": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 2.0,
-                    "h": 0.5
+                    "h": 0.5,
+                    "whoCollide": {
+                        "uuid": ""
+                    },
+                    "isCollision": false
+
                 },
                 "value84": 1048582,
                 "value85": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 2.5,
-                    "h": 0.5
+                    "h": 0.5,
+                    "whoCollide": {
+                        "uuid": ""
+                    },
+                    "isCollision": false
                 },
                 "value86": 8,
                 "value87": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 11.119999885559082,
-                    "h": 1.0
+                    "h": 1.0,
+                    "whoCollide": {
+                        "uuid": ""
+                    },
+                    "isCollision": false
                 },
                 "value88": 9,
                 "value89": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 11.119999885559082,
-                    "h": 1.0
+                    "h": 1.0,
+                    "whoCollide": {
+                        "uuid": ""
+                    },
+                    "isCollision": false
                 },
                 "value90": 0
             }

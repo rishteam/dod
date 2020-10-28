@@ -13,6 +13,8 @@ namespace rl {
 class RL_API ColliderSystem
 {
 public:
+    static void onInit(const Ref <Scene> &scene);
+
     static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state);
 
 

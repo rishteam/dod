@@ -171,7 +171,8 @@ void Scene::onUpdate(Time dt)
         ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
 
     // Collider State update
-    ColliderSystem::onUpdate(m_registry, dt, m_sceneState);
+    if(m_sceneState == SceneState::Play)
+        ColliderSystem::onUpdate(m_registry, dt, m_sceneState);
     // Physics System update
     PhysicsSystem::onUpdate(m_registry, dt, m_sceneState);
 

@@ -11,6 +11,8 @@
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 
+#include <Rish/Collider/ColliderSystem.h>
+
 #include <Rish/Physics/PhysicsSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
@@ -246,6 +248,7 @@ void EditorLayer::onImGuiRender()
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
                 PhysicsSystem::onInit(m_currentScene);
+                ColliderSystem::onInit(m_currentScene);
                 m_currentScene->onScenePlay();
             }
             else

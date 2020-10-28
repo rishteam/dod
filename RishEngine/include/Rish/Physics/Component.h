@@ -71,7 +71,6 @@ struct BoxCollider2DComponent
     UUID whoCollide;
     bool isCollision = false;
 
-
     BoxCollider2DComponent() = default;
 private:
     friend class cereal::access;
