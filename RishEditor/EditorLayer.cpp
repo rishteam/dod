@@ -361,50 +361,57 @@ void EditorLayer::onImGuiMainMenuRender()
             if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, m_currentScene == m_editorScene))
             {
                 // Open File
+                bool opened = false;
                 std::string path, content;
-                if(FileDialog::SelectSingleFile(nullptr, "assets", path))
+                if(FileDialog::SelectSingleFile(nullptr, (FileSystem::GetCurrentDirectory() + "\\assets").c_str(), path))
                 {
                     content = FileSystem::ReadTextFile(path);
                     m_scenePath = path;
+                    opened = true;
                 }
 
-                // Deserialize
-                std::string exceptionMsg;
-                std::stringstream oos(content);
-                bool failLoad = false;
-                try
+                // If selected one file
+                if(opened)
                 {
-                    cereal::JSONInputArchive inputArchive(oos);
-                    inputArchive(cereal::make_nvp("Scene", m_editorScene));
-                }
-                catch (cereal::RapidJSONException &e)
-                {
-                    RL_CORE_ERROR("Failed to load scene {}", e.what());
-                    exceptionMsg = e.what();
-                    failLoad = true;
-                }
-                catch (cereal::Exception &e)
-                {
-                    RL_CORE_ERROR("Failed to load scene {}", e.what());
-                    exceptionMsg = e.what();
-                    failLoad = true;
-                }
-                // If success
-                if(!failLoad)
-                {
-                    m_sceneLoaded = true;
+                    // Deserialize
+                    std::string exceptionMsg;
+                    std::stringstream oos(content);
+                    bool failLoad = false;
+                    try
+                    {
+                        cereal::JSONInputArchive inputArchive(oos);
+                        inputArchive(cereal::make_nvp("Scene", m_editorScene));
+                    }
+                    catch (cereal::RapidJSONException &e)
+                    {
+                        RL_CORE_ERROR("Failed to load scene {}", e.what());
+                        exceptionMsg = e.what();
+                        failLoad = true;
+                    }
+                    catch (cereal::Exception &e)
+                    {
+                        RL_CORE_ERROR("Failed to load scene {}", e.what());
+                        exceptionMsg = e.what();
+                        failLoad = true;
+                    }
 
-                    // Because the panels are now holding strong ref to the scene
-                    // We need to reset the context
-                    setContextToPanels(m_editorScene);
+                    // If success
+                    if (!failLoad)
+                    {
+                        m_sceneLoaded = true;
 
-                    m_editorScene->onEditorInit();
-                }
-                else
-                {
-                    m_sceneLoaded = false;
+                        // Because the panels are now holding strong ref to the scene
+                        // We need to reset the context
+                        setContextToPanels(m_editorScene);
 
-                    m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
+                        m_editorScene->onEditorInit();
+                    }
+                    else
+                    {
+                        m_sceneLoaded = false;
+
+                        m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
+                    }
                 }
             }
 
