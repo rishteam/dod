@@ -57,6 +57,11 @@ public:
         return Entity{ent, m_entity.m_scene};
     }
 
+    Entity CreateEntity(const std::string &name, const glm::vec3 &pos=glm::vec3(0.f))
+    {
+        return GetScene().createEntity(name, pos);
+    }
+
     // Main Functions
     virtual void onCreate() {}
     virtual void onDestroy() {}

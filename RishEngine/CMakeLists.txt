@@ -56,7 +56,7 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/SpriteRotate.cpp
     ../NativeScript/Rish/Script/CameraController.cpp
     ../NativeScript/Rish/Script/PlayerController.cpp
-)
+        ../NativeScript/Rish/Script/Spawner.cpp ../NativeScript/Rish/Script/Spawner.h)
 
 # Add executable
 add_library(RishEngine

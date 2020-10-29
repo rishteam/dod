@@ -51,6 +51,11 @@ void PlayerController::onUpdate(Time dt)
         if(camera.primary)
         {
             transform.translate.x = trans.translate.x;
+            float distance = trans.translate.y - transform.translate.y;
+            if(abs(distance) >= 0.7f)
+            {
+                transform.translate.y += distance * cameraTransSpeed * dt.asSeconds();
+            }
         }
     }
 }
@@ -60,6 +65,8 @@ void PlayerController::onImGuiRender()
     ImGui::DragFloat("Walk Accelerate", &walkAccel, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Walk Speed Limit", &walkSpeedLimit, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Jump Speed", &jumpSpeed, 10.0f, 0.0f, 100.0f);
+    ImGui::Separator();
+    ImGui::DragFloat("Camera Translate Speed", &cameraTransSpeed, 0.1f);
 }
 
 }

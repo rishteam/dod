@@ -158,6 +158,9 @@ struct SpriteRenderComponent
     }
 
 	SpriteRenderComponent() = default;
+    SpriteRenderComponent(const std::string &path) : texturePath(path)
+    {
+    }
 private:
 	friend class cereal::access;
 	template<class Archive>
