@@ -133,6 +133,11 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
+        BoundingBox2D mouseBound = CalculateBounding2Point(m_mousePosBegin, m_mousePosEnd);
+        if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f ){
+            Renderer2D::DrawQuad(mouseBound.getPosition(), mouseBound.getScale(), glm::vec4(0.f,0.f,.3f,.3f));
+        }
+
         // TODO: Make the max AABB
         if(isSelected())
         {
@@ -182,8 +187,8 @@ void EditController::onUpdate(Time dt)
                     auto moveQuadPos3 = glm::vec3(moveQuadPos2, 2.f);
                     Renderer2D::DrawQuad(moveQuadPos3, clickSize, clickColor);
 
-                    auto PointX = boundPos + boundSize * glm::vec2(.7f, 0.f);
-                    auto PointY = boundPos + boundSize * glm::vec2(0.f, .7f);
+                    auto PointX = boundPos + boundSize * glm::vec2(.5f, 0.f) + clickSize*glm::vec2(3.f, 0.f);
+                    auto PointY = boundPos + boundSize * glm::vec2(0.f, .5f) + clickSize*glm::vec2(0.f, 3.f);
                     Renderer2D::DrawFgLine(boundPos, PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
                     Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,.5f),PointX+clickSize*glm::vec2(-1.f,-.5f), glm::vec4(0.f, 0.f, 1.f, 1.f));
                     Renderer2D::DrawFgLine(boundPos,PointY,glm::vec4(1.f, 0.f, 0.f, 1.f));
@@ -288,7 +293,8 @@ void EditController::onImGuiRender()
     // Click to select a entity
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
-       ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+       ImGui::IsMouseClicked(ImGuiMouseButton_Left) &&
+       m_isNowMovingEntity.empty())
     {
         Entity bestMatch;
         glm::vec3 minSize{std::numeric_limits<float>::max(),
@@ -309,7 +315,7 @@ void EditController::onImGuiRender()
             const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
 
             // Inside
-            if(Math::AABB2DPoint(boundPos, boundSize+clickSize, mposInWorld))
+            if(Math::AABB2DPoint(boundPos, boundSize, mposInWorld))
             {
                 // Pick the smallest size one
                 if(minSize.x > boundSize.x && minSize.y > boundSize.y)
@@ -326,9 +332,78 @@ void EditController::onImGuiRender()
                 resetTarget();
             addTarget(bestMatch);
         }else{
-            if(!isCtrlPressed)
+
+            bool clearEntitySet = true;
+
+            glm::vec3 boundPos(0.f);
+            glm::vec3 boundSize(0.f);
+            for(auto ent : m_entitySet) {
+                const auto &transform = ent.getComponent<TransformComponent>();
+                const BoundingBox2D entbound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
+                const BoundingBox2D nowbound(boundPos,boundSize);
+                const BoundingBox2D newbound = CombinaBoundingBox2D(nowbound,entbound);
+
+                boundPos = glm::vec3(newbound.getPosition(),0.f);
+                boundSize = glm::vec3(newbound.getScale(),0.f);
+            }
+            const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
+
+            if(Math::AABB2DPoint(boundPos+clickSize*glm::vec3(.5f), clickSize, mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f,0.f)+clickSize*glm::vec3(1.5f,0.f,0.f), boundSize*glm::vec3(.5f,0.f,0.f) + clickSize*glm::vec3(3.f,1.f,0.f), mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f,0.f)+clickSize*glm::vec3(0.f,1.5f,0.f), boundSize*glm::vec3(0.f,.5f,0.f) + clickSize*glm::vec3(1.f,3.f,0.f), mposInWorld))
+            {
+                clearEntitySet = false;
+            }
+
+            if(!isCtrlPressed && clearEntitySet)
                 resetSelected();
         }
+
+    }
+
+    // revolve entity
+    if(m_sceneWindowFocused &&
+       m_sceneWindowHovered &&
+       m_isNowMovingEntity.empty()){
+
+        if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            m_mousePosBegin = mposInWorld;
+
+        if(ImGui::IsMouseDown(ImGuiMouseButton_Left))
+            m_mousePosEnd = mposInWorld;
+
+        if(ImGui::IsMouseReleased(ImGuiMouseButton_Left)){
+            BoundingBox2D mouseBound = CalculateBounding2Point(m_mousePosBegin, m_mousePosEnd);
+
+            if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f ){
+
+                resetTarget();
+
+                // Iterate through all entities
+                m_currentScene->m_registry.each([&](auto entityID)
+                {
+                    Entity ent{entityID, m_currentScene.get()};
+
+                    auto entPos = ent.getComponent<TransformComponent>().translate;
+                    auto entSize = ent.getComponent<TransformComponent>().scale;
+                    auto entRotate = ent.getComponent<TransformComponent>().rotate;
+                    auto entBound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+
+                    if( mouseBound.IsInside(entBound) ){
+                        addTarget(ent);
+                    }
+
+                });
+
+            }
+            m_mousePosBegin = mposInWorld;
+            m_mousePosEnd = mposInWorld;
+        }
+
+    }
+    else{
+        m_mousePosBegin = mposInWorld;
+        m_mousePosEnd = mposInWorld;
     }
 
     // TODO: Support multiple entities move
@@ -361,24 +436,23 @@ void EditController::onImGuiRender()
 
                 for (auto ent : m_entitySet) {
                     auto &entPos = ent.getComponent<TransformComponent>().translate;
-
+                    const glm::vec3 clickSize(m_editorGrid.getOffset()/10,m_editorGrid.getOffset()/10,0.f);
                     // The entity is not moving but selected
                     if (!m_isNowMovingEntity[ent]) {
-                        // Is mouse inside
-                        if (Math::AABB2DPoint(boundPos, boundSize, mposInWorld)) {
-                            // 當滑鼠點擊時，儲存滑鼠跟 entity 的座標
-                            m_oriEntityPosition[ent] = entPos;
-                            m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
-                            m_isNowMovingEntity[ent] = true;
-                            if (Math::AABB2DPoint(boundPos, boundSize * glm::vec3(.5f, .5f, .5f), mposInWorld)) {
-                                m_moveEntityWeight[ent] = glm::vec3(1.f);
-                            } else if (std::abs(boundPos.x - mposInWorld.x) <
-                                       std::abs(boundPos.y - mposInWorld.y)) { // column
-                                m_moveEntityWeight[ent] = glm::vec3(0.f, 1.f, 1.f);
-                            } else { // row
-                                m_moveEntityWeight[ent] = glm::vec3(1.f, 0.f, 1.f);
-                            }
+
+                        m_oriEntityPosition[ent] = entPos;
+                        m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
+                        m_isNowMovingEntity[ent] = true;
+                        if (Math::AABB2DPoint(boundPos+clickSize*glm::vec3(.5f), clickSize, mposInWorld)) {
+                            m_moveEntityWeight[ent] = glm::vec3(1.f);
+                        } else if (Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f,0.f)+clickSize*glm::vec3(1.5f,0.f,0.f), boundSize*glm::vec3(.5f,0.f,0.f) + clickSize*glm::vec3(3.f,1.f,0.f), mposInWorld)) { // row
+                            m_moveEntityWeight[ent] = glm::vec3(1.f, 0.f, 1.f);
+                        }  else if (Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f,0.f)+clickSize*glm::vec3(0.f,1.5f,0.f), boundSize*glm::vec3(0.f,.5f,0.f) + clickSize*glm::vec3(1.f,3.f,0.f), mposInWorld)) { // column
+                            m_moveEntityWeight[ent] = glm::vec3(0.f, 1.f, 1.f);
+                        }else {
+                            m_isNowMovingEntity.erase(ent);
                         }
+
                     } else {
                         // Moving
                         entPos = m_oriEntityPosition[ent] +
@@ -454,7 +528,7 @@ void EditController::onImGuiRender()
                             m_zoomEntityWeight[ent] = glm::vec3(0.f, 1.f, 0.f);
                             m_moveEntityWeight[ent] = glm::vec3(0.f, .5f, 0.f);
                         } else {
-                            m_isNowMovingEntity[ent] = false;
+                            m_isNowMovingEntity.erase(ent);
                         }
 
                         m_zoomEntityWeight[ent] *= glm::vec3(entSize.x>0?1.f:-1.f,entSize.y>0?1.f:-1.f,1.f);

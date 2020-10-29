@@ -61,3 +61,17 @@ rl::BoundingBox2D rl::CombinaBoundingBox2D(const BoundingBox2D lhs, const Boundi
 
     return  bound;
 }
+
+rl::BoundingBox2D rl::CalculateBounding2Point(const glm::vec2 p1, const glm::vec2 p2) {
+
+    BoundingBox2D bound;
+
+    bound.x = (p1.x+p2.x)/2;
+    bound.y = (p1.y+p2.y)/2;
+
+    bound.w = std::abs(p1.x-p2.x);
+    bound.h = std::abs(p1.y-p2.y);
+
+    return bound;
+
+}

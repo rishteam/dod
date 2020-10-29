@@ -53,6 +53,10 @@ private:
     std::unordered_map<Entity, glm::vec3> m_moveEntityWeight{};
     std::unordered_map<Entity, glm::vec3> m_zoomEntityWeight{};
 
+    // Mouse position
+    glm::vec2 m_mousePosBegin;
+    glm::vec2 m_mousePosEnd;
+
     // Camera pane
     glm::vec3 m_moveCameraDiff{0.f};
     glm::vec2 m_preMPos{0.f};
