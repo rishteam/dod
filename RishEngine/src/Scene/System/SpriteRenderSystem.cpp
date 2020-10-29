@@ -48,19 +48,19 @@ void SpriteRenderSystem::onRender(entt::registry &registry, Scene::SceneState st
             {
                 if (transform.rotate != 0.f)
                     Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
-                                                render.color, transform.rotate);
+                                                render.color, transform.rotate, render.tiling);
                 else
                     Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_subtexture,
-                                         render.color);
+                                         render.color, render.tiling);
             }
             else // normal texture
             {
                 if (transform.rotate != 0.f)
                     Renderer2D::DrawRotatedQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                                render.color, transform.rotate);
+                                                render.color, transform.rotate, render.tiling);
                 else
                     Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.m_texture,
-                                         render.color);
+                                         render.color, render.tiling);
             }
         }
         else

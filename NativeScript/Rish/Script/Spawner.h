@@ -25,4 +25,4 @@ private:
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::Spawner)
+RL_REGISTER_SCRIPT_TYPE(rl::Spawner) // NOLINT

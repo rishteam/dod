@@ -18,4 +18,4 @@ public:
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::SpriteRoatate)
+RL_REGISTER_SCRIPT_TYPE(rl::SpriteRoatate) // NOLINT

@@ -648,22 +648,24 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     DrawQuad(position, size, s_data->whiteTexture, color);
 }
 
-void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
+void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, float tiling)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f));
+    DrawQuad({position.x, position.y, 0.0}, size, texture, glm::vec4(1.f), tiling);
 }
 
-void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture)
+void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, float tiling)
 {
-    DrawQuad(position, size, texture, glm::vec4(1.f));
+    DrawQuad(position, size, texture, glm::vec4(1.f), tiling);
 }
 
-void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture, const glm::vec4 &color)
+void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
+                          const glm::vec4 &color, float tiling)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, texture, color);
+    DrawQuad({position.x, position.y, 0.0}, size, texture, color, tiling);
 }
 
-void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &color)
+void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture,
+                          const glm::vec4 &color, float tiling)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
@@ -688,7 +690,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
         { 1.0f, 1.0f }   // top right
     };
 
-    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+    SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -714,13 +716,13 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
-                                 const glm::vec4 &color, float rotate)
+                                 const glm::vec4 &color, float rotate, float tiling)
 {
-    DrawRotatedQuad({position.x, position.y, 0.f}, size, texture, color, rotate);
+    DrawRotatedQuad({position.x, position.y, 0.f}, size, texture, color, rotate, tiling);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
-                                 const glm::vec4 &color, float rotate)
+                                 const glm::vec4 &color, float rotate, float tiling)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
@@ -752,14 +754,14 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 // SubTexture2D
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <SubTexture2D> &subtexture,
-                          const glm::vec4 &color)
+                          const glm::vec4 &color, float tiling)
 {
-    DrawQuad(glm::vec3{position.x, position.y, 0.f}, size, subtexture, color);
+    DrawQuad(glm::vec3{position.x, position.y, 0.f}, size, subtexture, color, tiling);
 }
 
 // TODO: refactor this (copy from DrawQuad(Texture2D)
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref <SubTexture2D> &subtexture,
-                          const glm::vec4 &color)
+                          const glm::vec4 &color, float tiling)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
@@ -781,18 +783,18 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     };
     const glm::vec2 *texCoords = subtexture->getTextureCoords();
 
-    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+    SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <SubTexture2D> &subtexture,
-                                 const glm::vec4 &color, float rotate)
+                                 const glm::vec4 &color, float rotate, float tiling)
 {
-    DrawRotatedQuad(glm::vec3{position.x, position.y, 0.f}, size, subtexture, color, rotate);
+    DrawRotatedQuad(glm::vec3{position.x, position.y, 0.f}, size, subtexture, color, rotate, tiling);
 }
 
 // TODO: refactor this (copy from DrawRotatedQuad(Texture2D)
 void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref <SubTexture2D> &subtexture,
-                                 const glm::vec4 &color, float rotate)
+                                 const glm::vec4 &color, float rotate, float tiling)
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
@@ -814,7 +816,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     for(int i = 0; i < 4; i++)
         posi[i] = transform * s_data->quadVertexPosition[i];
 
-    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+    SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
 float Renderer2D::GetQuadTextureIndex(const Ref<Texture2D>& texture)

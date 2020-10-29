@@ -67,6 +67,7 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
     m_editorFramebuffer = Framebuffer::Create(fbspec);
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
+
     // Attach all panels
     for(auto &panel : m_panelList)
         panel->onAttach(m_currentScene);
@@ -79,6 +80,7 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<PlayerController>();
     ScriptableManager::Register<Spawner>();
+    ScriptableManager::Register<Cinemachine2D>();
 
     loadSetting("setting.conf");
 
@@ -87,6 +89,8 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
+
+
 }
 
 void EditorLayer::onDetach()
@@ -370,8 +374,8 @@ void EditorLayer::onImGuiMainMenuRender()
                 // Open File
                 std::string path, content;
                 if(FileDialog::SelectSingleFile("sce",
-                                                (FileSystem::GetCurrentDirectory() + "\\assets").c_str(),
-                                                path))
+                    (FileSystem::GetCurrentDirectory() + "\\assets").c_str(),
+                    path))
                 {
                     m_scenePath = path;
                     openScene(m_scenePath);

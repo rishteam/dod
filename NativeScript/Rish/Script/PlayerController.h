@@ -25,7 +25,6 @@ public:
         RL_SERIALIZE("walkAccel", walkAccel);
         RL_SERIALIZE("walkSpeedLimit", walkSpeedLimit);
         RL_SERIALIZE("jumpSpeed", jumpSpeed);
-        RL_SERIALIZE("cameraTransSpeed", cameraTransSpeed);
     }
 private:
     float currentMaxMove = 5.0f;
@@ -33,9 +32,6 @@ private:
 
     float walkAccel;
     float walkSpeedLimit;
-
-    float cameraTransSpeed;
-
 };
 
 }

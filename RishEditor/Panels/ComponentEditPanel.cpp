@@ -95,6 +95,8 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
                 }
                 else
                     ImGui::Dummy(ImVec2(64, 64));
+
+                ImGui::DragFloat("Tiling", &render.tiling, 1.f);
             }
 
             static bool subTexture = render.useAsSubTexture;

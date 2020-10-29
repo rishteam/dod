@@ -34,4 +34,4 @@ private:
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::CameraController)
+RL_REGISTER_SCRIPT_TYPE(rl::CameraController) // NOLINT

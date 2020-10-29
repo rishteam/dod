@@ -333,14 +333,15 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value61": 1,
                 "value62": {
                     "Color": {
-                        "x": 0.5588235259056091,
-                        "y": 0.5588179230690002,
-                        "z": 0.5588179230690002,
+                        "x": 1.0,
+                        "y": 0.9999899864196777,
+                        "z": 0.9999899864196777,
                         "w": 1.0
                     },
                     "Texture": "assets\\texture\\dev_128_gr_032x.jpg",
@@ -368,7 +369,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value63": 3,
                 "value64": {
@@ -403,7 +405,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value65": 1048580,
                 "value66": {
@@ -438,7 +441,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value67": 5,
                 "value68": {
@@ -473,7 +477,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value69": 7,
                 "value70": {
@@ -508,7 +513,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value71": 1048582,
                 "value72": {
@@ -543,7 +549,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value73": 8,
                 "value74": {
@@ -578,7 +585,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value75": 9,
                 "value76": {
@@ -613,7 +621,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value77": 10,
                 "value78": {
@@ -648,7 +657,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value79": 11,
                 "value80": {
@@ -683,7 +693,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value81": 12,
                 "value82": {
@@ -718,7 +729,8 @@
                             "x": 1.0,
                             "y": 1.0
                         }
-                    }
+                    },
+                    "tiling": 1.0
                 },
                 "value83": 1,
                 "value84": 2,
@@ -772,8 +784,7 @@
                             "data": {
                                 "walkAccel": 5.0,
                                 "walkSpeedLimit": 7.0,
-                                "jumpSpeed": 7.0,
-                                "cameraTransSpeed": 2.0
+                                "jumpSpeed": 7.0
                             }
                         }
                     },
@@ -784,15 +795,21 @@
                 "value91": {
                     "instance": {
                         "polymorphic_id": 2147483650,
-                        "polymorphic_name": "rl::CameraController",
+                        "polymorphic_name": "rl::Cinemachine2D",
                         "ptr_wrapper": {
                             "id": 2147483651,
                             "data": {
-                                "speed": 10.0
+                                "cameraTransSpeed": 2.0,
+                                "startTransSpeed": 1.0,
+                                "endTransSpeed": 1.0,
+								"target": {
+									"uuid": "46f33447-86e7-41ca-9a6e-8e3b3e24d745"
+								},
+								"targetName": "Player"
                             }
                         }
                     },
-                    "script_name": "rl::CameraController",
+                    "script_name": "rl::Cinemachine2D",
                     "valid": false
                 },
                 "value92": 13,

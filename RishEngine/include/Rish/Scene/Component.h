@@ -125,6 +125,8 @@ struct SpriteRenderComponent
     Ref<SubTexture2D> m_subtexture;
     SubTexture2DSetting m_subSetting;
 
+    float tiling = 1.f;
+
 	// states
 	bool init = true; // TODO: Check the meaning and rename it
 
@@ -171,7 +173,8 @@ private:
 		   cereal::make_nvp("Texture", texturePath),
 		   cereal::make_nvp("UseTexture", useTexture),
 		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
-		   cereal::make_nvp("setting", m_subSetting)
+		   cereal::make_nvp("setting", m_subSetting),
+		   cereal::make_nvp("tiling", tiling)
 		);
 	}
 };
