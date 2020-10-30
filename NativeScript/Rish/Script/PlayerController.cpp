@@ -17,29 +17,39 @@ void PlayerController::onUpdate(Time dt)
     auto &trans = GetComponent<TransformComponent>();
     auto &rigid = GetComponent<RigidBody2DComponent>();
     auto &boxc = GetComponent<BoxCollider2DComponent>();
-    rigid.attachPoint = Vec2(0.0f, 0.0f);
+    auto &rend =  GetComponent<SpriteRenderComponent>();
+    auto &prevState = playerState;
     // TODO: HOT Fixed
     trans.rotate = 0.0f;
-
-    static bool prevJump = false;
 
     Vec2 &velocity = rigid.velocity;
     if (Input::IsKeyPressed(Keyboard::Up) && !prevJump)
     {
         velocity.y = jumpSpeed;
+        playerState = PlayerState::JUMP;
     }
-    prevJump = Input::IsKeyPressed(Keyboard::Up);
-
-    if (Input::IsKeyPressed(Keyboard::Left))
+    else if (Input::IsKeyPressed(Keyboard::Left))
     {
         if(velocity.x >= -walkSpeedLimit)
             velocity.x -= walkAccel * dt.asSeconds();
+        playerState = PlayerState::LEFT;
     }
-    if (Input::IsKeyPressed(Keyboard::Right))
+    else if (Input::IsKeyPressed(Keyboard::Right))
     {
         if(velocity.x <= walkSpeedLimit)
             velocity.x += walkAccel * dt.asSeconds();
+        playerState = PlayerState::RIGHT;
     }
+    else if (Input::IsKeyPressed(Keyboard::Down))
+    {
+        playerState = PlayerState::DOWN;
+    }
+    else if (rigid.velocity.x == 0.0f && rigid.velocity.y == 0.0f)
+    {
+        playerState = PlayerState::STAND;
+    }
+    prevJump = Input::IsKeyPressed(Keyboard::Up);
+    setGraphic(rend, playerState, prevState);
 
     // Camera follows player
     auto view = GetScene().m_registry.view<TransformComponent, CameraComponent>();
@@ -60,6 +70,68 @@ void PlayerController::onImGuiRender()
     ImGui::DragFloat("Walk Accelerate", &walkAccel, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Walk Speed Limit", &walkSpeedLimit, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Jump Speed", &jumpSpeed, 10.0f, 0.0f, 100.0f);
+    ImGui::Text("State: %d", static_cast<int>(playerState));
+}
+
+void PlayerController::setGraphic(SpriteRenderComponent &rend, PlayerState &currentState, PlayerState &previousState)
+{
+    // Player Draw State
+    // TODO: Simplify, Flip features
+    rend.useTexture = true;
+    rend.useAsSubTexture = true;
+    rend.texturePath = "assets\\texture\\mario\\characters.gif";
+    rend.m_subSetting.type = SubTexture2DSetting::SubTextureCoordinate;
+
+    switch (currentState)
+    {
+        // TODO: set state graphic
+        case PlayerState::STAND:
+            rend.m_subSetting.leftUpper = glm::vec2(256, 1);
+            rend.m_subSetting.size = glm::vec2(21, 33);
+        case PlayerState::JUMP:
+            if (previousState == PlayerState::RIGHT)
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(367, 0);
+                rend.m_subSetting.size = glm::vec2(21, 33);
+            }
+            else if (previousState == PlayerState::LEFT)
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(126, 0);
+                rend.m_subSetting.size = glm::vec2(21, 33);
+            }
+            else
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(367, 0);
+                rend.m_subSetting.size = glm::vec2(21, 33);
+            }
+            break;
+        case PlayerState::RIGHT:
+            rend.m_subSetting.leftUpper = glm::vec2(256, 1);
+            rend.m_subSetting.size = glm::vec2(21, 33);
+            break;
+        case PlayerState::LEFT:
+            rend.m_subSetting.leftUpper = glm::vec2(237, 0);
+            rend.m_subSetting.size = glm::vec2(21, 33);
+            break;
+        case PlayerState::DOWN:
+            if (previousState == PlayerState::RIGHT)
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(275, 0);
+                rend.m_subSetting.size = glm::vec2(21, 33);
+            }
+            else if (previousState == PlayerState::LEFT)
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(218, 0);
+                rend.m_subSetting.size = glm::vec2(21, 33);
+            }
+            else
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(275, 0);
+                rend.m_subSetting.size = glm::vec2(21, 33);
+            }
+            break;
+    }
+    rend.loadSubTexture();
 }
 
 }

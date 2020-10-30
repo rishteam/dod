@@ -23,6 +23,9 @@ public:
     static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state);
     static void onScenePlay(entt::registry& registry, Scene::SceneState state);
     static void onSceneStop();
+
+
+
 private:
     static Ref<Scene> s_Scene;
 };

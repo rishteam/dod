@@ -13,7 +13,16 @@ class PlayerController : public ScriptableEntity
 {
 public:
 
+    enum class PlayerState
+    {
+        STAND = 0,
+        RIGHT,
+        LEFT,
+        DOWN,
+        JUMP
+    };
 
+    PlayerState playerState;
 
     void onCreate() override;
 
@@ -22,6 +31,8 @@ public:
     void onUpdate(Time dt) override;
 
     void onImGuiRender() override;
+
+    void setGraphic(SpriteRenderComponent &rend, PlayerState &currentState, PlayerState &previousState);
 
     RL_SCRIPT_SERIALIZE()
     {
@@ -34,6 +45,8 @@ private:
 
     float walkAccel;
     float walkSpeedLimit;
+
+    bool prevJump = false;
 
 };
 

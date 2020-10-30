@@ -20,7 +20,6 @@ void EntityManager::Unregister(Entity ent)
 Entity EntityManager::GetEntityByUUID(UUID uuid)
 {
     RL_ASSERT(!m_UUIDToEntityMap.count(uuid), "Entity {} not registered", uuid.to_string());
-
     return m_UUIDToEntityMap[uuid];
 }
 

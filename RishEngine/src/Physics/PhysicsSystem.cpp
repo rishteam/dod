@@ -2,6 +2,9 @@
 
 namespace rl {
 
+static float accumulateTime = 0.0f;
+static float MS_PER_UPDATE = 1.0f / 60.0f;
+
 Ref<Scene> PhysicsSystem::s_Scene;
 
 void PhysicsSystem::onUpdate(const Ref<Scene>& scene, float dt)
@@ -169,8 +172,8 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
 
     if (state == Scene::SceneState::Play)
     {
-        onUpdateNewPhysicsObject(registry, state);
         onCleanPhysicObject();
+        onUpdateNewPhysicsObject(registry, state);
         // update BoxCollider2D component data to engine
         auto view = registry.view<TransformComponent, BoxCollider2DComponent>();
         for (auto entity : view)
@@ -253,8 +256,20 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
             }
         }
 
-        // Physics simulate
-        physicsWorld.Step(dt);
+         // Physics simulate
+        if(accumulateTime <= MS_PER_UPDATE)
+        {
+            accumulateTime += dt;
+        }
+        else
+        {
+            while(accumulateTime >= MS_PER_UPDATE)
+            {
+                accumulateTime -= MS_PER_UPDATE;
+                physicsWorld.Step(MS_PER_UPDATE);
+            }
+        }
+
 
         // Physics engine data to Component
         // BoxCollider & RigidBody2D
