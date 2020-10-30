@@ -4,33 +4,20 @@
 
 namespace rl {
 
-void ParticleSystem::onUpdate(const Ref<Scene>& scene, float dt)
+Ref<Scene> ParticleSystem::s_Scene;
+
+void ParticleSystem::RegisterScene(const Ref <Scene> &scene)
 {
-    auto &registry = scene->m_registry;
-    const auto &state = scene->getSceneState();
-    //
-    onUpdate(registry, dt, state);
+    s_Scene = scene;
 }
 
-void ParticleSystem::onRender(const Ref<Scene>& scene)
+void ParticleSystem::onUpdate(float dt)
 {
-    auto &registry = scene->m_registry;
-    const auto &state = scene->getSceneState();
-    //
-    onRender(registry, state);
-}
+    auto &registry = s_Scene->m_registry;
+    auto state = s_Scene->getSceneState();
 
-void ParticleSystem::onEditorRender(const Ref<Scene>& scene)
-{
-    auto &registry = scene->m_registry;
-    const auto &state = scene->getSceneState();
-    //
-    onEditorRender(registry, state);
-}
-
-void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneState state)
-{
-    RL_UNUSED(state);
+    if(state != Scene::SceneState::Play)
+        return;
     //
     auto view = registry.view<TransformComponent, ParticleComponent>();
     for(auto entity : view)
@@ -212,9 +199,9 @@ void ParticleSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneSt
     }
 }
 
-void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
+void ParticleSystem::onRender()
 {
-    RL_UNUSED(state);
+    auto &registry = s_Scene->m_registry;
     //
     auto view = registry.view<TransformComponent, ParticleComponent>();
     for (auto &entity: view)
@@ -234,8 +221,11 @@ void ParticleSystem::onRender(entt::registry &registry, Scene::SceneState state)
     }
 }
 
-void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState state)
+void ParticleSystem::onEditorRender(bool isSimulate)
 {
+    auto &registry = s_Scene->m_registry;
+    auto state = s_Scene->getSceneState();
+    //
     auto view = registry.view<TransformComponent, ParticleComponent>();
     for (auto &entity: view)
     {
@@ -243,7 +233,18 @@ void ParticleSystem::onEditorRender(entt::registry &registry, Scene::SceneState 
         auto &emitter   = registry.get<ParticleComponent>(entity);
         auto &tag       = registry.get<TagComponent>(entity);
 
-        if(state == Scene::SceneState::Editor)
+        if(isSimulate)
+        {
+            // Draw all living particles
+            for(auto &particle: emitter.particles)
+            {
+                if(particle.life > 0)
+                    Renderer2D::DrawRotatedQuad(particle.pos,
+                        {particle.currentSize, particle.currentSize}, emitter.texture,
+                        particle.currentColor, particle.angle);
+            }
+        }
+        else
         {
             auto size = (emitter.startSize + emitter.endSize)/2.f * 0.01f;
             Renderer2D::DrawQuad(transform.translate + glm::vec3(emitter.offset, 0),

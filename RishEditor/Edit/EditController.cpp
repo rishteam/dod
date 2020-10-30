@@ -55,11 +55,11 @@ void EditController::onUpdate(Time dt)
     m_cameraController->onUpdate(dt);
 
     auto scene = getContext();
-    Renderer2D::BeginScene(m_cameraController->getCamera(), true);
     {
-        SpriteRenderSystem::onRender(scene);
+        Renderer2D::BeginScene(m_cameraController->getCamera(), true);
+        SpriteRenderSystem::onRender();
+        Renderer2D::EndScene();
     }
-    Renderer2D::EndScene();
 
     Renderer2D::BeginScene(m_cameraController->getCamera(), false);
     {

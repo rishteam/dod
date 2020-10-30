@@ -145,7 +145,7 @@ add_library(RishEngine
     src/Scene/System/SpriteRenderSystem.cpp
 
     ${RL_SCRIPT_FILES}
-)
+        src/Scene/System/NativeScriptSystem.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

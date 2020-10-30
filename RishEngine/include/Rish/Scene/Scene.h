@@ -97,6 +97,7 @@ public:
     ////////////////////////////////////////////////////////////////
     // Scene Camera
     ////////////////////////////////////////////////////////////////
+    bool findPrimaryCamera();
     SceneCamera m_mainCamera{};
     glm::mat4 m_mainCameraTransform{};
 
@@ -126,7 +127,6 @@ public:
     std::vector<std::pair<UUID, bool>> StateBoxColliderObj;
     std::vector<std::pair<UUID, bool>> StateJointObj;
 
-
     ////////////////////////////////////////////////////////////////
 	// friend class
     ////////////////////////////////////////////////////////////////
@@ -140,16 +140,12 @@ public:
 
     friend class ParticleSystem;
     friend class PhysicsSystem;
+    friend class NativeScriptSystem;
     friend class ExampleSandboxLayer;
 
     // Debug functions
     friend void DrawSceneDebugWindow(const char *name, Ref<Scene> scene);
     friend void DrawSceneCameraDebugWindow(const SceneCamera & camera, const glm::mat4 &trans);
-
-    /**
-     * @brief Register all entities to EntityManager
-     */
-    void registerAllEntities();
 
     ////////////////////////////////////////////////////////////////
     // Serialization functions

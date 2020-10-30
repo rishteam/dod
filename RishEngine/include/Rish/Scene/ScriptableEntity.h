@@ -85,6 +85,7 @@ private:
     //
     friend class Scene;
     friend class ScriptableManager;
+    friend class NativeScriptSystem;
     //
     template<typename T>
     friend void CopyComponent(entt::registry &dst, entt::registry &src,

@@ -5,39 +5,42 @@ namespace rl {
 
 Ref<Scene> ColliderSystem::s_Scene;
 
-void ColliderSystem::onInit(const Ref <Scene> &scene)
+void ColliderSystem::RegisterScene(const Ref <Scene> &scene)
 {
     s_Scene = scene;
 }
 
-void ColliderSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneState state)
+void ColliderSystem::OnUpdate(float dt)
 {
-    // TODO: other collider
-    auto view = registry.view<TransformComponent, BoxCollider2DComponent>();
-    auto &mapBoxColliderObj = s_Scene->mapBoxColliderObj;
+    auto state = s_Scene->getSceneState();
+    if(state == Scene::SceneState::Pause)
+        return;
 
+    // TODO: other shape collider
+    auto view = s_Scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
+    auto &mapBoxColliderObj = s_Scene->mapBoxColliderObj;
 
     // TODO: update QuadTree
     // Clear All State
     for (auto &box : view)
     {
-        auto &boxCollider = registry.get<BoxCollider2DComponent>(box);
+        auto &boxCollider = s_Scene->m_registry.get<BoxCollider2DComponent>(box);
         boxCollider.isCollision = false;
         boxCollider.whoCollide.clear();
     }
 
-    auto view2 = registry.view<TransformComponent, BoxCollider2DComponent>();
+    auto view2 = s_Scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
     for (auto &boxA : view2)
     {
         for(auto &boxB : view2)
         {
-            auto &UUID_A = registry.get<TagComponent>(boxA).id;
-            auto &boxColliderA = registry.get<BoxCollider2DComponent>(boxA);
-            auto &transA = registry.get<TransformComponent>(boxA);
+            auto &UUID_A = s_Scene->m_registry.get<TagComponent>(boxA).id;
+            auto &boxColliderA = s_Scene->m_registry.get<BoxCollider2DComponent>(boxA);
+            auto &transA = s_Scene->m_registry.get<TransformComponent>(boxA);
 
-            auto &UUID_B = registry.get<TagComponent>(boxB).id;
-            auto &boxColliderB = registry.get<BoxCollider2DComponent>(boxB);
-            auto &transB = registry.get<TransformComponent>(boxB);
+            auto &UUID_B = s_Scene->m_registry.get<TagComponent>(boxB).id;
+            auto &boxColliderB = s_Scene->m_registry.get<BoxCollider2DComponent>(boxB);
+            auto &transB = s_Scene->m_registry.get<TransformComponent>(boxB);
 
             // Update Check
             auto engineBoxA = MakeRef<Box>(transA.translate.x + boxColliderA.x, transA.translate.y + boxColliderA.y, boxColliderA.w, boxColliderA.h);
@@ -73,7 +76,6 @@ void ColliderSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSt
             }
         }
     }
-
 }
 
-};
+}

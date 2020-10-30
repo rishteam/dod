@@ -2,9 +2,16 @@
 
 namespace rl {
 
-void SpriteRenderSystem::onRuntimeInit(const Ref<Scene> &scene)
+Ref<Scene> SpriteRenderSystem::s_Scene;
+
+void SpriteRenderSystem::RegisterScene(const Ref <Scene> &scene)
 {
-    auto transGroup = scene->m_registry.group<TransformComponent, SpriteRenderComponent>();
+    s_Scene = scene;
+}
+
+void SpriteRenderSystem::OnInit()
+{
+    auto transGroup = s_Scene->m_registry.group<TransformComponent, SpriteRenderComponent>();
     for (auto entity: transGroup)
     {
         auto &transform = transGroup.get<TransformComponent>(entity);
@@ -18,19 +25,9 @@ void SpriteRenderSystem::onRuntimeInit(const Ref<Scene> &scene)
     }
 }
 
-void SpriteRenderSystem::onEditorInit(const Ref<Scene> &scene)
+void SpriteRenderSystem::onRender()
 {
-}
-
-void SpriteRenderSystem::onUpdate(entt::registry &registry, float dt, Scene::SceneState state)
-{
-    if(state != Scene::SceneState::Play)
-        return;
-}
-
-void SpriteRenderSystem::onRender(entt::registry &registry, Scene::SceneState state)
-{
-    auto transGroup = registry.group<TransformComponent, SpriteRenderComponent>();
+    auto transGroup = s_Scene->m_registry.group<TransformComponent, SpriteRenderComponent>();
     for (auto entity: transGroup)
     {
         auto &transform = transGroup.get<TransformComponent>(entity);
@@ -72,35 +69,6 @@ void SpriteRenderSystem::onRender(entt::registry &registry, Scene::SceneState st
                 Renderer2D::DrawQuad(transform.translate, glm::vec2(transform.scale), render.color);
         }
     }
-}
-
-void SpriteRenderSystem::onEditorRender(entt::registry &registry, Scene::SceneState state)
-{
-
-}
-
-void SpriteRenderSystem::onUpdate(const Ref<Scene> &scene, float dt)
-{
-    auto &registry = scene->m_registry;
-    const auto &state = scene->getSceneState();
-    //
-    onUpdate(registry, dt, state);
-}
-
-void SpriteRenderSystem::onRender(const Ref<Scene> &scene)
-{
-    auto &registry = scene->m_registry;
-    const auto &state = scene->getSceneState();
-    //
-    onRender(registry, state);
-}
-
-void SpriteRenderSystem::onEditorRender(const Ref<Scene> &scene)
-{
-    auto &registry = scene->m_registry;
-    const auto &state = scene->getSceneState();
-    //
-    onEditorRender(registry, state);
 }
 
 }

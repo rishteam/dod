@@ -6,17 +6,15 @@
 //
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/Entity.h>
-#include <Rish/Scene/EntityManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
-//
+// Systems
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
-//
 #include <Rish/Collider/ColliderSystem.h>
-//
 #include <Rish/Physics/PhysicsSystem.h>
+#include <Rish/Scene/System/NativeScriptSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
@@ -104,129 +102,51 @@ Entity Scene::duplicateEntity(Entity src)
 
 void Scene::onRuntimeInit()
 {
-    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
-        Entity ent{entityID, this};
-        // Is bind
-        if(nsc.instance)
-        {
-            nsc.instance->m_entity = Entity{entityID, this};
-        }
-        else
-        {
-            ScriptableManager::Bind(ent, nsc.scriptName);
-        }
-    });
-
-    m_registry.view<SpriteRenderComponent>().each([=](auto ent, auto &render) {
-        Entity entity{ent, this};
-
-        if(render.init)
-        {
-            render.m_texture = Texture2D::LoadTextureVFS(render.texturePath);
-            render.init = false;
-        }
-    });
+    NativeScriptSystem::OnInit();
+    SpriteRenderSystem::OnInit();
 }
 
 void Scene::onEditorInit()
 {
-    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
-        Entity ent{entityID, this};
-        // Is bind
-        if(nsc.instance)
-        {
-            nsc.instance->m_entity = Entity{entityID, this};
-        }
-        else
-        {
-            ScriptableManager::Bind(ent, nsc.scriptName);
-        }
-    });
+    NativeScriptSystem::OnInit();
+    SpriteRenderSystem::OnInit();
 }
 
 void Scene::onUpdate(Time dt)
 {
-    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
-    {
-        Entity ent{entityID, this};
-
-        // TODO: Refactor me out for Editor
-        // Is bind
-        if(nsc.instance)
-        {
-            nsc.instance->m_entity = Entity{entityID, this};
-        }
-        else
-        {
-            ScriptableManager::Bind(ent, nsc.scriptName);
-        }
-
-        if(nsc.valid)
-        {
-            nsc.instance->onUpdate(dt);
-        }
-    });
-
-    // TODO: Detected collision for collider Use QuadTree
-
-    // Particle System update
-    if(m_sceneState == SceneState::Play)
-        ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
-
-    // Collider State update
-    if(m_sceneState == SceneState::Play)
-        ColliderSystem::onUpdate(m_registry, dt, m_sceneState);
-    // Physics System update
-    PhysicsSystem::onUpdate(m_registry, dt, m_sceneState);
+    NativeScriptSystem::OnUpdate(dt);
+    ParticleSystem::onUpdate(dt);
+    ColliderSystem::OnUpdate(dt);
+    PhysicsSystem::OnUpdate(dt);
 
     // Find a primary camera
     // TODO: implement multiple camera
-    bool isAnyCamera{false};
-    auto group = m_registry.view<TransformComponent, CameraComponent>();
-    for(auto entity : group)
-    {
-        Entity ent{entity, this};
-        auto &transform = ent.getComponent<TransformComponent>();
-        auto &camera = ent.getComponent<CameraComponent>();
-
-        if(camera.primary)
-        {
-            m_mainCamera = camera.camera;
-            m_mainCameraTransform = glm::translate(glm::mat4(1.f), transform.translate);
-            isAnyCamera = true;
-        }
-    }
-    if(!isAnyCamera) return;
+    if(!findPrimaryCamera())
+        return;
 
     // Draw SpriteRenderComponent
-    Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
     {
-       SpriteRenderSystem::onRender(m_registry, m_sceneState);
+        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
+        SpriteRenderSystem::onRender();
+        Renderer2D::EndScene();
     }
-    Renderer2D::EndScene();
 
     // Draw Particle system
-    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
-    Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
     {
-        ParticleSystem::onRender(m_registry, m_sceneState);
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+        ParticleSystem::onRender();
+        Renderer2D::EndScene();
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
-    Renderer2D::EndScene();
-    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
 }
 
 void Scene::onScenePlay()
 {
     m_sceneState = SceneState::Play;
 
-    // Initialize the NativeScriptComponent
-    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
-    {
-        nsc.instance->onCreate();
-        nsc.valid = true;
-    });
-    // Physics system initialize
-    PhysicsSystem::onScenePlay(m_registry, m_sceneState);
+    NativeScriptSystem::onScenePlay();
+    PhysicsSystem::OnScenePlay();
 }
 
 void Scene::onScenePause()
@@ -238,15 +158,8 @@ void Scene::onSceneStop()
 {
     m_sceneState = SceneState::Editor;
 
-    // Destroy the NativeScriptComponent
-    m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
-    {
-        Entity ent{entityID, this};
-        nsc.instance->onDestroy();
-        nsc.valid = false;
-    });
-    // Physics system clear
-    PhysicsSystem::onSceneStop();
+    NativeScriptSystem::onSceneStop();
+    PhysicsSystem::OnSceneStop();
 }
 
 void Scene::copySceneTo(Ref<Scene> &target)
@@ -284,7 +197,7 @@ void Scene::onImGuiRender()
 
     if(m_debugPhysics)
     {
-        PhysicsSystem::onImGuiRender();
+        PhysicsSystem::OnImGuiRender();
     }
 
     if(m_debugScene)
@@ -319,12 +232,30 @@ Entity Scene::getEntityByUUID(UUID uuid)
     return target;
 }
 
-void Scene::registerAllEntities()
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool Scene::findPrimaryCamera()
 {
-    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
-        Entity entity{ent, this};
-        EntityManager::Register(entity);
-    });
+    bool isAnyCamera{false};
+    auto group = m_registry.view<TransformComponent, CameraComponent>();
+    for(auto entity : group)
+    {
+        Entity ent{entity, this};
+        auto &transform = ent.getComponent<TransformComponent>();
+        auto &camera = ent.getComponent<CameraComponent>();
+
+        if(camera.primary)
+        {
+            m_mainCamera = camera.camera;
+            m_mainCameraTransform = glm::translate(glm::mat4(1.f), transform.translate);
+            isAnyCamera = true;
+        }
+    }
+
+    return isAnyCamera;
 }
+
 
 } // namespace rl

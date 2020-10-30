@@ -802,10 +802,10 @@
                                 "cameraTransSpeed": 2.0,
                                 "startTransSpeed": 1.0,
                                 "endTransSpeed": 1.0,
-								"target": {
-									"uuid": "46f33447-86e7-41ca-9a6e-8e3b3e24d745"
-								},
-								"targetName": "Player"
+                                "target": {
+                                    "uuid": "46f33447-86e7-41ca-9a6e-8e3b3e24d745"
+                                },
+                                "targetName": "Player"
                             }
                         }
                     },
@@ -820,7 +820,7 @@
                         "ptr_wrapper": {
                             "id": 2147483652,
                             "data": {
-                                "mock": 0
+                                "mock": 453181564
                             }
                         }
                     },

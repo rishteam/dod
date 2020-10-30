@@ -8,13 +8,16 @@
 
 namespace rl {
 
-class SpriteRenderSystem
+class NativeScriptSystem
 {
 public:
     static void RegisterScene(const Ref<Scene> &scene);
     //
     static void OnInit();
-    static void onRender();
+    static void OnUpdate(float dt);
+
+    static void onScenePlay();
+    static void onSceneStop();
 
 private:
     static Ref<Scene> s_Scene;
