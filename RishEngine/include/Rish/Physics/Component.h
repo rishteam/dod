@@ -41,7 +41,9 @@ struct RigidBody2DComponent
 
 
     RigidBody2DComponent() = default;
-
+    RigidBody2DComponent(float mass) : mass(mass)
+    {
+    }
 private:
     friend class cereal::access;
     template<class Archive>
@@ -73,6 +75,10 @@ struct BoxCollider2DComponent
     bool isCollision = false;
 
     BoxCollider2DComponent();
+    BoxCollider2DComponent(float x, float y, float w, float h)
+        : x(x), y(y), w(w), h(h)
+    {
+    }
 private:
     friend class cereal::access;
     template<class Archive>

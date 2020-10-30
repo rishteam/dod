@@ -56,7 +56,7 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/SpriteRotate.cpp
     ../NativeScript/Rish/Script/CameraController.cpp
     ../NativeScript/Rish/Script/PlayerController.cpp
-)
+        ../NativeScript/Rish/Script/Spawner.cpp ../NativeScript/Rish/Script/Spawner.h ../NativeScript/Rish/Script/Cinemachine2D.cpp ../NativeScript/Rish/Script/Cinemachine2D.h)
 
 # Add executable
 add_library(RishEngine
@@ -137,16 +137,15 @@ add_library(RishEngine
     src/Scene/SceneCamera.cpp
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
-    src/Scene/EntityManager.cpp
 
-    src/Math/AABB.cpp
+        src/Math/AABB.cpp
     src/Math/BoundingBox.cpp
     src/Math/Random.cpp
 
     src/Scene/System/SpriteRenderSystem.cpp
 
     ${RL_SCRIPT_FILES}
-)
+        src/Scene/System/NativeScriptSystem.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

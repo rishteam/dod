@@ -29,6 +29,13 @@ public:
             script.bind<T>();
             script.instance->m_entity = ent;
         };
+
+        // Set the clone function
+        s_scriptCloneMap[typeName] = [](Entity ent) -> Ref<ScriptableEntity>
+        {
+            auto &script = ent.getComponent<NativeScriptComponent>();
+            return script.instance->clone<T>();
+        };
     }
 
     static void Shutdown()
@@ -54,6 +61,15 @@ public:
         script.unbind();
     }
 
+    static void Copy(Entity dst, Entity src)
+    {
+        auto &srcComponent = src.getComponent<NativeScriptComponent>();
+        auto &dstComponent = dst.getComponent<NativeScriptComponent>();
+
+        auto &cloneFunc = s_scriptCloneMap[srcComponent.scriptName];
+        dstComponent.instance = cloneFunc(src);
+    }
+
     template<typename T>
     static std::string GetName()
     {
@@ -63,9 +79,14 @@ public:
     using BindFunc=void (*)(Entity);
     using TypeToBindFuncMap = std::unordered_map<std::string, BindFunc>;
 
+    using CloneFunc = Ref<ScriptableEntity> (*)(Entity);
+    using TypeToCloneFuncMap = std::unordered_map<std::string, CloneFunc>;
+
 private:
     static TypeToBindFuncMap s_scriptBindMap;    ///< Type Name Mapping
     static std::vector<std::string> s_typeName;  ///< Type Name list
+
+    static TypeToCloneFuncMap s_scriptCloneMap;  ///< Type Clone Mapping
 
     static const std::vector<std::string>& GetScriptNames()
     {

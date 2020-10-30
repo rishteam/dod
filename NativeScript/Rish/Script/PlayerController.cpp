@@ -40,19 +40,6 @@ void PlayerController::onUpdate(Time dt)
         if(velocity.x <= walkSpeedLimit)
             velocity.x += walkAccel * dt.asSeconds();
     }
-
-    // Camera follows player
-    auto view = GetScene().m_registry.view<TransformComponent, CameraComponent>();
-    for(auto ent : view)
-    {
-        auto entity = GetEntityByHandle(ent);
-        auto &camera = entity.getComponent<CameraComponent>();
-        auto &transform = entity.getComponent<TransformComponent>();
-        if(camera.primary)
-        {
-            transform.translate.x = trans.translate.x;
-        }
-    }
 }
 
 void PlayerController::onImGuiRender()

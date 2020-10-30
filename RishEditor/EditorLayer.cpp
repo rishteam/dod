@@ -9,11 +9,13 @@
 
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
+
+// Systems
 #include <Rish/Effect/Particle/ParticleSystem.h>
-
+#include <Rish/Scene/System/NativeScriptSystem.h>
 #include <Rish/Collider/ColliderSystem.h>
-
 #include <Rish/Physics/PhysicsSystem.h>
+#include <Rish/Scene/System/SpriteRenderSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
 
@@ -67,6 +69,7 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
     m_editorFramebuffer = Framebuffer::Create(fbspec);
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
+
     // Attach all panels
     for(auto &panel : m_panelList)
         panel->onAttach(m_currentScene);
@@ -78,6 +81,8 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<PlayerController>();
+    ScriptableManager::Register<Spawner>();
+    ScriptableManager::Register<Cinemachine2D>();
 
     loadSetting("setting.conf");
 
@@ -127,17 +132,16 @@ void EditorLayer::onUpdate(Time dt)
         //
         m_editController->onUpdate(dt);
 
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
-        Renderer2D::BeginScene(cameraController->getCamera(), false);
-        {
-            ParticleSystem::onEditorRender(m_currentScene);
-            if(m_editController->m_debugSimulateParticle)
-                ParticleSystem::onRender(m_currentScene);
-        }
-        Renderer2D::EndScene();
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-    }
 
+        {
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+            Renderer2D::BeginScene(cameraController->getCamera(), false);
+            ParticleSystem::onEditorRender(m_editController->m_debugSimulateParticle);
+            Renderer2D::EndScene();
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
+                                        RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        }
+    }
     m_editorFramebuffer->unbind();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,8 +261,7 @@ void EditorLayer::onImGuiRender()
                 m_runtimeScene = MakeRef<Scene>();
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
-                PhysicsSystem::onInit(m_currentScene);
-                ColliderSystem::onInit(m_currentScene);
+                //
                 m_currentScene->onScenePlay();
             }
             else
@@ -286,7 +289,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         if(ImGui::Button(ICON_FA_BORDER_ALL)){
-            m_editController->changeShowGrid();
+            m_editController->toggleShowGrid();
         }
         ImGui::SameLine();
 
@@ -305,7 +308,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         // Scale button
-        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
+        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
         {
             m_editController->changeGizmoMode(EditController::Gizmo::ScaleMode);
         }
@@ -367,8 +370,8 @@ void EditorLayer::onImGuiMainMenuRender()
                 // Open File
                 std::string path, content;
                 if(FileDialog::SelectSingleFile("sce",
-                                                (FileSystem::GetCurrentDirectory() + "\\assets").c_str(),
-                                                path))
+                    (FileSystem::GetCurrentDirectory() + "\\assets").c_str(),
+                    path))
                 {
                     m_scenePath = path;
                     openScene(m_scenePath);
@@ -495,6 +498,13 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     m_currentScene = scene;
     setContextToPanels(scene);
 
+    // Register the scene to systems
+    PhysicsSystem::RegisterScene(m_currentScene);
+    ColliderSystem::RegisterScene(m_currentScene);
+    NativeScriptSystem::RegisterScene(m_currentScene);
+    SpriteRenderSystem::RegisterScene(m_currentScene);
+    ParticleSystem::RegisterScene(m_currentScene);
+
     // Reset Editor Panel target
     m_editController->resetTarget();
     m_sceneHierarchyPanel->resetTarget();
@@ -503,9 +513,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     // Recover the target after switch the scene if set
     if(isTargetSet)
     {
-        // TODO: Remove me
         auto entity = scene->getEntityByUUID(id);
-        // TODO: Change this to EntityManager
         //
         m_editController->addTarget(entity);
         m_sceneHierarchyPanel->addTarget(entity);
@@ -585,7 +593,8 @@ void EditorLayer::openScene(const std::string &path)
 
         // Because the panels are now holding strong ref to the scene
         // We need to reset the context
-        setContextToPanels(m_editorScene);
+//        setContextToPanels(m_editorScene);
+        switchCurrentScene(m_editorScene);
 
         m_editorScene->onEditorInit();
     }

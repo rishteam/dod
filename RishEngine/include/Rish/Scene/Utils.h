@@ -14,9 +14,10 @@ namespace rl {
 template<typename T>
 void CopyComponent(entt::registry &dst, entt::registry &src,
                    std::unordered_map<UUID, entt::entity>& enttMap,
-                   const Ref<Scene> &scene)
+                   Scene *dstScene, Scene *srcScene)
 {
-    RL_UNUSED(scene);
+    RL_UNUSED(srcScene);
+    RL_UNUSED(dstScene);
     // Copy all src entities fro src registry to dst registry
     auto view = src.view<T>();
     for(auto srcEnt : view)
@@ -34,7 +35,7 @@ void CopyComponent(entt::registry &dst, entt::registry &src,
 template<>
 void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &src,
                                           std::unordered_map<UUID, entt::entity>& enttMap,
-                                          const Ref<Scene> &targetScene)
+                                          Scene *dstScene, Scene *srcScene)
 {
     // Copy all src entities fro src registry to dst registry
     auto view = src.view<NativeScriptComponent>();
@@ -50,18 +51,19 @@ void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &s
         auto &dstComponent = dst.emplace<NativeScriptComponent>(dstEnt);
 
         // RishEngine Entity of dst
-        Entity dstEntity{dstEnt, targetScene.get()};
+        Entity dstEntity{dstEnt, dstScene};
+        Entity srcEntity{srcEnt, srcScene};
 
         // Bind the Script to dstEntity
         ScriptableManager::Bind(dstEntity, srcComponent.scriptName);
 
         // Copy the values of instance
-        *dstComponent.instance = *srcComponent.instance;
+//        *dstComponent.instance = *srcComponent.instance;
+        ScriptableManager::Copy(dstEntity, srcEntity);
         RL_CORE_TRACE("CopyComponent<NativeScriptComponent>: dst={} src={}", (void *)dstComponent.instance.get(), (void *)srcComponent.instance.get());
 
         // Set the instance->m_entity (Written by the copy above)
         dstComponent.instance->m_entity = dstEntity;
-
     }
 }
 

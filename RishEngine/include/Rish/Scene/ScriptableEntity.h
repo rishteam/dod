@@ -57,22 +57,40 @@ public:
         return Entity{ent, m_entity.m_scene};
     }
 
+    Entity CreateEntity(const std::string &name, const glm::vec3 &pos=glm::vec3(0.f))
+    {
+        return GetScene().createEntity(name, pos);
+    }
+
     // Main Functions
     virtual void onCreate() {}
     virtual void onDestroy() {}
     virtual void onUpdate(Time dt) = 0;
     virtual void onImGuiRender() = 0;
 
+    // Virtual Copy Constructor pattern
+    // https://stackoverflow.com/questions/12255546/c-deep-copying-a-base-class-pointer
+    template<class Derived>
+    Ref<Derived> clone() const
+    {
+        return Ref<Derived>( // store by Ref
+            new Derived(     // new type Derived
+                static_cast<Derived const&>(*this) // cast to derived type
+            )
+        );
+    }
+
 private:
     Entity m_entity;
     //
     friend class Scene;
     friend class ScriptableManager;
+    friend class NativeScriptSystem;
     //
     template<typename T>
     friend void CopyComponent(entt::registry &dst, entt::registry &src,
-                             std::unordered_map<UUID, entt::entity>& enttMap,
-                             const Ref<Scene> &targetScene);
+                              std::unordered_map<UUID, entt::entity>& enttMap,
+                              Scene *dstScene, Scene *srcScene);
     template<typename T>
     friend void CopyComponentToEntityIfExists(Entity dst, Entity src);
 };
@@ -86,8 +104,8 @@ private:
         ar(CEREAL_NVP(mock));       \
     }
 
-#define RL_SCRIPT_SERIALIZE() \
-    template<typename Archive>      \
+#define RL_SCRIPT_SERIALIZE()    \
+    template<typename Archive>   \
     void serialize(Archive &ar)
 
 #define RL_SERIALIZE(name, object) \
@@ -158,4 +176,4 @@ struct NativeScriptComponent
     CEREAL_REGISTER_TYPE(x);       \
     CEREAL_REGISTER_POLYMORPHIC_RELATION(rl::ScriptableEntity, x)
 
-RL_REGISTER_SCRIPT_TYPE(rl::EmptyScript)
+RL_REGISTER_SCRIPT_TYPE(rl::EmptyScript) // NOLINT

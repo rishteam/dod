@@ -36,8 +36,8 @@ void ParticleTestLayer::onUpdate(rl::Time dt)
     RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
-        ParticleSystem::onUpdate(m_scene, dt);
-        ParticleSystem::onRender(m_scene);
+        ParticleSystem::onUpdate(dt);
+        ParticleSystem::onRender();
     }
     Renderer2D::EndScene();
     RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);

@@ -26,6 +26,7 @@ public:
     RL_SCRIPT_SERIALIZE()
     {
         RL_SERIALIZE("walkAccel", walkAccel);
+        RL_SERIALIZE("walkSpeedLimit", walkSpeedLimit);
         RL_SERIALIZE("jumpSpeed", jumpSpeed);
     }
 private:
@@ -34,9 +35,8 @@ private:
 
     float walkAccel;
     float walkSpeedLimit;
-
 };
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::PlayerController)
+RL_REGISTER_SCRIPT_TYPE(rl::PlayerController) // NOLINT

@@ -10,19 +10,16 @@
 
 namespace rl {
 
+// TODO: Detected collision for collider Use QuadTree
 class RL_API ColliderSystem
 {
 public:
-    static void onInit(const Ref <Scene> &scene);
-
-    static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state);
-
+    static void RegisterScene(const Ref <Scene> &scene);
+    //
+    static void OnUpdate(float dt);
 
 private:
     static Ref<Scene> s_Scene;
 };
-
-
-
 
 }

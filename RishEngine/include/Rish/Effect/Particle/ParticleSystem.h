@@ -4,6 +4,9 @@
 #include <Rish/Scene/Component.h>
 #include <Rish/Scene/Scene.h>
 
+#include <Rish/Renderer/RendererCommand.h>
+#include <Rish/Renderer/Renderer2D.h>
+
 #include <entt/entt.hpp>
 
 namespace rl {
@@ -11,24 +14,21 @@ namespace rl {
 class RL_API ParticleSystem
 {
 public:
-    // TODO: implement me
     enum VortexType
     {
         StaticVortex = 0,
         DynamicVortex
     };
 
-    ParticleSystem() = default;
+    static void RegisterScene(const Ref<Scene> &scene);
 
-    static void onUpdate(entt::registry& registry, float dt, Scene::SceneState state);
-    static void onRender(entt::registry& registry, Scene::SceneState state);
-    static void onEditorRender(entt::registry& registry, Scene::SceneState state);
-
-    static void onUpdate(const Ref<Scene>& scene, float dt);
-    static void onRender(const Ref<Scene>& scene);
-    static void onEditorRender(const Ref<Scene>& scene);
+    static void onUpdate(float dt);
+    static void onRender();
+    static void onEditorRender(bool isSimulate);
 
 private:
+    static Ref<Scene> s_Scene;
+
     // This function exists because it's written before the Math::Random library had been written
     static float randomFloat(float min, float max);
 
