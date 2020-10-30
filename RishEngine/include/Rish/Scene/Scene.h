@@ -55,7 +55,6 @@ public:
 
     // TODO: Remove me
 	Entity getEntityByUUID(UUID uuid);
-    // TODO: Change this to EntityManager
 
 	/**
 	 * @brief Update Entity behavior

@@ -175,4 +175,4 @@ struct NativeScriptComponent
     CEREAL_REGISTER_TYPE(x);       \
     CEREAL_REGISTER_POLYMORPHIC_RELATION(rl::ScriptableEntity, x)
 
-RL_REGISTER_SCRIPT_TYPE(rl::EmptyScript)
+RL_REGISTER_SCRIPT_TYPE(rl::EmptyScript) // NOLINT

@@ -36,4 +36,4 @@ private:
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::PlayerController)
+RL_REGISTER_SCRIPT_TYPE(rl::PlayerController) // NOLINT
