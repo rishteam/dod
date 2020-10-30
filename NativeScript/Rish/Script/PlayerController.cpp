@@ -21,33 +21,36 @@ void PlayerController::onUpdate(Time dt)
     auto &prevState = playerState;
     // TODO: HOT Fixed
     trans.rotate = 0.0f;
+    rigid.angle = 0.0f;
 
     Vec2 &velocity = rigid.velocity;
+    if (rigid.velocity.x == 0 && rigid.velocity.y == 0)
+    {
+        playerState = PlayerState::STAND;
+    }
+    // playerState == PlayerState::STAND
     if (Input::IsKeyPressed(Keyboard::Up) && !prevJump)
     {
         velocity.y = jumpSpeed;
         playerState = PlayerState::JUMP;
     }
-    else if (Input::IsKeyPressed(Keyboard::Left))
+    if (Input::IsKeyPressed(Keyboard::Left))
     {
         if(velocity.x >= -walkSpeedLimit)
             velocity.x -= walkAccel * dt.asSeconds();
         playerState = PlayerState::LEFT;
     }
-    else if (Input::IsKeyPressed(Keyboard::Right))
+    if (Input::IsKeyPressed(Keyboard::Right))
     {
         if(velocity.x <= walkSpeedLimit)
             velocity.x += walkAccel * dt.asSeconds();
         playerState = PlayerState::RIGHT;
     }
-    else if (Input::IsKeyPressed(Keyboard::Down))
+    if (Input::IsKeyPressed(Keyboard::Down))
     {
         playerState = PlayerState::DOWN;
     }
-    else if (rigid.velocity.x == 0.0f && rigid.velocity.y == 0.0f)
-    {
-        playerState = PlayerState::STAND;
-    }
+
     prevJump = Input::IsKeyPressed(Keyboard::Up);
     setGraphic(rend, playerState, prevState);
 
@@ -88,6 +91,7 @@ void PlayerController::setGraphic(SpriteRenderComponent &rend, PlayerState &curr
         case PlayerState::STAND:
             rend.m_subSetting.leftUpper = glm::vec2(256, 1);
             rend.m_subSetting.size = glm::vec2(21, 33);
+            break;
         case PlayerState::JUMP:
             if (previousState == PlayerState::RIGHT)
             {

@@ -146,7 +146,7 @@ add_library(RishEngine
     src/Scene/System/SpriteRenderSystem.cpp
 
     ${RL_SCRIPT_FILES}
-        ../NativeScript/Rish/Script/EventBoxController.h ../NativeScript/Rish/Script/EventBoxController.cpp)
+        ../NativeScript/Rish/Script/EventBoxController.h ../NativeScript/Rish/Script/EventBoxController.cpp ../NativeScript/Rish/Script/MonsterController.h ../NativeScript/Rish/Script/MonsterController.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

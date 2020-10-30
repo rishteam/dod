@@ -19,8 +19,10 @@ public:
     void onUpdate(Time dt) override;
 
     void onImGuiRender() override;
+
+    RL_SCRIPT_EMPTY_SERIALIZE();
 };
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::EventBoxController);
+RL_REGISTER_SCRIPT_TYPE(rl::EventBoxController); // NOLINT

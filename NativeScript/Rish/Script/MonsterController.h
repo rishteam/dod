@@ -9,20 +9,17 @@
 
 namespace rl {
 
-class PlayerController : public ScriptableEntity
+class MonsterController : public ScriptableEntity
 {
 public:
 
-    enum class PlayerState
+    enum class MonsterState
     {
-        STAND = 0,
-        RIGHT,
-        LEFT,
-        DOWN,
-        JUMP
+        Right = 0,
+        Left
     };
 
-    PlayerState playerState = PlayerState::STAND;
+    MonsterState monsterState = MonsterState::Right;
 
     void onCreate() override;
 
@@ -32,14 +29,13 @@ public:
 
     void onImGuiRender() override;
 
-    void setGraphic(SpriteRenderComponent &rend, PlayerState &currentState, PlayerState &previousState);
+    void setGraphic(SpriteRenderComponent &rend, MonsterController &currentState);
 
-    RL_SCRIPT_SERIALIZE()
-    {
-        RL_SERIALIZE("walkAccel", walkAccel);
-        RL_SERIALIZE("jumpSpeed", jumpSpeed);
-    }
+    RL_SCRIPT_EMPTY_SERIALIZE();
+
 private:
+    // TODO: HardCode
+    int dirtyFlag = 0;
     float currentMaxMove = 5.0f;
     float jumpSpeed;
 
@@ -52,4 +48,4 @@ private:
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::PlayerController)
+RL_REGISTER_SCRIPT_TYPE(rl::MonsterController); // NOLINT

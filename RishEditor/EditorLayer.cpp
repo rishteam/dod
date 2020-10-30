@@ -78,6 +78,7 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<PlayerController>();
+    ScriptableManager::Register<MonsterController>();
     ScriptableManager::Register<EventBoxController>();
 
     loadSetting("setting.conf");

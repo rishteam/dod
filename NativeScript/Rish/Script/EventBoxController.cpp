@@ -38,7 +38,7 @@ void EventBoxController::onUpdate(Time dt)
                        && entity.getComponent<NativeScriptComponent>().scriptName == "rl::EventBoxController")
                     {
                         auto playerTrans = collideEntity.getComponent<TransformComponent>();
-                        if (playerTrans.translate.y < trans.translate.y)
+                        if (playerTrans.translate.y + playerTrans.translate.y/2 < trans.translate.y - trans.scale.y/2)
                         {
                             rend.useTexture = true;
                             rend.useAsSubTexture = true;
