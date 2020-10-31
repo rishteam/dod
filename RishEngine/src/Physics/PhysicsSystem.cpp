@@ -350,6 +350,20 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
                 jitComponent.softness = jit->softness;
             }
         }
+
+
+        // TODO: Player rotate State Hard Fixed
+        auto group7 = registry.view<TransformComponent, RigidBody2DComponent>();
+        for(auto entity : group7)
+        {
+            auto &Name = registry.get<TagComponent>(entity).tag;
+            auto &trans = registry.get<TransformComponent>(entity);
+
+            if (Name == "Player")
+            {
+                trans.rotate = 0.0f;
+            }
+        }
     }
 }
 
