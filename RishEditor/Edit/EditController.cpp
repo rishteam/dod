@@ -309,7 +309,9 @@ void EditController::onImGuiRender()
 void EditController::onEvent(Event &e)
 {
     EventDispatcher dispatcher(e);
-    dispatcher.dispatch<MouseScrolledEvent>(RL_BIND_EVENT_FUNC(EditController::onMouseScrolled));
+    if( !dispatcher.dispatch<MouseScrolledEvent>(RL_BIND_EVENT_FUNC(EditController::onMouseScrolled)) ){
+        m_isNowScrollingCamera = false;
+    }
     //
     if(m_sceneWindowFocused && m_sceneWindowHovered)
         m_cameraController->onEvent(e);
@@ -317,15 +319,25 @@ void EditController::onEvent(Event &e)
 
 bool EditController::onMouseScrolled(MouseScrolledEvent &e)
 {
-    // TODO: camera translate when zooming
-    RL_INFO("onMouseScrolled {:.2f}, {:.2f}", sceneMousePosCenterNormalize.x, sceneMousePosCenterNormalize.y);
 
     if( m_sceneWindowFocused && m_sceneWindowHovered )
     {
-        glm::vec2 moveWight(m_editorGrid.getOffset()/2);
-        if(e.yOffset >= 0.f)
-            m_cameraController->move(sceneMousePosCenterNormalize*moveWight);
+        if(!m_isNowScrollingCamera) // is not moving
+        {
+            m_isNowScrollingCamera = true;
+            m_preMPos = mposInWorld;
+        }
+        else
+        {
+            glm::vec2 vec = mposInWorld - m_preMPos;
+            m_cameraController->move(-vec);
+        }
     }
+    else
+    {
+        m_isNowScrollingCamera = false;
+    }
+
     return false;
 }
 
