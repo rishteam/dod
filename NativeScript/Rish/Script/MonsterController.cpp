@@ -21,7 +21,24 @@ void MonsterController::onUpdate(Time dt)
     auto &boxc = GetComponent<BoxCollider2DComponent>();
     auto &rend = GetComponent<SpriteRenderComponent>();
 
+    setGraphic(rend, monsterState);
+    switch (monsterState) {
+        case MonsterState::Left:
+            rigid.velocity.x = -1.0f;
+            break;
+        case MonsterState::Right:
+            rigid.velocity.x = 1.0f;
+            break;
+    }
 
+    // if state Change, rigid value must will be calculated by physics
+    if(stateChange == true)
+    {
+        stateChange = false;
+        return;
+    }
+
+    // TODO: should be optimize
     if (boxc.whoCollide.size() == 2)
     {
         for(auto uuid : boxc.whoCollide)
@@ -31,33 +48,19 @@ void MonsterController::onUpdate(Time dt)
                 auto collideEntity = GetScene().getEntityByUUID(uuid);
                 if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::EventBoxController")
                 {
-                    if (monsterState == MonsterState::Left && )
+                    if (monsterState == MonsterState::Left)
                     {
                         monsterState = MonsterState::Right;
-                        dirtyFlag += 1;
-                        rigid.velocity.x = 2.0f;
                     }
-                    else if (monsterState == MonsterState::Right && dirtyFlag == false)
+                    else if (monsterState == MonsterState::Right)
                     {
                         monsterState = MonsterState::Left;
-                        dirtyFlag += 1;
-                        rigid.velocity.x = -2.0f;
                     }
+                    stateChange = true;
                 }
             }
 
         }
-    }
-
-    switch (monsterState) {
-        case MonsterState::Left:
-            rigid.velocity.x = 1.0f;
-            if()
-            break;
-        case MonsterState::Right:
-            rigid.velocity.x = 1.0f;
-
-            break;
     }
 }
 
@@ -66,9 +69,25 @@ void MonsterController::onImGuiRender()
     ImGui::Text("State: %d", static_cast<int>(monsterState));
 }
 
-void MonsterController::setGraphic(SpriteRenderComponent &rend, MonsterController &currentState)
+void MonsterController::setGraphic(SpriteRenderComponent &rend, MonsterState &monsterState)
 {
+    // TODO: Simplify, Flip features
+    rend.useTexture = true;
+    rend.useAsSubTexture = true;
+    rend.texturePath = "assets\\texture\\mario\\role.png";
+    rend.m_subSetting.type = SubTexture2DSetting::SubTextureCoordinate;
 
+    switch (monsterState) {
+        case MonsterState::Left:
+            rend.m_subSetting.leftUpper = glm::vec2(181, 206);
+            rend.m_subSetting.size = glm::vec2(18, 23);
+            break;
+        case MonsterState::Right:
+            rend.m_subSetting.leftUpper = glm::vec2(294, 207);
+            rend.m_subSetting.size = glm::vec2(18, 23);
+            break;
+    }
+    rend.loadSubTexture();
 }
 
 };

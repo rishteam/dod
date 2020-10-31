@@ -178,11 +178,12 @@ void Scene::onUpdate(Time dt)
     if(m_sceneState == SceneState::Play)
         ParticleSystem::onUpdate(m_registry, dt, m_sceneState);
 
+    // Physics System update
+    PhysicsSystem::onUpdate(m_registry, dt, m_sceneState);
+
     // Collider State update
     if(m_sceneState == SceneState::Play)
         ColliderSystem::onUpdate(m_registry, dt, m_sceneState);
-    // Physics System update
-    PhysicsSystem::onUpdate(m_registry, dt, m_sceneState);
 
     // Find a primary camera
     // TODO: implement multiple camera

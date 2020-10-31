@@ -19,7 +19,7 @@ public:
         Left
     };
 
-    MonsterState monsterState = MonsterState::Right;
+    MonsterState monsterState = MonsterState::Left;
 
     void onCreate() override;
 
@@ -29,13 +29,13 @@ public:
 
     void onImGuiRender() override;
 
-    void setGraphic(SpriteRenderComponent &rend, MonsterController &currentState);
+    void setGraphic(SpriteRenderComponent &rend, MonsterState &currentState);
 
     RL_SCRIPT_EMPTY_SERIALIZE();
 
 private:
     // TODO: HardCode
-    int dirtyFlag = 0;
+    bool stateChange = false;
     float currentMaxMove = 5.0f;
     float jumpSpeed;
 
