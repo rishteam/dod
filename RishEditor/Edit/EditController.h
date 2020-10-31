@@ -5,6 +5,7 @@
 
 #include "Panels/SceneMultiTargetPanel.h"
 #include "Edit/EditorGrid.h"
+#include "Edit/Gizmo.h"
 
 namespace rl {
 
@@ -22,14 +23,8 @@ public:
     void onEvent(Event &e);
 
     // Gizmo
-    enum class Gizmo{
-        SelectMode,
-        MoveMode,
-        ZoomMode,
-        ScaleMode,
-        RotationMode
-    }m_gizmoMode = Gizmo::SelectMode;
-    void changeGizmoMode(Gizmo gizmo);
+    Gizmo m_gizmo;
+    void changeGizmoMode(Gizmo::GizmoMode mode);
 
     // Grid
     void changeShowGrid();
@@ -41,21 +36,6 @@ private:
 
     EditorGrid m_editorGrid;                              ///< Editor grid
     Ref<OrthographicCameraController> m_cameraController; ///< Editor camera
-
-    // Gizmo
-    std::unordered_map<Entity, bool> m_isNowMovingEntity{};
-    std::unordered_map<Entity, glm::vec3> m_oriEntityPosition{};
-    std::unordered_map<Entity, glm::vec3> m_oriEntitySize{};
-    std::unordered_map<Entity, glm::vec3> m_oriEntityNegative{};
-    std::unordered_map<Entity, float> m_oriEntityRotate{};
-    std::unordered_map<Entity, glm::vec3> m_oriMousePosition{};
-    std::unordered_map<Entity, float> m_oriMouseRotate{};
-    std::unordered_map<Entity, glm::vec3> m_moveEntityWeight{};
-    std::unordered_map<Entity, glm::vec3> m_zoomEntityWeight{};
-
-    // Mouse position
-    glm::vec2 m_mousePosBegin;
-    glm::vec2 m_mousePosEnd;
 
     // Camera pane
     glm::vec3 m_moveCameraDiff{0.f};

@@ -54,8 +54,16 @@ void EditController::onUpdate(Time dt)
     m_cameraController->onUpdate(dt);
 
     auto scene = getContext();
+    Renderer2D::BeginScene(m_cameraController->getCamera(), false);
+    {
+        // draw grid
+        m_editorGrid.onUpdate(m_showGrid);
+    }
+    Renderer2D::EndScene();
+
     Renderer2D::BeginScene(m_cameraController->getCamera(), true);
     {
+        // draw entity
         auto transGroup = scene->m_registry.group<TransformComponent, RenderComponent>();
         for (auto entity: transGroup)
         {
@@ -103,7 +111,6 @@ void EditController::onUpdate(Time dt)
 
     Renderer2D::BeginScene(m_cameraController->getCamera(), false);
     {
-        m_editorGrid.onUpdate(m_showGrid);
 
         // Draw special entities
         drawCameraIconAndBorder(scene);
@@ -133,135 +140,11 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
-        BoundingBox2D mouseBound = CalculateBounding2Point(m_mousePosBegin, m_mousePosEnd);
-        if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f ){
-            Renderer2D::DrawQuad(mouseBound.getPosition(), mouseBound.getScale(), glm::vec4(0.f,0.f,.3f,.3f));
-        }
+        // draw gizmo
+        m_gizmo.setSelectedEntity(getTargets());
+        m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
+        m_gizmo.onUpdate();
 
-        // TODO: Make the max AABB
-        if(isSelected())
-        {
-            auto &entSet = getTargets();
-
-            if( entSet.size() > 1 && m_gizmoMode != Gizmo::MoveMode )
-                changeGizmoMode(Gizmo::SelectMode);
-
-            glm::vec2 boundPos(0.f);
-            glm::vec2 boundSize(0.f);
-
-            for(auto ent : m_entitySet) {
-                const auto &transform = ent.getComponent<TransformComponent>();
-                const BoundingBox2D entbound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-                const BoundingBox2D nowbound(boundPos,boundSize);
-                const BoundingBox2D newbound = CombinaBoundingBox2D(nowbound,entbound);
-
-                boundPos = newbound.getPosition();
-                boundSize = newbound.getScale();
-
-            }
-
-            auto clickSize = glm::vec2(m_editorGrid.getOffset()/10);
-            auto clickColor = glm::vec4(1.f, 1.f, 0.f, 1.f);
-
-            switch( m_gizmoMode ) {
-                case Gizmo::SelectMode :{
-                    // Draw Border
-                    for(auto &ent : entSet)
-                    {
-                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
-                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
-                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                        // Get bounding box
-                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
-
-                        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-
-                    }
-                    break;
-                }
-                case Gizmo::MoveMode :{
-                    Renderer2D::DrawRect(boundPos, boundSize, glm::vec4(1.f));
-
-                    auto moveQuadPos2 = glm::vec2(boundPos + clickSize*glm::vec2(.5f));
-                    Renderer2D::DrawQuad(moveQuadPos2, clickSize, clickColor);
-                    auto moveQuadPos3 = glm::vec3(moveQuadPos2, 2.f);
-                    Renderer2D::DrawQuad(moveQuadPos3, clickSize, clickColor);
-
-                    auto PointX = boundPos + boundSize * glm::vec2(.5f, 0.f) + clickSize*glm::vec2(3.f, 0.f);
-                    auto PointY = boundPos + boundSize * glm::vec2(0.f, .5f) + clickSize*glm::vec2(0.f, 3.f);
-                    Renderer2D::DrawFgLine(boundPos, PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
-                    Renderer2D::DrawTriangle(PointX,PointX+clickSize*glm::vec2(-1.f,.5f),PointX+clickSize*glm::vec2(-1.f,-.5f), glm::vec4(0.f, 0.f, 1.f, 1.f));
-                    Renderer2D::DrawFgLine(boundPos,PointY,glm::vec4(1.f, 0.f, 0.f, 1.f));
-                    Renderer2D::DrawTriangle(PointY,PointY+clickSize*glm::vec2(.5f,-1.f),PointY+clickSize*glm::vec2(-.5f,-1.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
-
-                    break;
-                }
-                case Gizmo::ZoomMode :{
-                    for(auto &ent : entSet)
-                    {
-                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
-                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
-                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                        // Get bounding box
-                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
-
-                        Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.5f), clickSize.x, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f,  0.0f), clickSize, clickColor);
-                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2( 0.5f, -0.5f), clickSize.x, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f, -0.5f), clickSize, clickColor);
-                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f, -0.5f), clickSize.x, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.0f), clickSize, clickColor);
-                        Renderer2D::DrawCircle(bound.getPosition()+bound.getScale()*glm::vec2(-0.5f,  0.5f), clickSize.x, clickColor);
-                        Renderer2D::DrawQuad(bound.getPosition()+bound.getScale()*glm::vec2( 0.0f,  0.5f), clickSize, clickColor);
-                    }
-                    break;
-                }
-                case Gizmo::ScaleMode:{
-
-                    for(auto &ent : entSet)
-                    {
-                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
-                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
-                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                        // Get bounding box
-                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
-
-                        const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f);
-                        const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f);
-                        const auto sinR = std::sin(entRotate*M_PI/180);
-                        const auto cosR = std::cos(entRotate*M_PI/180);
-                        const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
-                        const auto pointY = entPos + glm::vec3(tmpY.x*cosR-tmpY.y*sinR, tmpY.x*sinR+tmpY.y*cosR, 0.f);
-
-                        Renderer2D::DrawFgLine(entPos,pointX,glm::vec4(0.f,0.f,1.f,1.f));
-                        Renderer2D::DrawRotatedQuad(pointX,clickSize,clickColor, entRotate);
-                        Renderer2D::DrawFgLine(entPos,pointY,glm::vec4(1.f,0.f,0.f,1.f));
-                        Renderer2D::DrawRotatedQuad(pointY,clickSize,clickColor, entRotate);
-                    }
-                    break;
-                }
-                case Gizmo::RotationMode :{
-                    for(auto &ent : entSet)
-                    {
-                        const auto &entPos = ent.getComponent<TransformComponent>().translate;
-                        const auto &entSize = ent.getComponent<TransformComponent>().scale;
-                        const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                        // Get bounding box
-                        auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
-
-                        Renderer2D::DrawCircleLine(entPos, std::max(entSize.x, entSize.y));
-                        Renderer2D::DrawCircle(entPos, clickSize.x, glm::vec4(0, 0.39, 0.79, 1));
-
-                        const auto tmpPoint = glm::vec3(0.f, std::max(entSize.x, entSize.y)*0.7, 1.f);
-                        const auto sinR = std::sin(glm::radians(entRotate));
-                        const auto cosR = std::cos(glm::radians(entRotate));
-                        Renderer2D::DrawFgLine(bound.getPosition(), glm::vec3(bound.getPosition(),0.f)+glm::vec3(tmpPoint.x*cosR-tmpPoint.y*sinR, tmpPoint.x*sinR+tmpPoint.y*cosR, 0.f), glm::vec4(1.f, 0.f, 0.f, 1.f));
-                    }
-                    break;
-                }
-            }
-        }
     }
     Renderer2D::EndScene();
 }
@@ -294,7 +177,7 @@ void EditController::onImGuiRender()
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
        ImGui::IsMouseClicked(ImGuiMouseButton_Left) &&
-       m_isNowMovingEntity.empty())
+       !m_gizmo.isMouseOnGizmo(mposInWorld))
     {
         Entity bestMatch;
         glm::vec3 minSize{std::numeric_limits<float>::max(),
@@ -333,29 +216,7 @@ void EditController::onImGuiRender()
             addTarget(bestMatch);
         }else{
 
-            bool clearEntitySet = true;
-
-            glm::vec3 boundPos(0.f);
-            glm::vec3 boundSize(0.f);
-            for(auto ent : m_entitySet) {
-                const auto &transform = ent.getComponent<TransformComponent>();
-                const BoundingBox2D entbound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-                const BoundingBox2D nowbound(boundPos,boundSize);
-                const BoundingBox2D newbound = CombinaBoundingBox2D(nowbound,entbound);
-
-                boundPos = glm::vec3(newbound.getPosition(),0.f);
-                boundSize = glm::vec3(newbound.getScale(),0.f);
-            }
-            const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
-
-            if(Math::AABB2DPoint(boundPos+clickSize*glm::vec3(.5f), clickSize, mposInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f,0.f)+clickSize*glm::vec3(1.5f,0.f,0.f), boundSize*glm::vec3(.5f,0.f,0.f) + clickSize*glm::vec3(3.f,1.f,0.f), mposInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f,0.f)+clickSize*glm::vec3(0.f,1.5f,0.f), boundSize*glm::vec3(0.f,.5f,0.f) + clickSize*glm::vec3(1.f,3.f,0.f), mposInWorld))
-            {
-                clearEntitySet = false;
-            }
-
-            if(!isCtrlPressed && clearEntitySet)
+            if(!isCtrlPressed)
                 resetSelected();
         }
 
@@ -364,16 +225,16 @@ void EditController::onImGuiRender()
     // revolve entity
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
-       m_isNowMovingEntity.empty()){
+       !m_gizmo.isMovingEntity()){
 
         if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-            m_mousePosBegin = mposInWorld;
+            m_gizmo.setMousePosBegin(mposInWorld);
 
         if(ImGui::IsMouseDown(ImGuiMouseButton_Left))
-            m_mousePosEnd = mposInWorld;
+            m_gizmo.setMousePosEnd(mposInWorld);
 
         if(ImGui::IsMouseReleased(ImGuiMouseButton_Left)){
-            BoundingBox2D mouseBound = CalculateBounding2Point(m_mousePosBegin, m_mousePosEnd);
+            BoundingBox2D mouseBound = m_gizmo.getMouseBound();
 
             if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f ){
 
@@ -396,261 +257,22 @@ void EditController::onImGuiRender()
                 });
 
             }
-            m_mousePosBegin = mposInWorld;
-            m_mousePosEnd = mposInWorld;
+            m_gizmo.setMousePosBegin(mposInWorld);
+            m_gizmo.setMousePosEnd(mposInWorld);
         }
 
     }
     else{
-        m_mousePosBegin = mposInWorld;
-        m_mousePosEnd = mposInWorld;
+        m_gizmo.setMousePosBegin(mposInWorld);
+        m_gizmo.setMousePosEnd(mposInWorld);
     }
 
-    // TODO: Support multiple entities move
-
-    // gizmoMode
-    switch (m_gizmoMode) {
-        case Gizmo::SelectMode:{
-            break;
-        }
-        case Gizmo::MoveMode:{
-            // Entity move
-            if (m_sceneWindowFocused &&
-                m_sceneWindowHovered &&
-                ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
-                isSelected()) {
-                // Iterate through all selected entities
-
-                glm::vec3 boundPos(0.f);
-                glm::vec3 boundSize(0.f);
-                for(auto ent : m_entitySet) {
-                    const auto &transform = ent.getComponent<TransformComponent>();
-                    const BoundingBox2D entbound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-                    const BoundingBox2D nowbound(boundPos,boundSize);
-                    const BoundingBox2D newbound = CombinaBoundingBox2D(nowbound,entbound);
-
-                    boundPos = glm::vec3(newbound.getPosition(),0.f);
-                    boundSize = glm::vec3(newbound.getScale(),0.f);
-
-                }
-
-                for (auto ent : m_entitySet) {
-                    auto &entPos = ent.getComponent<TransformComponent>().translate;
-                    const glm::vec3 clickSize(m_editorGrid.getOffset()/10,m_editorGrid.getOffset()/10,0.f);
-                    // The entity is not moving but selected
-                    if (!m_isNowMovingEntity[ent]) {
-
-                        m_oriEntityPosition[ent] = entPos;
-                        m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
-                        m_isNowMovingEntity[ent] = true;
-                        if (Math::AABB2DPoint(boundPos+clickSize*glm::vec3(.5f), clickSize, mposInWorld)) {
-                            m_moveEntityWeight[ent] = glm::vec3(1.f);
-                        } else if (Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f,0.f)+clickSize*glm::vec3(1.5f,0.f,0.f), boundSize*glm::vec3(.5f,0.f,0.f) + clickSize*glm::vec3(3.f,1.f,0.f), mposInWorld)) { // row
-                            m_moveEntityWeight[ent] = glm::vec3(1.f, 0.f, 1.f);
-                        }  else if (Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f,0.f)+clickSize*glm::vec3(0.f,1.5f,0.f), boundSize*glm::vec3(0.f,.5f,0.f) + clickSize*glm::vec3(1.f,3.f,0.f), mposInWorld)) { // column
-                            m_moveEntityWeight[ent] = glm::vec3(0.f, 1.f, 1.f);
-                        }else {
-                            m_isNowMovingEntity.erase(ent);
-                        }
-
-                    } else {
-                        // Moving
-                        entPos = m_oriEntityPosition[ent] +
-                                 (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent]) * m_moveEntityWeight[ent];
-
-                    };
-                }
-
-            } else {
-                m_isNowMovingEntity.clear();
-                m_oriEntityPosition.clear();
-                m_oriMousePosition.clear();
-                m_zoomEntityWeight.clear();
-                m_moveEntityWeight.clear();
-            }
-            break;
-        }
-        case Gizmo::ZoomMode: {
-            // Entity zoom
-            if (m_sceneWindowFocused &&
-                m_sceneWindowHovered &&
-                ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
-                isSelected()) {
-                // Iterate through all selected entities
-                for (auto ent : m_entitySet) {
-                    auto &entPos = ent.getComponent<TransformComponent>().translate;
-                    auto &entSize = ent.getComponent<TransformComponent>().scale;
-                    const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                    const auto &transform = ent.getComponent<TransformComponent>();
-                    const auto bound = CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-                    glm::vec3 boundPos(bound.getPosition(), 0.f);
-                    glm::vec3 boundSize(bound.getScale(), 0.f);
-                    const glm::vec3 clickSize(m_editorGrid.getOffset()/10,m_editorGrid.getOffset()/10,0.f);
-                    // The entity is not moving but selected
-                    if (!m_isNowMovingEntity[ent]) {
-                        // 當滑鼠點擊時，儲存滑鼠跟 entity 的座標
-                        m_oriEntityPosition[ent] = entPos;
-                        m_oriEntitySize[ent] = entSize;
-                        m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
-                        m_oriEntityNegative[ent] = glm::vec3(entSize.x > 0 ? 1.f : -1.f, entSize.y > 0 ? 1.f : -1.f,
-                                                             1.f);
-                        m_isNowMovingEntity[ent] = true;
-                        if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, .5f, 1.f), clickSize,
-                                              mposInWorld)) { // right up
-                            m_zoomEntityWeight[ent] = glm::vec3(1.f, 1.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, 0.f, 1.f), clickSize,
-                                                     mposInWorld)) { // right
-                            m_zoomEntityWeight[ent] = glm::vec3(1.f, 0.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(.5f, 0.f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, -.5f, 1.f), clickSize,
-                                                     mposInWorld)) { // right down
-                            m_zoomEntityWeight[ent] = glm::vec3(1.f, -1.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(0.f, -.5f, 1.f), clickSize,
-                                                     mposInWorld)) { // down
-                            m_zoomEntityWeight[ent] = glm::vec3(0.f, -1.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(0.f, .5f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, -.5f, 1.f), clickSize,
-                                                     mposInWorld)) { // left down
-                            m_zoomEntityWeight[ent] = glm::vec3(-1.f, -1.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, 0.f, 1.f), clickSize,
-                                                     mposInWorld)) { // left
-                            m_zoomEntityWeight[ent] = glm::vec3(-1.f, 0.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(.5f, 0.f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, .5f, 1.f), clickSize,
-                                                     mposInWorld)) { // left up
-                            m_zoomEntityWeight[ent] = glm::vec3(-1.f, 1.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                        } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(0.f, .5f, 1.f), clickSize,
-                                                     mposInWorld)) { // up
-                            m_zoomEntityWeight[ent] = glm::vec3(0.f, 1.f, 0.f);
-                            m_moveEntityWeight[ent] = glm::vec3(0.f, .5f, 0.f);
-                        } else {
-                            m_isNowMovingEntity.erase(ent);
-                        }
-
-                        m_zoomEntityWeight[ent] *= glm::vec3(entSize.x>0?1.f:-1.f,entSize.y>0?1.f:-1.f,1.f);
-
-                    } else {
-                        // zooming
-                        entSize = m_oriEntitySize[ent] +
-                                  (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent]) * m_zoomEntityWeight[ent];
-                        entPos = m_oriEntityPosition[ent] +
-                                 (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent]) * m_moveEntityWeight[ent];
-
-                    };
-                }
-            } else {
-                m_isNowMovingEntity.clear();
-                m_oriEntityPosition.clear();
-                m_oriEntitySize.clear();
-                m_oriMousePosition.clear();
-                m_zoomEntityWeight.clear();
-            }
-            break;
-        }
-        case Gizmo::ScaleMode :{
-            // Entity Scale
-            if (m_sceneWindowFocused &&
-                m_sceneWindowHovered &&
-                ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
-                isSelected()) {
-                // Iterate through all selected entities
-                for (auto ent : m_entitySet) {
-
-                    const auto &entPos = ent.getComponent<TransformComponent>().translate;
-                    auto &entSize = ent.getComponent<TransformComponent>().scale;
-                    const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                    const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f);
-                    const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f);
-                    const auto sinR = std::sin(entRotate*M_PI/180);
-                    const auto cosR = std::cos(entRotate*M_PI/180);
-                    const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
-                    const auto pointY = entPos + glm::vec3(tmpY.x*cosR-tmpY.y*sinR, tmpY.x*sinR+tmpY.y*cosR, 0.f);
-
-                    const glm::vec3 clickSize(m_editorGrid.getOffset()/10,m_editorGrid.getOffset()/10,0.f);
-
-                    // The entity is not moving but selected
-                    if (!m_isNowMovingEntity[ent]) {
-                        // Is mouse inside
-                        if (Math::AABB2DPoint(pointX, clickSize, mposInWorld)) {
-                            m_oriEntityPosition[ent] = entPos;
-                            m_oriEntitySize[ent] = entSize;
-                            m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
-                            m_zoomEntityWeight[ent] = glm::vec3(1.f,0.f,1.f);
-                            m_isNowMovingEntity[ent] = true;
-                        }
-                        if(Math::AABB2DPoint(pointY, clickSize, mposInWorld)){
-                            m_oriEntityPosition[ent] = entPos;
-                            m_oriEntitySize[ent] = entSize;
-                            m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
-                            m_zoomEntityWeight[ent] = glm::vec3(0.f,1.f,1.f);
-                            m_isNowMovingEntity[ent] = true;
-                        }
-                        m_zoomEntityWeight[ent] *= glm::vec3(entSize.x>0?1.f:-1.f,entSize.y>0?1.f:-1.f,1.f);
-
-                    } else {
-                        // Scaling 用投影量計算增加的數值
-                        const auto AB = m_oriMousePosition[ent] - m_oriEntityPosition[ent];
-                        const auto AC = glm::vec3(mposInWorld, 0.f) - m_oriEntityPosition[ent];
-                        auto ADcoefficient = (AB.x*AC.x+AB.y*AC.y)/(AB.x*AB.x+AB.y*AB.y);
-                        auto AD = glm::vec3(ADcoefficient*AB.x, ADcoefficient*AB.y, 0.f);
-                        auto addLen = sqrt(AD.x*AD.x+AD.y*AD.y)*2 ;
-                        addLen = addLen*((AB.x*AD.x+AB.y*AD.y)<0?-1:1) ;
-                        entSize = m_oriEntitySize[ent] + glm::vec3(addLen-std::abs(m_oriEntitySize[ent].x),addLen-std::abs(m_oriEntitySize[ent].y),0.f)*m_zoomEntityWeight[ent];
-
-//                        entSize = m_oriEntitySize[ent] + (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent])*m_zoomEntityWeight[ent];
-
-                    };
-                }
-                break;
-            } else {
-                m_isNowMovingEntity.clear();
-                m_oriEntityPosition.clear();
-                m_oriMousePosition.clear();
-                m_moveEntityWeight.clear();
-            }
-            break;
-        }
-        case Gizmo::RotationMode: {
-            // Entity move
-            if (m_sceneWindowFocused &&
-                m_sceneWindowHovered &&
-                ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
-                isSelected()) {
-                // Iterate through all selected entities
-                for (auto ent : m_entitySet) {
-                    const auto &entPosition = ent.getComponent<TransformComponent>().translate;
-                    const auto &entSize = ent.getComponent<TransformComponent>().scale;
-                    auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                    const auto bound = CalculateBoundingBox2D(entPosition, entSize, entRotate);
-                    const glm::vec3 boundPos(bound.getPosition(), 0.f);
-                    const glm::vec3 boundSize(bound.getScale(), 0.f);
-
-                    // The entity is not moving but selected
-                    if (!m_isNowMovingEntity[ent]) {
-
-                        if (Math::AABB2DPoint(boundPos, boundSize, mposInWorld)) {
-                            m_isNowMovingEntity[ent] = true;
-                            m_oriEntityRotate[ent] = entRotate;
-                            m_oriMouseRotate[ent] =
-                                    std::atan2(mposInWorld.y - boundPos.y, mposInWorld.x - boundPos.x) * 180 / M_PI;
-                        }
-                    } else {
-                        auto nowRotate = std::atan2(mposInWorld.y - boundPos.y, mposInWorld.x - boundPos.x) * 180 / M_PI;
-                        entRotate = m_oriEntityRotate[ent] + (nowRotate - m_oriMouseRotate[ent]);
-                    };
-                }
-            } else {
-                m_isNowMovingEntity.clear();
-                m_oriEntityRotate.clear();
-                m_oriMouseRotate.clear();
-            }
-            break;
-        }
-    }
+    // gizmo
+    m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
+    m_gizmo.onImGuiRender((m_sceneWindowFocused &&
+                           m_sceneWindowHovered &&
+                           ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
+                           isSelected()), mposInWorld);
 
     // Camera pane
     if(m_sceneWindowFocused &&
@@ -678,39 +300,7 @@ void EditController::onImGuiRender()
     // Preserve window padding
     auto padding = ImGui::GetStyle().WindowPadding;
     ImGui::PopStyleVar();
-    //
-    if(m_debugEditorController)
-    {
-        ImGui::Begin("EditController");
-        ImGui::Text("Entity Move");
-        ImGui::Indent();
-        for(auto ent : m_entitySet)
-        {
-            ImGui::PushID((void*)&ent);
-            ImGui::Text("%s", ent.getUUID().to_c_str());
-            ImGui::Indent();
-            ImGui::Text("m_isNowMovingEntity = %d", m_isNowMovingEntity[ent]);
-            ImGui::Text("m_oriEntityPosition = %.2f %.2f %.2f",
-                        m_oriEntityPosition[ent].x,
-                        m_oriEntityPosition[ent].y,
-                        m_oriEntityPosition[ent].z);
-            ImGui::Text("m_oriMousePosition = %.2f %.2f %.2f",
-                        m_oriMousePosition[ent].x,
-                        m_oriMousePosition[ent].y,
-                        m_oriMousePosition[ent].z);
-            ImGui::Text("m_moveEntityWeight = %.2f %.2f %.2f",
-                        m_moveEntityWeight[ent].x,
-                        m_moveEntityWeight[ent].y,
-                        m_moveEntityWeight[ent].z);
-            ImGui::Text("mposInWorld = %.2f %.2f",
-                        mposInWorld.x,
-                        mposInWorld.y);
-            ImGui::Unindent();
-            ImGui::PopID();
-        }
-        ImGui::Unindent();
-        ImGui::End();
-    }
+
     if(m_debugEditorGrid)
         m_editorGrid.onImGuiRender();
     if(m_debugCameraController)
@@ -739,9 +329,9 @@ bool EditController::onMouseScrolled(MouseScrolledEvent &e)
     return false;
 }
 
-void EditController::changeGizmoMode(Gizmo gizmo)
+void EditController::changeGizmoMode(Gizmo::GizmoMode mode)
 {
-    m_gizmoMode = gizmo;
+    m_gizmo.setGizmoMode(mode);
 }
 
 void EditController::changeShowGrid()
