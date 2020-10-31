@@ -19,7 +19,7 @@ void PlayerController::onUpdate(Time dt)
     auto &boxc = GetComponent<BoxCollider2DComponent>();
     auto &rend =  GetComponent<SpriteRenderComponent>();
     auto &prevState = playerState;
-    // TODO: HOT Fixed
+    // TODO: Hard Fixed
     trans.rotate = 0.0f;
     rigid.angle = 0.0f;
 

@@ -3,7 +3,7 @@
 namespace rl {
 
 static float accumulateTime = 0.0f;
-static float MS_PER_UPDATE = 1.0f / 60.0f;
+static float MS_PER_UPDATE = 1.0f / 120.0f;
 
 Ref<Scene> PhysicsSystem::s_Scene;
 
@@ -100,7 +100,6 @@ void PhysicsSystem::onUpdateNewPhysicsObject(entt::registry& registry, Scene::Sc
         }
     }
 }
-
 
 void PhysicsSystem::onCleanPhysicObject()
 {
@@ -257,19 +256,19 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
         }
 
          // Physics simulate
-        if(accumulateTime <= MS_PER_UPDATE)
-        {
-            accumulateTime += dt;
-        }
-        else
-        {
-            while(accumulateTime >= MS_PER_UPDATE)
-            {
-                accumulateTime -= MS_PER_UPDATE;
-                physicsWorld.Step(MS_PER_UPDATE);
-            }
-        }
-
+//        if(accumulateTime <= MS_PER_UPDATE)
+//        {
+//            accumulateTime += dt;
+//        }
+//        else
+//        {
+//            while(accumulateTime >= MS_PER_UPDATE)
+//            {
+//                accumulateTime -= MS_PER_UPDATE;
+//                physicsWorld.Step(MS_PER_UPDATE);
+//            }
+//        }
+        physicsWorld.Step(dt);
 
         // Physics engine data to Component
         // BoxCollider & RigidBody2D

@@ -21,6 +21,10 @@ void MonsterController::onUpdate(Time dt)
     auto &boxc = GetComponent<BoxCollider2DComponent>();
     auto &rend = GetComponent<SpriteRenderComponent>();
 
+    // TODO: Hard Fixed
+    trans.rotate = 0.0f;
+    rigid.angle = 0.0f;
+
     setGraphic(rend, monsterState);
     switch (monsterState) {
         case MonsterState::Left:
@@ -79,12 +83,12 @@ void MonsterController::setGraphic(SpriteRenderComponent &rend, MonsterState &mo
 
     switch (monsterState) {
         case MonsterState::Left:
-            rend.m_subSetting.leftUpper = glm::vec2(181, 206);
-            rend.m_subSetting.size = glm::vec2(18, 23);
+            rend.m_subSetting.leftUpper = glm::vec2(181, 198.5);
+            rend.m_subSetting.size = glm::vec2(18, 30);
             break;
         case MonsterState::Right:
-            rend.m_subSetting.leftUpper = glm::vec2(294, 207);
-            rend.m_subSetting.size = glm::vec2(18, 23);
+            rend.m_subSetting.leftUpper = glm::vec2(294, 198.5);
+            rend.m_subSetting.size = glm::vec2(18, 30);
             break;
     }
     rend.loadSubTexture();

@@ -33,7 +33,7 @@ Box::Box(Ref<RigidBody2D> &body)
 void Box::_setVertices()
 {
     m_vertices.clear();
-    float angle_rad = glm::radians(rotation);
+    float angle_rad = rotation;
     Vec2 cent(x, y);
     for (auto &idx : m_corner)
     {
