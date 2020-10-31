@@ -37,8 +37,13 @@ void EventBoxController::onUpdate(Time dt)
                     if(collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::PlayerController"
                        && entity.getComponent<NativeScriptComponent>().scriptName == "rl::EventBoxController")
                     {
-                        auto playerTrans = collideEntity.getComponent<TransformComponent>();
-                        if (playerTrans.translate.y + playerTrans.translate.y/2 < trans.translate.y - trans.scale.y/2)
+                        auto playerCoordinate = collideEntity.getComponent<TransformComponent>().translate;
+                        auto playerWh = collideEntity.getComponent<TransformComponent>().scale;
+                        auto boxCoordinate = trans.translate;
+                        auto boxWh = trans.scale;
+
+                        if (boxCoordinate.y - boxCoordinate.y/2 - playerCoordinate.y + playerCoordinate.y/2 > 0  &&
+                            std::min(playerCoordinate.x + playerWh.x/2 , boxCoordinate.x + boxWh.x/2) - std::max(playerCoordinate.x - playerWh.x/2, boxCoordinate.x - boxWh.x/2) >= boxWh.x/2)
                         {
                             rend.useTexture = true;
                             rend.useAsSubTexture = true;

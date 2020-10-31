@@ -43,7 +43,7 @@ void MonsterController::onUpdate(Time dt)
     }
 
     // TODO: should be optimize
-    if (boxc.whoCollide.size() == 2)
+    if (boxc.whoCollide.size() >= 2)
     {
         for(auto uuid : boxc.whoCollide)
         {
