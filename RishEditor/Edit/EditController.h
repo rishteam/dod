@@ -41,10 +41,11 @@ private:
     glm::vec3 m_moveCameraDiff{0.f};
     glm::vec2 m_preMPos{0.f};
     bool m_isNowMovingCamera = false; ///< Is now moving camera
-
-    //
+    bool m_isNowScrollingCamera = false;
+    // mouse
     glm::vec2 sceneMousePosNormalize{0.f};
     glm::vec2 sceneMousePosCenterNormalize{0.f};
+    glm::vec2 mposInWorld;
 
     bool m_sceneWindowFocused        = false; ///< Is Scene window focused?
     bool m_sceneWindowHovered        = false; ///< Is Scene window hovered?

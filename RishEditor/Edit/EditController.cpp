@@ -168,7 +168,7 @@ void EditController::onImGuiRender()
                   + m_cameraController->getPosition().x;
     float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - sceneMousePosNormalize.y)
                   + m_cameraController->getPosition().y;
-    glm::vec2 mposInWorld{xaxis, yaxis};
+    mposInWorld = glm::vec2(xaxis, yaxis);
 
     // Get Keyboard states
     bool isCtrlPressed = ImGui::GetIO().KeyCtrl;
@@ -283,13 +283,10 @@ void EditController::onImGuiRender()
             m_isNowMovingCamera = true;
             m_preMPos = mposInWorld;
         }
-        else if(m_isNowMovingCamera &&    // is moving
-                mposInWorld != m_preMPos) // and mpos has been changed
+        else
         {
-            // Natural pane (inverse)
             glm::vec2 vec = mposInWorld - m_preMPos;
             m_cameraController->move(-vec);
-            m_isNowMovingCamera = false;
         }
     }
     else
