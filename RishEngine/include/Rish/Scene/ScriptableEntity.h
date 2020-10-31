@@ -50,6 +50,7 @@ public:
     Entity GetEntity() const { return m_entity; }
     Scene& GetScene() const
     {
+        RL_ASSERT(m_entity, "Invalid entity");
         return *m_entity.m_scene;
     }
     Entity GetEntityByHandle(entt::entity ent)
@@ -59,6 +60,7 @@ public:
 
     Entity CreateEntity(const std::string &name, const glm::vec3 &pos=glm::vec3(0.f))
     {
+        RL_ASSERT(m_entity, "Invalid entity");
         return GetScene().createEntity(name, pos);
     }
 
@@ -85,6 +87,7 @@ private:
     //
     friend class Scene;
     friend class ScriptableManager;
+    friend class NativeScriptComponent;
     friend class NativeScriptSystem;
     //
     template<typename T>
@@ -153,19 +156,20 @@ struct NativeScriptComponent
     // Main Functions
     /////////////////////////////////////////
     template<typename T, typename ... Args>
-    void bind(Args&& ... args)
+    void bind(Entity entity, Args&& ... args)
     {
         if(instance)
             instance = nullptr;
         //
         scriptName = entt::type_info<T>::name();
         instance = MakeRef<T>(std::forward<Args>(args)...);
-//        RL_CORE_INFO("bind():   {} {} {}", (void*)this, scriptName, (void*)instance.get());
+        instance->m_entity = entity;
+        RL_CORE_INFO("[DEBUG] NativeScriptComponent::bind():   nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
     }
 
     void unbind()
     {
-//        RL_CORE_INFO("unbind(): {} {} {}", (void*)this, scriptName, (void*)instance.get());
+        RL_CORE_INFO("[DEBUG] NativeScriptComponent::unbind(): nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
         instance = nullptr;
     }
 };

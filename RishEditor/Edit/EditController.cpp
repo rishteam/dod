@@ -100,6 +100,13 @@ void EditController::onUpdate(Time dt)
 
             for(auto &ent : entSet)
             {
+                // Make sure the entity is valid
+                // An entity could be deleted after it is selected
+                if(!ent)
+                {
+                    removeTarget(ent);
+                    continue;
+                }
 
                 const auto &entPos = ent.getComponent<TransformComponent>().translate;
                 const auto &entSize = ent.getComponent<TransformComponent>().scale;

@@ -820,7 +820,7 @@
                         "ptr_wrapper": {
                             "id": 2147483652,
                             "data": {
-                                "mock": 453181564
+                                "SpawnPerSecond": 5.0
                             }
                         }
                     },

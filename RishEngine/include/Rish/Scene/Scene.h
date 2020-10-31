@@ -44,7 +44,7 @@ public:
 	 * @brief Destroy a Entity object
 	 * @param entity Target
 	 */
-	void destroyEntity(const Entity& entity);
+	void destroyEntity(Entity entity);
 
 	/**
 	 * @brief Duplicate a Entity

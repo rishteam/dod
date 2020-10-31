@@ -76,7 +76,7 @@ private:
 template <typename T>
 bool ResManager<T>::load(const std::string &resName, const std::string &path)
 {
-    RL_TRACE("Load resource: {} {}", resName, path);
+//    RL_TRACE("Load resource: {} {}", resName, path);
 
     // Delete if exists
     deleteIfExists(resName, path);
@@ -97,7 +97,8 @@ bool ResManager<T>::load(const std::string &resName, const std::string &path)
 template<typename T>
 bool ResManager<T>::loadVFS(const std::string &resName, const std::string &vfsPath)
 {
-    RL_TRACE("Load resource: {} {}", resName, vfsPath);
+//    RL_TRACE("Load resource: {} {}", resName, vfsPath);
+
     std::string path;
     VFS::ResolvePhysicalPath(vfsPath, path);
     return load(resName, path);

@@ -132,7 +132,6 @@ void EditorLayer::onUpdate(Time dt)
         //
         m_editController->onUpdate(dt);
 
-
         {
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
             Renderer2D::BeginScene(cameraController->getCamera(), false);

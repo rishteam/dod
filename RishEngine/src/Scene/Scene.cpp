@@ -79,8 +79,10 @@ Entity Scene::createEntity(const UUID &id, const std::string &name)
     return entity;
 }
 
-void Scene::destroyEntity(const Entity &entity)
+void Scene::destroyEntity(Entity entity)
 {
+    NativeScriptSystem::OnDestroy(entity);
+
     m_registry.destroy(entity.getEntityID());
 }
 
@@ -145,7 +147,7 @@ void Scene::onScenePlay()
 {
     m_sceneState = SceneState::Play;
 
-    NativeScriptSystem::onScenePlay();
+    NativeScriptSystem::OnScenePlay();
     PhysicsSystem::OnScenePlay();
 }
 
@@ -158,7 +160,7 @@ void Scene::onSceneStop()
 {
     m_sceneState = SceneState::Editor;
 
-    NativeScriptSystem::onSceneStop();
+    NativeScriptSystem::OnSceneStop();
     PhysicsSystem::OnSceneStop();
 }
 

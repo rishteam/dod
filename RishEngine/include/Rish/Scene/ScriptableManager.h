@@ -25,16 +25,15 @@ public:
         // Set the binding function
         s_scriptBindMap[typeName] = [](Entity ent)
         {
-            auto &script = ent.getComponent<NativeScriptComponent>();
-            script.bind<T>();
-            script.instance->m_entity = ent;
+            auto &nativeScriptComponent = ent.getComponent<NativeScriptComponent>();
+            nativeScriptComponent.bind<T>(ent);
         };
 
         // Set the clone function
         s_scriptCloneMap[typeName] = [](Entity ent) -> Ref<ScriptableEntity>
         {
-            auto &script = ent.getComponent<NativeScriptComponent>();
-            return script.instance->clone<T>();
+            auto &nativeScriptComponent = ent.getComponent<NativeScriptComponent>();
+            return nativeScriptComponent.instance->clone<T>();
         };
     }
 
@@ -44,10 +43,7 @@ public:
 
     static bool Bind(Entity ent, const std::string &typeName)
     {
-        if(!s_scriptBindMap.count(typeName)) {
-            RL_CORE_ERROR("NativeScript {} not exist, Did you called ScriptManager::Register<T>()?", typeName);
-            return false;
-        }
+        RL_CORE_ASSERT(s_scriptBindMap.count(typeName), "NativeScript {} not exist, Did you called ScriptManager::Register<T>()?", typeName);
 
         // Bind the script
         auto &bindFunc = s_scriptBindMap[typeName];
@@ -63,11 +59,16 @@ public:
 
     static void Copy(Entity dst, Entity src)
     {
+        RL_CORE_ASSERT(src.hasComponent<NativeScriptComponent>(), "Source entity doesn't have NSC");
+        //
         auto &srcComponent = src.getComponent<NativeScriptComponent>();
         auto &dstComponent = dst.getComponent<NativeScriptComponent>();
 
+        // Copy
         auto &cloneFunc = s_scriptCloneMap[srcComponent.scriptName];
         dstComponent.instance = cloneFunc(src);
+
+        dstComponent.instance->m_entity = dst;
     }
 
     template<typename T>

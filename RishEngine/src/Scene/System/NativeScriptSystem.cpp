@@ -15,61 +15,94 @@ void NativeScriptSystem::OnInit()
 {
     s_Scene->m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc) {
         Entity ent{entityID, s_Scene.get()};
-        // Is bind
-        if(nsc.instance)
-        {
-            nsc.instance->m_entity = Entity{entityID, s_Scene.get()};
-        }
-        else
-        {
-            ScriptableManager::Bind(ent, nsc.scriptName);
-        }
+        //
+        InitNativeScript(ent);
     });
 }
-
 
 void NativeScriptSystem::OnUpdate(float dt)
 {
     s_Scene->m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
         Entity ent{entityID, s_Scene.get()};
-
-        // Is bind
-        if(nsc.instance)
+        //
+        InitNativeScript(ent);
+        //
+        if(s_Scene->getSceneState() == Scene::SceneState::Play)
         {
-            nsc.instance->m_entity = Entity{entityID, s_Scene.get()};
-        }
-        else
-        {
-            ScriptableManager::Bind(ent, nsc.scriptName);
-        }
-
-        if(nsc.valid)
-        {
-            nsc.instance->onUpdate(dt);
+            // Is valid
+            if (nsc.valid)
+            {
+                nsc.instance->onUpdate(dt);
+            }
+            // not valid
+            // OnCreate() entities that add NSC after Scene start
+            else
+            {
+                OnCreate(ent);
+            }
         }
     });
 }
 
-void NativeScriptSystem::onScenePlay()
+void NativeScriptSystem::OnScenePlay()
 {
     // Initialize the NativeScriptComponent
     s_Scene->m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
     {
-        nsc.instance->onCreate();
-        nsc.valid = true;
+        Entity ent{entityID, s_Scene.get()};
+        //
+        OnCreate(ent);
     });
 }
 
-void NativeScriptSystem::onSceneStop()
+void NativeScriptSystem::OnSceneStop()
 {
     // Destroy the NativeScriptComponent
     s_Scene->m_registry.view<NativeScriptComponent>().each([=](auto entityID, auto &nsc)
-   {
-       Entity ent{entityID, s_Scene.get()};
-       nsc.instance->onDestroy();
-       nsc.valid = false;
-   });
+    {
+        Entity ent{entityID, s_Scene.get()};
+        //
+        OnDestroy(ent);
+    });
+}
+
+void NativeScriptSystem::InitNativeScript(Entity ent)
+{
+    RL_CORE_ASSERT(ent, "Invalid entity");
+    //
+    auto &nsc = ent.getComponent<NativeScriptComponent>();
+    // Is bind
+    if(!nsc.instance)
+    {
+        ScriptableManager::Bind(ent, nsc.scriptName);
+    }
+}
+
+void NativeScriptSystem::OnCreate(Entity entity)
+{
+    RL_CORE_ASSERT(entity, "Invalid entity");
+    //
+    if(entity.hasComponent<NativeScriptComponent>())
+    {
+        auto &nsc = entity.getComponent<NativeScriptComponent>();
+        //
+        nsc.instance->onCreate();
+        nsc.valid = true;
+    }
+}
+
+void NativeScriptSystem::OnDestroy(Entity entity)
+{
+    RL_CORE_ASSERT(entity, "Invalid entity");
+    //
+    if(entity.hasComponent<NativeScriptComponent>())
+    {
+        auto &nsc = entity.getComponent<NativeScriptComponent>();
+        //
+        nsc.instance->onDestroy();
+        nsc.valid = false;
+    }
 }
 
 }

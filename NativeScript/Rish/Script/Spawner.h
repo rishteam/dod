@@ -17,10 +17,14 @@ public:
     void onUpdate(Time dt) override;
     void onImGuiRender() override;
 
-    RL_SCRIPT_EMPTY_SERIALIZE()
+    RL_SCRIPT_SERIALIZE()
+    {
+        RL_SERIALIZE("SpawnPerSecond", m_spawnPerSecond);
+    }
 private:
     Clock clk;
     std::set<Entity> m_spawned;
+    float m_spawnPerSecond = 5.f;
 };
 
 }

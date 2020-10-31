@@ -18,6 +18,7 @@ void CopyComponent(entt::registry &dst, entt::registry &src,
 {
     RL_UNUSED(srcScene);
     RL_UNUSED(dstScene);
+
     // Copy all src entities fro src registry to dst registry
     auto view = src.view<T>();
     for(auto srcEnt : view)
@@ -54,16 +55,13 @@ void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &s
         Entity dstEntity{dstEnt, dstScene};
         Entity srcEntity{srcEnt, srcScene};
 
-        // Bind the Script to dstEntity
-        ScriptableManager::Bind(dstEntity, srcComponent.scriptName);
+        RL_CORE_ASSERT(srcEntity, "Invalid source entity");
+        RL_CORE_ASSERT(dstEntity, "Invalid destination entity");
 
         // Copy the values of instance
-//        *dstComponent.instance = *srcComponent.instance;
         ScriptableManager::Copy(dstEntity, srcEntity);
+        //
         RL_CORE_TRACE("CopyComponent<NativeScriptComponent>: dst={} src={}", (void *)dstComponent.instance.get(), (void *)srcComponent.instance.get());
-
-        // Set the instance->m_entity (Written by the copy above)
-        dstComponent.instance->m_entity = dstEntity;
     }
 }
 
@@ -83,16 +81,10 @@ void CopyComponentToEntityIfExists<NativeScriptComponent>(Entity dst, Entity src
     if(src.hasComponent<NativeScriptComponent>())
     {
         auto &srcComponent = src.getComponent<NativeScriptComponent>();
-        //
         auto &dstComponent = dst.addComponent<NativeScriptComponent>();
-        // Bind the Script to dstEntity
-        ScriptableManager::Bind(dst, srcComponent.scriptName);
 
-        // Copy the values of instance
-        *dstComponent.instance = *srcComponent.instance;
-
-        // Set the instance->m_entity (Written by the copy above)
-        dstComponent.instance->m_entity = dst;
+        // Copy
+        ScriptableManager::Copy(dst, src);
     }
 }
 
