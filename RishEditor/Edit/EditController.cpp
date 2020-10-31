@@ -321,11 +321,14 @@ void EditController::onEvent(Event &e)
 bool EditController::onMouseScrolled(MouseScrolledEvent &e)
 {
     // TODO: camera translate when zooming
-//    RL_INFO("onMouseScrolled {:.2f}, {:.2f}", sceneMousePosCenterNormalize.x, sceneMousePosCenterNormalize.y);
-//    if(e.yOffset >= 0.f)
-//        m_cameraController->move(-sceneMousePosCenterNormalize);
-//    else
-//        m_cameraController->move(sceneMousePosCenterNormalize);
+    RL_INFO("onMouseScrolled {:.2f}, {:.2f}", sceneMousePosCenterNormalize.x, sceneMousePosCenterNormalize.y);
+
+    if( m_sceneWindowFocused && m_sceneWindowHovered )
+    {
+        glm::vec2 moveWight(m_editorGrid.getOffset()/2);
+        if(e.yOffset >= 0.f)
+            m_cameraController->move(sceneMousePosCenterNormalize*moveWight);
+    }
     return false;
 }
 
