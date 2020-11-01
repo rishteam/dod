@@ -13,16 +13,21 @@ class PlayerController : public ScriptableEntity
 {
 public:
 
-    enum class PlayerState
+    enum class PlayerFace
     {
-        STAND = 0,
-        RIGHT,
-        LEFT,
-        DOWN,
-        JUMP
+        Left,
+        Right
     };
 
-    PlayerState playerState = PlayerState::STAND;
+    enum class PlayerState
+    {
+        Stand = 0,
+        Ducking,
+        Jump
+    };
+
+    PlayerState playerState = PlayerState::Stand;
+    PlayerFace playerFace = PlayerFace::Right;
 
     void onCreate() override;
 
@@ -32,7 +37,7 @@ public:
 
     void onImGuiRender() override;
 
-    void setGraphic(SpriteRenderComponent &rend, PlayerState &currentState, PlayerState &previousState);
+    void setGraphic(SpriteRenderComponent &rend, PlayerState &playerState, PlayerFace &playerFace);
 
     RL_SCRIPT_SERIALIZE()
     {

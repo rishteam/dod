@@ -27,20 +27,20 @@ void PlayerController::onUpdate(Time dt)
     //printf("Vx: %f, Vy: %f\n", velocity.x, velocity.y);
     if (rigid.velocity.x <= 1e-3 && rigid.velocity.y <= 1e-3)
     {
-        if (!boxc.isCollision && playerState == PlayerState::JUMP)
+        if (!boxc.isCollision && playerState == PlayerState::Jump)
         {
             return;
         }
         else
         {
-            playerState = PlayerState::STAND;
+            playerState = PlayerState::Stand;
             jumpTimesCounter = 0;
         }
     }
     if (Input::IsKeyPressed(Keyboard::Up) && !prevJump && jumpTimesCounter < jumpLimitTimes)
     {
         velocity.y = jumpSpeed;
-        playerState = PlayerState::JUMP;
+        playerState = PlayerState::Jump;
         jumpTimesCounter++;
 
     }
@@ -48,21 +48,21 @@ void PlayerController::onUpdate(Time dt)
     {
         if(velocity.x >= -walkSpeedLimit)
             velocity.x -= walkAccel * dt.asSeconds();
-        playerState = PlayerState::LEFT;
+        playerFace = PlayerFace::Left;
     }
     else if (Input::IsKeyPressed(Keyboard::Right))
     {
         if(velocity.x <= walkSpeedLimit)
             velocity.x += walkAccel * dt.asSeconds();
-        playerState = PlayerState::RIGHT;
+        playerFace = PlayerFace::Right;
     }
     else if (Input::IsKeyPressed(Keyboard::Down))
     {
-        playerState = PlayerState::DOWN;
+        playerState = PlayerState::Ducking;
     }
 
     prevJump = Input::IsKeyPressed(Keyboard::Up);
-    setGraphic(rend, playerState, prevState);
+    setGraphic(rend, playerState, playerFace);
 
     // Camera follows player
     auto view = GetScene().m_registry.view<TransformComponent, CameraComponent>();
@@ -83,10 +83,31 @@ void PlayerController::onImGuiRender()
     ImGui::DragFloat("Walk Accelerate", &walkAccel, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Walk Speed Limit", &walkSpeedLimit, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Jump Speed", &jumpSpeed, 10.0f, 0.0f, 100.0f);
-    ImGui::Text("State: %d", static_cast<int>(playerState));
+
+    switch (playerState) {
+        case PlayerState::Stand:
+            ImGui::Text("playerState: Stand");
+            break;
+        case PlayerState::Ducking:
+            ImGui::Text("playerState: Ducking");
+            break;
+        case PlayerState::Jump:
+            ImGui::Text("playerState: Jumping");
+            break;
+    }
+
+    switch (playerFace) {
+        case PlayerFace::Right:
+            ImGui::Text("playerFace: Right");
+            break;
+        case PlayerFace::Left:
+            ImGui::Text("playerFace: Left");
+            break;
+    }
+
 }
 
-void PlayerController::setGraphic(SpriteRenderComponent &rend, PlayerState &currentState, PlayerState &previousState)
+void PlayerController::setGraphic(SpriteRenderComponent &rend, PlayerState &playerState, PlayerFace &playerFace)
 {
     // Player Draw State
     // TODO: Simplify, Flip features
@@ -95,52 +116,42 @@ void PlayerController::setGraphic(SpriteRenderComponent &rend, PlayerState &curr
     rend.texturePath = "assets\\texture\\mario\\characters.gif";
     rend.m_subSetting.type = SubTexture2DSetting::SubTextureCoordinate;
 
-    switch (currentState)
+    switch (playerState)
     {
         // TODO: set state graphic
-        case PlayerState::STAND:
-            rend.m_subSetting.leftUpper = glm::vec2(256, 1);
-            rend.m_subSetting.size = glm::vec2(21, 33);
-            break;
-        case PlayerState::JUMP:
-            if (previousState == PlayerState::RIGHT)
+        case PlayerState::Stand:
+            if (playerFace == PlayerFace::Right)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(367, 0);
+                rend.m_subSetting.leftUpper = glm::vec2(256, 1);
                 rend.m_subSetting.size = glm::vec2(21, 33);
             }
-            else if (previousState == PlayerState::LEFT)
+            else if (playerFace == PlayerFace::Left)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(126, 0);
-                rend.m_subSetting.size = glm::vec2(21, 33);
-            }
-            else
-            {
-                rend.m_subSetting.leftUpper = glm::vec2(367, 0);
+                rend.m_subSetting.leftUpper = glm::vec2(238, 0);
                 rend.m_subSetting.size = glm::vec2(21, 33);
             }
             break;
-        case PlayerState::RIGHT:
-            rend.m_subSetting.leftUpper = glm::vec2(256, 1);
-            rend.m_subSetting.size = glm::vec2(21, 33);
-            break;
-        case PlayerState::LEFT:
-            rend.m_subSetting.leftUpper = glm::vec2(237, 0);
-            rend.m_subSetting.size = glm::vec2(21, 33);
-            break;
-        case PlayerState::DOWN:
-            if (previousState == PlayerState::RIGHT)
+        case PlayerState::Ducking:
+            if (playerFace == PlayerFace::Right)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(275, 0);
+                rend.m_subSetting.leftUpper = glm::vec2(276, 0);
                 rend.m_subSetting.size = glm::vec2(21, 33);
             }
-            else if (previousState == PlayerState::LEFT)
+            else if (playerFace == PlayerFace::Left)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(218, 0);
+                rend.m_subSetting.leftUpper = glm::vec2(219, 0);
                 rend.m_subSetting.size = glm::vec2(21, 33);
             }
-            else
+            break;
+        case PlayerState::Jump:
+            if (playerFace == PlayerFace::Right)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(275, 0);
+                rend.m_subSetting.leftUpper = glm::vec2(367, 1);
+                rend.m_subSetting.size = glm::vec2(19, 33);
+            }
+            else if (playerFace == PlayerFace::Left)
+            {
+                rend.m_subSetting.leftUpper = glm::vec2(126, 1);
                 rend.m_subSetting.size = glm::vec2(21, 33);
             }
             break;
