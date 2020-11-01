@@ -189,7 +189,7 @@ void Application::popOverlay(Layer* overlay)
 bool Application::onWindowClose(WindowCloseEvent &e)
 {
     m_running = false;
-    return true;
+    return false;
 }
 
 bool Application::onWindowResize(WindowResizeEvent &e)

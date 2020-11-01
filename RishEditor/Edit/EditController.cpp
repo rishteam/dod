@@ -98,13 +98,15 @@ void EditController::onUpdate(Time dt)
         {
             auto &entSet = getTargets();
 
+            std::set<Entity> delTarget;
+
             for(auto &ent : entSet)
             {
                 // Make sure the entity is valid
                 // An entity could be deleted after it is selected
                 if(!ent)
                 {
-                    removeTarget(ent);
+                    delTarget.insert(ent);
                     continue;
                 }
 
@@ -176,6 +178,9 @@ void EditController::onUpdate(Time dt)
                     }
                 }
             }
+
+            for(auto &ent : delTarget)
+                removeTarget(ent);
         }
     }
     Renderer2D::EndScene();

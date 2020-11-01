@@ -28,6 +28,7 @@ int Scene::entityNumber = 0;
 Scene::Scene()
 {
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
+
     RL_CORE_INFO("Construct Scene");
 }
 

@@ -18,6 +18,11 @@ public:
     ScriptableEntity()
     {
     }
+
+    /**
+     * @brief Destructor of ScriptableEntity
+     * @warning Logger is not invalid here
+     */
     virtual ~ScriptableEntity()
     {
     }
@@ -65,9 +70,24 @@ public:
     }
 
     // Main Functions
+
+    /**
+     * @brief On Create
+     */
     virtual void onCreate() {}
+    /**
+     * @brief On Destroy
+     * @warning Logger is not invalid here
+     */
     virtual void onDestroy() {}
+    /**
+     * @brief On Update
+     * @param dt Delta Time
+     */
     virtual void onUpdate(Time dt) = 0;
+    /**
+     * @brief On ImGui Render
+     */
     virtual void onImGuiRender() = 0;
 
     // Virtual Copy Constructor pattern

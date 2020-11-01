@@ -40,6 +40,15 @@ public:
 	virtual void onEvent(rl::Event& event) override;
 
 private:
+    bool onWindowCloseEvent(WindowCloseEvent &event)
+    {
+        if(m_currentScene->getSceneState() == Scene::SceneState::Play)
+        {
+            m_currentScene->onSceneStop();
+        }
+        return false;
+    }
+
     void onImGuiMainMenuRender();
 
     //////////////////////////////////////////

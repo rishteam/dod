@@ -467,6 +467,8 @@ void EditorLayer::onImGuiMainMenuRender()
 
 void EditorLayer::onEvent(rl::Event& e)
 {
+    EventDispatcher dispatcher{e};
+    dispatcher.dispatch<WindowCloseEvent>(RL_BIND_EVENT_FUNC(EditorLayer::onWindowCloseEvent));
     m_editController->onEvent(e);
 }
 
