@@ -44,19 +44,19 @@ void PlayerController::onUpdate(Time dt)
         jumpTimesCounter++;
 
     }
-    else if (Input::IsKeyPressed(Keyboard::Left))
+    if (Input::IsKeyPressed(Keyboard::Left))
     {
         if(velocity.x >= -walkSpeedLimit)
             velocity.x -= walkAccel * dt.asSeconds();
         playerFace = PlayerFace::Left;
     }
-    else if (Input::IsKeyPressed(Keyboard::Right))
+    if (Input::IsKeyPressed(Keyboard::Right))
     {
         if(velocity.x <= walkSpeedLimit)
             velocity.x += walkAccel * dt.asSeconds();
         playerFace = PlayerFace::Right;
     }
-    else if (Input::IsKeyPressed(Keyboard::Down))
+    if (Input::IsKeyPressed(Keyboard::Down))
     {
         playerState = PlayerState::Ducking;
     }

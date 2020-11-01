@@ -357,9 +357,10 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
         for(auto entity : group7)
         {
             auto &Name = registry.get<TagComponent>(entity).tag;
+            auto &rigid = registry.get<RigidBody2DComponent>(entity);
             auto &trans = registry.get<TransformComponent>(entity);
 
-            if (Name == "Player" || Name == "Monster")
+            if (rigid.RestrictRotation)
             {
                 trans.rotate = 0.0f;
             }

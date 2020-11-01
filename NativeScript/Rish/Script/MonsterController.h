@@ -36,13 +36,7 @@ public:
 private:
     // TODO: HardCode
     bool stateChange = false;
-    float currentMaxMove = 5.0f;
     float jumpSpeed;
-
-    float walkAccel;
-    float walkSpeedLimit;
-
-    bool prevJump = false;
 
 };
 

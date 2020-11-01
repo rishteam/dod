@@ -722,8 +722,8 @@
                 "value152": 29,
                 "value153": {
                     "translate": {
-                        "x": 12.244730949401856,
-                        "y": 1.2616403102874756,
+                        "x": 12.260334968566895,
+                        "y": 1.604943037033081,
                         "z": 0.0
                     },
                     "scale": {
@@ -736,8 +736,8 @@
                 "value154": 30,
                 "value155": {
                     "translate": {
-                        "x": 12.740960121154786,
-                        "y": 1.2616403102874756,
+                        "x": 12.761506080627442,
+                        "y": 1.6052035093307496,
                         "z": 0.0
                     },
                     "scale": {
@@ -750,8 +750,8 @@
                 "value156": 31,
                 "value157": {
                     "translate": {
-                        "x": 13.246552467346192,
-                        "y": 1.2616403102874756,
+                        "x": 13.26254653930664,
+                        "y": 1.6054633855819703,
                         "z": 0.0
                     },
                     "scale": {
@@ -764,8 +764,8 @@
                 "value158": 32,
                 "value159": {
                     "translate": {
-                        "x": 13.741741180419922,
-                        "y": 1.2616403102874756,
+                        "x": 13.765668869018555,
+                        "y": 1.6069999933242798,
                         "z": 0.0
                     },
                     "scale": {
@@ -778,8 +778,8 @@
                 "value160": 33,
                 "value161": {
                     "translate": {
-                        "x": 14.236929893493653,
-                        "y": 1.2616403102874756,
+                        "x": 14.26839828491211,
+                        "y": 1.6088205575942994,
                         "z": 0.0
                     },
                     "scale": {
@@ -2670,7 +2670,7 @@
                         "ptr_wrapper": {
                             "id": 2147483652,
                             "data": {
-                                "mock": 445962044
+                                "mock": 452304060
                             }
                         }
                     },
@@ -2684,7 +2684,7 @@
                         "ptr_wrapper": {
                             "id": 2147483653,
                             "data": {
-                                "mock": 445962212
+                                "mock": 452303676
                             }
                         }
                     },
@@ -2698,7 +2698,7 @@
                         "ptr_wrapper": {
                             "id": 2147483654,
                             "data": {
-                                "mock": 445962236
+                                "mock": 452304036
                             }
                         }
                     },
@@ -2712,7 +2712,7 @@
                         "ptr_wrapper": {
                             "id": 2147483655,
                             "data": {
-                                "mock": 445962068
+                                "mock": 452303700
                             }
                         }
                     },
@@ -2726,7 +2726,7 @@
                         "ptr_wrapper": {
                             "id": 2147483656,
                             "data": {
-                                "mock": 445961708
+                                "mock": 452304084
                             }
                         }
                     },
@@ -2740,7 +2740,7 @@
                         "ptr_wrapper": {
                             "id": 2147483657,
                             "data": {
-                                "mock": 445961780
+                                "mock": 452304108
                             }
                         }
                     },
@@ -2754,7 +2754,7 @@
                         "ptr_wrapper": {
                             "id": 2147483658,
                             "data": {
-                                "mock": 445962140
+                                "mock": 452304156
                             }
                         }
                     },
@@ -2768,7 +2768,7 @@
                         "ptr_wrapper": {
                             "id": 2147483659,
                             "data": {
-                                "mock": 445961972
+                                "mock": 452303580
                             }
                         }
                     },
@@ -2782,7 +2782,7 @@
                         "ptr_wrapper": {
                             "id": 2147483660,
                             "data": {
-                                "mock": 445962308
+                                "mock": 452303556
                             }
                         }
                     },
@@ -2796,7 +2796,7 @@
                         "ptr_wrapper": {
                             "id": 2147483661,
                             "data": {
-                                "mock": 445962380
+                                "mock": 452303604
                             }
                         }
                     },
@@ -2810,7 +2810,7 @@
                         "ptr_wrapper": {
                             "id": 2147483662,
                             "data": {
-                                "mock": 445962164
+                                "mock": 452303628
                             }
                         }
                     },
@@ -2825,7 +2825,7 @@
                         "ptr_wrapper": {
                             "id": 2147483663,
                             "data": {
-                                "mock": 445962404
+                                "mock": 452303748
                             }
                         }
                     },
@@ -2839,7 +2839,7 @@
                         "ptr_wrapper": {
                             "id": 2147483664,
                             "data": {
-                                "mock": 445961828
+                                "mock": 452304468
                             }
                         }
                     },
@@ -2853,7 +2853,7 @@
                         "ptr_wrapper": {
                             "id": 2147483665,
                             "data": {
-                                "mock": 445961876
+                                "mock": 452304396
                             }
                         }
                     },
@@ -2881,7 +2881,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value325": 1,
                 "value326": {
@@ -2903,7 +2904,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": true
                 },
                 "value327": 1048579,
                 "value328": {
@@ -2925,7 +2927,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value329": 6,
                 "value330": {
@@ -2947,7 +2950,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value331": 8,
                 "value332": {
@@ -2969,7 +2973,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value333": 9,
                 "value334": {
@@ -2991,7 +2996,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value335": 10,
                 "value336": {
@@ -3013,7 +3019,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value337": 11,
                 "value338": {
@@ -3035,7 +3042,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value339": 12,
                 "value340": {
@@ -3057,7 +3065,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value341": 13,
                 "value342": {
@@ -3079,7 +3088,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value343": 14,
                 "value344": {
@@ -3101,7 +3111,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value345": 15,
                 "value346": {
@@ -3123,7 +3134,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value347": 16,
                 "value348": {
@@ -3145,7 +3157,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value349": 17,
                 "value350": {
@@ -3167,7 +3180,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value351": 18,
                 "value352": {
@@ -3189,7 +3203,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value353": 19,
                 "value354": {
@@ -3211,7 +3226,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value355": 20,
                 "value356": {
@@ -3233,7 +3249,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value357": 21,
                 "value358": {
@@ -3255,7 +3272,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value359": 22,
                 "value360": {
@@ -3277,7 +3295,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value361": 23,
                 "value362": {
@@ -3299,7 +3318,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value363": 24,
                 "value364": {
@@ -3321,7 +3341,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value365": 25,
                 "value366": {
@@ -3343,7 +3364,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value367": 26,
                 "value368": {
@@ -3365,7 +3387,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value369": 27,
                 "value370": {
@@ -3387,7 +3410,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value371": 28,
                 "value372": {
@@ -3409,7 +3433,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value373": 29,
                 "value374": {
@@ -3431,7 +3456,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value375": 30,
                 "value376": {
@@ -3453,7 +3479,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value377": 31,
                 "value378": {
@@ -3475,7 +3502,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value379": 32,
                 "value380": {
@@ -3497,7 +3525,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value381": 33,
                 "value382": {
@@ -3519,7 +3548,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value383": 35,
                 "value384": {
@@ -3541,7 +3571,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value385": 36,
                 "value386": {
@@ -3563,7 +3594,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value387": 1048615,
                 "value388": {
@@ -3585,7 +3617,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value389": 38,
                 "value390": {
@@ -3607,7 +3640,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value391": 1048616,
                 "value392": {
@@ -3629,7 +3663,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value393": 1048618,
                 "value394": {
@@ -3651,7 +3686,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value395": 1048617,
                 "value396": {
@@ -3673,7 +3709,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value397": 43,
                 "value398": {
@@ -3695,7 +3732,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value399": 1048620,
                 "value400": {
@@ -3717,7 +3755,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value401": 45,
                 "value402": {
@@ -3739,7 +3778,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value403": 41,
                 "value404": 2,
