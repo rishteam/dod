@@ -37,6 +37,15 @@ public:
 //    static void DrawQuad(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4& color);
 //    static void DrawQuad(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec4& color);
 
+//    static void DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n);
+
+    static void DrawPointLight(const glm::vec3 &position, const glm::vec4 color, float radius, float strength,
+                               const glm::vec3 &viewportPos, const glm::vec2 &viewportScale);
+
+//    static void DrawSpotLight(const glm::vec3 &position, const glm::vec4 color, float radius, float strength,
+//                              const glm::vec3 &direction, float theta,
+//                              const glm::vec3 &viewportPos, const glm::vec2 &viewportScale);
+
     static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4& color, float rotate);
     static void DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4& color, float rotate);
     static void DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, float rotate);
@@ -78,6 +87,9 @@ public:
         uint32_t RectCount = 0;     ///< Draw rect count
         uint32_t CircleCount = 0;   ///< Draw Circle count
         uint32_t TriangleCount = 0; ///< Draw triangle count
+
+        uint32_t PointLightCount = 0; ///< Draw Point Light count
+
         uint32_t DrawCount = 0;     ///< Draw call count
     };
 

@@ -92,6 +92,36 @@ const size_t MaxTriangleIndexCount = MaxTriangleCount * 3;
 
 ////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////
+// Light Renderer
+////////////////////////////////////////////////////////////////
+
+struct LightVertex
+{
+    glm::vec3 position;
+    glm::vec3 lightPos;
+    glm::vec4 color;
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+struct LightShape
+{
+    LightVertex p[4];
+
+    friend bool operator < (const LightShape &lhs, const LightShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
+const size_t MaxLightCount = 100000;
+const size_t MaxLightVertexCount = MaxLightCount * 3;
+const size_t MaxLightIndexCount  = MaxLightCount * 3;
+
+///////////////////////////////////////////////////////////////
+
 struct Renderer2DData
 {
     ~Renderer2DData()
@@ -149,7 +179,7 @@ struct Renderer2DData
             // Create the Index Buffer
             Ref<IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
             quadVertexArray->setIndexBuffer(squareIB);
-            delete[] quadIndices; // deltete cpu side
+            delete[] quadIndices; // delete cpu side
 
             // texture shader
             quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
@@ -436,6 +466,112 @@ struct Renderer2DData
     LineRenderer fgLineRenderer; ///< Foreground Line Renderer
 
     ////////////////////////////////////////////////////////////////
+    // Light Renderer
+    ////////////////////////////////////////////////////////////////
+
+    struct LightRenderer
+    {
+        void init()
+        {
+            lightVertexArray = VertexArray::Create();
+
+            Ref<VertexBuffer> lightVertexBuffer = VertexBuffer::Create(MaxLightCount * sizeof(LightVertex));
+            lightVertexBuffer->setLayout(BufferLayout{
+                {ShaderDataType::Float3, "a_QuadPosition"},
+                {ShaderDataType::Float3, "a_LightPosition"},
+                {ShaderDataType::Float4, "a_Color"},
+                {ShaderDataType::Float, "a_Constant"},
+                {ShaderDataType::Float, "a_Linear"},
+                {ShaderDataType::Float, "a_Quadratic"}
+            });
+
+            lightVertexArray->setVertexBuffer(lightVertexBuffer);
+
+            lightShapeList.reserve(MaxLightCount);
+            auto *lightIndices = new uint32_t[MaxLightIndexCount];
+            uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+            uint32_t offset = 0;
+            for (int i = 0; i < MaxLightIndexCount; i += 6)
+            {
+                for (int j = 0; j < 6; j++)
+                    lightIndices[i + j] = pattern[j] + offset;
+                offset += 4;
+            }
+
+            Ref<IndexBuffer> lightIndexBuffer = IndexBuffer::Create(lightIndices, MaxLightIndexCount);
+            lightVertexArray->setIndexBuffer(lightIndexBuffer);
+            delete[] lightIndices;
+
+            lightShader = Shader::LoadShaderVFS("/shader/pointLight.vs", "/shader/pointLight.fs");
+        }
+
+        void reset()
+        {
+            lightIndexCount = 0;
+            lightShapeList.clear();
+        }
+
+        void submit(const glm::vec4 position[4], const glm::vec3 lightPosition, const glm::vec4 color,
+                    const float constant, const float linear, const float quadratic)
+        {
+            LightShape submitLight{};
+            for(int i = 0 ; i < 4 ; i++)
+            {
+                LightVertex tmp{};
+                tmp.position = position[i];
+                tmp.lightPos = lightPosition;
+                tmp.color = color;
+                tmp.constant = constant;
+                tmp.linear = linear;
+                tmp.quadratic = quadratic;
+                submitLight.p[i] = tmp;
+            }
+
+            lightIndexCount += 6;
+
+            lightShapeList.push_back(submitLight);
+        }
+
+        void draw(bool DepthTest, bool IsEditorCamera,
+                  const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
+        {
+            auto &lightList = lightShapeList;
+
+            if(DepthTest) std::sort(lightList.begin(), lightList.end());
+
+            lightVertexArray->getVertexBuffer()->setData(&lightList[0].p[0], lightList.size() * sizeof(LightShape));
+
+            lightShader->bind();
+            lightShader->setMat4("u_ViewProjection",
+             IsEditorCamera ?
+             OrthoCamera.getViewProjectionMatrix() :
+             ViewProjMatrix);
+
+            lightVertexArray->bind();
+            RenderCommand::DrawElement(DrawTriangles, lightVertexArray, lightIndexCount, DepthTest);
+            lightVertexArray->unbind();
+        }
+
+        operator bool () const
+        {
+            return lightIndexCount > 0;
+        }
+
+        bool exceedDrawIndex()
+        {
+            return lightIndexCount >= MaxLightIndexCount;
+        }
+
+        Ref<VertexArray> lightVertexArray;     ///< Light renderer vertex array
+        Ref<Shader> lightShader;            ///< Light renderer shader
+        uint32_t lightIndexCount = 0;          ///< 現在有多少個 index
+        std::vector<LightShape> lightShapeList; ///< Light data
+    };
+    LightRenderer lightRenderer;
+
+    glm::vec4 lightVertexPosition[4]{};
+
+    ////////////////////////////////////////////////////////////////
     // Common
     ////////////////////////////////////////////////////////////////
     bool sceneState = false; ///< Is the scene now active (called BeginScene())
@@ -495,6 +631,20 @@ void Renderer2D::Init()
         s_data->triVertexPosition[1] = {0.5f, -0.5f, 0.f, 1.f};  // lower right
         s_data->triVertexPosition[2] = {-0.5f, -0.5f, 0.f, 1.f}; // lower left
     }
+
+    ////////////////////////////////////////////////////////////////
+    // Light Renderer
+    ////////////////////////////////////////////////////////////////
+    {
+        // Init light renderer
+        s_data->lightRenderer.init();
+
+        // template for light vertex
+        s_data->lightVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
+        s_data->lightVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};
+        s_data->lightVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};
+        s_data->lightVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};
+    }
 }
 
 void Renderer2D::Shutdown()
@@ -530,6 +680,11 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
     {
         s_data->triangleRenderer.reset();
     }
+
+    // Light
+    {
+        s_data->lightRenderer.reset();
+    }
 }
 
 void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
@@ -559,6 +714,11 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
     // Triangle
     {
         s_data->triangleRenderer.reset();
+    }
+
+    // Light
+    {
+        s_data->lightRenderer.reset();
     }
 }
 
@@ -604,6 +764,17 @@ void Renderer2D::EndScene()
         // Reset
         s_data->quadRenderer.reset();
         resetTexture = true;
+        //
+        s_data->renderStats.DrawCount++;
+    }
+
+    // Light
+    if(s_data->lightRenderer)
+    {
+        s_data->lightRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
+
+        // Reset
+        s_data->lightRenderer.reset();
         //
         s_data->renderStats.DrawCount++;
     }
