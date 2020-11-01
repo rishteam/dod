@@ -77,12 +77,13 @@ void EditorLayer::onAttach()
     for(auto &panel : m_simplePanelList)
         panel->onAttach();
 
-    // Test
+    // TODO: Move me to ScriptableManager
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<PlayerController>();
     ScriptableManager::Register<Spawner>();
     ScriptableManager::Register<Cinemachine2D>();
+    ScriptableManager::Register<TestScript>();
 
     loadSetting("setting.conf");
 

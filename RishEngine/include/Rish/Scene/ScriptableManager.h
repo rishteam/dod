@@ -65,6 +65,9 @@ public:
         auto &dstComponent = dst.getComponent<NativeScriptComponent>();
 
         // Copy
+        RL_CORE_ASSERT(s_scriptCloneMap.count(srcComponent.scriptName),
+                       "NativeScript {} not exist, Did you called ScriptManager::Register<T>()?",
+                       srcComponent.scriptName);
         auto &cloneFunc = s_scriptCloneMap[srcComponent.scriptName];
         dstComponent.instance = cloneFunc(src);
 
