@@ -24,29 +24,39 @@ void PlayerController::onUpdate(Time dt)
     rigid.angle = 0.0f;
 
     Vec2 &velocity = rigid.velocity;
-    if (rigid.velocity.x == 0 && rigid.velocity.y == 0)
+    //printf("Vx: %f, Vy: %f\n", velocity.x, velocity.y);
+    if (rigid.velocity.x <= 1e-3 && rigid.velocity.y <= 1e-3)
     {
-        playerState = PlayerState::STAND;
+        if (!boxc.isCollision && playerState == PlayerState::JUMP)
+        {
+            return;
+        }
+        else
+        {
+            playerState = PlayerState::STAND;
+            jumpTimesCounter = 0;
+        }
     }
-    // playerState == PlayerState::STAND
-    if (Input::IsKeyPressed(Keyboard::Up) && !prevJump)
+    if (Input::IsKeyPressed(Keyboard::Up) && !prevJump && jumpTimesCounter < jumpLimitTimes)
     {
         velocity.y = jumpSpeed;
         playerState = PlayerState::JUMP;
+        jumpTimesCounter++;
+
     }
-    if (Input::IsKeyPressed(Keyboard::Left))
+    else if (Input::IsKeyPressed(Keyboard::Left))
     {
         if(velocity.x >= -walkSpeedLimit)
             velocity.x -= walkAccel * dt.asSeconds();
         playerState = PlayerState::LEFT;
     }
-    if (Input::IsKeyPressed(Keyboard::Right))
+    else if (Input::IsKeyPressed(Keyboard::Right))
     {
         if(velocity.x <= walkSpeedLimit)
             velocity.x += walkAccel * dt.asSeconds();
         playerState = PlayerState::RIGHT;
     }
-    if (Input::IsKeyPressed(Keyboard::Down))
+    else if (Input::IsKeyPressed(Keyboard::Down))
     {
         playerState = PlayerState::DOWN;
     }

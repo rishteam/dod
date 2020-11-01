@@ -46,7 +46,10 @@ private:
     float walkAccel;
     float walkSpeedLimit;
 
+    int jumpLimitTimes = 1;
+    int jumpTimesCounter = 0;
     bool prevJump = false;
+    bool stillJumping = false;
 
 };
 

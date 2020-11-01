@@ -359,7 +359,7 @@ void PhysicsSystem::onUpdate(entt::registry& registry, float dt, Scene::SceneSta
             auto &Name = registry.get<TagComponent>(entity).tag;
             auto &trans = registry.get<TransformComponent>(entity);
 
-            if (Name == "Player")
+            if (Name == "Player" || Name == "Monster")
             {
                 trans.rotate = 0.0f;
             }
