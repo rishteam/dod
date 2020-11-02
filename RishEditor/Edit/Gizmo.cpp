@@ -158,8 +158,8 @@ void Gizmo::onImGuiRender(bool isvalid, glm::vec2 mposInWorld) {
                 const auto &entPos = ent.getComponent<TransformComponent>().translate;
                 auto &entSize = ent.getComponent<TransformComponent>().scale;
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f);
-                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f);
+                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f) + m_clickSize3*glm::vec3(3.f, 0.f, 1.f);
+                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f) + m_clickSize3*glm::vec3(0.f, 3.f, 1.f);
                 const auto sinR = std::sin(entRotate*M_PI/180);
                 const auto cosR = std::cos(entRotate*M_PI/180);
                 const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
@@ -171,14 +171,14 @@ void Gizmo::onImGuiRender(bool isvalid, glm::vec2 mposInWorld) {
                     if (Math::AABB2DPoint(pointX, m_clickSize3, mposInWorld)) {
                         m_oriEntityPosition[ent] = entPos;
                         m_oriEntitySize[ent] = entSize;
-                        m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
+                        m_oriMousePosition[ent] = pointX;
                         m_zoomEntityWeight[ent] = glm::vec3(1.f,0.f,1.f);
                         m_isNowMovingEntity[ent] = true;
                     }
                     else if(Math::AABB2DPoint(pointY, m_clickSize3, mposInWorld)){
                         m_oriEntityPosition[ent] = entPos;
                         m_oriEntitySize[ent] = entSize;
-                        m_oriMousePosition[ent] = glm::vec3(mposInWorld, 0.f);
+                        m_oriMousePosition[ent] = pointY;
                         m_zoomEntityWeight[ent] = glm::vec3(0.f,1.f,1.f);
                         m_isNowMovingEntity[ent] = true;
                     }
@@ -191,13 +191,11 @@ void Gizmo::onImGuiRender(bool isvalid, glm::vec2 mposInWorld) {
                     // Scaling 用投影量計算增加的數值
                     const auto AB = m_oriMousePosition[ent] - m_oriEntityPosition[ent];
                     const auto AC = glm::vec3(mposInWorld, 0.f) - m_oriEntityPosition[ent];
-                    auto ADcoefficient = (AB.x*AC.x+AB.y*AC.y)/(AB.x*AB.x+AB.y*AB.y);
-                    auto AD = glm::vec3(ADcoefficient*AB.x, ADcoefficient*AB.y, 0.f);
-                    auto addLen = sqrt(AD.x*AD.x+AD.y*AD.y)*2 ;
+                    auto ADcoefficient = ((AB.x*AC.x+AB.y*AC.y)/std::abs(AB.x*AB.x+AB.y*AB.y));
+                    auto AD = glm::vec2(ADcoefficient*AB.x-AB.x, ADcoefficient*AB.y-AB.y);
+                    auto addLen = sqrt(AD.x*AD.x+AD.y*AD.y);
                     addLen = addLen*((AB.x*AD.x+AB.y*AD.y)<0?-1:1) ;
-                    entSize = m_oriEntitySize[ent] + glm::vec3(addLen-std::abs(m_oriEntitySize[ent].x),addLen-std::abs(m_oriEntitySize[ent].y),0.f)*m_zoomEntityWeight[ent];
-
-//                        entSize = m_oriEntitySize[ent] + (glm::vec3(mposInWorld, 0.f) - m_oriMousePosition[ent])*m_zoomEntityWeight[ent];
+                    entSize = m_oriEntitySize[ent] + glm::vec3(addLen*2, addLen*2,0.f)*m_zoomEntityWeight[ent];
 
                 };
             }
@@ -323,8 +321,8 @@ void Gizmo::onUpdate() {
                 const auto &entSize = ent.getComponent<TransformComponent>().scale;
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
 
-                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f);
-                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f);
+                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f) + m_clickSize3*glm::vec3(3.f, 0.f, 1.f);
+                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f) + m_clickSize3*glm::vec3(0.f, 3.f, 1.f);
                 const auto sinR = std::sin(entRotate*M_PI/180);
                 const auto cosR = std::cos(entRotate*M_PI/180);
                 const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
@@ -407,8 +405,8 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mposInWorld) {
                 const auto &entSize = ent.getComponent<TransformComponent>().scale;
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
 
-                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f)+m_clickSize3*glm::vec3(.5f, 0.f,1.f);
-                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f)+m_clickSize3*glm::vec3(0.f, .5f,1.f);
+                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f)+m_clickSize3*glm::vec3(3.f, 0.f,1.f);
+                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f)+m_clickSize3*glm::vec3(0.f, 3.f,1.f);
                 const auto sinR = std::sin(entRotate*M_PI/180);
                 const auto cosR = std::cos(entRotate*M_PI/180);
                 const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
