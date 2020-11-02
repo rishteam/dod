@@ -2,6 +2,9 @@
 
 namespace rl {
 
+static float accumulateTime = 0.0f;
+static float MS_PER_UPDATE = 1.0f / 120.0f;
+
 Ref<Scene> PhysicsSystem::s_Scene;
 
 void PhysicsSystem::RegisterScene(const Ref <Scene> &scene)
@@ -106,7 +109,19 @@ void PhysicsSystem::OnUpdate(float dt)
             }
         }
 
-        // Physics simulate
+         // Physics simulate
+//        if(accumulateTime <= MS_PER_UPDATE)
+//        {
+//            accumulateTime += dt;
+//        }
+//        else
+//        {
+//            while(accumulateTime >= MS_PER_UPDATE)
+//            {
+//                accumulateTime -= MS_PER_UPDATE;
+//                physicsWorld.Step(MS_PER_UPDATE);
+//            }
+//        }
         physicsWorld.Step(dt);
 
         // Physics engine data to Component
@@ -187,6 +202,21 @@ void PhysicsSystem::OnUpdate(float dt)
                 jitComponent.bias = jit->bias;
                 jitComponent.biasFactor = jit->biasFactor;
                 jitComponent.softness = jit->softness;
+            }
+        }
+
+
+        // TODO: Player rotate State Hard Fixed
+        auto group7 = registry.view<TransformComponent, RigidBody2DComponent>();
+        for(auto entity : group7)
+        {
+            auto &Name = registry.get<TagComponent>(entity).tag;
+            auto &rigid = registry.get<RigidBody2DComponent>(entity);
+            auto &trans = registry.get<TransformComponent>(entity);
+
+            if (rigid.RestrictRotation)
+            {
+                trans.rotate = 0.0f;
             }
         }
     }

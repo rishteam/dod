@@ -13,7 +13,21 @@ class PlayerController : public ScriptableEntity
 {
 public:
 
+    enum class PlayerFace
+    {
+        Left,
+        Right
+    };
 
+    enum class PlayerState
+    {
+        Stand = 0,
+        Ducking,
+        Jump
+    };
+
+    PlayerState playerState = PlayerState::Stand;
+    PlayerFace playerFace = PlayerFace::Right;
 
     void onCreate() override;
 
@@ -22,6 +36,8 @@ public:
     void onUpdate(Time dt) override;
 
     void onImGuiRender() override;
+
+    void setGraphic(SpriteRenderComponent &rend, PlayerState &playerState, PlayerFace &playerFace);
 
     RL_SCRIPT_SERIALIZE()
     {
@@ -35,6 +51,12 @@ private:
 
     float walkAccel;
     float walkSpeedLimit;
+
+    int jumpLimitTimes = 1;
+    int jumpTimesCounter = 0;
+    bool prevJump = false;
+    bool stillJumping = false;
+
 };
 
 }

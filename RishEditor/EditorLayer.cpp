@@ -84,6 +84,9 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<Spawner>();
     ScriptableManager::Register<Cinemachine2D>();
     ScriptableManager::Register<TestScript>();
+    ScriptableManager::Register<MonsterController>();
+    ScriptableManager::Register<EventBoxController>();
+
 
     loadSetting("setting.conf");
 
@@ -261,7 +264,6 @@ void EditorLayer::onImGuiRender()
                 m_runtimeScene = MakeRef<Scene>();
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
-                //
                 m_currentScene->onScenePlay();
             }
             else
@@ -595,7 +597,6 @@ void EditorLayer::openScene(const std::string &path)
 
         // Because the panels are now holding strong ref to the scene
         // We need to reset the context
-//        setContextToPanels(m_editorScene);
         switchCurrentScene(m_editorScene);
 
         m_editorScene->onEditorInit();

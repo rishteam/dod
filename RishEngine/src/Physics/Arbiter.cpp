@@ -24,7 +24,7 @@ Arbiter::Arbiter(Ref <RigidBody2D> &b1_, Ref <RigidBody2D> &b2_)
 void Arbiter::preStep(float inv_dt)
 {
     // 必須要有個允許穿透值，否則在沒有穿透時計算衝量，會有抖動(jitter)發生
-    const float k_allowedPenetration = 0.1f;
+    const float k_allowedPenetration = 0.05f;
     // bangar 修正，是一個介於0~1之間的數字，越小則越慢才修正
     float k_biasFactor = rl::PhysicsWorld::positionCorrection ? 0.2f : 0.0f;
 

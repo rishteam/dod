@@ -568,6 +568,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
             ImGui::DragFloat2("Force", forceVector, 1.0f);
 
+            // can't control the physics parameter
             auto transPoint = trans.translate;
             auto transWH = trans.scale;
             ImGui::PushItemWidth(100);
@@ -592,8 +593,10 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             rigid.force.y = forceVector[1];
             rigid.attachPoint.x = attachPointX;
             rigid.attachPoint.y = attachPointY;
-            // can't control the physics parameter
+
         }
+
+        ImGui::Checkbox("Restrict Rotation", &rigid.RestrictRotation);
         ImGui::Separator();
         if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
         {
