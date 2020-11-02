@@ -547,6 +547,9 @@ struct Renderer2DData
              OrthoCamera.getViewProjectionMatrix() :
              ViewProjMatrix);
 
+            lightShader->setFloat("screenWidth", (float)Application::Get().getWindow().getWidth());
+            lightShader->setFloat("screenHeight", (float)Application::Get().getWindow().getHeight());
+
             lightVertexArray->bind();
             RenderCommand::DrawElement(DrawTriangles, lightVertexArray, lightIndexCount, DepthTest);
             lightVertexArray->unbind();
@@ -1267,6 +1270,34 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
     };
 
     s_data->triangleRenderer.submit(posi, color, texCoords, 0, 1.f);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Light Renderer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Renderer2D::DrawPointLight(const glm::vec3 &position, glm::vec4 color, float radius, float strength,
+                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale)
+{
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
+    glm::vec2 si = viewportScale;
+    glm::vec4 posi[4] = {
+            {viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
+            {viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
+            {viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z, 1.f},
+            {viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z, 1.f}
+    };
+
+    // TODO : change radius and strength to linear and quadratic
+    SubmitLight(posi, position, color, 1, 1/strength, 1/radius);
+}
+
+void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,
+                             float linear, float quadratic)
+{
+    s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic);
+    s_data->renderStats.LineCount++;
 }
 
 } // namespace of rl

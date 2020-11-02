@@ -7,9 +7,15 @@ in float v_Constant;
 in float v_Linear;
 in float v_Quadratic;
 
+uniform float screenWidth;
+uniform float screenHeight;
+
 void main()
 {
-    float distance = length(v_LightPosition - gl_FragCoord.xy);
+    //
+    vec3 ndc = vec3((gl_FragCoord.x/screenWidth) * 2 -1, (gl_FragCoord.y/screenHeight) * 2 -1, gl_FragCoord.z * 2 -1) ;
+
+    float distance = length(v_LightPosition - ndc.xy) * 100;
 
     float attenuation = 1.0 / (v_Constant + v_Linear * distance + v_Quadratic * (distance * distance));
 

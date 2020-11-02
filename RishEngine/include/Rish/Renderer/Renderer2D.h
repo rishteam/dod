@@ -68,8 +68,8 @@ public:
     static void DrawRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
 
     static void DrawFgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
-    static void DrawFgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
     static void DrawBgRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
+    static void DrawFgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
     static void DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate);
 
     static void DrawFgRect(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color);
@@ -101,6 +101,7 @@ private:
     static void FlushStatesIfExceeds();
     static float GetQuadTextureIndex(const Ref<Texture2D>& texture);
     static void SubmitQuad(const glm::vec4 position[4], const glm::vec4 &color, const glm::vec2 texCoords[4], float texIndex, float texTiling);
+    static void SubmitLight(const glm::vec4 position[4], const glm::vec3 &lightPosition, const glm::vec4 &color, float constant, float linear, float quadratic);
 };
 
 } // namespace of rl
