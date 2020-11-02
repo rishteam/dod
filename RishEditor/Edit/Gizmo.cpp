@@ -267,6 +267,17 @@ void Gizmo::onUpdate() {
 
     switch( m_gizmoMode ) {
         case GizmoMode::MoveMode :{
+
+            for(auto &ent : m_entitySet) {
+                const auto &entPos = ent.getComponent<TransformComponent>().translate;
+                const auto &entSize = ent.getComponent<TransformComponent>().scale;
+                const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
+                // Get bounding box
+                auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+
+                Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
+            }
+
             Renderer2D::DrawRect(boundPos, boundSize, glm::vec4(1.f));
 
             auto moveQuadPos2 = glm::vec2(boundPos + m_clickSize2*glm::vec2(.5f));
@@ -365,12 +376,62 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mposInWorld) {
         boundSize = glm::vec3(newbound.getScale(),0.f);
     }
 
-    if(Math::AABB2DPoint(boundPos+m_clickSize3*glm::vec3(.5f), m_clickSize3, mposInWorld) ||
-       Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f,0.f)+m_clickSize3*glm::vec3(1.5f,0.f,0.f), boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSize3*glm::vec3(3.f,1.f,0.f), mposInWorld) ||
-       Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f,0.f)+m_clickSize3*glm::vec3(0.f,1.5f,0.f), boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSize3*glm::vec3(1.f,3.f,0.f), mposInWorld))
-    {
-        return true;
+    switch (m_gizmoMode) {
+        case GizmoMode::MoveMode :{
+            if(Math::AABB2DPoint(boundPos+m_clickSize3*glm::vec3(.5f), m_clickSize3, mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f, 1.f)+m_clickSize3*glm::vec3(1.5f,0.f,1.f), boundSize*glm::vec3(.5f,0.f,1.f) + m_clickSize3*glm::vec3(3.f,1.f,1.f), mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f, 1.f)+m_clickSize3*glm::vec3(0.f,1.5f,1.f), boundSize*glm::vec3(0.f,.5f,1.f) + m_clickSize3*glm::vec3(1.f,3.f,1.f), mposInWorld))
+            {
+                return true;
+            }
+            break;
+        }
+        case GizmoMode::ZoomMode :{
+            if(Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f,  0.5f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f,  0.0f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f, -0.5f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.0f, -0.5f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f, -0.5f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f,  0.0f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f,  0.5f, 1.f),m_clickSize3,mposInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.0f,  0.5f, 1.f),m_clickSize3,mposInWorld) )
+            {
+                return true;
+            }
+            break;
+        }
+        case GizmoMode::ScaleMode :{
+            for(auto &ent : m_entitySet)
+            {
+                const auto &entPos = ent.getComponent<TransformComponent>().translate;
+                const auto &entSize = ent.getComponent<TransformComponent>().scale;
+                const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
+
+                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f)+m_clickSize3*glm::vec3(.5f, 0.f,1.f);
+                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f)+m_clickSize3*glm::vec3(0.f, .5f,1.f);
+                const auto sinR = std::sin(entRotate*M_PI/180);
+                const auto cosR = std::cos(entRotate*M_PI/180);
+                const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
+                const auto pointY = entPos + glm::vec3(tmpY.x*cosR-tmpY.y*sinR, tmpY.x*sinR+tmpY.y*cosR, 0.f);
+
+                if( Math::AABB2DPoint(pointX,m_clickSize3*glm::vec3(1.5f, 1.5f, 1.f), mposInWorld) ||
+                    Math::AABB2DPoint(pointY,m_clickSize3*glm::vec3(1.5f, 1.5f, 1.f), mposInWorld))
+                {
+                    return true;
+                }
+
+            }
+            break;
+        }
+        case GizmoMode::RotationMode :{
+            if( Math::AABB2DPoint(boundPos, m_clickSize3, mposInWorld))
+            {
+                return true;
+            }
+            break;
+        }
     }
+
     return false;
 }
 
