@@ -296,28 +296,28 @@ void EditorLayer::onImGuiRender()
         // MoveMode button
         if(ImGui::Button(ICON_FA_ARROWS_ALT))
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::MoveMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::MoveMode);
         }
         ImGui::SameLine();
 
         // ZoomMode button
         if(ImGui::Button(ICON_FA_EXPAND))
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::ZoomMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::ZoomMode);
         }
         ImGui::SameLine();
 
         // Scale button
-        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
+        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::ScaleMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::ScaleMode);
         }
         ImGui::SameLine();
 
         // RotationMode button
         if(ImGui::Button(ICON_FA_SYNC))
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::RotationMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::RotationMode);
         }
         ImGui::SameLine();
 

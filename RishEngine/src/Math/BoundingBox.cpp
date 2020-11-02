@@ -31,3 +31,47 @@ rl::BoundingBox2D rl::CalculateBoundingBox2D(const glm::vec2 &pos, const glm::ve
 
     return bound;
 }
+
+rl::BoundingBox2D rl::CombinaBoundingBox2D(const BoundingBox2D lhs, const BoundingBox2D rhs){
+
+    if( lhs.x == 0.f && lhs.y == 0.f && lhs.w == 0.f && lhs.h == 0.f )
+        return rhs;
+    if( rhs.x == 0.f && rhs.y == 0.f && rhs.w == 0.f && rhs.h == 0.f )
+        return lhs;
+
+    BoundingBox2D bound;
+
+    float tmp[4];
+
+    tmp[0] = lhs.x+lhs.w/2;
+    tmp[1] = lhs.x-lhs.w/2;
+    tmp[2] = rhs.x+rhs.w/2;
+    tmp[3] = rhs.x-rhs.w/2;
+
+    bound.x = (*std::max_element(tmp, tmp+4) + *std::min_element(tmp, tmp+4))/2;
+    bound.w = *std::max_element(tmp, tmp+4) - *std::min_element(tmp, tmp+4);
+
+    tmp[0] = lhs.y+lhs.h/2;
+    tmp[1] = lhs.y-lhs.h/2;
+    tmp[2] = rhs.y+rhs.h/2;
+    tmp[3] = rhs.y-rhs.h/2;
+
+    bound.y = (*std::max_element(tmp, tmp+4) + *std::min_element(tmp, tmp+4))/2;
+    bound.h = *std::max_element(tmp, tmp+4) - *std::min_element(tmp, tmp+4);
+
+    return  bound;
+}
+
+rl::BoundingBox2D rl::CalculateBounding2Point(const glm::vec2 p1, const glm::vec2 p2) {
+
+    BoundingBox2D bound;
+
+    bound.x = (p1.x+p2.x)/2;
+    bound.y = (p1.y+p2.y)/2;
+
+    bound.w = std::abs(p1.x-p2.x);
+    bound.h = std::abs(p1.y-p2.y);
+
+    return bound;
+
+}
