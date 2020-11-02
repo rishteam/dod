@@ -1024,6 +1024,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\characters.gif",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1059,6 +1060,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\bg_1.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -1094,6 +1096,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\bg_1.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -1129,6 +1132,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1164,6 +1168,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\bg_1.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -1199,6 +1204,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1234,6 +1240,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1269,6 +1276,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1304,6 +1312,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1339,6 +1348,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1374,6 +1384,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1409,6 +1420,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1444,6 +1456,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1479,6 +1492,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1514,6 +1528,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1549,6 +1564,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1584,6 +1600,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1619,6 +1636,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1654,6 +1672,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1689,6 +1708,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1724,6 +1744,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1759,6 +1780,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1794,6 +1816,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1829,6 +1852,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1864,6 +1888,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1899,6 +1924,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1934,6 +1960,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -1969,6 +1996,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2004,6 +2032,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2039,6 +2068,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2074,6 +2104,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2109,6 +2140,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2144,6 +2176,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\bg_1.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -2179,6 +2212,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2214,6 +2248,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2249,6 +2284,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\bg_1.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -2284,6 +2320,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\characters.gif",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2319,6 +2356,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2354,6 +2392,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2389,6 +2428,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\blocks.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2424,6 +2464,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\pipe.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -2459,6 +2500,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\pipe.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -2494,6 +2536,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\pipe.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -2529,6 +2572,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\bg_null.png",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -2564,6 +2608,7 @@
                     },
                     "Texture": "assets\\texture\\mario\\mmmisc.gif",
                     "UseTexture": true,
+                    "tiling": 1.0,
                     "UseAsSubTexture": true,
                     "setting": {
                         "type": 1,
@@ -2655,6 +2700,7 @@
                             "id": 2147483651,
                             "data": {
                                 "walkAccel": 5.0,
+								"walkSpeedLimit": 7.0,
                                 "jumpSpeed": 7.0
                             }
                         }

@@ -22,11 +22,9 @@ public:
     MonsterState monsterState = MonsterState::Left;
 
     void onCreate() override;
-
     void onDestroy() override;
 
     void onUpdate(Time dt) override;
-
     void onImGuiRender() override;
 
     void setGraphic(SpriteRenderComponent &rend, MonsterState &currentState);
