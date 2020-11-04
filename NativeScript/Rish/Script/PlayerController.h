@@ -28,12 +28,14 @@ public:
 
     enum class PlayerState
     {
-        Alive = 0,
+        Small = 0,
+        Big,
         Died
     };
 
     PlayerAction playerAction = PlayerAction::Stand;
     PlayerFace playerFace = PlayerFace::Right;
+    PlayerState playerState = PlayerState::Big;
 
     void onCreate() override;
 

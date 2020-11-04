@@ -18,10 +18,8 @@ void PlayerController::onUpdate(Time dt)
     auto &rigid = GetComponent<RigidBody2DComponent>();
     auto &boxc = GetComponent<BoxCollider2DComponent>();
     auto &render =  GetComponent<SpriteRenderComponent>();
-    auto &prevState = playerAction;
 
     Vec2 &velocity = rigid.velocity;
-    //printf("Vx: %f, Vy: %f\n", velocity.x, velocity.y);
     if (rigid.velocity.x <= StopSpeed && rigid.velocity.y <= StopSpeed)
     {
         if (!boxc.isCollision && playerAction == PlayerAction::Jump)
@@ -57,7 +55,6 @@ void PlayerController::onUpdate(Time dt)
     {
         playerAction = PlayerAction::Ducking;
     }
-
     prevJump = Input::IsKeyPressed(Keyboard::Up);
     setSprite(render,playerAction, playerFace);
 

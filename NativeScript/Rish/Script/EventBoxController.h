@@ -12,15 +12,30 @@ namespace rl {
 class EventBoxController : public ScriptableEntity
 {
 public:
+
+    enum class EventContent {
+        Empty = 0,
+        Mushroom,
+        Star
+    };
+
+    EventContent eventContent = EventContent::Empty;
+    int contentCount = 1;
+
     void onCreate() override;
 
     void onDestroy() override;
+
+    void spawnObject(EventContent eventTrigger);
 
     void onUpdate(Time dt) override;
 
     void onImGuiRender() override;
 
-    RL_SCRIPT_EMPTY_SERIALIZE();
+    RL_SCRIPT_SERIALIZE()
+    {
+        RL_SERIALIZE("eventContent", eventContent);
+    }
 };
 
 }
