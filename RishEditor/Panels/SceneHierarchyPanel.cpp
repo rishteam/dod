@@ -1,5 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
+#include <Rish/Utils/String.h>
+//
 #include <IconsFontAwesome5.h>
 #include <Rish/ImGui.h>
 
@@ -12,19 +14,20 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::PopStyleVar();
     ImGui::Text("Entity List");
 
+    //
+    static std::string filterText;
+    ImGui::SetNextItemWidth(-1.f);
+    ImGui::InputText("##EntitySelection", &filterText);
+
     // Entity List Window
     ImGuiWindowFlags window_flags = 0;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
-    //
-    static std::string filterText;
-    ImGui::InputText("##ComponentSelection", &filterText);
-
-
     // Draw entity hierarchy
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
-        if((filterText.empty() || isSubString(entity.getName(), filterText)) && !m_isHidingEntity[entity])
+        if((filterText.empty() || String::isSubString(entity.getName(), filterText)) &&
+            !m_isHidingEntity[entity])
         {
             drawEntityNode(entity);
         }
@@ -43,23 +46,29 @@ void SceneHierarchyPanel::onImGuiRender()
         if (ImGui::MenuItem("Create Entity")) {
             m_currentScene->createEntity();
         }
-        if (isSelected() && ImGui::MenuItem("Delete Entity")) {
-            for(auto e : m_entitySet)
-                e.destroy();
-            resetSelected();
-        }
-        if (isSelected() && ImGui::MenuItem("Duplicate Entity")) {
-            for(auto &ent : getSelectedEntities()) {
-                m_currentScene->duplicateEntity(ent);
+        if(isSelected())
+        {
+            if (ImGui::MenuItem("Delete Entity"))
+            {
+                for (auto e : m_entitySet)
+                    e.destroy();
+                resetSelected();
             }
-            resetSelected();
+            if (ImGui::MenuItem("Duplicate Entity"))
+            {
+                for (auto &ent : getSelectedEntities())
+                    m_currentScene->duplicateEntity(ent);
+                resetSelected();
+            }
+            if (ImGui::MenuItem("Hide Entity"))
+            {
+                for (auto e : m_entitySet)
+                    m_isHidingEntity[e] = true;
+                resetSelected();
+            }
         }
-        if(isSelected() && ImGui::MenuItem("Hide Entity")){
-            for(auto e : m_entitySet)
-                m_isHidingEntity[e] = true;
-            resetSelected();
-        }
-        if(ImGui::MenuItem("Show All Entity")){
+        if(ImGui::MenuItem("Show All Entity"))
+        {
             m_isHidingEntity.clear();
         }
         ImGui::EndPopup();
@@ -105,20 +114,6 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
             ImGui::TreePop();
         ImGui::TreePop();
     }
-}
-
-bool SceneHierarchyPanel::isSubString(std::string target, std::string filter) {
-
-    if( filter.size() > target.size() )
-        return false;
-
-    std::transform(target.begin(),target.end(),target.begin(),tolower);
-    std::transform(filter.begin(),filter.end(),filter.begin(),tolower);
-    for(int i = 0 ; i <= target.size()-filter.size() ; i++ ){
-        if( target.substr(i,filter.size()) == filter )
-            return true;
-    }
-    return false;
 }
 
 } // end of namespace rl
