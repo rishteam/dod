@@ -98,14 +98,16 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
 
                 ImGui::DragFloat("Tiling", &render.tiling, 1.f);
             }
-
-            static bool subTexture = render.useAsSubTexture;
-            static bool valueChanged = false;
             //
-            ImGui::Checkbox("Use as SubTexture", &subTexture);
-            if (subTexture)
+            SubTexture2DSetting &setting = render.m_subSetting;
+            if(ImGui::Checkbox("Use as SubTexture", &render.useAsSubTexture))
             {
-                auto &type = render.m_subSetting.type;
+                render.initSubTexture();
+            }
+            //
+            if (render.useAsSubTexture)
+            {
+                auto &type = setting.type;
                 if (ImGui::RadioButton("Sheet", type == SubTexture2DSetting::SubTextureSheet))
                     type = SubTexture2DSetting::SubTextureSheet;
                 if (ImGui::RadioButton("Coordinate", type == SubTexture2DSetting::SubTextureCoordinate))
@@ -113,32 +115,20 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
 
                 if (type == SubTexture2DSetting::SubTextureSheet)
                 {
-                    ImGui::DragFloat2("Pos", glm::value_ptr(render.m_subSetting.pos));
-                    ImGui::DragFloat2("Cell Size", glm::value_ptr(render.m_subSetting.cellSize));
-                    ImGui::DragFloat2("Sprite Grid Size", glm::value_ptr(render.m_subSetting.spriteGridSize));
+                    ImGui::DragFloat2("Pos", glm::value_ptr(setting.pos));
+                    ImGui::DragFloat2("Cell Size", glm::value_ptr(setting.cellSize));
+                    ImGui::DragFloat2("Sprite Grid Size", glm::value_ptr(setting.spriteGridSize));
                 }
                 else if (type == SubTexture2DSetting::SubTextureCoordinate)
                 {
-                    ImGui::DragFloat2("Left Upper", glm::value_ptr(render.m_subSetting.leftUpper));
-                    ImGui::DragFloat2("Size", glm::value_ptr(render.m_subSetting.size));
+                    ImGui::DragFloat2("Left Upper", glm::value_ptr(setting.leftUpper));
+                    ImGui::DragFloat2("Size", glm::value_ptr(setting.size));
                 }
 
                 if (ImGui::Button("Set SubTexture"))
                 {
-                    valueChanged = true;
-                    render.loadFromSetting();
+                    render.loadSubTexture(setting);
                 }
-                else
-                    valueChanged = false;
-                //
-                if (valueChanged)
-                {
-                    render.useAsSubTexture = true;
-                }
-            }
-            else
-            {
-                render.useAsSubTexture = false;
             }
         }
     }
