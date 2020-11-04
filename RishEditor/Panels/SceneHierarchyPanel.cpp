@@ -89,21 +89,29 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
     if(ImGui::IsItemClicked())
     {
         // If not pressed then clear
-        if(!ImGui::GetIO().KeyCtrl)
+        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift){
+            resetTarget();
+        }
+        addTarget(entity);
+
+        if(ImGui::GetIO().KeyShift)
         {
-            m_entitySet.clear();
+            bool select = false;
+            m_currentScene->m_registry.each([&](auto entityID)
+            {
+                Entity ent{entityID, m_currentScene.get()};
+                std::cout << ent.getName() << (select?" Y ":" N ");
+                if( m_entitySet.count(ent) && ent != entity )
+                    select = !select;
+                std::cout << (select?" Y ":" N ");
+                if( select && !m_isHidingEntity[ent])
+                    addTarget(ent);
+                if( ent == entity )
+                    select = !select;
+                std::cout << (select?" Y\n":" N\n");
+            });
         }
 
-        // Add the target if not exist
-        if(!m_entitySet.count(entity))
-        {
-            addTarget(entity);
-            m_entitySet.insert(entity);
-        }
-        else
-        {
-            m_entitySet.erase(entity);
-        }
     }
 
     if(opened)
