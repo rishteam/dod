@@ -45,6 +45,9 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
 
 bool ComponentSelectionPanel::isSubString(std::string target, std::string filter) {
 
+    if( filter.size() > target.size() )
+        return false;
+
     std::transform(target.begin(),target.end(),target.begin(),tolower);
     std::transform(filter.begin(),filter.end(),filter.begin(),tolower);
     for(int i = 0 ; i <= target.size()-filter.size() ; i++ ){

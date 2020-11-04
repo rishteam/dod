@@ -16,10 +16,18 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGuiWindowFlags window_flags = 0;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
+    //
+    static std::string filterText;
+    ImGui::InputText("##ComponentSelection", &filterText);
+
+
     // Draw entity hierarchy
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
-        drawEntityNode(entity);
+        if((filterText.empty() || isSubString(entity.getName(), filterText)) && !m_isHidingEntity[entity])
+        {
+            drawEntityNode(entity);
+        }
     });
 
     // Reset selected when click empty space in the window
@@ -45,6 +53,14 @@ void SceneHierarchyPanel::onImGuiRender()
                 m_currentScene->duplicateEntity(ent);
             }
             resetSelected();
+        }
+        if(isSelected() && ImGui::MenuItem("Hide Entity")){
+            for(auto e : m_entitySet)
+                m_isHidingEntity[e] = true;
+            resetSelected();
+        }
+        if(ImGui::MenuItem("Show All Entity")){
+            m_isHidingEntity.clear();
         }
         ImGui::EndPopup();
     }
@@ -89,6 +105,20 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
             ImGui::TreePop();
         ImGui::TreePop();
     }
+}
+
+bool SceneHierarchyPanel::isSubString(std::string target, std::string filter) {
+
+    if( filter.size() > target.size() )
+        return false;
+
+    std::transform(target.begin(),target.end(),target.begin(),tolower);
+    std::transform(filter.begin(),filter.end(),filter.begin(),tolower);
+    for(int i = 0 ; i <= target.size()-filter.size() ; i++ ){
+        if( target.substr(i,filter.size()) == filter )
+            return true;
+    }
+    return false;
 }
 
 } // end of namespace rl

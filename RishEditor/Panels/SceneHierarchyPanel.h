@@ -20,6 +20,7 @@ public:
 
 private:
     void drawEntityNode(Entity entity);
+    bool isSubString(std::string target, std::string filter);
 };
 
 } // end of namespace rl
