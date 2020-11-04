@@ -27,9 +27,11 @@ void LightLayer::onDetach()
 void LightLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
+    glm::vec3 lightPos = {0, 0, 0};
+    glm::vec2 viewPortSize = {Application::Get().getWindow().getWidth() / 2, Application::Get().getWindow().getHeight()/2};
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
-        Renderer2D::DrawPointLight({0, 0, 0}, color, radius, strength, m_cameraController.getPosition(), {m_cameraController.getZoom(), m_cameraController.getZoom()});
+        Renderer2D::DrawPointLight(lightPos, color, radius, strength, lightPos, {1, 1});
         Renderer2D::DrawQuad({1, 1, 0}, {1, 1},{1, 0, 0, 1});
     }
     Renderer2D::EndScene();

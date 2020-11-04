@@ -51,7 +51,6 @@ namespace glm
 
 	template<class Archive> void serialize(Archive& archive, glm::quat& q) { archive(q.x, q.y, q.z, q.w); }
 	template<class Archive> void serialize(Archive& archive, glm::dquat& q) { archive(q.x, q.y, q.z, q.w); }
-
 }
 
 namespace rl {
@@ -705,6 +704,28 @@ struct ParticleComponent
         ar(cereal::make_nvp("vortexEndSizeRand", vortexEndSizeRand));
         ar(cereal::make_nvp("vortexTurbulence", vortexTurbulence));
     }
+};
+
+struct LightComponent {
+
+    glm::vec3 lightPos;
+    glm::vec2 viewPortSize;
+    glm::vec4 color;
+    float radius;
+    float strength;
+
+private:
+    template<typename Achrive>
+    void serialize(Achrive &ar)
+    {
+        ar( CEREAL_NVP(lightPos),
+            CEREAL_NVP(viewPortSize),
+            CEREAL_NVP(color),
+            CEREAL_NVP(radius),
+            CEREAL_NVP(strength)
+        );
+    }
+
 };
 
 } // end of rl
