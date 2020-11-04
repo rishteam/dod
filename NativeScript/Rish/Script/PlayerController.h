@@ -19,14 +19,20 @@ public:
         Right
     };
 
-    enum class PlayerState
+    enum class PlayerAction
     {
         Stand = 0,
         Ducking,
         Jump
     };
 
-    PlayerState playerState = PlayerState::Stand;
+    enum class PlayerState
+    {
+        Alive = 0,
+        Died
+    };
+
+    PlayerAction playerAction = PlayerAction::Stand;
     PlayerFace playerFace = PlayerFace::Right;
 
     void onCreate() override;
@@ -37,7 +43,7 @@ public:
 
     void onImGuiRender() override;
 
-    void setGraphic(SpriteRenderComponent &rend, PlayerState &playerState, PlayerFace &playerFace);
+    void setGraphic(SpriteRenderComponent &rend, PlayerAction &playerState, PlayerFace &playerFace);
 
     RL_SCRIPT_SERIALIZE()
     {
@@ -46,16 +52,18 @@ public:
         RL_SERIALIZE("jumpSpeed", jumpSpeed);
     }
 private:
-    float currentMaxMove = 5.0f;
-    float jumpSpeed;
 
-    float walkAccel;
-    float walkSpeedLimit;
+    float StopSpeed = 0.3;
 
+    // Walk Speed
+    float walkAccel = 5.0f;
+    float walkSpeedLimit = 5.0f;
+
+    // Limit Jump Times
+    bool prevJump = false;
+    float jumpSpeed = 7.0f;
     int jumpLimitTimes = 1;
     int jumpTimesCounter = 0;
-    bool prevJump = false;
-    bool stillJumping = false;
 
 };
 
