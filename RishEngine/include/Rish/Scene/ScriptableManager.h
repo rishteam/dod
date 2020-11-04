@@ -70,8 +70,8 @@ public:
                        srcComponent.scriptName);
         auto &cloneFunc = s_scriptCloneMap[srcComponent.scriptName];
         dstComponent.instance = cloneFunc(src);
-
         dstComponent.instance->m_entity = dst;
+        dstComponent.scriptName = srcComponent.scriptName;
     }
 
     template<typename T>
