@@ -24,14 +24,18 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
     // Draw entity hierarchy
+    m_showEntity.clear();
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
         if((filterText.empty() || String::isSubString(entity.getName(), filterText)) &&
             !m_isHidingEntity[entity])
         {
-            drawEntityNode(entity);
+            m_showEntity.insert(entity);
         }
     });
+
+    for(auto e : m_showEntity)
+        drawEntityNode(e);
 
     // Reset selected when click empty space in the window
     if(isSelected() &&
@@ -96,20 +100,18 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 
         if(ImGui::GetIO().KeyShift)
         {
-            bool select = false;
-            m_currentScene->m_registry.each([&](auto entityID)
+            bool isPassSelect = false;
+            bool isPassClick  = false;
+            for(auto ent:m_showEntity)
             {
-                Entity ent{entityID, m_currentScene.get()};
-                std::cout << ent.getName() << (select?" Y ":" N ");
+//                Entity ent{entityID, m_currentScene.get()};
                 if( m_entitySet.count(ent) && ent != entity )
-                    select = !select;
-                std::cout << (select?" Y ":" N ");
-                if( select && !m_isHidingEntity[ent])
-                    addTarget(ent);
+                    isPassSelect = true;
                 if( ent == entity )
-                    select = !select;
-                std::cout << (select?" Y\n":" N\n");
-            });
+                    isPassClick = true;
+                if( (isPassSelect^isPassClick) && !m_isHidingEntity[ent])
+                    addTarget(ent);
+            };
         }
 
     }

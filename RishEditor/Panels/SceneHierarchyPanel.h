@@ -20,6 +20,7 @@ public:
 
 private:
     void drawEntityNode(Entity entity);
+    std::set <Entity> m_showEntity;
 };
 
 } // end of namespace rl
