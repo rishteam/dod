@@ -34,7 +34,6 @@ public:
 protected:
     bool m_isSelected = false;
     std::set<Entity> m_entitySet;
-    std::unordered_map<Entity, bool> m_isHidingEntity{};
 };
 
 } // end of namespace rl

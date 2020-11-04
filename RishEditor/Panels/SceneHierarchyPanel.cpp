@@ -27,8 +27,7 @@ void SceneHierarchyPanel::onImGuiRender()
     m_showEntity.clear();
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
-        if((filterText.empty() || String::isSubString(entity.getName(), filterText)) &&
-            !m_isHidingEntity[entity])
+        if((filterText.empty() || String::isSubString(entity.getName(), filterText)))
         {
             m_showEntity.insert(entity);
         }
@@ -36,6 +35,10 @@ void SceneHierarchyPanel::onImGuiRender()
 
     for(auto e : m_showEntity)
         drawEntityNode(e);
+
+    // Draw hide entity hierarchy
+    for(auto e : m_hideEntity)
+        drawHideEntityNode(e);
 
     // Reset selected when click empty space in the window
     if(isSelected() &&
@@ -66,15 +69,9 @@ void SceneHierarchyPanel::onImGuiRender()
             }
             if (ImGui::MenuItem("Hide Entity"))
             {
-                for (auto e : m_entitySet)
-                    m_isHidingEntity[e] = true;
-                resetSelected();
             }
         }
-        if(ImGui::MenuItem("Show All Entity"))
-        {
-            m_isHidingEntity.clear();
-        }
+
         ImGui::EndPopup();
     }
     ImGui::EndChild();
@@ -109,7 +106,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
                     isPassSelect = true;
                 if( ent == entity )
                     isPassClick = true;
-                if( (isPassSelect^isPassClick) && !m_isHidingEntity[ent])
+                if((isPassSelect^isPassClick))
                     addTarget(ent);
             };
         }
@@ -124,6 +121,10 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
             ImGui::TreePop();
         ImGui::TreePop();
     }
+}
+
+void SceneHierarchyPanel::drawHideEntityNode(Entity entity){
+
 }
 
 } // end of namespace rl
