@@ -62,7 +62,7 @@ void PlayerController::onUpdate(Time dt)
     }
 
     prevJump = Input::IsKeyPressed(Keyboard::Up);
-    setGraphic(rend, playerState, playerFace);
+    setSprite(rend, playerState, playerFace);
 
     // Camera follows player
     auto view = GetScene().m_registry.view<TransformComponent, CameraComponent>();
@@ -96,7 +96,7 @@ void PlayerController::onImGuiRender()
             break;
     }
 
-    switch (playerFace) {
+    switch (playerFace){
         case PlayerFace::Right:
             ImGui::Text("playerFace: Right");
             break;
@@ -107,56 +107,64 @@ void PlayerController::onImGuiRender()
 
 }
 
-void PlayerController::setGraphic(SpriteRenderComponent &rend, PlayerState &playerState, PlayerFace &playerFace)
+void PlayerController::setSprite(SpriteRenderComponent &render, PlayerState &playerState, PlayerFace &playerFace)
 {
     // Player Draw State
     // TODO: Simplify, Flip features
-    rend.useTexture = true;
-    rend.useAsSubTexture = true;
-    rend.texturePath = "assets\\texture\\mario\\characters.gif";
-    rend.m_subSetting.type = SubTexture2DSetting::SubTextureCoordinate;
+
+    render.loadTexture("assets\\texture\\mario\\characters.gif");
+
+    SubTexture2DSetting setting;
+    setting.type = SubTexture2DSetting::SubTextureCoordinate;
 
     switch (playerState)
     {
         // TODO: set state graphic
         case PlayerState::Stand:
+        {
             if (playerFace == PlayerFace::Right)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(256, 1);
-                rend.m_subSetting.size = glm::vec2(21, 33);
+                setting.leftUpper = glm::vec2(256, 1);
+                setting.size = glm::vec2(21, 33);
             }
             else if (playerFace == PlayerFace::Left)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(238, 0);
-                rend.m_subSetting.size = glm::vec2(21, 33);
+                setting.leftUpper = glm::vec2(238, 0);
+                setting.size = glm::vec2(21, 33);
             }
             break;
+        }
         case PlayerState::Ducking:
+        {
             if (playerFace == PlayerFace::Right)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(276, 0);
-                rend.m_subSetting.size = glm::vec2(21, 33);
+                setting.leftUpper = glm::vec2(276, 0);
+                setting.size = glm::vec2(21, 33);
             }
             else if (playerFace == PlayerFace::Left)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(219, 0);
-                rend.m_subSetting.size = glm::vec2(21, 33);
+                setting.leftUpper = glm::vec2(219, 0);
+                setting.size = glm::vec2(21, 33);
             }
             break;
+        }
         case PlayerState::Jump:
+        {
             if (playerFace == PlayerFace::Right)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(367, 1);
-                rend.m_subSetting.size = glm::vec2(19, 33);
+                setting.leftUpper = glm::vec2(367, 1);
+                setting.size      = glm::vec2(19, 33);
             }
             else if (playerFace == PlayerFace::Left)
             {
-                rend.m_subSetting.leftUpper = glm::vec2(126, 1);
-                rend.m_subSetting.size = glm::vec2(21, 33);
+                setting.leftUpper = glm::vec2(126, 1);
+                setting.size      = glm::vec2(21, 33);
             }
             break;
+        }
     }
-    rend.loadSubTexture();
+    //
+    render.loadSubTexture(setting);
 }
 
 }

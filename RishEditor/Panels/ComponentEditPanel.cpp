@@ -126,7 +126,7 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
                 if (ImGui::Button("Set SubTexture"))
                 {
                     valueChanged = true;
-                    render.loadSubTexture();
+                    render.loadFromSetting();
                 }
                 else
                     valueChanged = false;

@@ -37,7 +37,7 @@ public:
 
     void onImGuiRender() override;
 
-    void setGraphic(SpriteRenderComponent &rend, PlayerState &playerState, PlayerFace &playerFace);
+    void setSprite(SpriteRenderComponent &render, PlayerState &playerState, PlayerFace &playerFace);
 
     RL_SCRIPT_SERIALIZE()
     {
