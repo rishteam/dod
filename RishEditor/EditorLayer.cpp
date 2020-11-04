@@ -428,7 +428,6 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 if(ImGui::BeginMenu("Editor Grid"))
                 {
-//                    ImGui::MenuItem("Show", nullptr, &m_editController->m_showGrid);
                     ImGui::MenuItem("Debug info", nullptr, &m_editController->m_debugEditorGrid);
                     ImGui::EndMenu();
                 }

@@ -6,6 +6,8 @@
 
 namespace rl {
 
+std::unordered_map<std::string, std::string> SFMLImage::s_pathToId;
+
 Ref<Image> Image::LoadImage(const std::string &path, bool flip)
 {
     return std::make_shared<SFMLImage>(path, flip);
@@ -20,12 +22,19 @@ Ref<Image> Image::LoadImageVFS(const std::string &path, bool flip)
 
 SFMLImage::SFMLImage(const std::string &path, bool flip)
 {
-    m_id = uuid::generate_uuid_v4();
-    ResHolder::Image().load(m_id, path);
+    // Cache path
+    if(!s_pathToId.count(path))
+    {
+        m_id = uuid::generate_uuid_v4();
+        s_pathToId[path] = m_id;
+        ResHolder::Image().load(m_id, path);
+        if(!flip)
+            ResHolder::Image().get(m_id).flipVertically();
+    }
+    else // if exists, don't load
+        m_id = s_pathToId[path];
+    //
     m_image = &ResHolder::Image().get(m_id);
-
-    if(!flip)
-        m_image->flipVertically();
 
     m_width = m_image->getSize().x;
     m_height = m_image->getSize().y;
@@ -33,7 +42,7 @@ SFMLImage::SFMLImage(const std::string &path, bool flip)
 
 SFMLImage::~SFMLImage()
 {
-    ResHolder::Image().release(m_id);
+//    ResHolder::Image().release(m_id);
 }
 
 const void *SFMLImage::getPixelPtr()

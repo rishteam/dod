@@ -132,6 +132,7 @@ void DrawDebugSpriteRenderComponentInfo(Entity entity)
     auto &render = entity.getComponent<SpriteRenderComponent>();
     if(ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::Indent();
         if(render.m_texture)
         {
             ImGui::Text("path = %s", render.m_texture->getPath().c_str());
@@ -139,12 +140,14 @@ void DrawDebugSpriteRenderComponentInfo(Entity entity)
         }
         else
             ImGui::Text("m_texture = nullptr");
-
-        ImGui::Separator();
+        ImGui::Unindent();
+        ImGui::Text("-------------------");
 
         if(render.m_subtexture)
         {
             auto &setting = render.m_subSetting;
+            //
+            ImGui::Indent();
             if(setting.type == SubTexture2DSetting::SubTextureType::SubTextureSheet)
             {
                 ImGui::Text("pos = %.2f %.2f", setting.pos.x, setting.pos.y);
@@ -157,6 +160,7 @@ void DrawDebugSpriteRenderComponentInfo(Entity entity)
                 ImGui::Text("size = %.2f %.2f", setting.size.x, setting.size.y);
             }
             PrintTextureInfo(render.m_subtexture->getTexture());
+            ImGui::Unindent();
         }
 
         ImGui::TreePop();
