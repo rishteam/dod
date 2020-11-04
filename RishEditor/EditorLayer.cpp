@@ -107,7 +107,8 @@ void EditorLayer::onDetach()
     for(auto &panel : m_simplePanelList)
         panel->onDetach();
 
-    saveSetting();
+    if(m_editorSetting.saveSettingOnExit)
+        saveSetting();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -541,8 +542,8 @@ void EditorLayer::loadSetting(const std::string &path)
 
 void EditorLayer::saveSetting()
 {
-    m_editorSetting.isDefaultOpenScene = true;
-    m_editorSetting.path = m_scenePath;
+    if(!m_scenePath.empty())
+        m_editorSetting.path = FileSystem::RelativePath(m_scenePath);
 
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);
