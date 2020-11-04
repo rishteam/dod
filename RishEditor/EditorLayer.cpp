@@ -282,7 +282,7 @@ void EditorLayer::onImGuiRender()
         // Stop button
         if(ImGui::Button(ICON_FA_STOP))
         {
-            if(m_currentScene->getSceneState() == Scene::SceneState::Play)
+            if(m_currentScene->getSceneState() != Scene::SceneState::Editor)
             {
                 m_currentScene->onSceneStop();
                 switchCurrentScene(m_editorScene);
@@ -542,7 +542,7 @@ void EditorLayer::loadSetting(const std::string &path)
 void EditorLayer::saveSetting()
 {
     m_editorSetting.isDefaultOpenScene = true;
-    m_editorSetting.path = "assets\\scene\\test.sce";
+    m_editorSetting.path = m_scenePath;
 
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);
