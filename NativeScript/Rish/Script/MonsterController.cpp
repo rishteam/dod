@@ -19,13 +19,10 @@ void MonsterController::onUpdate(Time dt)
     auto &rigid = GetComponent<RigidBody2DComponent>();
     auto &trans = GetComponent<TransformComponent>();;
     auto &boxc = GetComponent<BoxCollider2DComponent>();
-    auto &rend = GetComponent<SpriteRenderComponent>();
+    auto &render = GetComponent<SpriteRenderComponent>();
 
-    // TODO: Hard Fixed
-    trans.rotate = 0.0f;
-    rigid.angle = 0.0f;
 
-    setSprite(rend, monsterState);
+    setSprite(render, monsterState);
     switch (monsterState) {
         case MonsterState::Left:
             rigid.velocity.x = -1.0f;

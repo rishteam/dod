@@ -19,7 +19,7 @@ void CopyComponent(entt::registry &dst, entt::registry &src,
     RL_UNUSED(srcScene);
     RL_UNUSED(dstScene);
 
-    // Copy all src entities fro src registry to dst registry
+    // Copy all src entities for src registry to dst registry
     auto view = src.view<T>();
     for(auto srcEnt : view)
     {
@@ -60,7 +60,6 @@ void CopyComponent<NativeScriptComponent>(entt::registry &dst, entt::registry &s
 
         // Copy the values of instance
         ScriptableManager::Copy(dstEntity, srcEntity);
-        //
         RL_CORE_TRACE("CopyComponent<NativeScriptComponent>: dst={} src={}", (void *)dstComponent.instance.get(), (void *)srcComponent.instance.get());
     }
 }
