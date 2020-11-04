@@ -27,7 +27,7 @@ public:
     void onUpdate(Time dt) override;
     void onImGuiRender() override;
 
-    void setGraphic(SpriteRenderComponent &rend, MonsterState &currentState);
+    void setSprite(SpriteRenderComponent &render, MonsterState &monsterState);
 
     RL_SCRIPT_EMPTY_SERIALIZE();
 

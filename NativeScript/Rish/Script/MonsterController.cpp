@@ -22,7 +22,7 @@ void MonsterController::onUpdate(Time dt)
     auto &render = GetComponent<SpriteRenderComponent>();
 
 
-    setGraphic(render, monsterState);
+    setSprite(render, monsterState);
     switch (monsterState) {
         case MonsterState::Left:
             rigid.velocity.x = -1.0f;
@@ -70,25 +70,31 @@ void MonsterController::onImGuiRender()
     ImGui::Text("State: %d", static_cast<int>(monsterState));
 }
 
-void MonsterController::setGraphic(SpriteRenderComponent &render, MonsterState &monsterState)
+void MonsterController::setSprite(SpriteRenderComponent &render, MonsterState &monsterState)
 {
     // TODO: Simplify, Flip features
-    render.useTexture = true;
-    render.useAsSubTexture = true;
-    render.texturePath = "assets\\texture\\mario\\role.png";
-    render.m_subSetting.type = SubTexture2DSetting::SubTextureCoordinate;
+    render.loadTexture("assets\\texture\\mario\\role.png");
 
-    switch (monsterState) {
+    SubTexture2DSetting setting;
+    setting.type = SubTexture2DSetting::SubTextureCoordinate;
+
+    switch (monsterState)
+    {
         case MonsterState::Left:
-            render.m_subSetting.leftUpper = glm::vec2(181, 198.5);
-            render.m_subSetting.size = glm::vec2(18, 30);
+        {
+            setting.leftUpper = glm::vec2(181, 198.5);
+            setting.size      = glm::vec2(18, 30);
             break;
+        }
         case MonsterState::Right:
-            render.m_subSetting.leftUpper = glm::vec2(294, 198.5);
-            render.m_subSetting.size = glm::vec2(18, 30);
+        {
+            setting.leftUpper = glm::vec2(294, 198.5);
+            setting.size      = glm::vec2(18, 30);
             break;
+        }
     }
-    render.loadSubTexture();
+    //
+    render.loadSubTexture(setting);
 }
 
 };
