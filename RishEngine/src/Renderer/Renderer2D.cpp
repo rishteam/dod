@@ -867,6 +867,41 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
+void Renderer2D::DrawQuad(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4& color)
+{
+    DrawQuad(glm::vec3{p0, 0.0}, glm::vec3{p1, 0.0}, glm::vec3{p2, 0.0}, glm::vec3{p3, 0.0}, color);
+}
+
+void Renderer2D::DrawQuad(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec4& color)
+{
+    FlushStatesIfExceeds();
+
+    float textureIndex = GetQuadTextureIndex(s_data->whiteTexture);
+
+    glm::vec4 posi[4] = {
+            {p0, 1.f}, // bottom left
+            {p1, 1.f}, // bottom right
+            {p2, 1.f}, // top left
+            {p3, 1.f}  // top right
+    };
+    glm::vec2 texCoords[4] = {
+            { 0.0f, 0.0f },  // bottom left
+            { 1.0f, 0.0f },  // bottom right
+            { 0.0f, 1.0f },  // top left
+            { 1.0f, 1.0f }   // top right
+    };
+
+    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+}
+
+void Renderer2D::DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n)
+{
+    glm::vec3 p2 = p0 + glm::vec3{p0 - lightPos} * n;
+    glm::vec3 p3 = p1 + glm::vec3{p1 - lightPos} * n;
+
+    DrawQuad(p0, p1, p2, p3, {1, 1, 1, 1});
+}
+
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
 {
     DrawRotatedQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color, rotate);

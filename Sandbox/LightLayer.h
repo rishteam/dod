@@ -25,6 +25,7 @@ private:
     float strength;
     float radius;
     glm::vec4 color;
+    glm::vec3 lightPos;
 
     OrthographicCameraController m_cameraController;
 };
