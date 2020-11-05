@@ -15,37 +15,51 @@ void ObjectController::onDestroy()
 
 void ObjectController::onUpdate(Time dt)
 {
-    auto view = GetScene().m_registry.view<TransformComponent, BoxCollider2DComponent, SpriteRenderComponent>();
+    auto view = GetScene().m_registry.view<TransformComponent, BoxCollider2DComponent, SpriteRenderComponent, RigidBody2DComponent, NativeScriptComponent>();
 
     for (auto ent : view) {
         auto entity = GetEntityByHandle(ent);
+        // Check NativeScript Type
+        if(entity.getComponent<NativeScriptComponent>().scriptName == "rl::ObjectController")
+        {
 
-        auto &trans = entity.getComponent<TransformComponent>();
-        auto &boxc = entity.getComponent<BoxCollider2DComponent>();
-        auto &render = entity.getComponent<SpriteRenderComponent>();
-        auto &rigid = entity.getComponent<RigidBody2DComponent>();
+            auto &trans = entity.getComponent<TransformComponent>();
+            auto &boxc = entity.getComponent<BoxCollider2DComponent>();
+            auto &render = entity.getComponent<SpriteRenderComponent>();
+            auto &rigid = entity.getComponent<RigidBody2DComponent>();
 
+            switch (objectState) {
+                case ObjectState::Left:
+                    rigid.velocity.x = -1.0f;
+                    break;
+                case ObjectState::Right:
+                    rigid.velocity.x = 1.0f;
+                    break;
+            }
 
-        switch (objectState) {
-            case ObjectState::Left:
-                rigid.velocity.x = -1.0f;
-                break;
-            case ObjectState::Right:
-                rigid.velocity.x = 1.0f;
-                break;
-        }
+            if(stateChange == true)
+            {
+                stateChange = false;
+                return;
+            }
 
-        for (auto uuid : boxc.whoCollide) {
-            auto collider = GetScene().getEntityByUUID(uuid);
+            for (auto uuid : boxc.whoCollide) {
+                auto collider = GetScene().getEntityByUUID(uuid);
 
-            auto colliderTrans = collider.getComponent<TransformComponent>();
-            // Judge Collide
-            if (std::max(trans.translate.x - trans.scale.x / 2, colliderTrans.translate.x - colliderTrans.translate.x / 2) <=
-                std::min(trans.translate.x + trans.scale.x / 2, colliderTrans.translate.x + colliderTrans.translate.x / 2)) {
-                if (objectState == ObjectState::Left) {
-                    objectState = ObjectState::Right;
-                } else if (objectState == ObjectState::Right) {
-                    objectState = ObjectState::Left;
+                auto colliderTrans = collider.getComponent<TransformComponent>();
+                // Judge Collide
+                if (std::max(trans.translate.x - trans.scale.x / 2, colliderTrans.translate.x - colliderTrans.translate.x / 2) <=
+                    std::min(trans.translate.x + trans.scale.x / 2, colliderTrans.translate.x + colliderTrans.translate.x / 2))
+                {
+                    if (objectState == ObjectState::Left)
+                    {
+                        objectState = ObjectState::Right;
+                    }
+                    else if (objectState == ObjectState::Right)
+                    {
+                        objectState = ObjectState::Left;
+                    }
+                    stateChange = true;
                 }
             }
         }

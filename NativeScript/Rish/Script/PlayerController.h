@@ -35,7 +35,7 @@ public:
 
     PlayerAction playerAction = PlayerAction::Stand;
     PlayerFace playerFace = PlayerFace::Right;
-    PlayerState playerState = PlayerState::Big;
+    PlayerState playerState = PlayerState::Small;
 
     void onCreate() override;
 

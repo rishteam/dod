@@ -86,6 +86,7 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<TestScript>();
     ScriptableManager::Register<MonsterController>();
     ScriptableManager::Register<BoxEventController>();
+    ScriptableManager::Register<ObjectController>();
 
 
     loadSetting("setting.conf");

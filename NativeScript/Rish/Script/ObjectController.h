@@ -31,6 +31,7 @@ public:
 
     RL_SCRIPT_EMPTY_SERIALIZE();
 private:
+    bool stateChange = false;
 
 
 };

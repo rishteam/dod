@@ -4,7 +4,9 @@ namespace rl {
 
 void PlayerController::onCreate()
 {
-
+    playerAction = PlayerAction::Stand;
+    playerFace = PlayerFace::Right;
+    playerState = PlayerState::Small;
 }
 
 void PlayerController::onDestroy()
@@ -82,9 +84,9 @@ void PlayerController::onImGuiRender()
     ImGui::DragFloat("Walk Speed Limit", &walkSpeedLimit, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Jump Speed", &jumpSpeed, 10.0f, 0.0f, 100.0f);
 
-//    ImGui::Text("playerAction: %s", playerAction);
-//    ImGui::Text("playerFace: %s", playerFace);
-//    ImGui::Text("playerState: %s", playerState);
+    ImGui::Text("playerAction: %d", static_cast<PlayerAction>(playerAction));
+    ImGui::Text("playerFace: %d", static_cast<PlayerFace>(playerFace));
+    ImGui::Text("playerState: %d", static_cast<PlayerState>(playerState));
 
 }
 
@@ -92,7 +94,6 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
 {
     // Player Draw State
     // TODO: Simplify, Flip features
-
     render.loadTexture("assets\\texture\\mario\\characters.gif");
 
     SubTexture2DSetting setting;
@@ -101,7 +102,51 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
     switch (playerState) {
         case PlayerState::Small:
         {
-
+            switch (playerAction)
+            {
+                case PlayerAction::Stand:
+                {
+                    if (playerFace == PlayerFace::Right)
+                    {
+                        setting.leftUpper = glm::vec2(275, 43);
+                        setting.size = glm::vec2(16, 18);
+                    }
+                    else if (playerFace == PlayerFace::Left)
+                    {
+                        setting.leftUpper = glm::vec2(222, 43);
+                        setting.size = glm::vec2(16, 18);
+                    }
+                    break;
+                }
+                case PlayerAction::Ducking:
+                {
+                    if (playerFace == PlayerFace::Right)
+                    {
+                        setting.leftUpper = glm::vec2(275, 43);
+                        setting.size = glm::vec2(16, 18);
+                    }
+                    else if (playerFace == PlayerFace::Left)
+                    {
+                        setting.leftUpper = glm::vec2(222, 43);
+                        setting.size = glm::vec2(16, 18);
+                    }
+                    break;
+                }
+                case PlayerAction::Jump:
+                {
+                    if (playerFace == PlayerFace::Right)
+                    {
+                        setting.leftUpper = glm::vec2(355, 41);
+                        setting.size = glm::vec2(20, 20);
+                    }
+                    else if (playerFace == PlayerFace::Left)
+                    {
+                        setting.leftUpper = glm::vec2(140, 41);
+                        setting.size = glm::vec2(20, 20);
+                    }
+                    break;
+                }
+            }
             break;
         }
         case PlayerState::Big:
@@ -160,8 +205,6 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
             setting.size      = glm::vec2(21, 33);
             break;
         }
-
-
     }
     //
     render.loadSubTexture(setting);
