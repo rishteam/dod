@@ -50,6 +50,9 @@ EditorLayer::EditorLayer()
     //
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
+    //
+    m_statusBarPanel = MakeRef<StatusBarPanel>();
+    m_panelList.push_back(m_statusBarPanel);
     // Simple Panels
     m_helpPanel = MakeRef<HelpPanel>();
     m_simplePanelList.push_back(m_helpPanel);
@@ -334,6 +337,9 @@ void EditorLayer::onImGuiRender()
     // Log window
     defaultLogWindow.onImGuiRender();
 
+    // Status Bar
+    m_statusBarPanel->onImGuiRender();
+
 	ImGui::EndDockspace();
 
 	// Modals
@@ -604,7 +610,7 @@ void EditorLayer::openScene(const std::string &path)
     else
     {
         m_sceneLoaded = false;
-
+        m_statusBarPanel->sendMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
         m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
     }
 }
