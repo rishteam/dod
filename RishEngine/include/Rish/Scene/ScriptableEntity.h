@@ -194,7 +194,7 @@ struct NativeScriptComponent
         scriptName = entt::type_info<T>::name();
         instance = MakeRef<T>(std::forward<Args>(args)...);
         instance->m_entity = entity;
-//        RL_CORE_INFO("[DEBUG] NativeScriptComponent::bind():   nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
+        RL_CORE_INFO("[DEBUG] NativeScriptComponent::bind():   nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
     }
 
     void unbind()

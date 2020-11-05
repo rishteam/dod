@@ -85,7 +85,7 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<Cinemachine2D>();
     ScriptableManager::Register<TestScript>();
     ScriptableManager::Register<MonsterController>();
-    ScriptableManager::Register<EventBoxController>();
+    ScriptableManager::Register<BoxEventController>();
 
 
     loadSetting("setting.conf");

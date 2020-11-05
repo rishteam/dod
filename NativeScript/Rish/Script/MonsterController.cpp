@@ -47,7 +47,7 @@ void MonsterController::onUpdate(Time dt)
             if(GetScene().getEntityByUUID(uuid).hasComponent<NativeScriptComponent>())
             {
                 auto collideEntity = GetScene().getEntityByUUID(uuid);
-                if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::EventBoxController")
+                if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::BoxEventController")
                 {
                     if (monsterState == MonsterState::Left)
                     {

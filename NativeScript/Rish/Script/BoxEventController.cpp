@@ -1,18 +1,18 @@
-#include <Rish/Script/EventBoxController.h>
+#include <Rish/Script/BoxEventController.h>
 
 namespace rl {
 
-void EventBoxController::onCreate()
+void BoxEventController::onCreate()
 {
 
 }
 
-void EventBoxController::onDestroy()
+void BoxEventController::onDestroy()
 {
 
 }
 
-void EventBoxController::spawnObject(EventContent eventContent)
+void BoxEventController::spawnObject(EventContent eventContent)
 {
 
     switch (eventContent) {
@@ -24,27 +24,24 @@ void EventBoxController::spawnObject(EventContent eventContent)
         {
             auto trans = GetEntity().getComponent<TransformComponent>();
             Entity ent = CreateEntity(fmt::format("New Object"), glm::vec3(trans.translate.x, trans.translate.y + trans.scale.y + 0.5, trans.translate.z));
-
             ent.addComponent<SpriteRenderComponent>("assets\\texture\\mario\\items.png");
             ent.addComponent<RigidBody2DComponent>(10.f);
             ent.addComponent<BoxCollider2DComponent>(0.f, 0.f, trans.scale.x, trans.scale.y);
-            // TODO: NativeScript bind failed
-//            ent.addComponent<NativeScriptComponent>().bind<MonsterController>(ent);
-
+            ent.addComponent<NativeScriptComponent>().bind<ObjectController>(ent);
             auto &render = ent.getComponent<SpriteRenderComponent>();
             auto &newObjectTrans = ent.getComponent<TransformComponent>();
             auto &rigid = ent.getComponent<RigidBody2DComponent>();
+
+            // set Mushroom size
             rigid.RestrictRotation = true;
             newObjectTrans.scale.x = 0.5f;
             newObjectTrans.scale.y = 0.5f;
 
-            // Change
+            // Set sprite
             SubTexture2DSetting setting;
             setting.type = SubTexture2DSetting::SubTextureCoordinate;
             setting.leftUpper = glm::vec2(182, 83);
             setting.size = glm::vec2(21, 21);
-
-            //
             render.loadSubTexture(setting);
             break;
         }
@@ -56,7 +53,7 @@ void EventBoxController::spawnObject(EventContent eventContent)
     }
 }
 
-void EventBoxController::onUpdate(Time dt)
+void BoxEventController::onUpdate(Time dt)
 {
     auto view = GetScene().m_registry.view<TransformComponent, BoxCollider2DComponent, SpriteRenderComponent>();
 
@@ -78,7 +75,7 @@ void EventBoxController::onUpdate(Time dt)
                 {
                     // Check Script Type
                     if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::PlayerController"
-                        && entity.getComponent<NativeScriptComponent>().scriptName == "rl::EventBoxController")
+                        && entity.getComponent<NativeScriptComponent>().scriptName == "rl::BoxEventController")
                     {
                         auto playerCoordinate = collideEntity.getComponent<TransformComponent>().translate;
                         auto playerWh = collideEntity.getComponent<TransformComponent>().scale;
@@ -100,10 +97,10 @@ void EventBoxController::onUpdate(Time dt)
                             //
                             render.loadSubTexture(setting);
 
-                            if (contentCount >= 1)
+                            if (contentCount == 1)
                             {
                                 spawnObject(eventContent);
-                                contentCount -= 1;
+                                contentCount = 0;
                             }
                         }
                     }
@@ -113,7 +110,7 @@ void EventBoxController::onUpdate(Time dt)
     }
 }
 
-void EventBoxController::onImGuiRender()
+void BoxEventController::onImGuiRender()
 {
     const char* items[] = { "Empty", "Mushroom", "Star"};
     static int item_current = 0;

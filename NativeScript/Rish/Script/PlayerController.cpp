@@ -17,7 +17,7 @@ void PlayerController::onUpdate(Time dt)
     auto &trans = GetComponent<TransformComponent>();
     auto &rigid = GetComponent<RigidBody2DComponent>();
     auto &boxc = GetComponent<BoxCollider2DComponent>();
-    auto &render =  GetComponent<SpriteRenderComponent>();
+    auto &render = GetComponent<SpriteRenderComponent>();
 
     Vec2 &velocity = rigid.velocity;
     if (rigid.velocity.x <= StopSpeed && rigid.velocity.y <= StopSpeed)
@@ -56,6 +56,10 @@ void PlayerController::onUpdate(Time dt)
         playerAction = PlayerAction::Ducking;
     }
     prevJump = Input::IsKeyPressed(Keyboard::Up);
+
+    // TODO: Trigger with Object (ex: mushroom, star, monster...)
+
+    //
     setSprite(render,playerAction, playerFace);
 
     // Camera follows player
@@ -78,26 +82,9 @@ void PlayerController::onImGuiRender()
     ImGui::DragFloat("Walk Speed Limit", &walkSpeedLimit, 10.0f, 0.0f, 100.0f);
     ImGui::DragFloat("Jump Speed", &jumpSpeed, 10.0f, 0.0f, 100.0f);
 
-    switch (playerAction) {
-        case PlayerAction::Stand:
-            ImGui::Text("playerAction: Stand");
-            break;
-        case PlayerAction::Ducking:
-            ImGui::Text("playerAction: Ducking");
-            break;
-        case PlayerAction::Jump:
-            ImGui::Text("playerAction: Jumping");
-            break;
-    }
-
-    switch (playerFace){
-        case PlayerFace::Right:
-            ImGui::Text("playerFace: Right");
-            break;
-        case PlayerFace::Left:
-            ImGui::Text("playerFace: Left");
-            break;
-    }
+//    ImGui::Text("playerAction: %s", playerAction);
+//    ImGui::Text("playerFace: %s", playerFace);
+//    ImGui::Text("playerState: %s", playerState);
 
 }
 
@@ -111,51 +98,70 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
     SubTexture2DSetting setting;
     setting.type = SubTexture2DSetting::SubTextureCoordinate;
 
-    switch (playerAction)
-    {
-        // TODO: set state graphic
-        case PlayerAction::Stand:
+    switch (playerState) {
+        case PlayerState::Small:
         {
-            if (playerFace == PlayerFace::Right)
+
+            break;
+        }
+        case PlayerState::Big:
+        {
+            switch (playerAction)
             {
-                setting.leftUpper = glm::vec2(256, 1);
-                setting.size = glm::vec2(21, 33);
-            }
-            else if (playerFace == PlayerFace::Left)
-            {
-                setting.leftUpper = glm::vec2(238, 0);
-                setting.size = glm::vec2(21, 33);
+                // TODO: set state graphic
+                case PlayerAction::Stand:
+                {
+                    if (playerFace == PlayerFace::Right)
+                    {
+                        setting.leftUpper = glm::vec2(256, 1);
+                        setting.size = glm::vec2(21, 33);
+                    }
+                    else if (playerFace == PlayerFace::Left)
+                    {
+                        setting.leftUpper = glm::vec2(238, 0);
+                        setting.size = glm::vec2(21, 33);
+                    }
+                    break;
+                }
+                case PlayerAction::Ducking:
+                {
+                    if (playerFace == PlayerFace::Right)
+                    {
+                        setting.leftUpper = glm::vec2(276, 0);
+                        setting.size = glm::vec2(21, 33);
+                    }
+                    else if (playerFace == PlayerFace::Left)
+                    {
+                        setting.leftUpper = glm::vec2(219, 0);
+                        setting.size = glm::vec2(21, 33);
+                    }
+                    break;
+                }
+                case PlayerAction::Jump:
+                {
+                    if (playerFace == PlayerFace::Right)
+                    {
+                        setting.leftUpper = glm::vec2(367, 1);
+                        setting.size      = glm::vec2(19, 33);
+                    }
+                    else if (playerFace == PlayerFace::Left)
+                    {
+                        setting.leftUpper = glm::vec2(126, 1);
+                        setting.size      = glm::vec2(21, 33);
+                    }
+                    break;
+                }
             }
             break;
         }
-        case PlayerAction::Ducking:
+        case PlayerState::Died:
         {
-            if (playerFace == PlayerFace::Right)
-            {
-                setting.leftUpper = glm::vec2(276, 0);
-                setting.size = glm::vec2(21, 33);
-            }
-            else if (playerFace == PlayerFace::Left)
-            {
-                setting.leftUpper = glm::vec2(219, 0);
-                setting.size = glm::vec2(21, 33);
-            }
+            setting.leftUpper = glm::vec2(126, 1);
+            setting.size      = glm::vec2(21, 33);
             break;
         }
-        case PlayerAction::Jump:
-        {
-            if (playerFace == PlayerFace::Right)
-            {
-                setting.leftUpper = glm::vec2(367, 1);
-                setting.size      = glm::vec2(19, 33);
-            }
-            else if (playerFace == PlayerFace::Left)
-            {
-                setting.leftUpper = glm::vec2(126, 1);
-                setting.size      = glm::vec2(21, 33);
-            }
-            break;
-        }
+
+
     }
     //
     render.loadSubTexture(setting);

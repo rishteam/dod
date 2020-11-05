@@ -2712,7 +2712,7 @@
                 "value295": {
                     "instance": {
                         "polymorphic_id": 2147483651,
-                        "polymorphic_name": "rl::EventBoxController",
+                        "polymorphic_name": "rl::BoxEventController",
                         "ptr_wrapper": {
                             "id": 2147483652,
                             "data": {
@@ -2720,7 +2720,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value296": 29,
@@ -2734,7 +2734,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value298": 30,
@@ -2748,7 +2748,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value300": 31,
@@ -2762,7 +2762,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value302": 32,
@@ -2776,7 +2776,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value304": 33,
@@ -2790,7 +2790,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value306": 24,
@@ -2804,7 +2804,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value308": 25,
@@ -2818,7 +2818,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value310": 26,
@@ -2832,7 +2832,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value312": 27,
@@ -2846,7 +2846,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value314": 28,
@@ -2860,7 +2860,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value316": 1048615,
@@ -2889,7 +2889,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value320": 35,
@@ -2903,7 +2903,7 @@
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value322": 40,

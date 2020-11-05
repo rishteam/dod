@@ -59,8 +59,9 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/Spawner.cpp
     ../NativeScript/Rish/Script/Cinemachine2D.cpp
     ../NativeScript/Rish/Script/TestScript.cpp
-    ../NativeScript/Rish/Script/EventBoxController.cpp
+    ../NativeScript/Rish/Script/BoxEventController.cpp
     ../NativeScript/Rish/Script/MonsterController.cpp
+    ../NativeScript/Rish/Script/ObjectController.cpp
 )
 
 # Add executable
