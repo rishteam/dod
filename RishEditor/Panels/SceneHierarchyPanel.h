@@ -20,6 +20,9 @@ public:
 
 private:
     void drawEntityNode(Entity entity);
+    void drawHideEntityNode(Entity entity);
+    std::set <Entity> m_showEntity;
+    std::set <Entity> m_hideEntity;
 };
 
 } // end of namespace rl

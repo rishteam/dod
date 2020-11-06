@@ -1,5 +1,7 @@
 #include "ComponentSelectionPanel.h"
 
+#include <Rish/Utils/String.h>
+
 #include <Rish/Scene/ComponentManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
 
@@ -17,7 +19,7 @@ void ComponentSelectionPanel::onImGuiRender()
     {
         auto &mapping = ComponentManager::getAddMapping();
         for (auto &&[k, v] : mapping) {
-            if(filterText.empty() || isSubString(k, filterText))
+            if(filterText.empty() || String::isSubString(k, filterText))
             {
                 if (ImGui::Selectable(k.c_str() + 4))
                 {
@@ -41,17 +43,6 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     ComponentManager::registerComponent<BoxCollider2DComponent>();
     ComponentManager::registerComponent<Joint2DComponent>();
     ComponentManager::registerComponent<ParticleComponent>();
-}
-
-bool ComponentSelectionPanel::isSubString(std::string target, std::string filter) {
-
-    std::transform(target.begin(),target.end(),target.begin(),tolower);
-    std::transform(filter.begin(),filter.end(),filter.begin(),tolower);
-    for(int i = 0 ; i <= target.size()-filter.size() ; i++ ){
-        if( target.substr(i,filter.size()) == filter )
-            return true;
-    }
-    return false;
 }
 
 } // end of namespace rl

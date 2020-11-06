@@ -18,9 +18,6 @@ public:
     void onAttach(const Ref <Scene> &scene) override;
     void onImGuiRender() override;
 
-private:
-    bool isSubString(std::string target, std::string filter);
-
 };
 
 } // end of namespace rl

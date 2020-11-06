@@ -1,5 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
+#include <Rish/Utils/String.h>
+//
 #include <IconsFontAwesome5.h>
 #include <Rish/ImGui.h>
 
@@ -12,15 +14,31 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::PopStyleVar();
     ImGui::Text("Entity List");
 
+    //
+    static std::string filterText;
+    ImGui::SetNextItemWidth(-1.f);
+    ImGui::InputText("##EntitySelection", &filterText);
+
     // Entity List Window
     ImGuiWindowFlags window_flags = 0;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
     // Draw entity hierarchy
+    m_showEntity.clear();
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
-        drawEntityNode(entity);
+        if((filterText.empty() || String::isSubString(entity.getName(), filterText)))
+        {
+            m_showEntity.insert(entity);
+        }
     });
+
+    for(auto e : m_showEntity)
+        drawEntityNode(e);
+
+    // Draw hide entity hierarchy
+    for(auto e : m_hideEntity)
+        drawHideEntityNode(e);
 
     // Reset selected when click empty space in the window
     if(isSelected() &&
@@ -32,20 +50,30 @@ void SceneHierarchyPanel::onImGuiRender()
 
     // Right click menu
     if (ImGui::BeginPopupContextWindow()) {
-        if (ImGui::MenuItem("Create Entity")) {
-            m_currentScene->createEntity();
-        }
-        if (isSelected() && ImGui::MenuItem("Delete Entity")) {
-            for(auto e : m_entitySet)
-                e.destroy();
-            resetSelected();
-        }
-        if (isSelected() && ImGui::MenuItem("Duplicate Entity")) {
-            for(auto &ent : getSelectedEntities()) {
-                m_currentScene->duplicateEntity(ent);
+        if(!isSelected()){
+            if (ImGui::MenuItem("Create Entity")) {
+                m_currentScene->createEntity();
             }
-            resetSelected();
         }
+        if(isSelected())
+        {
+            if (ImGui::MenuItem("Delete Entity"))
+            {
+                for (auto e : m_entitySet)
+                    e.destroy();
+                resetSelected();
+            }
+            if (ImGui::MenuItem("Duplicate Entity"))
+            {
+                for (auto &ent : getSelectedEntities())
+                    m_currentScene->duplicateEntity(ent);
+                resetSelected();
+            }
+            if (ImGui::MenuItem("Hide Entity"))
+            {
+            }
+        }
+
         ImGui::EndPopup();
     }
     ImGui::EndChild();
@@ -64,21 +92,27 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
     if(ImGui::IsItemClicked())
     {
         // If not pressed then clear
-        if(!ImGui::GetIO().KeyCtrl)
+        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift){
+            resetTarget();
+        }
+        addTarget(entity);
+
+        if(isSelected() && ImGui::GetIO().KeyShift)
         {
-            m_entitySet.clear();
+            bool isPassSelect = false;
+            bool isPassClick  = false;
+            for(auto ent:m_showEntity)
+            {
+//                Entity ent{entityID, m_currentScene.get()};
+                if( m_entitySet.count(ent) && ent != entity )
+                    isPassSelect = true;
+                if( ent == entity )
+                    isPassClick = true;
+                if((isPassSelect^isPassClick))
+                    addTarget(ent);
+            };
         }
 
-        // Add the target if not exist
-        if(!m_entitySet.count(entity))
-        {
-            addTarget(entity);
-            m_entitySet.insert(entity);
-        }
-        else
-        {
-            m_entitySet.erase(entity);
-        }
     }
 
     if(opened)
@@ -89,6 +123,10 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
             ImGui::TreePop();
         ImGui::TreePop();
     }
+}
+
+void SceneHierarchyPanel::drawHideEntityNode(Entity entity){
+
 }
 
 } // end of namespace rl

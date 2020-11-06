@@ -50,6 +50,9 @@ EditorLayer::EditorLayer()
     //
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
+    //
+    m_statusBarPanel = MakeRef<StatusBarPanel>();
+    m_panelList.push_back(m_statusBarPanel);
     // Simple Panels
     m_helpPanel = MakeRef<HelpPanel>();
     m_simplePanelList.push_back(m_helpPanel);
@@ -202,21 +205,12 @@ void EditorLayer::onImGuiRender()
     //
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
-    {
-        // update edit controller
-        m_editController->onImGuiRender();
-        // Update viewport size (For resizing the framebuffer)
-        auto size = ImGui::GetContentRegionAvail();
-        m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
-        // show scene
-        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
-        ImGui::Image(textureID, size, {0, 0}, {1, -1});
-    }
-	ImGui::End();
-
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
     {
+        if( m_clickPlayButton ){
+            ImGui::SetWindowFocus();
+            m_clickPlayButton = false;
+        }
         // Pull states
         bool isGameWindowFocus = ImGui::IsWindowFocused();
         bool isGameWindowHover = ImGui::IsWindowHovered();
@@ -246,6 +240,23 @@ void EditorLayer::onImGuiRender()
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
     ImGui::End();
+
+    ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
+    {
+        if( m_clickStopButton ){
+            ImGui::SetWindowFocus();
+            m_clickStopButton = false;
+        }
+        // update edit controller
+        m_editController->onImGuiRender();
+        // Update viewport size (For resizing the framebuffer)
+        auto size = ImGui::GetContentRegionAvail();
+        m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
+        // show scene
+        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
+    }
+	ImGui::End();
 	ImGui::PopStyleVar();
 
 	m_currentScene->onImGuiRender();
@@ -260,6 +271,7 @@ void EditorLayer::onImGuiRender()
         // Play button
         if(ImGui::Button(ICON_FA_PLAY))
         {
+            m_clickPlayButton = true;
             if(m_currentScene->getSceneState() == Scene::SceneState::Editor)
             {
                 m_runtimeScene = MakeRef<Scene>();
@@ -282,6 +294,7 @@ void EditorLayer::onImGuiRender()
         // Stop button
         if(ImGui::Button(ICON_FA_STOP))
         {
+            m_clickStopButton = true;
             if(m_currentScene->getSceneState() != Scene::SceneState::Editor)
             {
                 m_currentScene->onSceneStop();
@@ -334,6 +347,9 @@ void EditorLayer::onImGuiRender()
 
     // Log window
     defaultLogWindow.onImGuiRender();
+
+    // Status Bar
+    m_statusBarPanel->onImGuiRender();
 
 	ImGui::EndDockspace();
 
@@ -605,7 +621,7 @@ void EditorLayer::openScene(const std::string &path)
     else
     {
         m_sceneLoaded = false;
-
+        m_statusBarPanel->sendMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
         m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
     }
 }

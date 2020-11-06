@@ -23,5 +23,21 @@ std::string &replaceAll(std::string &str, const std::string &from, const std::st
     return str;
 }
 
+bool isSubString(std::string target, std::string filter)
+{
+    if(filter.size() > target.size())
+        return false;
+    //
+    std::transform(target.begin(), target.end(), target.begin(), tolower);
+    std::transform(filter.begin(), filter.end(), filter.begin(), tolower);
+    //
+    for(int i = 0; i <= target.size()-filter.size(); i++ )
+    {
+        if(target.substr(i,filter.size()) == filter)
+            return true;
+    }
+    return false;
+}
+
 }
 }
