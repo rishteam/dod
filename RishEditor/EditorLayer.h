@@ -101,6 +101,9 @@ private:
 	std::vector<Ref<Panel>> m_simplePanelList;
 
 	bool m_debugNativeScript = false;
+	bool m_clickPlayButton = false;
+    bool m_clickStopButton = true;
+
 };
 
 }

@@ -10,20 +10,14 @@ void StatusBarPanel::onImGuiRender() {
     ImGui::Begin("StatusBar");
     ImGui::PopStyleVar();
 
-    if( !m_message.empty() ){
-        ImGui::Text("%s", m_message.front().c_str());
-        if( m_cnt++ > m_timelimit ){
-            m_message.pop();
-            m_cnt = 0;
-        }
-    }
+    ImGui::Text("%s", m_message.c_str());
 
     ImGui::End();
 
 }
 
 void StatusBarPanel::sendMessage(const std::string str) {
-    m_message.push(str);
+    m_message = str;
 }
 
 }

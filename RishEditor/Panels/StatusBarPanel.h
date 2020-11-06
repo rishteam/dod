@@ -23,8 +23,7 @@ public:
     void onImGuiRender() override;
 
 private:
-    std::queue <std::string> m_message;
-    int m_cnt = 0,m_timelimit = 10000;
+    std::string m_message;
 };
 
 }

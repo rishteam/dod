@@ -50,8 +50,10 @@ void SceneHierarchyPanel::onImGuiRender()
 
     // Right click menu
     if (ImGui::BeginPopupContextWindow()) {
-        if (ImGui::MenuItem("Create Entity")) {
-            m_currentScene->createEntity();
+        if(!isSelected()){
+            if (ImGui::MenuItem("Create Entity")) {
+                m_currentScene->createEntity();
+            }
         }
         if(isSelected())
         {
@@ -95,7 +97,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
         }
         addTarget(entity);
 
-        if(ImGui::GetIO().KeyShift)
+        if(isSelected() && ImGui::GetIO().KeyShift)
         {
             bool isPassSelect = false;
             bool isPassClick  = false;
