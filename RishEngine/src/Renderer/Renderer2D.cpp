@@ -512,8 +512,10 @@ struct Renderer2DData
         }
 
         void submit(const glm::vec4 position[4], const glm::vec3 lightPosition, const glm::vec4 color,
-                    const float constant, const float linear, const float quadratic)
+                    const float constant, const float linear, const float quadratic, const glm::vec2 &screenSize)
         {
+            viewportSize = screenSize;
+            //
             LightShape submitLight{};
             for(int i = 0 ; i < 4 ; i++)
             {
@@ -547,8 +549,8 @@ struct Renderer2DData
              OrthoCamera.getViewProjectionMatrix() :
              ViewProjMatrix);
 
-            lightShader->setFloat("screenWidth", (float)Application::Get().getWindow().getWidth());
-            lightShader->setFloat("screenHeight", (float)Application::Get().getWindow().getHeight());
+            lightShader->setFloat("screenWidth", viewportSize.x);
+            lightShader->setFloat("screenHeight", viewportSize.y);
 
             lightVertexArray->bind();
             RenderCommand::DrawElement(DrawTriangles, lightVertexArray, lightIndexCount, DepthTest);
@@ -569,6 +571,7 @@ struct Renderer2DData
         Ref<Shader> lightShader;            ///< Light renderer shader
         uint32_t lightIndexCount = 0;          ///< 現在有多少個 index
         std::vector<LightShape> lightShapeList; ///< Light data
+        glm::vec2 viewportSize{};
     };
     LightRenderer lightRenderer;
 
@@ -1311,8 +1314,8 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
 // Light Renderer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Renderer2D::DrawPointLight(const glm::vec3 &position, glm::vec4 color, float radius, float strength,
-                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale)
+void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
+                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize ,glm::vec4 color)
 {
     RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
@@ -1325,13 +1328,13 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, glm::vec4 color, floa
     };
 
     // TODO : change radius and strength to linear and quadratic
-    SubmitLight(posi, position, color, 1, 1/strength, 1/radius);
+    SubmitLight(posi, position, color, 1, 1/strength, 1/radius, screenSize);
 }
 
 void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,
-                             float linear, float quadratic)
+                             float linear, float quadratic, const glm::vec2 &screenSize)
 {
-    s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic);
+    s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic, screenSize);
     s_data->renderStats.LineCount++;
 }
 

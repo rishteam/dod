@@ -15,6 +15,7 @@
 #include <Rish/Collider/ColliderSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
+#include <Rish/Effect/Light/LightSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
@@ -120,6 +121,7 @@ void Scene::onUpdate(Time dt)
     ParticleSystem::onUpdate(dt);
     ColliderSystem::OnUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
+    LightSystem::OnUpdate(dt);
 
     // Find a primary camera
     // TODO: implement multiple camera
@@ -138,6 +140,15 @@ void Scene::onUpdate(Time dt)
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
         ParticleSystem::onRender();
+        Renderer2D::EndScene();
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+    }
+
+    // Draw Light
+    {
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
+        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+        LightSystem::onRender();
         Renderer2D::EndScene();
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
@@ -185,7 +196,8 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
-    
+    CopyComponent<LightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+
     // Copy other states
     target->m_entNameToNumMap = m_entNameToNumMap;
 }

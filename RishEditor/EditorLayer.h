@@ -67,6 +67,7 @@ private:
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
     glm::vec2 m_sceneViewportPanelSize {0.f, 0.f};
+    glm::vec2 m_gameViewportPanelSize {0.f, 0.f};
 
     //////////////////////////////////////////
     // Editor Panels

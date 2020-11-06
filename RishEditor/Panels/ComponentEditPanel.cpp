@@ -266,14 +266,6 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                 emitter.loadEmitData();
             }
 
-//            if(ImGui::Button("Select##dataPath"))
-//            {
-//                if(FileDialog::SelectSingleFile(nullptr, nullptr, dataPath))
-//                {
-//                    emitter.dataPath = dataPath;
-//                    emitter.loadEmitData();
-//                }
-//            }
             ImGui::SameLine();
             ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
 
@@ -546,6 +538,35 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 }
 
 template<>
+void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
+{
+    BeginDrawEditComponent(LightComponent);
+    {
+        DrawRightClickMenu(LightComponent, false);
+
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        auto &light     = m_targetEntity.getComponent<LightComponent>();
+
+        ImGui::ColorEdit4("Light Color", glm::value_ptr(light.color), ImGuiColorEditFlags_Float);
+
+        ImGui::DragFloat3("Light Position", glm::value_ptr(transform.translate), 0.01);
+        ImGui::Checkbox("Custom View Port Position", &light.customViewPos);
+        if(light.customViewPos)
+        {
+            ImGui::DragFloat3("View Port Position", glm::value_ptr(light.viewPortPos), 0.01);
+        }
+        else
+        {
+            light.viewPortPos = transform.translate;
+        }
+        ImGui::DragFloat2("View Port Size", glm::value_ptr(light.viewPortSize), 0.01);
+        ImGui::DragFloat("Light Radius", &light.radius, 0.01);
+        ImGui::DragFloat("Light Strength", &light.strength, 0.01);
+    }
+    EndDrawEditComponent();
+}
+
+template<>
 void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
 {
     BeginDrawEditComponent(RigidBody2DComponent);
@@ -759,6 +780,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
+        drawEditComponentWidget<LightComponent>();
         
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

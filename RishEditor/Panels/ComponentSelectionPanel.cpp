@@ -39,6 +39,7 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     ComponentManager::registerComponent<BoxCollider2DComponent>();
     ComponentManager::registerComponent<Joint2DComponent>();
     ComponentManager::registerComponent<ParticleComponent>();
+    ComponentManager::registerComponent<LightComponent>();
 }
 
 } // end of namespace rl

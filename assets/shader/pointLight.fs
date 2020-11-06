@@ -6,6 +6,7 @@ in vec4 v_Color;
 in float v_Constant;
 in float v_Linear;
 in float v_Quadratic;
+in mat4 v_ViewProjection;
 
 uniform float screenWidth;
 uniform float screenHeight;
@@ -22,6 +23,4 @@ void main()
     vec4 color = vec4(attenuation, attenuation, attenuation, pow(attenuation, 3)) * v_Color;
 
     FragColor = color;
-
-//    FragColor = vec4(v_LightPosition.x, 0, 0, 1);
 }

@@ -12,6 +12,7 @@
 
 // Systems
 #include <Rish/Effect/Particle/ParticleSystem.h>
+#include <Rish/Effect/Light/LightSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
 #include <Rish/Collider/ColliderSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
@@ -140,6 +141,16 @@ void EditorLayer::onUpdate(Time dt)
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
                                         RenderCommand::BlendFactor::OneMinusSrcAlpha);
         }
+
+        // Draw Light
+        {
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
+            Renderer2D::BeginScene(cameraController->getCamera(), false);
+            LightSystem::onViewportResize(m_sceneViewportPanelSize);
+            LightSystem::onRender();
+            Renderer2D::EndScene();
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        }
     }
     m_editorFramebuffer->unbind();
 
@@ -151,6 +162,7 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear();
         //
+        LightSystem::onViewportResize(m_gameViewportPanelSize);
         m_currentScene->onUpdate(dt);
     }
     m_sceneFramebuffer->unbind();
@@ -239,6 +251,7 @@ void EditorLayer::onImGuiRender()
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
+        m_gameViewportPanelSize = glm::vec2{size.x, size.y};
     }
     ImGui::End();
 	ImGui::PopStyleVar();
@@ -503,6 +516,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     NativeScriptSystem::RegisterScene(m_currentScene);
     SpriteRenderSystem::RegisterScene(m_currentScene);
     ParticleSystem::RegisterScene(m_currentScene);
+    LightSystem::RegisterScene(m_currentScene);
 
     // Reset Editor Panel target
     m_editController->resetTarget();

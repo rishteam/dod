@@ -101,6 +101,7 @@ add_library(RishEngine
 
     # Effect
     src/Effect/Particle/ParticleSystem.cpp
+    src/Effect/Light/LightSystem.cpp
 
     # Box
     src/Collider/Box.cpp

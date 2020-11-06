@@ -11,15 +11,17 @@ out vec4 v_Color;
 out float v_Constant;
 out float v_Linear;
 out float v_Quadratic;
+out mat4 v_ViewProjection;
 
 uniform mat4 u_ViewProjection;
 
 void main()
 {
     gl_Position = u_ViewProjection * vec4(a_QuadPosition, 1.0);
-    v_LightPosition = a_LightPosition.xy;
+    v_LightPosition = (u_ViewProjection * vec4(a_LightPosition, 1.0)).xy;
     v_Color = a_Color;
     v_Constant = a_Constant;
     v_Linear = a_Linear;
     v_Quadratic = a_Quadratic;
+    v_ViewProjection = u_ViewProjection;
 }
