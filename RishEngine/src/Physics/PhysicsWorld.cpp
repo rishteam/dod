@@ -70,7 +70,7 @@ void rl::PhysicsWorld::Step(float dt)
     }
 
 
-    for (int i = 0; i < this->iterations; ++i)
+    for (int i = 0; i < iterations; ++i)
     {
         //Apply impulse
         for (auto arb = arbiters.begin(); arb != arbiters.end(); ++arb) {
@@ -98,7 +98,7 @@ void rl::PhysicsWorld::BoardPhase()
             if(bodies.at(i)->invMass == 0.0f && bodies.at(j)->invMass == 0.0f)
                 continue;
 
-            //add in Arbiter
+            // Add in Arbiter
             Arbiter newArb(bodies.at(i), bodies.at(j));
             ArbiterKey key(bodies.at(i), bodies.at(j));
             auto iter = arbiters.find(key);
@@ -112,18 +112,18 @@ void rl::PhysicsWorld::BoardPhase()
                 if(!bodies.at(i)->isCollider || !bodies.at(j)->isCollider)
                     continue;
 
-                //add new arbiter
+                // Add new arbiter
                 if (iter == arbiters.end())
                 {
                     arbiters.insert(std::pair<ArbiterKey, Arbiter>(key, newArb));
                 }
-                //update arbiter
+                // update arbiter
                 else
                 {
                     iter->second.updateContactAndCalImpluse(newArb.contacts, newArb.numContacts);
                 }
             }
-            //no collision
+            // no collision
             else
             {
                 arbiters.erase(key);

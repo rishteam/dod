@@ -31,6 +31,13 @@ void Spawner::onUpdate(Time dt)
     std::set<Entity> delTarget;
     for(Entity ent : m_spawned)
     {
+        // Check if ent is still valid
+        if(!ent)
+        {
+            delTarget.insert(ent);
+            continue;
+        }
+        //
         auto &entTrans = ent.getComponent<TransformComponent>();
         if(glm::distance(trans.translate, entTrans.translate) >= 100.f)
         {
@@ -49,6 +56,8 @@ void Spawner::onImGuiRender()
     ImGui::Text("Alive");
     for(Entity ent : m_spawned)
     {
+        if(!ent)
+            continue;
         ImGui::PushID((void*)&ent);
         const UUID &uuid = ent.getUUID();
         const std::string &name = ent.getName();

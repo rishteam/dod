@@ -848,7 +848,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value97": 0,
                 "value98": {
@@ -870,7 +871,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value99": 3,
                 "value100": {
@@ -892,7 +894,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value101": 1048580,
                 "value102": {
@@ -914,7 +917,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value103": 5,
                 "value104": {
@@ -936,7 +940,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value105": 7,
                 "value106": {
@@ -958,7 +963,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value107": 1048582,
                 "value108": {
@@ -980,7 +986,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value109": 8,
                 "value110": {
@@ -1002,7 +1009,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value111": 9,
                 "value112": {
@@ -1024,7 +1032,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value113": 10,
                 "value114": {
@@ -1046,7 +1055,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value115": 11,
                 "value116": {
@@ -1068,7 +1078,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value117": 12,
                 "value118": {
@@ -1090,7 +1101,8 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "showAttachPoint": false
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
                 },
                 "value119": 12,
                 "value120": 0,

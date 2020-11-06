@@ -19,7 +19,7 @@ void SpriteRenderSystem::OnInit()
 
         if (render.init)
         {
-            render.loadFromPath();
+            render.loadFromSetting();
             render.init = false;
         }
     }
@@ -35,7 +35,7 @@ void SpriteRenderSystem::onRender()
 
         if (render.init)
         {
-            render.loadFromPath();
+            render.loadFromSetting();
             render.init = false;
         }
 

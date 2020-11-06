@@ -28,7 +28,7 @@ void TestScript::onDestroy()
 
 TestScript::TestScript()
 {
-    RL_INFO("[DEBUG] [TestScript] {:p} Construct", (void*)this);
+    RL_INFO("[DEBUG] [TestScript] {:p} Construct {:p}", (void*)this, (void*)GetEntity().m_scene);
 }
 
 TestScript::~TestScript()

@@ -27,5 +27,4 @@ private:
     static Ref<Scene> s_Scene;
 };
 
-
 }

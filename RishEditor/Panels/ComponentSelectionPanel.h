@@ -17,6 +17,7 @@ public:
 
     void onAttach(const Ref <Scene> &scene) override;
     void onImGuiRender() override;
+
 };
 
 } // end of namespace rl

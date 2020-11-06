@@ -19,7 +19,7 @@ add_executable(Editor
     Edit/EditorGrid.cpp
     Edit/EditorGrid.h
     Edit/EditController.cpp
-)
+        Edit/Gizmo.cpp Edit/Gizmo.h Panels/StatusBarPanel.cpp Panels/StatusBarPanel.h)
 
 target_include_directories(Editor PUBLIC ${PROJECT_SOURCE_DIR})
 target_link_libraries(Editor

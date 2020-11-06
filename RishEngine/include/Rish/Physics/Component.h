@@ -38,6 +38,8 @@ struct RigidBody2DComponent
     float torque = 0.0f;
     /// 摩擦力
     float friction = 0.2f;
+    /// 限制旋轉
+    bool RestrictRotation = false;
 
 
     RigidBody2DComponent() = default;
@@ -59,7 +61,8 @@ private:
             CEREAL_NVP(torque),
             CEREAL_NVP(keepingForce),
             CEREAL_NVP(attachPoint),
-            CEREAL_NVP(showAttachPoint)
+            CEREAL_NVP(showAttachPoint),
+            CEREAL_NVP(RestrictRotation)
         );
     }
 };
@@ -70,7 +73,6 @@ struct BoxCollider2DComponent
     float y = 0.0f;
     float w = 1.0f;
     float h = 1.0f;
-    // TODO: To serializable
     std::vector<UUID> whoCollide;
     bool isCollision = false;
 

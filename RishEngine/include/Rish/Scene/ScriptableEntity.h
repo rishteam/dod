@@ -15,9 +15,19 @@ class NativeScriptComponent;
 class ScriptableEntity
 {
 public:
+    /**
+     * @brief Constructor of ScriptableEntity
+     * @warning GetEntity() is INVALID HERE. Use ScriptableEntity::onCreate() instead.
+     */
     ScriptableEntity()
     {
     }
+
+    /**
+     * @brief Destructor of ScriptableEntity
+     * @warning GetEntity() is INVALID HERE. Use ScriptableEntity::onCreate() instead.
+     * @warning Logger is not invalid here
+     */
     virtual ~ScriptableEntity()
     {
     }
@@ -65,13 +75,33 @@ public:
     }
 
     // Main Functions
+
+    /**
+     * @brief On Create
+     */
     virtual void onCreate() {}
+    /**
+     * @brief On Destroy
+     * @warning Logger is not invalid here
+     */
     virtual void onDestroy() {}
+    /**
+     * @brief On Update
+     * @param dt Delta Time
+     */
     virtual void onUpdate(Time dt) = 0;
+    /**
+     * @brief On ImGui Render
+     */
     virtual void onImGuiRender() = 0;
 
-    // Virtual Copy Constructor pattern
-    // https://stackoverflow.com/questions/12255546/c-deep-copying-a-base-class-pointer
+    /**
+     * @brief Clone function
+     * @details Virtual Copy Constructor pattern <https://stackoverflow.com/questions/12255546/c-deep-copying-a-base-class-pointer>
+     *
+     * @tparam Derived Derived Type
+     * @return Ref<Derived>
+     */
     template<class Derived>
     Ref<Derived> clone() const
     {
@@ -83,7 +113,7 @@ public:
     }
 
 private:
-    Entity m_entity;
+    Entity m_entity; ///< Entity
     //
     friend class Scene;
     friend class ScriptableManager;
@@ -164,12 +194,12 @@ struct NativeScriptComponent
         scriptName = entt::type_info<T>::name();
         instance = MakeRef<T>(std::forward<Args>(args)...);
         instance->m_entity = entity;
-        RL_CORE_INFO("[DEBUG] NativeScriptComponent::bind():   nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
+//        RL_CORE_INFO("[DEBUG] NativeScriptComponent::bind():   nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
     }
 
     void unbind()
     {
-        RL_CORE_INFO("[DEBUG] NativeScriptComponent::unbind(): nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
+//        RL_CORE_INFO("[DEBUG] NativeScriptComponent::unbind(): nsc={} scriptName={} instance={}", (void*)this, scriptName, (void*)instance.get());
         instance = nullptr;
     }
 };

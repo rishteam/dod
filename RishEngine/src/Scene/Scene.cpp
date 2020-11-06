@@ -29,6 +29,7 @@ int Scene::entityNumber = 0;
 Scene::Scene()
 {
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
+
     RL_CORE_INFO("Construct Scene");
 }
 
@@ -119,8 +120,8 @@ void Scene::onUpdate(Time dt)
 {
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
-    ColliderSystem::OnUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
+    ColliderSystem::OnUpdate(dt);
     LightSystem::OnUpdate(dt);
 
     // Find a primary camera

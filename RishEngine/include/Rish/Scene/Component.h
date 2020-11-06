@@ -126,40 +126,50 @@ struct SpriteRenderComponent
 
     float tiling = 1.f;
 
+    // TODO: Check the meaning and rename it
 	// states
-	bool init = true; // TODO: Check the meaning and rename it
+	bool init = true;
 
-    void loadFromPath()
+    void loadFromSetting()
     {
-        m_texture = Texture2D::LoadTextureVFS(texturePath);
+        if(useTexture)
+        {
+            m_texture = Texture2D::LoadTextureVFS(texturePath);
+        }
+        //
         if(useAsSubTexture)
-            loadSubTexture();
+        {
+            if (m_subSetting.type == SubTexture2DSetting::SubTextureSheet)
+            {
+                m_subtexture = SubTexture2D::CreateFromSheet(m_texture, m_subSetting.pos, m_subSetting.cellSize,
+                                                             m_subSetting.spriteGridSize);
+            }
+            else if (m_subSetting.type == SubTexture2DSetting::SubTextureCoordinate)
+            {
+                m_subtexture = SubTexture2D::CreateFromCoordinate(m_texture, m_subSetting.leftUpper,
+                                                                  m_subSetting.size);
+            }
+        }
     }
 
 	void loadTexture(const std::string &path)
     {
 	    texturePath = path;
-        loadFromPath();
-        if(useAsSubTexture)
-            loadSubTexture();
+        useTexture = true;
+        //
+        loadFromSetting();
     }
 
-	void loadSubTexture()
+	void loadSubTexture(SubTexture2DSetting setting)
     {
-        if (m_subSetting.type == SubTexture2DSetting::SubTextureSheet)
-        {
-            m_subtexture = SubTexture2D::CreateFromSheet(m_texture, m_subSetting.pos, m_subSetting.cellSize,
-                                                                m_subSetting.spriteGridSize);
-        }
-        else if (m_subSetting.type == SubTexture2DSetting::SubTextureCoordinate)
-        {
-            m_subtexture = SubTexture2D::CreateFromCoordinate(m_texture, m_subSetting.leftUpper,
-                                                                     m_subSetting.size);
-        }
+        useAsSubTexture = true;
+        m_subSetting = setting;
+        //
+        loadFromSetting();
     }
 
 	SpriteRenderComponent() = default;
-    SpriteRenderComponent(const std::string &path) : texturePath(path)
+    explicit SpriteRenderComponent(const std::string &path) : texturePath(path)
     {
     }
 private:

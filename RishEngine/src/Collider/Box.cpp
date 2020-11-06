@@ -33,7 +33,7 @@ Box::Box(Ref<RigidBody2D> &body)
 void Box::_setVertices()
 {
     m_vertices.clear();
-    float angle_rad = glm::radians(rotation);
+    float angle_rad = rotation;
     Vec2 cent(x, y);
     for (auto &idx : m_corner)
     {
@@ -51,12 +51,11 @@ void Box::_findSAT()
     {
         float tmp_x = m_vertices[i].x - m_vertices[i - 1].x;
         float tmp_y = m_vertices[i].y - m_vertices[i - 1].y;
-
         Vec2 tmp(tmp_x, tmp_y);
-        this->m_SAT.push_back(tmp.normalL());
+        m_SAT.push_back(tmp.normalL());
     }
     Vec2 tmp2((m_vertices[0].x - m_vertices[total_pt - 1].x), (m_vertices[0].y - m_vertices[total_pt - 1].y));
-    this->m_SAT.push_back(tmp2.normalL());
+    m_SAT.push_back(tmp2.normalL());
 }
 
 float Box::getX()

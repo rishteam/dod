@@ -51,6 +51,9 @@ EditorLayer::EditorLayer()
     //
     m_componentEditPanel = MakeRef<ComponentEditPanel>();
     m_panelList.push_back(m_componentEditPanel);
+    //
+    m_statusBarPanel = MakeRef<StatusBarPanel>();
+    m_panelList.push_back(m_statusBarPanel);
     // Simple Panels
     m_helpPanel = MakeRef<HelpPanel>();
     m_simplePanelList.push_back(m_helpPanel);
@@ -78,12 +81,16 @@ void EditorLayer::onAttach()
     for(auto &panel : m_simplePanelList)
         panel->onAttach();
 
-    // Test
+    // TODO: Move me to ScriptableManager
     ScriptableManager::Register<SpriteRoatate>();
     ScriptableManager::Register<CameraController>();
     ScriptableManager::Register<PlayerController>();
     ScriptableManager::Register<Spawner>();
     ScriptableManager::Register<Cinemachine2D>();
+    ScriptableManager::Register<TestScript>();
+    ScriptableManager::Register<MonsterController>();
+    ScriptableManager::Register<EventBoxController>();
+
 
     loadSetting("setting.conf");
 
@@ -133,6 +140,7 @@ void EditorLayer::onUpdate(Time dt)
         //
         m_editController->onUpdate(dt);
 
+        // Particle System
         {
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
             Renderer2D::BeginScene(cameraController->getCamera(), false);
@@ -209,21 +217,12 @@ void EditorLayer::onImGuiRender()
     //
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
-    {
-        // update edit controller
-        m_editController->onImGuiRender();
-        // Update viewport size (For resizing the framebuffer)
-        auto size = ImGui::GetContentRegionAvail();
-        m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
-        // show scene
-        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
-        ImGui::Image(textureID, size, {0, 0}, {1, -1});
-    }
-	ImGui::End();
-
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
     {
+        if( m_clickPlayButton ){
+            ImGui::SetWindowFocus();
+            m_clickPlayButton = false;
+        }
         // Pull states
         bool isGameWindowFocus = ImGui::IsWindowFocused();
         bool isGameWindowHover = ImGui::IsWindowHovered();
@@ -254,6 +253,23 @@ void EditorLayer::onImGuiRender()
         m_gameViewportPanelSize = glm::vec2{size.x, size.y};
     }
     ImGui::End();
+
+    ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
+    {
+        if( m_clickStopButton ){
+            ImGui::SetWindowFocus();
+            m_clickStopButton = false;
+        }
+        // update edit controller
+        m_editController->onImGuiRender();
+        // Update viewport size (For resizing the framebuffer)
+        auto size = ImGui::GetContentRegionAvail();
+        m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
+        // show scene
+        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
+    }
+	ImGui::End();
 	ImGui::PopStyleVar();
 
 	m_currentScene->onImGuiRender();
@@ -268,12 +284,12 @@ void EditorLayer::onImGuiRender()
         // Play button
         if(ImGui::Button(ICON_FA_PLAY))
         {
+            m_clickPlayButton = true;
             if(m_currentScene->getSceneState() == Scene::SceneState::Editor)
             {
                 m_runtimeScene = MakeRef<Scene>();
                 m_editorScene->copySceneTo(m_runtimeScene);
                 switchCurrentScene(m_runtimeScene);
-                //
                 m_currentScene->onScenePlay();
             }
             else
@@ -291,7 +307,8 @@ void EditorLayer::onImGuiRender()
         // Stop button
         if(ImGui::Button(ICON_FA_STOP))
         {
-            if(m_currentScene->getSceneState() == Scene::SceneState::Play)
+            m_clickStopButton = true;
+            if(m_currentScene->getSceneState() != Scene::SceneState::Editor)
             {
                 m_currentScene->onSceneStop();
                 switchCurrentScene(m_editorScene);
@@ -308,28 +325,28 @@ void EditorLayer::onImGuiRender()
         // MoveMode button
         if(ImGui::Button(ICON_FA_ARROWS_ALT))
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::MoveMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::MoveMode);
         }
         ImGui::SameLine();
 
         // ZoomMode button
         if(ImGui::Button(ICON_FA_EXPAND))
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::ZoomMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::ZoomMode);
         }
         ImGui::SameLine();
 
         // Scale button
-        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
+        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::ScaleMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::ScaleMode);
         }
         ImGui::SameLine();
 
         // RotationMode button
         if(ImGui::Button(ICON_FA_SYNC))
         {
-            m_editController->changeGizmoMode(EditController::Gizmo::RotationMode);
+            m_editController->changeGizmoMode(Gizmo::GizmoMode::RotationMode);
         }
         ImGui::SameLine();
 
@@ -343,6 +360,9 @@ void EditorLayer::onImGuiRender()
 
     // Log window
     defaultLogWindow.onImGuiRender();
+
+    // Status Bar
+    m_statusBarPanel->onImGuiRender();
 
 	ImGui::EndDockspace();
 
@@ -480,6 +500,8 @@ void EditorLayer::onImGuiMainMenuRender()
 
 void EditorLayer::onEvent(rl::Event& e)
 {
+    EventDispatcher dispatcher{e};
+    dispatcher.dispatch<WindowCloseEvent>(RL_BIND_EVENT_FUNC(EditorLayer::onWindowCloseEvent));
     m_editController->onEvent(e);
 }
 
@@ -550,7 +572,7 @@ void EditorLayer::loadSetting(const std::string &path)
 void EditorLayer::saveSetting()
 {
     m_editorSetting.isDefaultOpenScene = true;
-    m_editorSetting.path = "assets\\scene\\test.sce";
+    m_editorSetting.path = m_scenePath;
 
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);
@@ -606,7 +628,6 @@ void EditorLayer::openScene(const std::string &path)
 
         // Because the panels are now holding strong ref to the scene
         // We need to reset the context
-//        setContextToPanels(m_editorScene);
         switchCurrentScene(m_editorScene);
 
         m_editorScene->onEditorInit();
@@ -614,7 +635,7 @@ void EditorLayer::openScene(const std::string &path)
     else
     {
         m_sceneLoaded = false;
-
+        m_statusBarPanel->sendMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
         m_errorModal.setMessage(fmt::format("Failed to load scene {}.\n{}", m_scenePath, exceptionMsg));
     }
 }

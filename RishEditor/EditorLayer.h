@@ -3,6 +3,7 @@
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ComponentEditPanel.h"
 #include "Panels/ComponentSelectionPanel.h"
+#include "Panels/StatusBarPanel.h"
 #include "Panels/ErrorModal.h"
 #include "Panels/HelpPanel.h"
 #include "Panels/AboutPanel.h"
@@ -40,6 +41,15 @@ public:
 	virtual void onEvent(rl::Event& event) override;
 
 private:
+    bool onWindowCloseEvent(WindowCloseEvent &event)
+    {
+        if(m_currentScene->getSceneState() == Scene::SceneState::Play)
+        {
+            m_currentScene->onSceneStop();
+        }
+        return false;
+    }
+
     void onImGuiMainMenuRender();
 
     //////////////////////////////////////////
@@ -75,6 +85,7 @@ private:
 	Ref<EditController> m_editController;
     Ref<SceneHierarchyPanel> m_sceneHierarchyPanel;
     Ref<ComponentEditPanel> m_componentEditPanel;
+    Ref<StatusBarPanel> m_statusBarPanel;
 
     void switchCurrentScene(const Ref<Scene> &scene);
     void setContextToPanels(const Ref<Scene> &scene);
@@ -91,6 +102,9 @@ private:
 	std::vector<Ref<Panel>> m_simplePanelList;
 
 	bool m_debugNativeScript = false;
+	bool m_clickPlayButton = false;
+    bool m_clickStopButton = true;
+
 };
 
 }
