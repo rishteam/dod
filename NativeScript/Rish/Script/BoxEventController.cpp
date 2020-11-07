@@ -28,6 +28,7 @@ void BoxEventController::spawnObject(EventContent eventContent)
             ent.addComponent<RigidBody2DComponent>(10.f);
             ent.addComponent<BoxCollider2DComponent>(0.f, 0.f, trans.scale.x, trans.scale.y);
             ent.addComponent<NativeScriptComponent>().bind<ObjectController>(ent);
+
             auto &render = ent.getComponent<SpriteRenderComponent>();
             auto &newObjectTrans = ent.getComponent<TransformComponent>();
             auto &rigid = ent.getComponent<RigidBody2DComponent>();

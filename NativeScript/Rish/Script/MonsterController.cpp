@@ -44,7 +44,12 @@ void MonsterController::onUpdate(Time dt)
     {
         for(auto uuid : boxc.whoCollide)
         {
-            if(GetScene().getEntityByUUID(uuid).hasComponent<NativeScriptComponent>())
+            auto collideEntity = GetScene().getEntityByUUID(uuid);
+
+            if(!collideEntity.m_scene)
+                break;
+
+            if(collideEntity.hasComponent<NativeScriptComponent>())
             {
                 auto collideEntity = GetScene().getEntityByUUID(uuid);
                 if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::BoxEventController")

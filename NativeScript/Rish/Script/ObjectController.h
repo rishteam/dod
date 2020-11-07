@@ -19,7 +19,14 @@ public:
         Left
     };
 
+    enum class ObjectType {
+        Mushroom = 0,
+        Star,
+        Coin
+    };
+
     ObjectState objectState = ObjectState::Right;
+    ObjectType objectType = ObjectType::Mushroom;
 
     void onCreate() override;
 
@@ -30,6 +37,7 @@ public:
     void onImGuiRender() override;
 
     RL_SCRIPT_EMPTY_SERIALIZE();
+
 private:
     bool stateChange = false;
 

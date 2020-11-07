@@ -1,6 +1,7 @@
 #pragma once
 #include <Rish/Script/Common.h>
 #include <Rish/Physics/Component.h>
+#include <Rish/Script/Script.h>
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
@@ -44,6 +45,8 @@ public:
     void onUpdate(Time dt) override;
 
     void onImGuiRender() override;
+
+    void detectObject();
 
     void setSprite(SpriteRenderComponent &render, PlayerAction &playerAction, PlayerFace &playerFace);
 

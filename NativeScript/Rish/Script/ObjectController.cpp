@@ -22,13 +22,13 @@ void ObjectController::onUpdate(Time dt)
         // Check NativeScript Type
         if(entity.getComponent<NativeScriptComponent>().scriptName == "rl::ObjectController")
         {
-
             auto &trans = entity.getComponent<TransformComponent>();
             auto &boxc = entity.getComponent<BoxCollider2DComponent>();
             auto &render = entity.getComponent<SpriteRenderComponent>();
             auto &rigid = entity.getComponent<RigidBody2DComponent>();
 
-            switch (objectState) {
+            switch (objectState)
+            {
                 case ObjectState::Left:
                     rigid.velocity.x = -1.0f;
                     break;
@@ -68,7 +68,10 @@ void ObjectController::onUpdate(Time dt)
 
 void ObjectController::onImGuiRender()
 {
-
+    const char* items[] = { "Empty", "Mushroom", "Star"};
+    static int item_current = 0;
+    ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+    objectType = static_cast<ObjectType>(item_current);
 }
 
 

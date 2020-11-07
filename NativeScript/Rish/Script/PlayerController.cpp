@@ -60,7 +60,7 @@ void PlayerController::onUpdate(Time dt)
     prevJump = Input::IsKeyPressed(Keyboard::Up);
 
     // TODO: Trigger with Object (ex: mushroom, star, monster...)
-
+    detectObject();
     //
     setSprite(render,playerAction, playerFace);
 
@@ -90,8 +90,11 @@ void PlayerController::onImGuiRender()
 
 }
 
+
 void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &playerAction, PlayerFace &playerFace)
 {
+    auto &trans = GetComponent<TransformComponent>();
+    auto &boxc = GetComponent<BoxCollider2DComponent>();
     // Player Draw State
     // TODO: Simplify, Flip features
     render.loadTexture("assets\\texture\\mario\\characters.gif");
@@ -108,12 +111,12 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
                 {
                     if (playerFace == PlayerFace::Right)
                     {
-                        setting.leftUpper = glm::vec2(275, 43);
+                        setting.leftUpper = glm::vec2(275, -44);
                         setting.size = glm::vec2(16, 18);
                     }
                     else if (playerFace == PlayerFace::Left)
                     {
-                        setting.leftUpper = glm::vec2(222, 43);
+                        setting.leftUpper = glm::vec2(222, -43);
                         setting.size = glm::vec2(16, 18);
                     }
                     break;
@@ -122,12 +125,12 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
                 {
                     if (playerFace == PlayerFace::Right)
                     {
-                        setting.leftUpper = glm::vec2(275, 43);
+                        setting.leftUpper = glm::vec2(275, -44);
                         setting.size = glm::vec2(16, 18);
                     }
                     else if (playerFace == PlayerFace::Left)
                     {
-                        setting.leftUpper = glm::vec2(222, 43);
+                        setting.leftUpper = glm::vec2(222, -43);
                         setting.size = glm::vec2(16, 18);
                     }
                     break;
@@ -136,17 +139,21 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
                 {
                     if (playerFace == PlayerFace::Right)
                     {
-                        setting.leftUpper = glm::vec2(355, 41);
+                        setting.leftUpper = glm::vec2(353, -41);
                         setting.size = glm::vec2(20, 20);
                     }
                     else if (playerFace == PlayerFace::Left)
                     {
-                        setting.leftUpper = glm::vec2(140, 41);
+                        setting.leftUpper = glm::vec2(140, -41);
                         setting.size = glm::vec2(20, 20);
                     }
                     break;
                 }
             }
+
+            // modify the height
+            trans.scale.y = 0.5;
+            boxc.h = 0.5;
             break;
         }
         case PlayerState::Big:
@@ -197,17 +204,70 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
                     break;
                 }
             }
+            // modify the height
+            trans.scale.y = 0.8f;
+            boxc.h = 0.8f;
             break;
         }
         case PlayerState::Died:
         {
             setting.leftUpper = glm::vec2(126, 1);
             setting.size      = glm::vec2(21, 33);
+            trans.scale.y = 0.5f;
+            boxc.h = 0.5f;
             break;
         }
     }
     //
     render.loadSubTexture(setting);
+}
+
+
+void PlayerController::detectObject()
+{
+    auto &collideList = GetComponent<BoxCollider2DComponent>().whoCollide;
+    for(auto uuid : collideList)
+    {
+        Entity collideEntity = GetScene().getEntityByUUID(uuid);
+        if(!collideEntity.m_scene)
+            break;
+
+
+        if (collideEntity.hasComponent<NativeScriptComponent>())
+        {
+            // player touch Mushroom
+            if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::ObjectController")
+            {
+                auto object = std::dynamic_pointer_cast<ObjectController>(collideEntity.getComponent<NativeScriptComponent>().instance);
+                if (object->objectType == ObjectController::ObjectType::Mushroom)
+                {
+                    if(playerState == PlayerState::Small)
+                    {
+                        playerState = PlayerState::Big;
+                    }
+                    break;
+                }
+            }
+            // player touch Monster
+            else if (collideEntity.getComponent<NativeScriptComponent>().scriptName == "rl::MonsterController")
+            {
+                if (playerState == PlayerState::Small)
+                {
+                    playerState = PlayerState::Died;
+                    // TODO: destroy have problem
+                    GetScene().m_registry.destroy(collideEntity.getEntityID());
+//                    collideEntity.destroy();
+                    break;
+                }
+                else if(playerState == PlayerState::Big)
+                {
+                    playerState = PlayerState::Small;
+                    break;
+                }
+            }
+        }
+    }
+
 }
 
 }
