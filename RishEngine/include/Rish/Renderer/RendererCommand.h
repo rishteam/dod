@@ -52,6 +52,11 @@ public:
     static void SetDepthTest(bool state);
 
     /**
+     * @brief Get depth test
+     */
+    static bool GetDepthTest();
+
+    /**
      * @brief Depth function option
      * @details <https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDepthFunc.xhtml>
      */
@@ -100,9 +105,20 @@ public:
     static void SetBlendFunc(BlendFactor src, BlendFactor dst);
 
     /**
+     * @brief Clear Mode
+     * @details <http://docs.gl/gl4/glClear>
+     */
+    enum ClearBufferTarget
+    {
+        ColorBuffer   = BIT(0),
+        DepthBuffer   = BIT(1),
+        StencilBuffer = BIT(2)
+    };
+
+    /**
      * @brief Clear the render target
      */
-    static void Clear();
+    static void Clear(uint32_t clearTarget);
 
     /**
      * @brief Reset GL3+ states

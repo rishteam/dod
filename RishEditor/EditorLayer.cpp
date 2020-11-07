@@ -87,7 +87,6 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<MonsterController>();
     ScriptableManager::Register<EventBoxController>();
 
-
     loadSetting("setting.conf");
 
     if(m_editorSetting.isDefaultOpenScene)
@@ -133,7 +132,7 @@ void EditorLayer::onUpdate(Time dt)
     m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear();
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         m_editController->onUpdate(dt);
 
@@ -155,7 +154,7 @@ void EditorLayer::onUpdate(Time dt)
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear();
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         m_currentScene->onUpdate(dt);
     }
@@ -253,6 +252,11 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Entity Manager");
     {
+        Renderer2D::OnImGuiRender();
+
+        ImGui::Separator();
+
+
     }
     ImGui::End();
 
@@ -269,7 +273,7 @@ void EditorLayer::onImGuiRender()
                 m_currentScene->onScenePlay();
             }
             else
-                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
+                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remove me
         }
         ImGui::SameLine();
 
@@ -292,7 +296,8 @@ void EditorLayer::onImGuiRender()
         }
         ImGui::SameLine();
 
-        if(ImGui::Button(ICON_FA_BORDER_ALL)){
+        if(ImGui::Button(ICON_FA_BORDER_ALL))
+        {
             m_editController->toggleShowGrid();
         }
         ImGui::SameLine();
@@ -312,7 +317,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         // Scale button
-        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
+        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
         {
             m_editController->changeGizmoMode(Gizmo::GizmoMode::ScaleMode);
         }

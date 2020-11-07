@@ -20,5 +20,7 @@ private:
     OrthographicCameraController m_cameraController;
     float m_rotate = 0.f;
 
-    Ref<Texture2D> m_bg;
+    Ref<Framebuffer> m_framebuffer;
+    Ref<Framebuffer> m_framebufferSecond;
+    Ref<Texture2D> gray_pic;
 };

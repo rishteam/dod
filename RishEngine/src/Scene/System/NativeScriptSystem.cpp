@@ -77,6 +77,10 @@ void NativeScriptSystem::InitNativeScript(Entity ent)
     {
         ScriptableManager::Bind(ent, nsc.scriptName);
     }
+    else
+    {
+        nsc.instance->m_entity = ent;
+    }
 }
 
 void NativeScriptSystem::OnCreate(Entity entity)

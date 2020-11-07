@@ -192,4 +192,9 @@ void DrawDebugParticleComponentInfo(Entity entity)
 
 }
 
+void DrawDebugTextureInfo(Ref<Texture2D> texture)
+{
+    ImGui::Text("%s %dx%d", texture->getPath().c_str(), texture->getWidth(), texture->getHeight());
+}
+
 }

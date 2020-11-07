@@ -9,6 +9,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+// TODO: For debug use, please clean
+#include <Rish/ImGui.h>
+#include <Rish/Debug/DebugWindow.h>
+
 namespace rl {
 
 ////////////////////////////////////////////////////////////////
@@ -91,6 +95,10 @@ const size_t MaxTriangleVertexCount = MaxTriangleCount * 3;
 const size_t MaxTriangleIndexCount = MaxTriangleCount * 3;
 
 ////////////////////////////////////////////////////////////////
+
+uint32_t debugQuadIndex = 0;
+uint32_t debugTextureIndex = 0;
+std::array<Ref<Texture2D>, MaxTextures> debugTextureSlots{};
 
 struct Renderer2DData
 {
@@ -183,6 +191,7 @@ struct Renderer2DData
             }
             //
             quadIndexCount += 6;
+            debugQuadIndex += 6; // TODO: Debug
             //
             quadShapeList.push_back(submitQuad);
         }
@@ -450,6 +459,46 @@ struct Renderer2DData
 };
 static Scope<Renderer2DData> s_data;
 
+// TODO: For debug use
+void Renderer2D::OnImGuiRender()
+{
+    ImGui::Text("Quad     = %d", s_data->renderStats.QuadCount);
+    ImGui::Text("Line     = %d", s_data->renderStats.LineCount);
+    ImGui::Text("Rect     = %d", s_data->renderStats.RectCount);
+    ImGui::Text("Circle   = %d", s_data->renderStats.CircleCount);
+    ImGui::Text("Triangle = %d", s_data->renderStats.TriangleCount);
+    ImGui::Text("Draw     = %d", s_data->renderStats.DrawCount);
+
+    ImGui::Separator();
+
+    ImGui::Text("quadIndexCount = %d", debugQuadIndex);
+    debugQuadIndex = 0;
+    ImGui::Text("textureSlotAddIndex = %d", debugTextureIndex);
+//    debugTextureIndex = 0;
+
+    ImGui::Separator();
+
+    ImGui::Text("QuadVertex = %d, QuadShape = %d", sizeof(QuadVertex), sizeof(QuadShape));
+
+    ImGui::Separator();
+
+    if(ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        for(int i = 0; i > debugTextureIndex; i++)
+        {
+            ImGui::PushID(i);
+            if(debugTextureSlots[i])
+            {
+                DrawDebugTextureInfo(debugTextureSlots[i]);
+            }
+            else
+                ImGui::Text("None");
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
+    }
+}
+
 void Renderer2D::Init()
 {
     RL_PROFILE_FUNCTION();
@@ -618,6 +667,10 @@ void Renderer2D::EndScene()
 
     s_data->sceneState = false;
 
+    // TODO: Debug
+    debugTextureIndex = s_data->textureSlotAddIndex;
+    debugTextureSlots = s_data->textureSlots;
+
     if(resetTexture)
     {
         s_data->textureSlotAddIndex = 1;
@@ -747,7 +800,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
         { 1.0f, 1.0f }  // top right
     };
 
-    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+    SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -822,20 +875,29 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 float Renderer2D::GetQuadTextureIndex(const Ref<Texture2D>& texture)
 {
     float textureIndex = 0.f;
+
+    RL_CORE_INFO("Current Texture {} : {}", texture->getTextureID(), texture->getPath());
+
     // Search texture
     for (int i = 1; i < s_data->textureSlotAddIndex; i++)
+    {
         if (*(s_data->textureSlots[i]) == *texture)
         {
-            textureIndex = (float)i;
+            RL_CORE_INFO("Found Texture {} = {}", i, s_data->textureSlots[i]->getPath());
+            textureIndex = (float) i;
             break;
         }
+    }
+
     // if not found then add it to the slot
     if (textureIndex == 0.f)
     {
         textureIndex = (float)s_data->textureSlotAddIndex;
+        //
         s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
         s_data->textureSlotAddIndex++;
     }
+    //
     return textureIndex;
 }
 
@@ -845,7 +907,11 @@ void Renderer2D::FlushStatesIfExceeds()
     if(s_data->quadRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
     {
         EndScene();
-        BeginScene(s_data->orthoCamera, s_data->depthTest);
+
+        if(s_data->isEditorCamera)
+            BeginScene(s_data->orthoCamera, s_data->depthTest);
+        else
+            BeginScene(s_data->camera, s_data->m_viewProjMatrix);
     }
 }
 

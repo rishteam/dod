@@ -20,6 +20,8 @@ public:
     static void Init();
     static void Shutdown();
 
+    static void OnImGuiRender();
+
     static void BeginScene(const OrthographicCamera &camera, bool depthTest=false);
     static void BeginScene(const Camera &camera, const glm::mat4 &transform, bool depthTest=false);
     static void EndScene();

@@ -18,4 +18,6 @@ void DrawDebugSpriteRenderComponentInfo(Entity entity);
 void DrawDebugNativeScriptComponentInfo(Entity entity);
 void DrawDebugParticleComponentInfo(Entity entity);
 
+void DrawDebugTextureInfo(Ref<Texture2D> texture);
+
 }
