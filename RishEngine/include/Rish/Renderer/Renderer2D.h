@@ -89,7 +89,6 @@ public:
 private:
     // TODO: move to TextureQuadRenderer
     static void FlushStatesIfExceeds();
-    static float GetQuadTextureIndex(const Ref<Texture2D>& texture);
     static void SubmitQuad(const glm::vec4 position[4], const glm::vec4 &color, const glm::vec2 texCoords[4], float texIndex, float texTiling);
 };
 
