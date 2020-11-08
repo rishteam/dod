@@ -22,7 +22,7 @@ ScriptTestLayer::ScriptTestLayer()
 
     auto ent = m_scene->createEntity("A");
     ent.addComponent<SpriteRenderComponent>();
-    ent.addComponent<NativeScriptComponent>().bind<CameraController>();
+    ent.addComponent<NativeScriptComponent>().bind<CameraController>(ent);
 
     ent = m_scene->createEntity("B");
     auto &cam = ent.addComponent<CameraComponent>();

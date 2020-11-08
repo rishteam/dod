@@ -14,8 +14,10 @@ void DrawSceneCameraDebugWindow(const SceneCamera & camera, const glm::mat4 &tra
 void DrawDebugSceneWindow(entt::registry &registry, Scene *scene);
 void DrawDebugTransformComponentInfo(Entity entity);
 void DrawDebugCameraComponentInfo(Entity entity);
-void DrawDebugRenderComponentInfo(Entity entity);
+void DrawDebugSpriteRenderComponentInfo(Entity entity);
 void DrawDebugNativeScriptComponentInfo(Entity entity);
 void DrawDebugParticleComponentInfo(Entity entity);
+
+void DrawDebugTextureInfo(Ref<Texture2D> texture);
 
 }

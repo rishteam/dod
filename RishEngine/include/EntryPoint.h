@@ -8,6 +8,8 @@
 //#define LOG_VERBOSE
 //#define LOG_DUP
 
+#define RL_ATTACH 0
+
 extern rl::Application* rl::CreateApplication();
 
 int main(int argc, char **argv)

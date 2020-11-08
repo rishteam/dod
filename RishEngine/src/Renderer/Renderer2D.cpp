@@ -9,6 +9,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+// TODO: For debug use, please clean
+#include <Rish/ImGui.h>
+#include <Rish/Debug/DebugWindow.h>
+
 namespace rl {
 
 ////////////////////////////////////////////////////////////////
@@ -92,6 +96,10 @@ const size_t MaxTriangleIndexCount = MaxTriangleCount * 3;
 
 ////////////////////////////////////////////////////////////////
 
+uint32_t debugQuadIndex = 0;
+uint32_t debugTextureIndex = 0;
+std::array<Ref<Texture2D>, MaxTextures> debugTextureSlots{};
+
 struct Renderer2DData
 {
     ~Renderer2DData()
@@ -101,14 +109,69 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     // Texture
     ////////////////////////////////////////////////////////////////
-    // Texture for empty-texture
-    Ref<Texture2D> whiteTexture;
-    uint32_t whiteTextureSlot = 0;
+    struct TextureManager
+    {
+        void init()
+        {
+            textureSlots.reserve(MaxTextures);
+            //
+            whiteTexture = rl::Texture2D::Create(1, 1);
+            whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
+            textureSlots.push_back(whiteTexture);
+        }
 
-    // TODO: Use asset handle to uniquely identify a asset
-    // (slot -> textureID)
-    std::array<Ref<Texture2D>, MaxTextures> textureSlots;
-    uint32_t textureSlotAddIndex = 1;
+        float getTextureIndex(const Ref<Texture2D> &texture)
+        {
+            float textureIndex = 0.f;
+
+            // Search texture
+            auto it = std::find_if(textureSlots.begin(), textureSlots.end(), 
+                [&texture](auto tex){
+                    return *texture == *tex;
+                });
+
+            if(it != textureSlots.end())
+            {
+                textureIndex = static_cast<float>(std::distance(textureSlots.begin(), it));
+            }
+
+            // if not found then add it to the slot
+            if (textureIndex == 0.f)
+            {
+                textureIndex = static_cast<float>(textureSlots.size());
+                textureSlots.push_back(texture);
+            }
+
+            return textureIndex;
+        }
+
+        void bind()
+        {
+            for(int i = 0; i < textureSlots.size(); i++)
+                textureSlots[i]->bind(i);
+        }
+
+        void unbind()
+        {
+            for(auto & textureSlot : textureSlots)
+                textureSlot->unbind();
+        }
+
+        bool isExceed()
+        {
+            return textureSlots.size() > MaxTextures;
+        }
+
+        void clear()
+        {
+            textureSlots.clear();
+            textureSlots.push_back(whiteTexture);
+        }
+
+        Ref<Texture2D> whiteTexture;
+        std::vector<Ref<Texture2D>> textureSlots;    // (slot -> textureID)
+    };
+    TextureManager textureManager;
 
     ////////////////////////////////////////////////////////////////
     // Quad Renderer
@@ -183,6 +246,7 @@ struct Renderer2DData
             }
             //
             quadIndexCount += 6;
+            debugQuadIndex += 6; // TODO: Debug
             //
             quadShapeList.push_back(submitQuad);
         }
@@ -450,6 +514,45 @@ struct Renderer2DData
 };
 static Scope<Renderer2DData> s_data;
 
+// TODO: For debug use
+void Renderer2D::OnImGuiRender()
+{
+    ImGui::Text("Quad     = %d", s_data->renderStats.QuadCount);
+    ImGui::Text("Line     = %d", s_data->renderStats.LineCount);
+    ImGui::Text("Rect     = %d", s_data->renderStats.RectCount);
+    ImGui::Text("Circle   = %d", s_data->renderStats.CircleCount);
+    ImGui::Text("Triangle = %d", s_data->renderStats.TriangleCount);
+    ImGui::Text("Draw     = %d", s_data->renderStats.DrawCount);
+
+    ImGui::Separator();
+
+    ImGui::Text("quadIndexCount = %d", debugQuadIndex);
+    debugQuadIndex = 0;
+    ImGui::Text("textureSlotAddIndex = %d", debugTextureIndex);
+
+    ImGui::Separator();
+
+    ImGui::Text("QuadVertex = %d, QuadShape = %d", sizeof(QuadVertex), sizeof(QuadShape));
+
+    ImGui::Separator();
+
+    if(ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        for(int i = 0; i > debugTextureIndex; i++)
+        {
+            ImGui::PushID(i);
+            if(debugTextureSlots[i])
+            {
+                DrawDebugTextureInfo(debugTextureSlots[i]);
+            }
+            else
+                ImGui::Text("None");
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
+    }
+}
+
 void Renderer2D::Init()
 {
     RL_PROFILE_FUNCTION();
@@ -457,9 +560,8 @@ void Renderer2D::Init()
     s_data = MakeScope<Renderer2DData>();
 
     // Create default white texture
-    s_data->whiteTexture = rl::Texture2D::Create(1, 1);
-    s_data->whiteTexture->setPixel(0, 0, glm::vec4(1.0, 1.0, 1.0, 1.0));
-    s_data->textureSlots[0] = s_data->whiteTexture;
+
+    s_data->textureManager.init();
 
     ////////////////////////////////////////////////////////////////
     // Quad Renderer
@@ -580,8 +682,7 @@ void Renderer2D::EndScene()
     if(s_data->quadRenderer)
     {
         // Bind texture slots
-        for(int i = 0; i < s_data->textureSlotAddIndex; i++)
-            s_data->textureSlots[i]->bind(i);
+        s_data->textureManager.bind();
 
         s_data->quadRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
@@ -596,8 +697,7 @@ void Renderer2D::EndScene()
     if(s_data->triangleRenderer)
     {
         // Bind texture slots
-        for(int i = 0; i < s_data->textureSlotAddIndex; i++)
-            s_data->textureSlots[i]->bind(i);
+        s_data->textureManager.bind();
 
         s_data->triangleRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
@@ -618,9 +718,10 @@ void Renderer2D::EndScene()
 
     s_data->sceneState = false;
 
+
     if(resetTexture)
     {
-        s_data->textureSlotAddIndex = 1;
+        s_data->textureManager.clear();
     }
 }
 
@@ -640,12 +741,12 @@ void Renderer2D::ResetStats()
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color);
+    DrawQuad({position.x, position.y, 0.0}, size, s_data->textureManager.whiteTexture, color);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    DrawQuad(position, size, s_data->whiteTexture, color);
+    DrawQuad(position, size, s_data->textureManager.whiteTexture, color);
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, float tiling)
@@ -674,7 +775,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     FlushStatesIfExceeds();
 
     // Check if the texture is in slots
-    float textureIndex = GetQuadTextureIndex(texture);
+    float textureIndex = s_data->textureManager.getTextureIndex(texture);
 
     glm::vec2 siz = size / 2.f;
     glm::vec4 posi[4] = {
@@ -695,12 +796,12 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
 {
-    DrawRotatedQuad({position.x, position.y, 0.0}, size, s_data->whiteTexture, color, rotate);
+    DrawRotatedQuad({position.x, position.y, 0.0}, size, s_data->textureManager.whiteTexture, color, rotate);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
 {
-    DrawRotatedQuad(position, size, s_data->whiteTexture, color, rotate);
+    DrawRotatedQuad(position, size, s_data->textureManager.whiteTexture, color, rotate);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref <Texture2D> &texture,
@@ -731,7 +832,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     FlushStatesIfExceeds();
 
     // Check if the texture is in slots
-    float textureIndex = GetQuadTextureIndex(texture);
+    float textureIndex = s_data->textureManager.getTextureIndex(texture);
 
     glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
             glm::rotate(glm::mat4(1.f), glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f)) *
@@ -747,7 +848,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
         { 1.0f, 1.0f }  // top right
     };
 
-    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+    SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,7 +873,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     const Ref<Texture2D> texture = subtexture->getTexture();
 
     // Check if the texture is in slots
-    float textureIndex = GetQuadTextureIndex(texture);
+    float textureIndex = s_data->textureManager.getTextureIndex(texture);
 
     glm::vec2 siz = size / 2.f;
     glm::vec4 posi[4] = {
@@ -806,7 +907,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     const glm::vec2 *texCoords = subtexture->getTextureCoords();
 
     // Check if the texture is in slots
-    float textureIndex = GetQuadTextureIndex(texture);
+    float textureIndex = s_data->textureManager.getTextureIndex(texture);
 
     // prepare position
     glm::mat4 transform = glm::translate(glm::mat4(1.f), position) *
@@ -819,33 +920,18 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     SubmitQuad(posi, color, texCoords, textureIndex, tiling);
 }
 
-float Renderer2D::GetQuadTextureIndex(const Ref<Texture2D>& texture)
-{
-    float textureIndex = 0.f;
-    // Search texture
-    for (int i = 1; i < s_data->textureSlotAddIndex; i++)
-        if (*(s_data->textureSlots[i]) == *texture)
-        {
-            textureIndex = (float)i;
-            break;
-        }
-    // if not found then add it to the slot
-    if (textureIndex == 0.f)
-    {
-        textureIndex = (float)s_data->textureSlotAddIndex;
-        s_data->textureSlots[s_data->textureSlotAddIndex] = texture;
-        s_data->textureSlotAddIndex++;
-    }
-    return textureIndex;
-}
-
 void Renderer2D::FlushStatesIfExceeds()
 {
     // Split draw call if it exceeds the limits
-    if(s_data->quadRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
+    if(s_data->quadRenderer.exceedDrawIndex() ||
+            s_data->textureManager.isExceed())
     {
         EndScene();
-        BeginScene(s_data->orthoCamera, s_data->depthTest);
+
+        if(s_data->isEditorCamera)
+            BeginScene(s_data->orthoCamera, s_data->depthTest);
+        else
+            BeginScene(s_data->camera, s_data->m_viewProjMatrix);
     }
 }
 
@@ -1078,7 +1164,7 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
     RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
     // Split draw call if it exceeds the limits
-    if(s_data->triangleRenderer.exceedDrawIndex() || s_data->textureSlotAddIndex >= MaxTextures-1)
+    if(s_data->triangleRenderer.exceedDrawIndex() || s_data->textureManager.isExceed())
     {
         EndScene();
         BeginScene(s_data->orthoCamera, s_data->depthTest);

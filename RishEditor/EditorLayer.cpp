@@ -90,7 +90,6 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<MonsterController>();
     ScriptableManager::Register<EventBoxController>();
 
-
     loadSetting("setting.conf");
 
     if(m_editorSetting.isDefaultOpenScene)
@@ -110,7 +109,8 @@ void EditorLayer::onDetach()
     for(auto &panel : m_simplePanelList)
         panel->onDetach();
 
-    saveSetting();
+    if(m_editorSetting.saveSettingOnExit)
+        saveSetting();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -135,7 +135,7 @@ void EditorLayer::onUpdate(Time dt)
     m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear();
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         m_editController->onUpdate(dt);
 
@@ -157,7 +157,7 @@ void EditorLayer::onUpdate(Time dt)
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear();
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         m_currentScene->onUpdate(dt);
     }
@@ -263,6 +263,11 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Entity Manager");
     {
+        Renderer2D::OnImGuiRender();
+
+        ImGui::Separator();
+
+
     }
     ImGui::End();
 
@@ -280,7 +285,7 @@ void EditorLayer::onImGuiRender()
                 m_currentScene->onScenePlay();
             }
             else
-                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
+                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remove me
         }
         ImGui::SameLine();
 
@@ -304,7 +309,8 @@ void EditorLayer::onImGuiRender()
         }
         ImGui::SameLine();
 
-        if(ImGui::Button(ICON_FA_BORDER_ALL)){
+        if(ImGui::Button(ICON_FA_BORDER_ALL))
+        {
             m_editController->toggleShowGrid();
         }
         ImGui::SameLine();
@@ -324,7 +330,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         // Scale button
-        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
+        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
         {
             m_editController->changeGizmoMode(Gizmo::GizmoMode::ScaleMode);
         }
@@ -443,7 +449,6 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 if(ImGui::BeginMenu("Editor Grid"))
                 {
-//                    ImGui::MenuItem("Show", nullptr, &m_editController->m_showGrid);
                     ImGui::MenuItem("Debug info", nullptr, &m_editController->m_debugEditorGrid);
                     ImGui::EndMenu();
                 }
@@ -557,8 +562,8 @@ void EditorLayer::loadSetting(const std::string &path)
 
 void EditorLayer::saveSetting()
 {
-    m_editorSetting.isDefaultOpenScene = true;
-    m_editorSetting.path = m_scenePath;
+    if(!m_scenePath.empty())
+        m_editorSetting.path = FileSystem::RelativePath(m_scenePath);
 
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);

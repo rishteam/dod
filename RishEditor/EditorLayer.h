@@ -15,6 +15,8 @@ namespace rl {
 
 struct EditorSetting
 {
+    bool saveSettingOnExit        = false;
+
     bool isDefaultOpenSceneLoaded = false;
     bool isDefaultOpenScene       = false;
     std::string path;
@@ -24,6 +26,7 @@ struct EditorSetting
     {
         ar(CEREAL_NVP(isDefaultOpenScene));
         ar(CEREAL_NVP(path));
+        ar(CEREAL_NVP(saveSettingOnExit));
     }
 };
 

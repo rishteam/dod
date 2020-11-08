@@ -20,11 +20,12 @@ void Spawner::onUpdate(Time dt)
     {
         Entity ent = CreateEntity(fmt::format("Spawnd {}", cnt++));
         m_spawned.insert(ent);
-        ent.getComponent<TransformComponent>() = trans;
+        ent.getComponent<TransformComponent>().translate = {Math::RandomFloat(-20, 20), Math::RandomFloat(-20, 20), 0.f};
         ent.addComponent<SpriteRenderComponent>("/texture/RTS_Crate.png");
-        ent.addComponent<RigidBody2DComponent>(10.f);
-        ent.addComponent<BoxCollider2DComponent>(0.f, 0.f, trans.scale.x, trans.scale.y);
-        ent.addComponent<NativeScriptComponent>().bind<TestScript>(ent);
+
+//        ent.addComponent<RigidBody2DComponent>(10.f);
+//        ent.addComponent<BoxCollider2DComponent>(0.f, 0.f, trans.scale.x, trans.scale.y);
+//        ent.addComponent<NativeScriptComponent>().bind<TestScript>(ent);
         clk.restart();
     }
     //
