@@ -350,7 +350,7 @@
                     },
                     "scale": {
                         "x": 0.5,
-                        "y": 0.800000011920929,
+                        "y": 0.5,
                         "z": 1.0
                     },
                     "rotate": 0.0
@@ -1028,12 +1028,12 @@
                     "setting": {
                         "type": 1,
                         "leftUpper": {
-                            "x": 255.0,
-                            "y": 0.0
+                            "x": 275.0,
+                            "y": -44.0
                         },
                         "size": {
-                            "x": 21.0,
-                            "y": 33.0
+                            "x": 16.0,
+                            "y": 16.0
                         },
                         "pos": {
                             "x": 0.0,
@@ -2701,7 +2701,7 @@
                             "data": {
                                 "walkAccel": 5.0,
                                 "walkSpeedLimit": 7.0,
-                                "jumpSpeed": 7.0
+                                "jumpSpeed": 8.0
                             }
                         }
                     },
@@ -2712,15 +2712,15 @@
                 "value295": {
                     "instance": {
                         "polymorphic_id": 2147483651,
-                        "polymorphic_name": "rl::EventBoxController",
+                        "polymorphic_name": "rl::BoxEventController",
                         "ptr_wrapper": {
                             "id": 2147483652,
                             "data": {
-                                "mock": 463458788
+                                "eventContent": 1
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value296": 29,
@@ -2730,11 +2730,11 @@
                         "ptr_wrapper": {
                             "id": 2147483653,
                             "data": {
-                                "mock": 463459124
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value298": 30,
@@ -2744,11 +2744,11 @@
                         "ptr_wrapper": {
                             "id": 2147483654,
                             "data": {
-                                "mock": 463459052
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value300": 31,
@@ -2758,11 +2758,11 @@
                         "ptr_wrapper": {
                             "id": 2147483655,
                             "data": {
-                                "mock": 463459076
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value302": 32,
@@ -2772,11 +2772,11 @@
                         "ptr_wrapper": {
                             "id": 2147483656,
                             "data": {
-                                "mock": 463458476
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value304": 33,
@@ -2786,11 +2786,11 @@
                         "ptr_wrapper": {
                             "id": 2147483657,
                             "data": {
-                                "mock": 463459100
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value306": 24,
@@ -2800,11 +2800,11 @@
                         "ptr_wrapper": {
                             "id": 2147483658,
                             "data": {
-                                "mock": 463459148
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value308": 25,
@@ -2814,11 +2814,11 @@
                         "ptr_wrapper": {
                             "id": 2147483659,
                             "data": {
-                                "mock": 463459172
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value310": 26,
@@ -2828,11 +2828,11 @@
                         "ptr_wrapper": {
                             "id": 2147483660,
                             "data": {
-                                "mock": 463458548
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value312": 27,
@@ -2842,11 +2842,11 @@
                         "ptr_wrapper": {
                             "id": 2147483661,
                             "data": {
-                                "mock": 134115132
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value314": 28,
@@ -2856,11 +2856,11 @@
                         "ptr_wrapper": {
                             "id": 2147483662,
                             "data": {
-                                "mock": 134115036
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value316": 1048615,
@@ -2871,7 +2871,7 @@
                         "ptr_wrapper": {
                             "id": 2147483663,
                             "data": {
-                                "mock": 134115060
+                                "mock": 468527988
                             }
                         }
                     },
@@ -2885,11 +2885,11 @@
                         "ptr_wrapper": {
                             "id": 2147483664,
                             "data": {
-                                "mock": 134115084
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value320": 35,
@@ -2899,11 +2899,11 @@
                         "ptr_wrapper": {
                             "id": 2147483665,
                             "data": {
-                                "mock": 134115108
+                                "eventContent": 0
                             }
                         }
                     },
-                    "script_name": "rl::EventBoxController",
+                    "script_name": "rl::BoxEventController",
                     "valid": false
                 },
                 "value322": 40,
@@ -3840,7 +3840,7 @@
                     "x": 0.0,
                     "y": 0.0,
                     "w": 0.5,
-                    "h": 0.800000011920929
+                    "h": 0.5
                 },
                 "value408": 1048579,
                 "value409": {
