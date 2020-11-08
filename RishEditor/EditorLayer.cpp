@@ -60,6 +60,8 @@ EditorLayer::EditorLayer()
     m_aboutPanel = MakeRef<AboutPanel>();
     m_simplePanelList.push_back(m_aboutPanel);
     //
+    m_settingPanel = MakeRef<SettingPanel>();
+    m_simplePanelList.push_back(m_settingPanel);
     switchCurrentScene(m_editorScene);
 }
 
@@ -413,6 +415,13 @@ void EditorLayer::onImGuiMainMenuRender()
                     m_scenePath = path;
                     saveScene(m_scenePath);
                 }
+            }
+
+            ImGui::Separator();
+
+            if( ImGui::MenuItem("Setting", nullptr) )
+            {
+                m_settingPanel->showPanel();
             }
 
             ImGui::Separator();

@@ -7,6 +7,7 @@
 #include "Panels/ErrorModal.h"
 #include "Panels/HelpPanel.h"
 #include "Panels/AboutPanel.h"
+#include "Panels/SettingPanel.h"
 
 #include "Edit/EditorGrid.h"
 #include "Edit/EditController.h"
@@ -98,6 +99,7 @@ private:
 	// simple panels
 	Ref<HelpPanel> m_helpPanel;
 	Ref<AboutPanel> m_aboutPanel;
+	Ref<SettingPanel> m_settingPanel;
 	std::vector<Ref<Panel>> m_simplePanelList;
 
 	bool m_debugNativeScript = false;
