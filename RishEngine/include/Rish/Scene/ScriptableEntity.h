@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Rish/Scene/Entity.h>
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 #include <cereal/types/polymorphic.hpp>
 

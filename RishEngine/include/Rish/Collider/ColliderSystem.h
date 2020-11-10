@@ -5,7 +5,7 @@
 #include <Rish/Physics/PhysicsWorld.h>
 #include <Rish/Scene/Scene.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <entt/entt.hpp>
 
 namespace rl {

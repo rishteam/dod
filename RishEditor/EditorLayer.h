@@ -10,6 +10,8 @@
 #include "Edit/EditorGrid.h"
 #include "Edit/EditController.h"
 
+#include <Rish/ImGui/MenuAction.h>
+
 namespace rl {
 
 struct EditorSetting
@@ -101,6 +103,15 @@ private:
 	Ref<AboutPanel> m_aboutPanel;
 	std::vector<Ref<Panel>> m_simplePanelList;
 
+    //////////////////////////////////////////
+    // Editor Menu
+    //////////////////////////////////////////
+    ImActionManager actionManager;
+
+
+    //////////////////////////////////////////
+    // Debugs
+    //////////////////////////////////////////
 	bool m_debugNativeScript = false;
 };
 

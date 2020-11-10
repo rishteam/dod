@@ -4,7 +4,7 @@
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 #define BeginDrawEditComponent(c)                                    \
     if (!m_targetEntity.hasComponent<c>()) return;                   \

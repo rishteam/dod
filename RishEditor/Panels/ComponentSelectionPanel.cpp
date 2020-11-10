@@ -3,7 +3,7 @@
 #include <Rish/Scene/ComponentManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <entt/entt.hpp>
 
 namespace rl {

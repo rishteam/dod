@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // TODO: For debug use, please clean
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <Rish/Debug/DebugWindow.h>
 
 namespace rl {

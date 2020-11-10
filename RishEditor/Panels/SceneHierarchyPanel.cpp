@@ -1,7 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
 #include <IconsFontAwesome5.h>
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 namespace rl {
 

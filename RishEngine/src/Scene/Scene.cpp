@@ -19,7 +19,7 @@
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
 //
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 namespace rl{
 

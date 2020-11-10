@@ -1,7 +1,7 @@
 #include <Rish/Debug/ImGuiLogWindow.h>
 
 #include <IconsFontAwesome5.h>
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <imgui_stdlib.h>
 
 ImGuiLogWindow defaultLogWindow;

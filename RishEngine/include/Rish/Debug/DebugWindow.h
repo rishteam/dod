@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>

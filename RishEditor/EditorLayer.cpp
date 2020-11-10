@@ -19,7 +19,7 @@
 
 #include <Rish/Debug/DebugWindow.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/MenuAction.h>
 #include <imgui_internal.h>
 
 #include <Rish/Scene/ScriptableManager.h>
@@ -364,6 +364,10 @@ void EditorLayer::onImGuiRender()
 
 void EditorLayer::onImGuiMainMenuRender()
 {
+    ImActionManager::Instance().RemoveAll();
+    ImAction* action_copy = ImActionManager::Instance().Create("Copy", ImCtrl | ImActionKey_C);
+    ImActionManager::Instance().ResetAll();
+
     if(ImGui::BeginMenuBar())
     {
         if(ImGui::BeginMenu("File"))
@@ -454,6 +458,11 @@ void EditorLayer::onImGuiMainMenuRender()
                 ImGui::MenuItem("Physics Debug", nullptr, &m_currentScene->m_debugPhysics);
                 ImGui::EndMenu();
             }
+            if(ImGui::BeginMenu("Test"))
+            {
+                ImGui::MenuItem(action_copy);
+                ImGui::EndMenu();
+            }
             ImGui::EndMenu();
         }
 
@@ -471,6 +480,11 @@ void EditorLayer::onImGuiMainMenuRender()
         }
 
         ImGui::EndMenuBar();
+    }
+
+    if (action_copy->IsShortcutPressed())
+    {
+        RL_INFO("AAA");
     }
 }
 
