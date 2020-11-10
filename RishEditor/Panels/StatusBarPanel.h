@@ -19,11 +19,13 @@ public:
     ~StatusBarPanel() override = default;
 
     void sendMessage(const std::string str);
+    void setNowTime(Time t);
 
     void onImGuiRender() override;
 
 private:
     std::string m_message;
+    Time m_nowTime, m_showTimeS, m_showTimeE;
 };
 
 }

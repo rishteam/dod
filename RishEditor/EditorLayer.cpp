@@ -63,6 +63,10 @@ EditorLayer::EditorLayer()
     m_settingPanel = MakeRef<SettingPanel>();
     m_simplePanelList.push_back(m_settingPanel);
     switchCurrentScene(m_editorScene);
+
+    std::thread m_Thread(&EditorLayer::countClock, this);
+    m_Thread.detach();
+
 }
 
 void EditorLayer::onAttach()
@@ -100,6 +104,7 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
+
 }
 
 void EditorLayer::onDetach()
@@ -164,6 +169,10 @@ void EditorLayer::onUpdate(Time dt)
         m_currentScene->onUpdate(dt);
     }
     m_sceneFramebuffer->unbind();
+
+    m_statusBarPanel->setNowTime(m_nowTime);
+    autoSave();
+
 }
 
 void EditorLayer::onImGuiRender()
@@ -641,6 +650,26 @@ void EditorLayer::saveScene(const std::string &path)
     std::ofstream os(path);
     cereal::JSONOutputArchive outputArchive(os);
     outputArchive(cereal::make_nvp("Scene", m_editorScene));
+}
+
+void EditorLayer::autoSave() {
+
+    m_saveTimeE = m_nowTime;
+    if( m_saveTimeE - m_saveTimeS > 60.f ){
+        m_saveTimeS = m_nowTime;
+        if( m_scenePath != "" ){
+            saveScene(m_scenePath);
+            m_statusBarPanel->sendMessage("Auto Save Complete");
+        }
+    }
+
+}
+
+void EditorLayer::countClock() {
+    Clock clock;
+    while(true){
+        m_nowTime = clock.getElapsedTime();
+    }
 }
 
 }
