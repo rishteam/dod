@@ -64,8 +64,9 @@ EditorLayer::EditorLayer()
     m_simplePanelList.push_back(m_settingPanel);
     switchCurrentScene(m_editorScene);
 
-    std::thread countThread(&EditorLayer::countClock, this);
-    countThread.detach();
+    m_autoSaveRun = true;
+    std::thread autoSaveThread(&EditorLayer::autoSave, this);
+    autoSaveThread.detach();
 }
 
 void EditorLayer::onAttach()
@@ -108,6 +109,9 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onDetach()
 {
+    // Close Auto Save Thread
+    m_autoSaveRun = false;
+
     ImGui::SaveIniSettingsToDisk("assets/layout/editor.ini");
     // Detach all panels
     for(auto &panel : m_panelList)
@@ -168,10 +172,6 @@ void EditorLayer::onUpdate(Time dt)
         m_currentScene->onUpdate(dt);
     }
     m_sceneFramebuffer->unbind();
-
-    m_statusBarPanel->setNowTime(m_nowTime);
-    autoSave();
-
 }
 
 void EditorLayer::onImGuiRender()
@@ -651,28 +651,21 @@ void EditorLayer::saveScene(const std::string &path)
     outputArchive(cereal::make_nvp("Scene", m_editorScene));
 }
 
+// TODO: Refactor Timer into timer thread
 void EditorLayer::autoSave()
 {
-    m_saveTimeEnd = m_nowTime;
-    if(m_saveTimeEnd - m_saveTimeStart > 60.f)
+    Clock clock;
+    Time lastSave = clock.getElapsedTime();
+
+    while(m_autoSaveRun)
     {
-        m_saveTimeStart = m_nowTime;
-        if( m_scenePath != "" )
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        if(((clock.getElapsedTime() - lastSave) > 10.f) && (!m_scenePath.empty()))
         {
+            lastSave = clock.getElapsedTime();
             saveScene(m_scenePath);
             m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
         }
-    }
-}
-
-// TODO: Refactor Timer into timer thread
-void EditorLayer::countClock()
-{
-    Clock clock;
-    while(true)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        m_nowTime = clock.getElapsedTime();
     }
 }
 

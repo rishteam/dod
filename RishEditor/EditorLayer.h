@@ -53,9 +53,6 @@ private:
 
     void onImGuiMainMenuRender();
 
-    Time m_nowTime;
-    void countClock();
-
     //////////////////////////////////////////
     // Editor Layer
     //////////////////////////////////////////
@@ -69,7 +66,7 @@ private:
     void saveScene(const std::string &path);
 
     // Handleing time
-    Time m_saveTimeStart, m_saveTimeEnd;
+    std::atomic_bool m_autoSaveRun = true;
     void autoSave();
 
     //////////////////////////////////////////
