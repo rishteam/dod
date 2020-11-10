@@ -63,9 +63,9 @@ public:
     //
     float getRotate() const                           { return m_rotate; }
     glm::vec3 getPosition() const                     { return m_position; }
-    void setPosition(const glm::vec2 &p)              { m_position = glm::vec3(p, 0.f); /*m_camera.setPosition(m_position);*/ }
+    void setPosition(const glm::vec2 &p)              { m_position = glm::vec3(p, 0.f); invalidate(); /*m_camera.setPosition(m_position);*/ }
     float getZoom() const                             { return m_zoom; }
-    void setZoom(float z)                             { m_zoom = z; }
+    void setZoom(float z)                             { m_zoom = z; invalidate(); }
     //
     void move(const glm::vec2 &p)                     { m_position += glm::vec3(p, 0.f); }
 
@@ -75,6 +75,8 @@ public:
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
     bool onWindowResized(WindowResizeEvent &e);
+    //
+    void invalidate();
     //
     bool m_enableState        = true;  ///< Is the CameraController enable?
     bool m_enableKeyboardMove = false; ///< Is the keyboard be able to move the CameraController

@@ -109,12 +109,17 @@ void OrthographicCameraController::onImGuiRender()
     ImGui::End();
 }
 
+void OrthographicCameraController::invalidate()
+{
+    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
+    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
+}
+
 void OrthographicCameraController::onResize(float width, float height)
 {
     m_aspect = (float)width / (float)height;
     //
-    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
-    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
+    invalidate();
 }
 
 bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
@@ -122,8 +127,7 @@ bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
     m_zoom -= e.yOffset * zoomSpeed();
     m_zoom = std::max(m_zoom, 0.20f);
     //
-    m_bounds = OrthographicCameraBounds{-m_aspect * m_zoom, m_aspect * m_zoom, -m_zoom, m_zoom};
-    m_camera.resizeCamera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
+    invalidate();
     return false;
 }
 
