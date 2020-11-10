@@ -12,18 +12,18 @@ void StatusBarPanel::onImGuiRender() {
     ImGui::Text("%s", m_message.c_str());
     ImGui::End();
 
-    m_showTimeE = m_nowTime;
+    m_showTimeEnd = m_nowTime;
     if( m_message == "" )
-        m_showTimeS = m_nowTime;
+        m_showTimeStart = m_nowTime;
 
-    if( m_showTimeE-m_showTimeS > 5.f ){
-        m_showTimeS = m_nowTime;
+    if(m_showTimeEnd - m_showTimeStart > 5.f ){
+        m_showTimeStart = m_nowTime;
         m_message = "";
     }
 
 }
 
-void StatusBarPanel::sendMessage(const std::string str) {
+void StatusBarPanel::sendMessage(const std::string &str) {
     m_message = str;
 }
 

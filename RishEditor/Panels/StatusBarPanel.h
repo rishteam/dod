@@ -18,14 +18,14 @@ public:
     StatusBarPanel(const Ref<Scene> &scene) : SceneMultiTargetPanel(scene) {}
     ~StatusBarPanel() override = default;
 
-    void sendMessage(const std::string str);
+    void sendMessage(const std::string &str);
     void setNowTime(Time t);
 
     void onImGuiRender() override;
 
 private:
     std::string m_message;
-    Time m_nowTime, m_showTimeS, m_showTimeE;
+    Time m_nowTime, m_showTimeStart, m_showTimeEnd;
 };
 
 }

@@ -64,9 +64,8 @@ EditorLayer::EditorLayer()
     m_simplePanelList.push_back(m_settingPanel);
     switchCurrentScene(m_editorScene);
 
-    std::thread m_Thread(&EditorLayer::countClock, this);
-    m_Thread.detach();
-
+    std::thread countThread(&EditorLayer::countClock, this);
+    countThread.detach();
 }
 
 void EditorLayer::onAttach()
@@ -652,23 +651,27 @@ void EditorLayer::saveScene(const std::string &path)
     outputArchive(cereal::make_nvp("Scene", m_editorScene));
 }
 
-void EditorLayer::autoSave() {
-
-    m_saveTimeE = m_nowTime;
-    if( m_saveTimeE - m_saveTimeS > 60.f ){
-        m_saveTimeS = m_nowTime;
-        if( m_scenePath != "" ){
+void EditorLayer::autoSave()
+{
+    m_saveTimeEnd = m_nowTime;
+    if(m_saveTimeEnd - m_saveTimeStart > 60.f)
+    {
+        m_saveTimeStart = m_nowTime;
+        if( m_scenePath != "" )
+        {
             saveScene(m_scenePath);
-            m_statusBarPanel->sendMessage("Auto Save Complete");
+            m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
         }
     }
-
 }
 
-void EditorLayer::countClock() {
+// TODO: Refactor Timer into timer thread
+void EditorLayer::countClock()
+{
     Clock clock;
-    while(true){
-        _sleep(100); // tech support by hadns0meda1un0
+    while(true)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         m_nowTime = clock.getElapsedTime();
     }
 }

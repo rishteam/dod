@@ -67,9 +67,10 @@ private:
     void newScene();
     void openScene(const std::string &path);
     void saveScene(const std::string &path);
-    Time m_saveTimeS, m_saveTimeE;
-    void autoSave();
 
+    // Handleing time
+    Time m_saveTimeStart, m_saveTimeEnd;
+    void autoSave();
 
     //////////////////////////////////////////
     // Scene
