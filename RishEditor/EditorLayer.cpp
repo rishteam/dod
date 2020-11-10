@@ -668,6 +668,7 @@ void EditorLayer::autoSave() {
 void EditorLayer::countClock() {
     Clock clock;
     while(true){
+        _sleep(100); // tech support by hadns0meda1un0
         m_nowTime = clock.getElapsedTime();
     }
 }
