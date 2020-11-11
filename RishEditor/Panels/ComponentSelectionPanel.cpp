@@ -14,6 +14,9 @@ void ComponentSelectionPanel::onImGuiRender()
 {
     static std::string filterText;
     ImGui::InputText("##ComponentSelection", &filterText);
+    if( m_open )
+        ImGui::SetKeyboardFocusHere(0);
+    m_open = false;
 
     if(ImGui::ListBoxHeader("##Components"))
     {

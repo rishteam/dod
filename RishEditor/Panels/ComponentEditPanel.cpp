@@ -766,6 +766,7 @@ void ComponentEditPanel::onImGuiRender()
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
         {
+            m_componentSelectionPanel.m_open = true;
             ImGui::OpenPopup("ComponentSelectionPanel");
         }
         if(ImGui::BeginPopup("ComponentSelectionPanel"))

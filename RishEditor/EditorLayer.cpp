@@ -390,6 +390,7 @@ void EditorLayer::onImGuiMainMenuRender()
         {
             if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
+                m_scenePath = "";
                 newScene();
             }
 

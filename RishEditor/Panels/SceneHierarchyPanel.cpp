@@ -33,8 +33,13 @@ void SceneHierarchyPanel::onImGuiRender()
         }
     });
 
-    for(auto e : m_showEntity)
+    for(auto e : m_showEntity){
+        if( m_isFocusEntity && e == m_focusEntity ){
+            ImGui::SetScrollHereY(0);
+            m_isFocusEntity = false;
+        }
         drawEntityNode(e);
+    }
 
     // Draw hide entity hierarchy
     for(auto e : m_hideEntity)
@@ -52,7 +57,10 @@ void SceneHierarchyPanel::onImGuiRender()
     if (ImGui::BeginPopupContextWindow()) {
         if(!isSelected()){
             if (ImGui::MenuItem("Create Entity")) {
-                m_currentScene->createEntity();
+                m_focusEntity = m_currentScene->createEntity();
+                resetTarget();
+                addTarget(m_focusEntity);
+                m_isFocusEntity = true;
             }
         }
         if(isSelected())
@@ -65,9 +73,18 @@ void SceneHierarchyPanel::onImGuiRender()
             }
             if (ImGui::MenuItem("Duplicate Entity"))
             {
-                for (auto &ent : getSelectedEntities())
+                resetTarget();
+                bool first = true;
+                for (auto &ent : getSelectedEntities()) {
+                    addTarget(ent);
                     m_currentScene->duplicateEntity(ent);
-                resetSelected();
+                    if( first ){
+                        m_isFocusEntity = true;
+                        m_focusEntity = ent;
+                    }
+                    first = false;
+                }
+
             }
             if (ImGui::MenuItem("Hide Entity"))
             {

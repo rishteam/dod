@@ -23,6 +23,8 @@ private:
     void drawHideEntityNode(Entity entity);
     std::set <Entity> m_showEntity;
     std::set <Entity> m_hideEntity;
+    bool m_isFocusEntity = false;
+    Entity m_focusEntity;
 };
 
 } // end of namespace rl
