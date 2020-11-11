@@ -101,6 +101,8 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<BoxCollider2DComponent>(ent, src);
     CopyComponentToEntityIfExists<Joint2DComponent>(ent, src);
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
+
+    return ent;
 }
 
 void Scene::onRuntimeInit()

@@ -73,14 +73,16 @@ void SceneHierarchyPanel::onImGuiRender()
             }
             if (ImGui::MenuItem("Duplicate Entity"))
             {
+
+                auto entSet = getSelectedEntities();
                 resetTarget();
                 bool first = true;
-                for (auto &ent : getSelectedEntities()) {
-                    addTarget(ent);
-                    m_currentScene->duplicateEntity(ent);
+                for (auto &ent : entSet) {
+                    auto copyEntity =  m_currentScene->duplicateEntity(ent);
+                    addTarget(copyEntity);
                     if( first ){
                         m_isFocusEntity = true;
-                        m_focusEntity = ent;
+                        m_focusEntity = copyEntity;
                     }
                     first = false;
                 }
