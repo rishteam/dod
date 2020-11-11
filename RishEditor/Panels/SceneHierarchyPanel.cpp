@@ -35,12 +35,14 @@ void SceneHierarchyPanel::onImGuiRender()
         if (ImGui::MenuItem("Create Entity")) {
             m_currentScene->createEntity();
         }
-        if (isSelected() && ImGui::MenuItem("Delete Entity")) {
+        if (isSelected() && ImGui::MenuItem("Delete Entity"))
+        {
             for(auto e : m_entitySet)
                 e.destroy();
             resetSelected();
         }
-        if (isSelected() && ImGui::MenuItem("Duplicate Entity")) {
+        if (isSelected() && ImGui::MenuItem("Duplicate Entity"))
+        {
             for(auto &ent : getSelectedEntities()) {
                 m_currentScene->duplicateEntity(ent);
             }

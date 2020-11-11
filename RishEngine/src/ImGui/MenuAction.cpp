@@ -68,6 +68,7 @@ struct ImAction::Impl
     bool visible  = true;
     bool enabled   = true;
     bool checked   = false;
+    bool prevTriggered = false;
     bool triggered = false;
     bool focused   = false;
     std::string shortcut_name;
@@ -182,7 +183,6 @@ bool ImAction::Toggle()
 
 bool ImAction::IsShortcutPressed(bool repeat)
 {
-    static bool prevIsTrigger = false;
     const ImGuiIO& io = ImGui::GetIO();
     //
     // Is Key pressed
@@ -199,14 +199,14 @@ bool ImAction::IsShortcutPressed(bool repeat)
     {
         // Is not checkable and prev = true and now = true
         if(!impl->checkable &&
-            prevIsTrigger &&
+            impl->prevTriggered &&
             impl->triggered)
         {
             impl->triggered = false;
         }
     }
 
-    prevIsTrigger = impl->triggered;
+    impl->prevTriggered = impl->triggered;
     return impl->triggered;
 }
 
@@ -310,7 +310,7 @@ void ImActionManager::onImGuiRender()
         ImGui::Text("checked   = %d", v->impl->checked);
         ImGui::Text("triggered = %d", v->impl->triggered);
         ImGui::Text("focused   = %d", v->impl->focused);
-        ImGui::Text("focused   = %s", v->impl->shortcut_name.c_str());
+        ImGui::Text("shortcut_name   = %s", v->impl->shortcut_name.c_str());
         ImGui::Unindent();
         ImGui::PopID();
     }

@@ -63,6 +63,7 @@ EditorLayer::EditorLayer()
     m_action_copy = m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
     m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
     m_action_paste->setEnabled(false);
+    m_action_delete = m_sceneAction.createAction("Delete", ImActionKey_Delete);
 }
 
 void EditorLayer::onAttach()
@@ -429,6 +430,8 @@ void EditorLayer::onImGuiMainMenuRender()
         {
             ImGui::MenuItem(m_action_copy);
             ImGui::MenuItem(m_action_paste);
+            ImGui::Separator();
+            ImGui::MenuItem(m_action_delete);
             ImGui::EndMenu();
         }
 
@@ -491,7 +494,6 @@ void EditorLayer::onImGuiMainMenuRender()
     }
 
     // TODO: Refactor?
-
     if (m_action_copy->IsShortcutPressed())
     {
         m_copyList.clear();
@@ -511,12 +513,20 @@ void EditorLayer::onImGuiMainMenuRender()
         for(auto &ent : m_copyList)
         {
             if(ent)
-            {
                 m_currentScene->duplicateEntity(ent);
-            }
         }
         m_copyList.clear();
         m_action_paste->setEnabled(false);
+    }
+
+    if(m_action_delete->IsShortcutPressed())
+    {
+        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        {
+            if(ent)
+                m_currentScene->destroyEntity(ent);
+            m_sceneHierarchyPanel->removeTarget(ent);
+        }
     }
 }
 
