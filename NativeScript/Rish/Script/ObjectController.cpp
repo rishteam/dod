@@ -37,6 +37,7 @@ void ObjectController::onUpdate(Time dt)
                     break;
             }
 
+            // if state Change, rigid value must will be calculated by physics
             if(stateChange == true)
             {
                 stateChange = false;
@@ -72,6 +73,11 @@ void ObjectController::onImGuiRender()
     static int item_current = 0;
     ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
     objectType = static_cast<ObjectType>(item_current);
+}
+
+void ObjectController::killObject()
+{
+
 }
 
 

@@ -9,7 +9,12 @@ Joint::Joint() {
 }
 
 
-void Joint::Set(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_, const Vec2 &anchor) {
+void Joint::SetAnchor(Vec2 &anchor)
+{
+    Anchor = anchor;
+}
+
+void Joint::SetBodies(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_) {
     b1 = b1_;
     b2 = b2_;
 
@@ -18,8 +23,8 @@ void Joint::Set(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_, const Vec2 &anchor
     Mat22 Rot1T = Rot1.Transpose();
     Mat22 Rot2T = Rot2.Transpose();
 
-    localAnchor1 = Rot1T * (anchor - b1->position);
-    localAnchor2 = Rot2T * (anchor - b2->position);
+    localAnchor1 = Rot1T * (Anchor - b1->position);
+    localAnchor2 = Rot2T * (Anchor - b2->position);
 
     P.Set(0.0f, 0.0f);
 
@@ -73,14 +78,17 @@ void Joint::PreStep(float inv_dt) {
         bias.Set(0.0f, 0.0f);
     }
 
-    if (rl::PhysicsWorld::warmStarting) {
+    if (rl::PhysicsWorld::warmStarting)
+    {
         // Apply accumulated impulse.
         b1->velocity -= b1->invMass * P;
         b1->angularVelocity -= b1->invI * Cross(r1, P);
 
         b2->velocity += b2->invMass * P;
         b2->angularVelocity += b2->invI * Cross(r2, P);
-    } else {
+    }
+    else
+    {
         P.Set(0.0f, 0.0f);
     }
 }

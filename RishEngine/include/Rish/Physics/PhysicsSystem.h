@@ -21,8 +21,9 @@ public:
     static void OnScenePlay();
     static void OnSceneStop();
 private:
+    static void PhysicsWorldUpdate(float dt);
+    static void InitPhysicsObject(entt::registry& registry, Scene::SceneState state);
     static void UpdateNewPhysicsObject(entt::registry& registry, Scene::SceneState state);
-    static void CleanPhysicObject();
     //
     static Ref<Scene> s_Scene;
 };

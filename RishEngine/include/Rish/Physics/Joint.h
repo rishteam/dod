@@ -14,13 +14,17 @@ public:
 
     ~Joint() = default;
 
-    void Set(Ref <RigidBody2D> &b1_, Ref<RigidBody2D> &b2_, const Vec2 &anchor);
+    void SetAnchor(Vec2 &anchor);
+
+    void SetBodies(Ref <RigidBody2D> &b1_, Ref<RigidBody2D> &b2_);
 
     void PreStep(float inv_dt);
 
     void ApplyImpulse();
 
     Mat22 M;
+    // TODO: Anchor Update
+    Vec2 Anchor;
     Vec2 localAnchor1, localAnchor2;
     Vec2 r1, r2;
     Vec2 bias;

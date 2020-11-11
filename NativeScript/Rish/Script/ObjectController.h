@@ -36,6 +36,8 @@ public:
 
     void onImGuiRender() override;
 
+    void killObject();
+
     RL_SCRIPT_EMPTY_SERIALIZE();
 
 private:
