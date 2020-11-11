@@ -58,6 +58,11 @@ EditorLayer::EditorLayer()
     m_simplePanelList.push_back(m_aboutPanel);
     //
     switchCurrentScene(m_editorScene);
+
+    // Actions
+    m_action_copy = m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
+    m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
+    m_action_paste->setEnabled(false);
 }
 
 void EditorLayer::onAttach()
@@ -166,49 +171,59 @@ void EditorLayer::onImGuiRender()
     ImGui::BeginDockspace("EditorDockspace");
     // Menu Bar
     onImGuiMainMenuRender();
-    //
-    // Sync the target entities set
-    static std::set<Entity> sceneHierarchyPrevSet{};
-    static std::set<Entity> editControllerPrevSet{};
 
-    // Update the panels
-    m_sceneHierarchyPanel->onImGuiRender();
-    m_componentEditPanel->onImGuiRender();
-
-    // If SceneHierarchyPanel changed
-    if(sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
+    // Panel sync
     {
-        m_editController->resetTarget();
-        m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+        // Sync the target entities set
+        static std::set<Entity> sceneHierarchyPrevSet{};
+        static std::set<Entity> editControllerPrevSet{};
+
+        // Update the panels
+        m_sceneHierarchyPanel->onImGuiRender();
+        m_componentEditPanel->onImGuiRender();
+
+        // If SceneHierarchyPanel changed
+        if (sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
+        {
+            m_editController->resetTarget();
+            m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+        }
+
+        // If EditController changed
+        if (editControllerPrevSet != m_editController->getTargets())
+        {
+            m_sceneHierarchyPanel->resetTarget();
+            m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
+        }
+
+        sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
+        editControllerPrevSet = m_editController->getTargets();
+
+        auto &entSet = m_editController->getTargets();
+        if (entSet.size() == 1)
+        {
+            m_componentEditPanel->setTarget(*entSet.begin());
+        }
+        else
+            m_componentEditPanel->resetTarget();
     }
 
-    // If EditController changed
-    if(editControllerPrevSet != m_editController->getTargets())
-    {
-        m_sceneHierarchyPanel->resetTarget();
-        m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
-    }
-
-    sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
-    editControllerPrevSet = m_editController->getTargets();
-
-    auto &entSet = m_editController->getTargets();
-    if(entSet.size() == 1)
-    {
-        m_componentEditPanel->setTarget(*entSet.begin());
-    }
-    else
-        m_componentEditPanel->resetTarget();
-    //
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
+    const char *sceneWindowName = ICON_FA_BORDER_ALL " Scene";
+	ImGui::Begin(sceneWindowName);
     {
-        // update edit controller
+        // Update scene action
+        // TODO: Handle the situation that Scene window is not focused and the menu item gets clicked
+        m_sceneAction.onFocus(ImGui::IsWindowFocused());
+
+        // Update edit controller
         m_editController->onImGuiRender();
+
         // Update viewport size (For resizing the framebuffer)
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
+
         // show scene
         uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
@@ -252,11 +267,6 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Entity Manager");
     {
-        Renderer2D::OnImGuiRender();
-
-        ImGui::Separator();
-
-
     }
     ImGui::End();
 
@@ -364,10 +374,6 @@ void EditorLayer::onImGuiRender()
 
 void EditorLayer::onImGuiMainMenuRender()
 {
-    ImActionManager::Instance().RemoveAll();
-    ImAction* action_copy = ImActionManager::Instance().Create("Copy", ImCtrl | ImActionKey_C);
-    ImActionManager::Instance().ResetAll();
-
     if(ImGui::BeginMenuBar())
     {
         if(ImGui::BeginMenu("File"))
@@ -419,6 +425,13 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::EndMenu();
         }
 
+        if(ImGui::BeginMenu("Edit"))
+        {
+            ImGui::MenuItem(m_action_copy);
+            ImGui::MenuItem(m_action_paste);
+            ImGui::EndMenu();
+        }
+
         if(ImGui::BeginMenu("Tools"))
         {
             if(ImGui::MenuItem("Renderer Statistics"))
@@ -458,11 +471,6 @@ void EditorLayer::onImGuiMainMenuRender()
                 ImGui::MenuItem("Physics Debug", nullptr, &m_currentScene->m_debugPhysics);
                 ImGui::EndMenu();
             }
-            if(ImGui::BeginMenu("Test"))
-            {
-                ImGui::MenuItem(action_copy);
-                ImGui::EndMenu();
-            }
             ImGui::EndMenu();
         }
 
@@ -482,9 +490,33 @@ void EditorLayer::onImGuiMainMenuRender()
         ImGui::EndMenuBar();
     }
 
-    if (action_copy->IsShortcutPressed())
+    // TODO: Refactor?
+
+    if (m_action_copy->IsShortcutPressed())
     {
-        RL_INFO("AAA");
+        m_copyList.clear();
+        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        {
+            m_copyList.push_back(ent);
+        }
+
+        if(!m_copyList.empty())
+        {
+            m_action_paste->setEnabled(true);
+        }
+    }
+
+    if(m_action_paste->IsShortcutPressed())
+    {
+        for(auto &ent : m_copyList)
+        {
+            if(ent)
+            {
+                m_currentScene->duplicateEntity(ent);
+            }
+        }
+        m_copyList.clear();
+        m_action_paste->setEnabled(false);
     }
 }
 

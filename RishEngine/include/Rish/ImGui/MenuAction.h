@@ -11,14 +11,18 @@ namespace rl {
  * https://github.com/ocornut/imgui/issues/456
  */
 
+/**
+ * TODO: Make raw pointer into Ref<>
+ */
+
 // for shortcut
 enum ImActionKeyModFlags
 {
     ImActionKeyMod_Bits = 24,
-    ImCtrl  = 1 << (ImActionKeyMod_Bits + 0),
-    ImShift = 1 << (ImActionKeyMod_Bits + 1),
-    ImAlt   = 1 << (ImActionKeyMod_Bits + 2),
-    ImSuper = 1 << (ImActionKeyMod_Bits + 3),
+    ImCtrl  = BIT(ImActionKeyMod_Bits + 0),
+    ImShift = BIT(ImActionKeyMod_Bits + 1),
+    ImAlt   = BIT(ImActionKeyMod_Bits + 2),
+    ImSuper = BIT(ImActionKeyMod_Bits + 3)
 };
 
 // Copy from imgui.h:1048
@@ -40,12 +44,12 @@ enum ImActionKey
     ImActionKey_Enter        = Keyboard::Enter,
     ImActionKey_Escape       = Keyboard::Escape,
     ImActionKey_KeyPadEnter  = Keyboard::Enter,
-    ImActionKey_A            = Keyboard::A,     // for text edit CTRL+A: select all
-    ImActionKey_C            = Keyboard::C,     // for text edit CTRL+C: copy
-    ImActionKey_V            = Keyboard::V,     // for text edit CTRL+V: paste
-    ImActionKey_X            = Keyboard::X,     // for text edit CTRL+X: cut
-    ImActionKey_Y            = Keyboard::Y,     // for text edit CTRL+Y: redo
-    ImActionKey_Z            = Keyboard::Z,     // for text edit CTRL+Z: undo
+    ImActionKey_A            = Keyboard::A,          // for text edit CTRL+A: select all
+    ImActionKey_C            = Keyboard::C,          // for text edit CTRL+C: copy
+    ImActionKey_V            = Keyboard::V,          // for text edit CTRL+V: paste
+    ImActionKey_X            = Keyboard::X,          // for text edit CTRL+X: cut
+    ImActionKey_Y            = Keyboard::Y,          // for text edit CTRL+Y: redo
+    ImActionKey_Z            = Keyboard::Z,          // for text edit CTRL+Z: undo
     ImActionKey_COUNT
 };
 
@@ -54,19 +58,22 @@ class IMGUI_API ImAction
 public:
     ImAction(const char* name, int shortcut, bool* selected = nullptr);
     ~ImAction();
-
+    //
     const char* Name() const;
     const char* ShortcutName() const;
+    //
     bool isVisible();
     bool IsEnabled() const;
     bool IsCheckable() const;
     bool IsChecked() const;
     bool IsTriggered() const;
+    bool IsFocused() const;
     //
     void setVisible(bool visible);
     void setEnabled(bool enabled);
     void setCheckable(bool checkable);
     void setChecked(bool checked);
+    void setFocused(bool focus);
     //
     void Trigger();
     bool Toggle(); // return true when checkable and checked
@@ -83,23 +90,25 @@ private:
 class IMGUI_API ImActionManager
 {
 public:
-    static ImActionManager& Instance();
-
     ImActionManager();
     ~ImActionManager();
-
-    ImAction* Create(const char* name, int shortcut, bool* selected = nullptr);
-    ImAction* Get(const char* name);
-    const ImAction* Get(const char* name) const;
     //
-    bool Remove(ImAction* action); // return false when not existed
-    bool Remove(const char* name); // return false when not existed
-    void RemoveAll();
-    void ResetAll();
+    void onImGuiRender();
+    //
+    ImAction* createAction(const char* name, int shortcut, bool* selected = nullptr);
+    ImAction* getAction(const char* name);
+    const ImAction* getAction(const char* name) const;
+    //
+    void onFocus(bool focus);
+    //
+    bool removeAction(ImAction* action); // return false when not existed
+    bool removeAction(const char* name); // return false when not existed
+    void removeAllActions();
+    void resetAllActions();
 
 private:
     struct Impl;
-    Impl* d;
+    Impl* impl;
 };
 
 } // end of namespace rl

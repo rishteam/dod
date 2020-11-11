@@ -106,7 +106,12 @@ private:
     //////////////////////////////////////////
     // Editor Menu
     //////////////////////////////////////////
-    ImActionManager actionManager;
+
+    // TODO: Refactor action menu callback
+    ImActionManager m_sceneAction;
+    ImAction *m_action_copy = nullptr;
+    ImAction *m_action_paste = nullptr;
+    std::vector<Entity> m_copyList;
 
 
     //////////////////////////////////////////

@@ -55,24 +55,29 @@ std::string ShortCutName(const int shortcut)
     return shortcut_str;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ImAction
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 struct ImAction::Impl
 {
     std::string name;
     int shortcut;
     bool checkable;
     bool* selected = nullptr;
-    bool visiable = true;
-    bool enabled = true;
-    bool checked = false;
+    bool visible  = true;
+    bool enabled   = true;
+    bool checked   = false;
     bool triggered = false;
+    bool focused   = false;
     std::string shortcut_name;
 
-    Impl(const char* name, int shortcut, bool* selected)
-        : name(name),
-          shortcut(shortcut),
-          checkable(selected != nullptr),
-          selected(selected),
-          shortcut_name(ShortCutName(shortcut))
+    Impl(const char* name_, int shortcut_, bool* selected_)
+        : name(name_),
+          shortcut(shortcut_),
+          checkable(selected_ != nullptr),
+          selected(selected_),
+          shortcut_name(ShortCutName(shortcut_))
     {}
 };
 
@@ -98,7 +103,7 @@ const char* ImAction::ShortcutName() const
 
 bool ImAction::isVisible()
 {
-    return impl->visiable;
+    return impl->visible;
 }
 
 bool ImAction::IsEnabled() const
@@ -121,6 +126,11 @@ bool ImAction::IsTriggered() const
     return impl->triggered;
 }
 
+bool ImAction::IsFocused() const
+{
+    return impl->focused;
+}
+
 void ImAction::setCheckable(bool checkable)
 {
     impl->checkable = checkable;
@@ -128,7 +138,7 @@ void ImAction::setCheckable(bool checkable)
 
 void ImAction::setVisible(bool visible)
 {
-    impl->visiable = visible;
+    impl->visible = visible;
 }
 
 void ImAction::setEnabled(bool enabled)
@@ -141,9 +151,15 @@ void ImAction::setChecked(bool checked)
     if (impl->checkable)
     {
         impl->checked = true;
-        if (impl->selected) *impl->selected = checked;
+        if (impl->selected)
+            *impl->selected = checked;
         impl->triggered = true;
     }
+}
+
+void ImAction::setFocused(bool focus)
+{
+    impl->focused = focus;
 }
 
 void ImAction::Trigger()
@@ -166,7 +182,10 @@ bool ImAction::Toggle()
 
 bool ImAction::IsShortcutPressed(bool repeat)
 {
+    static bool prevIsTrigger = false;
     const ImGuiIO& io = ImGui::GetIO();
+    //
+    // Is Key pressed
     if (io.KeyCtrl  == ((impl->shortcut & ImCtrl) != 0) &&
         io.KeyShift == ((impl->shortcut & ImShift) != 0) &&
         io.KeyAlt   == ((impl->shortcut & ImAlt) != 0) &&
@@ -174,8 +193,20 @@ bool ImAction::IsShortcutPressed(bool repeat)
         ImGui::IsKeyPressed((impl->shortcut & ~ImActionKeyModeFlags_Mask), repeat))
     {
         Trigger();
-        return true;
     }
+    // Not pressed
+    else
+    {
+        // Is not checkable and prev = true and now = true
+        if(!impl->checkable &&
+            prevIsTrigger &&
+            impl->triggered)
+        {
+            impl->triggered = false;
+        }
+    }
+
+    prevIsTrigger = impl->triggered;
     return impl->triggered;
 }
 
@@ -184,76 +215,105 @@ void ImAction::Reset()
     impl->triggered = false;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ImActionManager
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 struct ImActionManager::Impl
 {
     std::unordered_map<std::string, ImAction*> actions;
 };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-ImActionManager& ImActionManager::Instance()
-{
-    static ImActionManager s_instance;
-    return s_instance;
-}
-
 ImActionManager::ImActionManager()
-        : d(new Impl())
+    : impl(new Impl())
 {
 }
 
 ImActionManager::~ImActionManager()
 {
-    RemoveAll();
-    delete d;
+    removeAllActions();
+    delete impl;
 }
 
-ImAction* ImActionManager::Create(const char* name, int shortcut, bool* selected)
+/////////////////////////////////////////////
+
+ImAction* ImActionManager::createAction(const char* name, int shortcut, bool* selected)
 {
     ImAction* action = new ImAction(name, shortcut, selected);
-    d->actions.emplace(name, action);
+    impl->actions.emplace(name, action);
     return action;
 }
 
-ImAction* ImActionManager::Get(const char* name)
+ImAction* ImActionManager::getAction(const char* name)
 {
-    auto it = d->actions.find(name);
-    return it == d->actions.end() ? nullptr : it->second;
+    auto it = impl->actions.find(name);
+    RL_CORE_ASSERT(it != impl->actions.end(), "Action not found");
+    return it->second;
 }
 
-const ImAction* ImActionManager::Get(const char* name) const
+const ImAction* ImActionManager::getAction(const char* name) const
 {
-    auto it = d->actions.find(name);
-    return it == d->actions.end() ? nullptr : it->second;
+    auto it = impl->actions.find(name);
+    RL_CORE_ASSERT(it != impl->actions.end(), "Action not found");
+    return it->second;
 }
 
-bool ImActionManager::Remove(ImAction* action)
+bool ImActionManager::removeAction(ImAction* action)
 {
-    return Remove(action->Name());
+    RL_CORE_ASSERT(action != nullptr, "Action is nullptr");
+    return removeAction(action->Name());
 }
 
-bool ImActionManager::Remove(const char* name)
+bool ImActionManager::removeAction(const char* name)
 {
-    auto it = d->actions.find(name);
-    if (it == d->actions.end())
+    auto it = impl->actions.find(name);
+    if (it == impl->actions.end())
         return false;
 
     delete it->second;
-    d->actions.erase(it);
+    impl->actions.erase(it);
     return true;
 }
 
-void ImActionManager::RemoveAll()
+void ImActionManager::removeAllActions()
 {
-    for (auto& kv : d->actions)
+    for (auto& kv : impl->actions)
         delete kv.second;
-    d->actions.clear();
+    impl->actions.clear();
 }
 
-void ImActionManager::ResetAll()
+void ImActionManager::resetAllActions()
 {
-    for (auto& kv : d->actions)
+    for (auto& kv : impl->actions)
         kv.second->Reset();
+}
+
+void ImActionManager::onFocus(bool focus)
+{
+    for (auto& kv : impl->actions)
+    {
+        kv.second->setFocused(focus);
+    }
+}
+
+void ImActionManager::onImGuiRender()
+{
+    for (auto&& [k, v] : impl->actions)
+    {
+        ImGui::PushID(k.c_str());
+        ImGui::Text("name      = %s", v->impl->name.c_str());
+        ImGui::Indent();
+        ImGui::Text("checkable = %d", v->impl->checkable);
+        ImGui::Text("selected  = %p", (void*)v->impl->selected);
+        ImGui::Text("visible   = %d", v->impl->visible);
+        ImGui::Text("enabled   = %d", v->impl->enabled);
+        ImGui::Text("checked   = %d", v->impl->checked);
+        ImGui::Text("triggered = %d", v->impl->triggered);
+        ImGui::Text("focused   = %d", v->impl->focused);
+        ImGui::Text("focused   = %s", v->impl->shortcut_name.c_str());
+        ImGui::Unindent();
+        ImGui::PopID();
+    }
 }
 
 } // end of namespace rl
@@ -267,6 +327,7 @@ bool ImGui::MenuItem(rl::ImAction* action)
 
     const bool checkable = action->IsCheckable();
     bool checked = action->IsChecked();
+    //
     if (ImGui::MenuItem(action->Name(), action->ShortcutName(), checked, action->IsEnabled()))
     {
         if (checkable)
