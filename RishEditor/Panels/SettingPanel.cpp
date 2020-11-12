@@ -1,5 +1,7 @@
 #include "SettingPanel.h"
 
+#include "EditorLayer.h"
+
 namespace  rl{
 
 void SettingPanel::onImGuiRender() {
@@ -16,37 +18,68 @@ void SettingPanel::onImGuiRender() {
         m_show = false;
     }
     if (ImGui::BeginPopupModal("Setting",
-                               nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
+           nullptr,
+           ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
     {
 
         ImGui::Separator();
-        ImGui::Text("Key Setting");
-        ImGui::Columns(2,"key");
-        ImGui::Separator();
-        ImGui::Text("Action"); ImGui::NextColumn();
-        ImGui::Text("Key"); ImGui::NextColumn();
-        ImGui::Separator();
-        // TODO: let it can actually switch it
-        ImGui::Text("New Scene");
-        ImGui::Text("Open Scene");
-        ImGui::Text("Save Scene");
-        ImGui::Text("Save Scene as");
-        ImGui::NextColumn();
-        ImGui::Text("Ctrl+N");
-        ImGui::Text("Ctrl+O");
-        ImGui::Text("Ctrl+S");
-        ImGui::Text("Ctrl+Shift+S");
+        {
+            ImGui::Text("Key Setting");
+            ImGui::Columns(2, "key");
+            ImGui::Separator();
+            ImGui::Text("Action");
+            ImGui::NextColumn();
+            ImGui::Text("Key");
+            ImGui::NextColumn();
+            ImGui::Separator();
 
-        ImGui::Columns(1);
-        ImGui::Separator();
+            // TODO: let it can actually switch it
+            ImGui::Text("New Scene");
+            ImGui::Text("Open Scene");
+            ImGui::Text("Save Scene");
+            ImGui::Text("Save Scene as");
+            ImGui::NextColumn();
+            ImGui::Text("Ctrl+N");
+            ImGui::Text("Ctrl+O");
+            ImGui::Text("Ctrl+S");
+            ImGui::Text("Ctrl+Shift+S");
 
-        if (ImGui::Button("Close")) {
+            ImGui::Columns(1);
+        }
+        ImGui::Separator();
+        ImGui::Dummy(ImVec2{1, 10});
+        {
+            ImGui::Text("Editor Settings");
+            ImGui::Separator();
+            ImGui::Columns(2, "EditorSettingsTable");
+
+            ImGui::Text("Open Scene when editor is open");
+            ImGui::Text("Scene");
+
+            ImGui::NextColumn();
+
+            ImGui::Checkbox("###OpenScene", &m_parent->m_editorSetting.isDefaultOpenScene);
+            ImGui::InputText("##Scene", &m_parent->m_editorSetting.path, ImGuiInputTextFlags_ReadOnly); ImGui::SameLine();
+            if(ImGui::Button("Set"))
+            {
+                std::string tmpPath;
+                if(FileDialog::SelectSingleFile("", nullptr, tmpPath))
+                {
+                    m_parent->m_editorSetting.path = FileSystem::RelativePath(tmpPath);
+                }
+            }
+
+            ImGui::Columns(1);
+            ImGui::Separator();
+        }
+
+        if (ImGui::Button("OK"))
+        {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
     }
 
 }
-
 
 }

@@ -13,6 +13,4 @@ public:
     void onImGuiRender() override;
 };
 
-
 }
-

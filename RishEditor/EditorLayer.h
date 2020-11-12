@@ -106,6 +106,8 @@ private:
 	Ref<SettingPanel> m_settingPanel;
 	std::vector<Ref<Panel>> m_simplePanelList;
 
+	friend class SettingPanel;
+
 	bool m_debugNativeScript = false;
 	bool m_clickPlayButton = false;
     bool m_clickStopButton = true;

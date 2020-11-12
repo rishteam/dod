@@ -53,6 +53,7 @@ EditorLayer::EditorLayer()
     //
     m_statusBarPanel = MakeRef<StatusBarPanel>();
     m_panelList.push_back(m_statusBarPanel);
+    //
     // Simple Panels
     m_helpPanel = MakeRef<HelpPanel>();
     m_simplePanelList.push_back(m_helpPanel);
@@ -62,8 +63,13 @@ EditorLayer::EditorLayer()
     //
     m_settingPanel = MakeRef<SettingPanel>();
     m_simplePanelList.push_back(m_settingPanel);
+    // Bind contexts
+    for(auto &p : m_simplePanelList)
+        p->setContext(this);
+    //
     switchCurrentScene(m_editorScene);
-
+    // Start auto save thread
+    // TODO: Make RishEngine handle thread management
     m_autoSaveRun = true;
     std::thread autoSaveThread(&EditorLayer::autoSave, this);
     autoSaveThread.detach();
@@ -428,13 +434,6 @@ void EditorLayer::onImGuiMainMenuRender()
 
             ImGui::Separator();
 
-            if( ImGui::MenuItem("Setting", nullptr) )
-            {
-                m_settingPanel->showPanel();
-            }
-
-            ImGui::Separator();
-
             if(ImGui::MenuItem("Exit", "Ctrl+W"))
             {
                 Application::Get().close();
@@ -450,6 +449,13 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: Use overlay
                 auto stat = Renderer2D::GetStats();
                 RL_INFO("Renderer2D: quad = {}, line = {}, draw = {}", stat.QuadCount, stat.LineCount, stat.DrawCount);
+            }
+
+            ImGui::Separator();
+
+            if( ImGui::MenuItem("Setting", nullptr) )
+            {
+                m_settingPanel->showPanel();
             }
 
             ImGui::EndMenu();
@@ -567,7 +573,7 @@ void EditorLayer::loadSetting(const std::string &path)
 {
     std::string content;
     content = FileSystem::ReadTextFile(path);
-
+    //
     std::stringstream oos(content);
     cereal::JSONInputArchive inputArchive(oos);
     inputArchive(cereal::make_nvp("settings", m_editorSetting));
@@ -575,9 +581,6 @@ void EditorLayer::loadSetting(const std::string &path)
 
 void EditorLayer::saveSetting()
 {
-    m_editorSetting.isDefaultOpenScene = true;
-    m_editorSetting.path = m_scenePath;
-
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);
     outputArchive(cereal::make_nvp("settings", m_editorSetting));
