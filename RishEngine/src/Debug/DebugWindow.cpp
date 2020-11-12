@@ -79,7 +79,7 @@ void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
 
             DrawDebugTransformComponentInfo(entity);
             DrawDebugCameraComponentInfo(entity);
-            DrawDebugRenderComponentInfo(entity);
+            DrawDebugSpriteRenderComponentInfo(entity);
             DrawDebugNativeScriptComponentInfo(entity);
 
             ImGui::TreePop();
@@ -118,16 +118,51 @@ void DrawDebugCameraComponentInfo(Entity entity)
     }
 }
 
-void DrawDebugRenderComponentInfo(Entity entity)
+void PrintTextureInfo(Ref<Texture2D> tex)
+{
+    ImGui::Text("tex id = %d", tex->getTextureID());
+    ImGui::Text("width = %d height = %d", tex->getWidth(), tex->getHeight());
+    ImGui::Text("path = %s", tex->getPath().c_str());
+}
+
+void DrawDebugSpriteRenderComponentInfo(Entity entity)
 {
     if(!entity.hasComponent<SpriteRenderComponent>())
         return;
     auto &render = entity.getComponent<SpriteRenderComponent>();
     if(ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        ImGui::Text("path = %s", render.m_texture->getPath().c_str());
-        ImGui::Text("width = %d height = %d", render.m_texture->getWidth(), render.m_texture->getHeight());
-        ImGui::Text("tex id = %d", render.m_texture->getTextureID());
+        ImGui::Indent();
+        if(render.m_texture)
+        {
+            ImGui::Text("path = %s", render.m_texture->getPath().c_str());
+            PrintTextureInfo(render.m_texture);
+        }
+        else
+            ImGui::Text("m_texture = nullptr");
+        ImGui::Unindent();
+        ImGui::Text("-------------------");
+
+        if(render.m_subtexture)
+        {
+            auto &setting = render.m_subSetting;
+            //
+            ImGui::Indent();
+            if(setting.type == SubTexture2DSetting::SubTextureType::SubTextureSheet)
+            {
+                ImGui::Text("pos = %.2f %.2f", setting.pos.x, setting.pos.y);
+                ImGui::Text("cellSize = %.2f %.2f", setting.cellSize.x, setting.cellSize.y);
+                ImGui::Text("spriteGridSize = %.2f %.2f", setting.spriteGridSize.x, setting.spriteGridSize.y);
+            }
+            else if(setting.type == SubTexture2DSetting::SubTextureType::SubTextureCoordinate)
+            {
+                ImGui::Text("leftUpper = %.2f %.2f", setting.leftUpper.x, setting.leftUpper.y);
+                ImGui::Text("size = %.2f %.2f", setting.size.x, setting.size.y);
+            }
+            PrintTextureInfo(render.m_subtexture->getTexture());
+            ImGui::Unindent();
+        }
+
         ImGui::TreePop();
     }
 }
@@ -155,6 +190,11 @@ void DrawDebugParticleComponentInfo(Entity entity)
     if(!entity.hasComponent<ParticleComponent>())
         return;
 
+}
+
+void DrawDebugTextureInfo(Ref<Texture2D> texture)
+{
+    ImGui::Text("%s %dx%d", texture->getPath().c_str(), texture->getWidth(), texture->getHeight());
 }
 
 }

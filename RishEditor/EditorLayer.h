@@ -12,10 +12,14 @@
 #include "Edit/EditorGrid.h"
 #include "Edit/EditController.h"
 
+#include <Rish/ImGui/MenuAction.h>
+
 namespace rl {
 
 struct EditorSetting
 {
+    bool saveSettingOnExit        = false;
+
     bool isDefaultOpenSceneLoaded = false;
     bool isDefaultOpenScene       = false;
     std::string path;
@@ -25,6 +29,7 @@ struct EditorSetting
     {
         ar(CEREAL_NVP(isDefaultOpenScene));
         ar(CEREAL_NVP(path));
+        ar(CEREAL_NVP(saveSettingOnExit));
     }
 };
 
@@ -105,9 +110,23 @@ private:
 	Ref<AboutPanel> m_aboutPanel;
 	Ref<SettingPanel> m_settingPanel;
 	std::vector<Ref<Panel>> m_simplePanelList;
+    friend class SettingPanel;
 
-	friend class SettingPanel;
+    //////////////////////////////////////////
+    // Editor Menu
+    //////////////////////////////////////////
 
+    // TODO: Refactor action menu callback
+    ImActionManager m_sceneAction;
+    ImAction *m_action_copy = nullptr;
+    ImAction *m_action_paste = nullptr;
+    ImAction *m_action_delete = nullptr;
+    ImAction *m_action_cancel = nullptr;
+    std::vector<Entity> m_copyList;
+
+    //////////////////////////////////////////
+    // Debugs
+    //////////////////////////////////////////
 	bool m_debugNativeScript = false;
 	bool m_clickPlayButton = false;
     bool m_clickStopButton = true;

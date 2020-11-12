@@ -35,11 +35,7 @@ public:
      * @param path Image file path
      */
     Texture2D(const std::string &path, bool flip);
-    /**
-     * @brief ctor
-     * @param image Image Ref
-     */
-    Texture2D(Ref<Image> image);
+
 	~Texture2D();
 
 	void setData(void *data, uint32_t size);
@@ -50,6 +46,7 @@ public:
     uint32_t getHeight() const { return m_height;}
     float getAspectRatio() const { return (float)m_width / (float)m_height; }
     std::string getPath() const {return m_path; }
+    void setPath(const std::string &path) { m_path = path; }
 
     uint32_t getTextureID() const { return m_textureID; }
 
@@ -116,3 +113,5 @@ private:
  * @endcode
  *
  */
+
+RL_MAKE_HASHABLE(rl::Texture2D, t.getPath(), t.getWidth(), t.getHeight())

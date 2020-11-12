@@ -39,9 +39,16 @@ void RenderCommand::SetClearColor(const glm::vec4 &color)
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void RenderCommand::Clear()
+void RenderCommand::Clear(uint32_t clearTarget)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLbitfield mask{};
+    if(clearTarget & ClearBufferTarget::ColorBuffer)
+        mask |= GL_COLOR_BUFFER_BIT;
+    if(clearTarget & ClearBufferTarget::DepthBuffer)
+        mask |= GL_DEPTH_BUFFER_BIT;
+    if(clearTarget & ClearBufferTarget::StencilBuffer)
+        mask |= GL_STENCIL_BUFFER_BIT;
+    glClear(mask);
 }
 
 void RenderCommand::DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount, bool depthTest)
@@ -49,9 +56,12 @@ void RenderCommand::DrawElement(DrawType drawType, const Ref <VertexArray> &vert
     indexCount = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
 
     GLenum type = drawType == DrawTriangles ? GL_TRIANGLES : GL_LINES;
-    if(!depthTest) SetDepthTest(false);
+
+    bool depth = GetDepthTest();
+    //
+    SetDepthTest(depthTest);
     glDrawElements(type, indexCount, GL_UNSIGNED_INT, nullptr);
-    if(!depthTest) SetDepthTest(true);
+    SetDepthTest(depth);
 }
 
 void RenderCommand::SetViewPort(float x, float y, float width, float height)
@@ -72,6 +82,13 @@ void RenderCommand::SetDepthTest(bool state)
         glEnable(GL_DEPTH_TEST);
     else
         glDisable(GL_DEPTH_TEST);
+}
+
+bool RenderCommand::GetDepthTest()
+{
+    GLboolean depth{};
+    glGetBooleanv(GL_DEPTH_TEST, &depth);
+    return depth;
 }
 
 void RenderCommand::SetDepthFunc(DepthFunc option)

@@ -10,7 +10,6 @@
 #include <Rish/Core/Log.h>
 
 #define RL_DEBUG
-#define RL_ATTACH 0
 
 #ifdef RL_DEBUG
     #define RL_ENABLE_ASSERT
@@ -46,7 +45,12 @@
 
 #define RL_UNUSED(x) ((void)(x))
 
-#define BIT(x) (1<<(x))
+constexpr uint32_t bit_field(uint32_t x)
+{
+    return 1U << x;
+}
+
+#define BIT(x) bit_field(x)
 
 #if RL_SHARED_LIB
     #if defined(_WIN32) && defined(_MSC_VER)
@@ -93,3 +97,5 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 }
 
 #include <Rish/Debug/Instrumentor.h>
+
+#include <Rish/Utils/Hash.h>

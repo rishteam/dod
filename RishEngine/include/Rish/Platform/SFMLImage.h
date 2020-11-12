@@ -19,6 +19,8 @@ public:
 private:
     sf::Image *m_image = nullptr; // TODO: refacter this to Ref when refactor the ResHolder
     std::string m_id;
+
+    static std::unordered_map<std::string, std::string> s_pathToId;
 };
 
 } // end of namespace rl

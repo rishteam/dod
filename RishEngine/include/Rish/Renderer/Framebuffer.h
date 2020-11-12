@@ -55,6 +55,8 @@ public:
 
 	static Ref<Framebuffer> Create(const FramebufferSpecification &spec);
 private:
+    friend class EditorLayer;
+
 	uint32_t m_frameBufferID = 0;
 	uint32_t m_colorAttachment = 0;
 	uint32_t m_depthAttachment = 0;

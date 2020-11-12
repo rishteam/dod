@@ -12,6 +12,9 @@ std::string& replaceAll(std::string& str, const std::string& from, const std::st
 
 bool isSubString(std::string target, std::string filter);
 
+bool startswith(const std::string &str, const std::string &ext);
+bool endswith(const std::string &str, const std::string &ext);
+
 }
 
 }

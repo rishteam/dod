@@ -8,12 +8,10 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     rl::VFS::Mount("shader", "Sandbox/assets");
     rl::VFS::Mount("texture", "Sandbox/assets");
 
-    m_bg = Texture2D::LoadTextureVFS("/texture/dev_128_gr_032x.jpg");
+    gray_pic = Texture2D::LoadTextureVFS("/texture/dev_128_gr_032x.jpg");
 
-    auto path = m_bg->getPath();
-
-    RL_INFO("{}", path);
-    RL_INFO("{}", FileSystem::RelativePath(path));
+    m_framebuffer = Framebuffer::Create({1024, 768, 1});
+    m_framebufferSecond = Framebuffer::Create({1024, 768, 1});
 }
 
 void ExampleSandboxLayer::onAttach()
@@ -32,15 +30,43 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 
     m_rotate += 10.f * dt.asSeconds();
 
+    m_framebuffer->bind();
+    RenderCommand::SetClearColor({0.f, 0.f, 0.f, 1.f});
+    RenderCommand::Clear();
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
-        Renderer2D::DrawQuad({0.f, 0.f, 1.f}, {10.f, 10.f}, m_bg, glm::vec4(1.f), 5.f);
+        for(int i = 0; i < 10000; i++)
+            Renderer2D::DrawQuad({i, 0.f, i + 0.1f}, {1.f, 1.f}, gray_pic, glm::vec4(1.f), 1.f);
     }
     Renderer2D::EndScene();
+    m_framebuffer->unbind();
+
+    m_framebufferSecond->bind();
+    RenderCommand::SetClearColor({0.f, 0.f, 0.f, 1.f});
+    RenderCommand::Clear();
+    Renderer2D::BeginScene(m_cameraController.getCamera(), true);
+    {
+        for(int i = 0; i < 100; i++)
+            for(int j = 0; j < 100; j++)
+                Renderer2D::DrawQuad({i, i, j}, {0.9f, 0.9f}, gray_pic, glm::vec4(1.f), 1.f);
+    }
+    Renderer2D::EndScene();
+    m_framebufferSecond->unbind();
 }
 
 void ExampleSandboxLayer::onImGuiRender()
 {
+    ImGui::Begin("A");
+    ImGui::Image(m_framebuffer->getColorAttachmentRendererID(),
+                 ImVec2{static_cast<float>(m_framebuffer->getWidth()), static_cast<float>(m_framebuffer->getHeight())}
+                 , {0, 0}, {1, -1});
+    ImGui::End();
+
+    ImGui::Begin("B");
+    ImGui::Image(m_framebufferSecond->getColorAttachmentRendererID(),
+                 ImVec2{static_cast<float>(m_framebufferSecond->getWidth()), static_cast<float>(m_framebufferSecond->getHeight())}
+            , {0, 0}, {1, -1});
+    ImGui::End();
 }
 
 void ExampleSandboxLayer::onEvent(rl::Event &event)
