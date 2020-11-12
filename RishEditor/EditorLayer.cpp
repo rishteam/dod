@@ -1,12 +1,15 @@
 #include <Rish/rlpch.h>
 
+// Core utilities
 #include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Input/Input.h>
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Utils/FileDialog.h>
+#include <Rish/Utils/String.h>
 
+// Script
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 
@@ -411,6 +414,8 @@ void EditorLayer::onImGuiMainMenuRender()
                 std::string path;
                 if(FileDialog::SelectSaveFile("sce", nullptr, path))
                 {
+                    if(!String::endswith(path, ".sce"))
+                        path += ".sce";
                     m_scenePath = path;
                     saveScene(m_scenePath);
                 }
