@@ -63,10 +63,12 @@ EditorLayer::EditorLayer()
     switchCurrentScene(m_editorScene);
 
     // Actions
+    // TODO: Make actions into callback function?
     m_action_copy = m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
     m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
     m_action_paste->setEnabled(false);
     m_action_delete = m_sceneAction.createAction("Delete", ImActionKey_Delete);
+    m_action_cancel = m_sceneAction.createAction("Cancel", ImActionKey_Escape);
 }
 
 void EditorLayer::onAttach()
@@ -532,6 +534,11 @@ void EditorLayer::onImGuiMainMenuRender()
                 m_currentScene->destroyEntity(ent);
             m_sceneHierarchyPanel->removeTarget(ent);
         }
+    }
+
+    if(m_action_cancel->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->resetTarget();
     }
 }
 

@@ -112,6 +112,7 @@ private:
     ImAction *m_action_copy = nullptr;
     ImAction *m_action_paste = nullptr;
     ImAction *m_action_delete = nullptr;
+    ImAction *m_action_cancel = nullptr;
     std::vector<Entity> m_copyList;
 
     //////////////////////////////////////////
