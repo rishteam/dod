@@ -79,6 +79,7 @@ EditorLayer::EditorLayer()
 
     // Actions
     // TODO: Make actions into callback function?
+    // TODO: Rethink the whole action and shortcut situation and think about the undo&redo functionality
     m_action_copy = m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
     m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
     m_action_paste->setEnabled(false);
@@ -548,15 +549,19 @@ void EditorLayer::onImGuiMainMenuRender()
         }
     }
 
+    // TODO: Same logic as SceneHierarchyPanel. Plz refactor
     if(m_action_paste->IsShortcutPressed())
     {
+        m_sceneHierarchyPanel->resetTarget();
+        //
         for(auto &ent : m_copyList)
         {
             if(ent)
-                m_currentScene->duplicateEntity(ent);
+            {
+                auto dup = m_currentScene->duplicateEntity(ent);
+                m_sceneHierarchyPanel->addTarget(dup);
+            }
         }
-        m_copyList.clear();
-        m_action_paste->setEnabled(false);
     }
 
     if(m_action_delete->IsShortcutPressed())
@@ -722,19 +727,19 @@ void EditorLayer::saveScene(const std::string &path)
 }
 
 // TODO: Refactor Timer into timer thread
+// TODO: Use condition_variable
 void EditorLayer::autoSave()
 {
     Clock clock;
-    Time lastSave = clock.getElapsedTime();
 
     while(m_autoSaveRun)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        if(((clock.getElapsedTime() - lastSave) > 10.f) && (!m_scenePath.empty()))
+        if((clock.getElapsedTime() > m_editorSetting.autoSaveSecond) && (!m_scenePath.empty()))
         {
-            lastSave = clock.getElapsedTime();
             saveScene(m_scenePath);
             m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
+            clock.restart();
         }
     }
 }

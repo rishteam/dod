@@ -4,7 +4,8 @@
 
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
-#include <queue>
+
+#include <Rish/Core/Time.h>
 
 #include "SceneMultiTargetPanel.h"
 
@@ -19,14 +20,12 @@ public:
     ~StatusBarPanel() override = default;
 
     void sendMessage(const std::string &str);
-    void setNowTime(Time t);
 
     void onImGuiRender() override;
 
 private:
     std::string m_message;
-    Time m_nowTime, m_showTimeStart, m_showTimeEnd;
+    Clock m_clk;
 };
 
 }
-

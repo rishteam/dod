@@ -9,27 +9,21 @@ void StatusBarPanel::onImGuiRender() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 4));
     ImGui::Begin("StatusBar");
     ImGui::PopStyleVar();
+    ImGui::Dummy(ImVec2{10.f, 1.f}); ImGui::SameLine();
     ImGui::Text("%s", m_message.c_str());
     ImGui::End();
 
-    m_showTimeEnd = m_nowTime;
-    if( m_message == "" )
-        m_showTimeStart = m_nowTime;
-
-    if(m_showTimeEnd - m_showTimeStart > 5.f ){
-        m_showTimeStart = m_nowTime;
-        m_message = "";
+    if(m_clk.getElapsedTime() > 5.f)
+    {
+        m_message.clear();
+        m_clk.restart();
     }
-
 }
 
-void StatusBarPanel::sendMessage(const std::string &str) {
+void StatusBarPanel::sendMessage(const std::string &str)
+{
     m_message = str;
-}
-
-void StatusBarPanel::setNowTime(Time t){
-    m_nowTime = t;
+    m_clk.restart();
 }
 
 }
-

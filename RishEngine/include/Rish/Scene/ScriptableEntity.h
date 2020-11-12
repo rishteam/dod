@@ -133,7 +133,7 @@ private:
     template<typename Archive>      \
     void serialize(Archive &ar)     \
     {                               \
-        int mock;                   \
+        int mock{};                 \
         ar(CEREAL_NVP(mock));       \
     }
 

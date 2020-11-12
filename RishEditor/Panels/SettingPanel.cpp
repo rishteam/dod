@@ -23,6 +23,7 @@ void SettingPanel::onImGuiRender() {
     {
 
         ImGui::Separator();
+        ImGui::AlignTextToFramePadding();
         {
             ImGui::Text("Key Setting");
             ImGui::Columns(2, "key");
@@ -55,6 +56,7 @@ void SettingPanel::onImGuiRender() {
 
             ImGui::Text("Open Scene when editor is open");
             ImGui::Text("Scene");
+            ImGui::Text("Auto save (sec.)");
 
             ImGui::NextColumn();
 
@@ -68,6 +70,7 @@ void SettingPanel::onImGuiRender() {
                     m_parent->m_editorSetting.path = FileSystem::RelativePath(tmpPath);
                 }
             }
+            ImGui::InputFloat("##AutoSaveSecond", &m_parent->m_editorSetting.autoSaveSecond);
 
             ImGui::Columns(1);
             ImGui::Separator();
