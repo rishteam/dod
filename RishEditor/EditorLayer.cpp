@@ -128,6 +128,9 @@ void EditorLayer::onUpdate(Time dt)
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
 
+    // Physics Restrict Velocity when chosen
+    PhysicsSystem::OnEditorUpdate(m_editController->getSelectedEntities());
+
     // TODO: Rendering Queue
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Editor
@@ -163,6 +166,7 @@ void EditorLayer::onUpdate(Time dt)
         m_currentScene->onUpdate(dt);
     }
     m_sceneFramebuffer->unbind();
+
 }
 
 void EditorLayer::onImGuiRender()
@@ -178,6 +182,7 @@ void EditorLayer::onImGuiRender()
     // Update the panels
     m_sceneHierarchyPanel->onImGuiRender();
     m_componentEditPanel->onImGuiRender();
+
 
     // If SceneHierarchyPanel changed
     if(sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())

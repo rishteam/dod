@@ -55,6 +55,7 @@ void rl::PhysicsWorld::Step(float dt)
     {
         if (bodies.at(i)->invMass == 0.0f)
             continue;
+        // TODO: add restrict body
         bodies.at(i)->computeForce(dt, gravity);
     }
 
@@ -68,7 +69,6 @@ void rl::PhysicsWorld::Step(float dt)
     {
         arb->second.preStep(inv_dt);
     }
-
 
     for (int i = 0; i < iterations; ++i)
     {

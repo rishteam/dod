@@ -40,6 +40,8 @@ struct RigidBody2DComponent
     float friction = 0.2f;
     /// 限制旋轉
     bool RestrictRotation = false;
+    /// 限制速度
+    bool RestrictGravity = false;
 
 
     RigidBody2DComponent() = default;
@@ -63,6 +65,7 @@ private:
             CEREAL_NVP(attachPoint),
             CEREAL_NVP(showAttachPoint),
             CEREAL_NVP(RestrictRotation)
+            // TODO: add serializable parameter
         );
     }
 };

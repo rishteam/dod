@@ -71,7 +71,6 @@ void EditController::onUpdate(Time dt)
 
     Renderer2D::BeginScene(m_cameraController->getCamera(), false);
     {
-
         // Draw special entities
         drawCameraIconAndBorder(scene);
         // TODO: Draw other special entities
@@ -100,6 +99,8 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
+
+
         std::set<Entity> delTarget;
         auto &entSet = getTargets();
         for(auto &ent : entSet)
@@ -120,6 +121,7 @@ void EditController::onUpdate(Time dt)
         m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
         m_gizmo.onUpdate();
     }
+
     Renderer2D::EndScene();
 }
 
@@ -293,7 +295,6 @@ void EditController::onEvent(Event &e)
 
 bool EditController::onMouseScrolled(MouseScrolledEvent &e)
 {
-
     if( m_sceneWindowFocused && m_sceneWindowHovered )
     {
         if(!m_isNowScrollingCamera) // is not moving

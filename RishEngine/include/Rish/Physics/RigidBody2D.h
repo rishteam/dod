@@ -48,6 +48,8 @@ public:
     Vec2 attachPoint;
     /// 受的力
     Vec2 force;
+    /// 限制重力
+    bool RestrictGravity = false;
 
 
 };

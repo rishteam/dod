@@ -72,10 +72,19 @@ void RigidBody2D::AddForce(const Vec2 &f, const Vec2 &attachPoint)
 void RigidBody2D::computeForce(float delta_t, Vec2 gravity)
 {
     if (this->invMass == 0.0f)
+    {
         return;
+    }
     else
     {
-        this->velocity += delta_t * (gravity + this->invMass * this->force);
+        if(!this->RestrictGravity)
+        {
+            this->velocity += delta_t * (gravity + this->invMass * this->force);
+        }
+        else
+        {
+            this->velocity = Vec2(0.0f, 0.0f);
+        }
         this->angularVelocity += delta_t * this->invI * this->torque;
     }
 }

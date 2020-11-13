@@ -5,8 +5,11 @@
 #include <Rish/Physics/PhysicsWorld.h>
 #include <Rish/Scene/Scene.h>
 
+
 #include <Rish/ImGui.h>
 #include <entt/entt.hpp>
+
+class Event;
 
 namespace rl {
 
@@ -16,6 +19,7 @@ public:
     static void RegisterScene(const Ref<Scene> &scene);
     //
     static void OnUpdate(float dt);
+    static void OnEditorUpdate(std::set<Entity> &selectedEntites);
     static void OnImGuiRender();
     //
     static void OnScenePlay();

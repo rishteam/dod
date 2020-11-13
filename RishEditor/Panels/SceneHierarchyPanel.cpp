@@ -78,6 +78,7 @@ void SceneHierarchyPanel::onImGuiRender()
     }
     ImGui::EndChild();
     ImGui::End();
+
 }
 
 void SceneHierarchyPanel::drawEntityNode(Entity entity)

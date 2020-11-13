@@ -1,9 +1,12 @@
+#include <Rish/Scene/Entity.h>
 #include <Rish/Physics/PhysicsSystem.h>
+#include <Rish/Events/Event.h>
 
 namespace rl {
 
 static float accumulateTime = 0.0f;
 static float MS_PER_UPDATE = 1.0f / 120.0f;
+static bool checkState = false;
 
 Ref<Scene> PhysicsSystem::s_Scene;
 
@@ -111,6 +114,31 @@ void PhysicsSystem::OnUpdate(float dt)
     }
 }
 
+void PhysicsSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
+{
+
+    // Clear not selected rigidBody restrict state
+    auto group2 =  s_Scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
+    for (auto entity : group2)
+    {
+        auto &rigid =  s_Scene->m_registry.get<RigidBody2DComponent>(entity);
+        rigid.RestrictGravity = false;
+    }
+    // selected rigidBody will be restrict state
+    if(ImGui::GetIO().MouseDown[0])
+    {
+        for(auto ent : selectedEntites)
+        {
+            if(ent.hasComponent<RigidBody2DComponent>())
+            {
+                ent.getComponent<RigidBody2DComponent>().RestrictGravity = true;
+            }
+        }
+    }
+
+
+
+}
 void PhysicsSystem::OnScenePlay()
 {
     auto &registry = s_Scene->m_registry;
@@ -141,6 +169,18 @@ void PhysicsSystem::OnImGuiRender()
     auto &statePhysicsObject = s_Scene->StatePhysicsObj;
     auto &stateBoxColliderObject = s_Scene->StateBoxColliderObj;
     auto &stateJointObject = s_Scene->StateJointObj;
+
+    auto &registry = s_Scene->m_registry;
+    ImGui::Begin("Restrict Velocity:");
+    auto group = registry.view<TransformComponent, RigidBody2DComponent>();
+    for (auto entity : group)
+    {
+        auto &UUID = registry.get<TagComponent>(entity).id;
+        auto &rigid = registry.get<RigidBody2DComponent>(entity);
+        ImGui::Text("UUID: %s", UUID.to_string().c_str());
+        ImGui::Text("Restrict Velocity: %s", rigid.RestrictGravity ? "True" : "False");
+    }
+    ImGui::End();
 
     ImGui::Begin("PhysicsWorld");
     ImGui::Text("PhysicsWorld Counter: %d", mapPhysicsObj.size());
@@ -324,6 +364,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
     auto &stateBoxColliderObject = s_Scene->StateBoxColliderObj;
     auto &stateJointObject = s_Scene->StateJointObj;
 
+
     // Initial all state, it will be false
     for(auto &statephy : statePhysicsObject)
     {
@@ -345,6 +386,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
         auto &UUID = registry.get<TagComponent>(entity).id;
         auto &transform = registry.get<TransformComponent>(entity);
         auto &rigidbody2D = registry.get<RigidBody2DComponent>(entity);
+
         // Update state Record, exist true
         for (auto &state : statePhysicsObject)
         {
@@ -373,6 +415,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
             phy->force = rigidbody2D.force;
             phy->attachPoint = rigidbody2D.attachPoint;
             phy->keepingForce = rigidbody2D.keepingForce;
+            phy->RestrictGravity = rigidbody2D.RestrictGravity;
             phy->isCollider = true;
         }
         // Only RigidBody2D
@@ -391,13 +434,15 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
             phy->force = rigidbody2D.force;
             phy->attachPoint = rigidbody2D.attachPoint;
             phy->keepingForce = rigidbody2D.keepingForce;
+            phy->RestrictGravity = rigidbody2D.RestrictGravity;
             phy->isCollider = false;
         }
     }
 
     // Update BoxCollider2D component data to engine
     auto view2 = registry.view<TransformComponent, BoxCollider2DComponent>();
-    for (auto entity : view2) {
+    for (auto entity : view2)
+    {
         auto &UUID = registry.get<TagComponent>(entity).id;
         auto &boxcollider2D = registry.get<BoxCollider2DComponent>(entity);
         // Update state Record
@@ -416,7 +461,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
             boxc->w = boxcollider2D.w;
             boxc->h = boxcollider2D.h;
         }
-
     }
 
     // Update Joint2D component data to engine
