@@ -254,6 +254,12 @@ target_link_libraries(RishEngine
     cereal
 )
 
+# Add re2
+find_package(re2 REQUIRED)
+target_link_libraries(RishEngine
+    re2::re2
+)
+
 target_link_libraries(RishEngine IconFontCpp::IconFontCpp)
 
 # Copy files

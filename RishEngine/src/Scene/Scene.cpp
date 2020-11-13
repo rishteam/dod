@@ -20,8 +20,10 @@
 #include <Rish/Utils/uuid.h>
 //
 #include <Rish/ImGui/ImGui.h>
+//
+#include <re2/re2.h>
 
-namespace rl{
+namespace rl {
 
 int Scene::entityNumber = 0;
 
@@ -35,6 +37,8 @@ Scene::Scene()
 Scene::~Scene()
 {
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 {
@@ -54,7 +58,8 @@ Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 	}
 	entityNumber++;
 
-    m_entNameToNumMap[tag]++;
+    tag = m_nameManager.getName(tag);
+    m_nameManager.incrementName(tag);
 
 	RL_CORE_TRACE("[Scene] Created entity {}", tag);
 	return entity;
@@ -74,14 +79,54 @@ Entity Scene::createEntity(const UUID &id, const std::string &name)
         tag = name;
     entityNumber++;
 
-    m_entNameToNumMap[tag]++;
+    tag = m_nameManager.getName(tag);
+    m_nameManager.incrementName(tag);
 
     RL_CORE_TRACE("[Scene] Created entity {} by id {}", tag, id.to_string());
     return entity;
 }
 
+void Scene::EntityNameManager::incrementName(const std::string &name)
+{
+    std::string tmp{stripNumber(name)};
+    //
+    m_entNameToNumMap[tmp]++;
+}
+
+void Scene::EntityNameManager::decrementName(const std::string &name)
+{
+    std::string tmp{stripNumber(name)};
+    //
+    if(m_entNameToNumMap.count(tmp))
+        m_entNameToNumMap[tmp]--;
+}
+
+std::string Scene::EntityNameManager::getName(const std::string &name)
+{
+    std::string tmp{stripNumber(name)};
+    auto siz = m_entNameToNumMap[tmp];
+    //
+    if(siz)
+        return fmt::format("{} ({})", tmp, siz);
+    else
+        return tmp;
+}
+
+std::string Scene::EntityNameManager::stripNumber(const std::string &str)
+{
+    std::string tmp{str};
+    if(RE2::PartialMatch(tmp, R"(\(\d+\))"))
+    {
+        // Delete "(number)" part
+        RE2::Replace(&tmp, R"( \(\d+\))", "");
+    }
+    return tmp;
+}
+
 void Scene::destroyEntity(Entity entity)
 {
+    m_nameManager.decrementName(entity.getName());
+
     NativeScriptSystem::OnDestroy(entity);
 
     m_registry.destroy(entity.getEntityID());
@@ -90,8 +135,8 @@ void Scene::destroyEntity(Entity entity)
 Entity Scene::duplicateEntity(Entity src)
 {
     auto &tag = src.getComponent<TagComponent>().tag;
-    m_entNameToNumMap[tag]++;
-    auto ent = createEntity(fmt::format("{} ({})", tag, m_entNameToNumMap[tag]));
+
+    auto ent = createEntity(m_nameManager.stripNumber(tag));
 
     CopyComponentToEntityIfExists<TransformComponent>(ent, src);
     CopyComponentToEntityIfExists<SpriteRenderComponent>(ent, src);
@@ -190,7 +235,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     
     // Copy other states
-    target->m_entNameToNumMap = m_entNameToNumMap;
+    target->m_nameManager = m_nameManager;
 }
 
 void Scene::onImGuiRender()
@@ -207,6 +252,15 @@ void Scene::onImGuiRender()
 
     if(m_debugScene)
         DrawDebugSceneWindow(m_registry, this);
+
+    ImGui::Begin("Debug");
+    for(auto &&[k, v] : m_nameManager.m_entNameToNumMap)
+    {
+        ImGui::PushID(k.c_str());
+        ImGui::Text("%s => %d", k.c_str(), v);
+        ImGui::PopID();
+    }
+    ImGui::End();
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)
@@ -261,6 +315,5 @@ bool Scene::findPrimaryCamera()
 
     return isAnyCamera;
 }
-
 
 } // namespace rl

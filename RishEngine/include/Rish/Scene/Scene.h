@@ -112,7 +112,19 @@ public:
     SceneState m_sceneState = SceneState::Editor;
 
 	Entity createEntity(const UUID &id, const std::string &name);
-	std::unordered_map<std::string, size_t> m_entNameToNumMap{};  // TODO: think a more elegant way
+
+	//
+	struct EntityNameManager
+    {
+        void incrementName(const std::string &name);
+        void decrementName(const std::string &name);
+        std::string getName(const std::string &name);
+
+        static std::string stripNumber(const std::string &str);
+
+        std::unordered_map<std::string, size_t> m_entNameToNumMap{};
+    };
+	EntityNameManager m_nameManager;
 
     ////////////////////////////////////////////////////////////////
     // Physics
