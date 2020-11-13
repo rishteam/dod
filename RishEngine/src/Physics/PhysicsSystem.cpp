@@ -191,6 +191,32 @@ void PhysicsSystem::OnImGuiRender()
         }
     }
     ImGui::End();
+
+
+    ImGui::Begin("Joint");
+    ImGui::Text("Joint Counter: %d", mapJointObj.size());
+    for(auto && [uuid, body] : mapJointObj)
+    {
+        if(ImGui::TreeNode(uuid.to_string().c_str()))
+        {
+            ImGui::Text("%s \n", uuid.to_string().c_str());
+            ImGui::Separator();
+        }
+    }
+    ImGui::End();
+
+
+    ImGui::Begin("JointState");
+    ImGui::Text("JointState Counter: %d", stateJointObject.size());
+    for(auto && [uuid, body] : stateJointObject)
+    {
+        if(ImGui::TreeNode(uuid.to_string().c_str()))
+        {
+            ImGui::Text("%s %d\n", uuid.to_string().c_str(), body);
+            ImGui::Separator();
+        }
+    }
+    ImGui::End();
 }
 
 void PhysicsSystem::PhysicsWorldUpdate(float dt)

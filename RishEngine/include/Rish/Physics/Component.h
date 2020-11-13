@@ -74,6 +74,7 @@ struct BoxCollider2DComponent
     float w = 1.0f;
     float h = 1.0f;
     std::vector<UUID> whoCollide;
+    bool FollowTransform = false;
     bool isCollision = false;
 
     BoxCollider2DComponent();
@@ -91,6 +92,7 @@ private:
             CEREAL_NVP(y),
             CEREAL_NVP(w),
             CEREAL_NVP(h)
+            // TODO: add serializable parameter
         );
     }
 };
