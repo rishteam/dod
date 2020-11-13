@@ -57,10 +57,9 @@ void SceneHierarchyPanel::onImGuiRender()
     if (ImGui::BeginPopupContextWindow()) {
         if(!isSelected()){
             if (ImGui::MenuItem("Create Entity")) {
-                m_focusEntity = m_currentScene->createEntity();
+                setFocus(m_currentScene->createEntity());
                 resetTarget();
                 addTarget(m_focusEntity);
-                m_isFocusEntity = true;
             }
         }
         if(isSelected())
@@ -81,8 +80,7 @@ void SceneHierarchyPanel::onImGuiRender()
                     auto copyEntity =  m_currentScene->duplicateEntity(ent);
                     addTarget(copyEntity);
                     if( first ){
-                        m_isFocusEntity = true;
-                        m_focusEntity = copyEntity;
+                        setFocus(copyEntity);
                     }
                     first = false;
                 }
@@ -146,6 +144,11 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 
 void SceneHierarchyPanel::drawHideEntityNode(Entity entity){
 
+}
+
+void SceneHierarchyPanel::setFocus(Entity entity){
+    m_isFocusEntity = true;
+    m_focusEntity = entity;
 }
 
 } // end of namespace rl

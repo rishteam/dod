@@ -77,13 +77,8 @@ EditorLayer::EditorLayer()
     std::thread autoSaveThread(&EditorLayer::autoSave, this);
     autoSaveThread.detach();
 
-    // Actions
-    // TODO: Make actions into callback function?
-    m_action_copy = m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
-    m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
-    m_action_paste->setEnabled(false);
-    m_action_delete = m_sceneAction.createAction("Delete", ImActionKey_Delete);
-    m_action_cancel = m_sceneAction.createAction("Cancel", ImActionKey_Escape);
+    setShortCut();
+
 }
 
 void EditorLayer::onAttach()
@@ -461,10 +456,10 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("Edit"))
         {
-            ImGui::MenuItem(m_action_copy);
-            ImGui::MenuItem(m_action_paste);
+            ImGui::MenuItem(m_sceneAction.getAction("Copy"));
+            ImGui::MenuItem(m_sceneAction.getAction("Paste"));
             ImGui::Separator();
-            ImGui::MenuItem(m_action_delete);
+            ImGui::MenuItem(m_sceneAction.getAction("Delete"));
             ImGui::EndMenu();
         }
 
@@ -533,46 +528,8 @@ void EditorLayer::onImGuiMainMenuRender()
         ImGui::EndMenuBar();
     }
 
-    // TODO: Refactor?
-    if (m_action_copy->IsShortcutPressed())
-    {
-        m_copyList.clear();
-        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
-        {
-            m_copyList.push_back(ent);
-        }
+    shortCutAction();
 
-        if(!m_copyList.empty())
-        {
-            m_action_paste->setEnabled(true);
-        }
-    }
-
-    if(m_action_paste->IsShortcutPressed())
-    {
-        for(auto &ent : m_copyList)
-        {
-            if(ent)
-                m_currentScene->duplicateEntity(ent);
-        }
-        m_copyList.clear();
-        m_action_paste->setEnabled(false);
-    }
-
-    if(m_action_delete->IsShortcutPressed())
-    {
-        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
-        {
-            if(ent)
-                m_currentScene->destroyEntity(ent);
-            m_sceneHierarchyPanel->removeTarget(ent);
-        }
-    }
-
-    if(m_action_cancel->IsShortcutPressed())
-    {
-        m_sceneHierarchyPanel->resetTarget();
-    }
 }
 
 void EditorLayer::onEvent(rl::Event& e)
@@ -737,6 +694,79 @@ void EditorLayer::autoSave()
             m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
         }
     }
+}
+
+void EditorLayer::setShortCut()
+{
+    m_sceneAction.createAction("SelectAll", ImCtrl | ImActionKey_A);
+    m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
+    m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
+    m_sceneAction.getAction("Paste")->setEnabled(false);
+    m_sceneAction.createAction("Delete", ImActionKey_Delete);
+    m_sceneAction.createAction("Cancel", ImActionKey_Escape);
+}
+
+void EditorLayer::shortCutAction()
+{
+    if(m_sceneAction.getAction("SelectAll")->IsShortcutPressed()){
+        m_currentScene->m_registry.each([&](auto entityID) {
+            Entity entity(entityID, m_currentScene.get());
+            m_editController->addTarget(entity);
+        });
+    }
+
+    if (m_sceneAction.getAction("Copy")->IsShortcutPressed())
+    {
+        m_copyList.clear();
+        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        {
+            m_copyList.push_back(ent);
+        }
+
+        if(!m_copyList.empty())
+        {
+            m_sceneAction.getAction("Paste")->setEnabled(true);
+        }
+    }
+
+    if(m_sceneAction.getAction("Paste")->IsShortcutPressed())
+    {
+        bool first = true;
+
+        m_sceneHierarchyPanel->resetTarget();
+        for(auto &ent : m_copyList)
+        {
+            if(ent){
+                auto copyEntity = m_currentScene->duplicateEntity(ent);
+                m_sceneHierarchyPanel->addTarget(copyEntity);
+                if( first ){
+                    m_sceneHierarchyPanel->setFocus(copyEntity);
+                }
+                first = false;
+            }
+        }
+        m_copyList.clear();
+        m_sceneAction.getAction("Paste")->setEnabled(false);
+    }
+
+    if(m_sceneAction.getAction("Delete")->IsShortcutPressed())
+    {
+        for(auto ent : m_sceneHierarchyPanel->getSelectedEntities())
+            ent.destroy();
+        m_sceneHierarchyPanel->resetTarget();
+    }
+
+    if(m_sceneAction.getAction("Cancel")->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->resetTarget();
+    }
+
+}
+
+void EditorLayer::changeShortCut(const char *name, int shortcut, bool *selected)
+{
+    m_sceneAction.removeAction(name);
+    m_sceneAction.createAction(name, shortcut, selected);
 }
 
 }
