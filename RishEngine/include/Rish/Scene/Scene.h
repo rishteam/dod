@@ -113,7 +113,17 @@ public:
 
 	Entity createEntity(const UUID &id, const std::string &name);
 
-	//
+	// TODO: refactor in to class
+	// Entity map
+	std::unordered_map<UUID, Ref<Entity>> m_UUIDToEntityMap{};
+	void addEntityToMap(const UUID& id, Entity entity);
+	void removeEntityFromMap(const UUID& id);
+	bool isEntityInMap(Entity entity);
+	bool isUUIDValid(const UUID &id);
+
+	/**
+	 * @brief Manager of EntityNames
+	 */
 	struct EntityNameManager
     {
         void incrementName(const std::string &name);

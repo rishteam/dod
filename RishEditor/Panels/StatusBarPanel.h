@@ -13,7 +13,6 @@ namespace rl{
 
 class RL_API StatusBarPanel : public SceneMultiTargetPanel
 {
-
 public:
     StatusBarPanel() = default;
     StatusBarPanel(const Ref<Scene> &scene) : SceneMultiTargetPanel(scene) {}

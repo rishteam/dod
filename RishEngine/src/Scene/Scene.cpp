@@ -40,13 +40,43 @@ Scene::~Scene()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Scene::addEntityToMap(const UUID& id, Entity entity)
+{
+    m_UUIDToEntityMap[id] = MakeRef<Entity>(entity);
+}
+
+void Scene::removeEntityFromMap(const UUID& id)
+{
+    RL_CORE_ASSERT(m_UUIDToEntityMap.count(id), "UUID {} not in map", id.to_string());
+
+    m_UUIDToEntityMap.erase(id);
+}
+
+bool Scene::isEntityInMap(Entity entity)
+{
+    return m_UUIDToEntityMap.count(entity.getUUID());
+}
+
+bool Scene::isUUIDValid(const UUID &id)
+{
+    return m_UUIDToEntityMap.count(id);
+}
+
+///////////////////////////////////////////////
+
 Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 {
 	Entity entity = { m_registry.create(), this };
+	
+	// Add necessary components
 	entity.addComponent<TransformComponent>(pos);
 	auto &tagComponent = entity.addComponent<TagComponent>();
 	tagComponent.id = UUID();
 
+	// Store in the entity map
+    addEntityToMap(tagComponent.id, entity);
+
+	// Naming the new entity
     auto &tag = tagComponent.tag;
 	if(name.empty())
 	{
@@ -68,10 +98,16 @@ Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 Entity Scene::createEntity(const UUID &id, const std::string &name)
 {
     Entity entity = {m_registry.create(), this};
+
+    // Add necessary components
     entity.addComponent<TransformComponent>();
     auto &tagComponent = entity.addComponent<TagComponent>();
     tagComponent.id = id;
 
+    // Store in the entity map
+    addEntityToMap(tagComponent.id, entity);
+
+    // Naming the new entity
     auto &tag = tagComponent.tag;
     if(name.empty())
         tag = fmt::format("Entity {}", entityNumber);
@@ -125,6 +161,8 @@ std::string Scene::EntityNameManager::stripNumber(const std::string &str)
 
 void Scene::destroyEntity(Entity entity)
 {
+    removeEntityFromMap(entity.getUUID());
+
     m_nameManager.decrementName(entity.getName());
 
     NativeScriptSystem::OnDestroy(entity);
@@ -154,12 +192,24 @@ void Scene::onRuntimeInit()
 {
     NativeScriptSystem::OnInit();
     SpriteRenderSystem::OnInit();
+
+    // Store entities into map
+    m_registry.each([&](auto ent) {
+        Entity entity{ent, this};
+        m_UUIDToEntityMap[entity.getUUID()] = MakeRef<Entity>(entity);
+    });
 }
 
 void Scene::onEditorInit()
 {
     NativeScriptSystem::OnInit();
     SpriteRenderSystem::OnInit();
+    
+    // Store entities into map
+    m_registry.each([&](auto ent) {
+        Entity entity{ent, this};
+        m_UUIDToEntityMap[entity.getUUID()] = MakeRef<Entity>(entity);
+    });
 }
 
 void Scene::onUpdate(Time dt)
@@ -280,15 +330,17 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
 // TODO: Improve the performance
 Entity Scene::getEntityByUUID(UUID uuid)
 {
-    Entity target;
-    //
-    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
-        Entity entity{ent, this};
-        if(tag.id == uuid)
-            target = entity;
-    });
-    //
-    return target;
+    RL_CORE_ASSERT(isUUIDValid(uuid), "UUID {} is not in map", uuid.to_string());
+//    Entity target;
+//
+//    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
+//        Entity entity{ent, this};
+//        if(tag.id == uuid)
+//            target = entity;
+//    });
+//
+//    return target;
+    return *m_UUIDToEntityMap[uuid];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

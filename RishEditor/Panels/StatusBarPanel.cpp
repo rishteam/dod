@@ -9,7 +9,8 @@ void StatusBarPanel::onImGuiRender() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 4));
     ImGui::Begin("StatusBar");
     ImGui::PopStyleVar();
-    ImGui::Dummy(ImVec2{10.f, 1.f}); ImGui::SameLine();
+    auto size = ImGui::GetContentRegionAvail();
+    ImGui::Dummy(ImVec2{10.f, size.y/2.f}); ImGui::SameLine();
     ImGui::Text("%s", m_message.c_str());
     ImGui::End();
 
