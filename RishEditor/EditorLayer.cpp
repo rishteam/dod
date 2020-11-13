@@ -1,6 +1,7 @@
 #include <Rish/rlpch.h>
 
 // Core utilities
+#include <Rish/Core/Application.h>
 #include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Input/Input.h>
@@ -21,11 +22,10 @@
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
+#include <Rish/Debug/ImGuiLogWindow.h>
 
 #include <Rish/ImGui/MenuAction.h>
 #include <imgui_internal.h>
-
-#include <Rish/Scene/ScriptableManager.h>
 
 #include <Rish/Script/Script.h>
 
@@ -84,7 +84,7 @@ EditorLayer::EditorLayer()
     m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
     m_action_paste->setEnabled(false);
     m_action_delete = m_sceneAction.createAction("Delete", ImActionKey_Delete);
-    m_action_cancel = m_sceneAction.createAction("Cancel", ImActionKey_Escape);
+    m_action_cancel = m_sceneAction.createAction("Cancel", ImActionKey_Escape); //
 }
 
 void EditorLayer::onAttach()
