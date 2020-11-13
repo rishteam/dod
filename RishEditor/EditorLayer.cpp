@@ -1,12 +1,15 @@
 #include <Rish/rlpch.h>
 
+// Core utilities
 #include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Input/Input.h>
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Utils/FileDialog.h>
+#include <Rish/Utils/String.h>
 
+// Script
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 
@@ -20,7 +23,7 @@
 
 #include <Rish/Debug/DebugWindow.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/MenuAction.h>
 #include <imgui_internal.h>
 
 #include <Rish/Scene/ScriptableManager.h>
@@ -54,6 +57,7 @@ EditorLayer::EditorLayer()
     //
     m_statusBarPanel = MakeRef<StatusBarPanel>();
     m_panelList.push_back(m_statusBarPanel);
+    //
     // Simple Panels
     m_helpPanel = MakeRef<HelpPanel>();
     m_simplePanelList.push_back(m_helpPanel);
@@ -61,7 +65,27 @@ EditorLayer::EditorLayer()
     m_aboutPanel = MakeRef<AboutPanel>();
     m_simplePanelList.push_back(m_aboutPanel);
     //
+    m_settingPanel = MakeRef<SettingPanel>();
+    m_simplePanelList.push_back(m_settingPanel);
+    // Bind contexts
+    for(auto &p : m_simplePanelList)
+        p->setContext(this);
+    //
     switchCurrentScene(m_editorScene);
+    // Start auto save thread
+    // TODO: Make RishEngine handle thread management
+    m_autoSaveRun = true;
+    std::thread autoSaveThread(&EditorLayer::autoSave, this);
+    autoSaveThread.detach();
+
+    // Actions
+    // TODO: Make actions into callback function?
+    // TODO: Rethink the whole action and shortcut situation and think about the undo&redo functionality
+    m_action_copy = m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
+    m_action_paste = m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
+    m_action_paste->setEnabled(false);
+    m_action_delete = m_sceneAction.createAction("Delete", ImActionKey_Delete);
+    m_action_cancel = m_sceneAction.createAction("Cancel", ImActionKey_Escape);
 }
 
 void EditorLayer::onAttach()
@@ -91,7 +115,6 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<MonsterController>();
     ScriptableManager::Register<EventBoxController>();
 
-
     loadSetting("setting.conf");
 
     if(m_editorSetting.isDefaultOpenScene)
@@ -99,10 +122,14 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
+
 }
 
 void EditorLayer::onDetach()
 {
+    // Close Auto Save Thread
+    m_autoSaveRun = false;
+
     ImGui::SaveIniSettingsToDisk("assets/layout/editor.ini");
     // Detach all panels
     for(auto &panel : m_panelList)
@@ -111,7 +138,8 @@ void EditorLayer::onDetach()
     for(auto &panel : m_simplePanelList)
         panel->onDetach();
 
-    saveSetting();
+    if(m_editorSetting.saveSettingOnExit)
+        saveSetting();
 }
 
 void EditorLayer::onUpdate(Time dt)
@@ -136,7 +164,7 @@ void EditorLayer::onUpdate(Time dt)
     m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear();
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         m_editController->onUpdate(dt);
 
@@ -168,7 +196,7 @@ void EditorLayer::onUpdate(Time dt)
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear();
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         LightSystem::onViewportResize(m_gameViewportPanelSize);
         m_currentScene->onUpdate(dt);
@@ -181,40 +209,43 @@ void EditorLayer::onImGuiRender()
     ImGui::BeginDockspace("EditorDockspace");
     // Menu Bar
     onImGuiMainMenuRender();
-    //
-    // Sync the target entities set
-    static std::set<Entity> sceneHierarchyPrevSet{};
-    static std::set<Entity> editControllerPrevSet{};
 
-    // Update the panels
-    m_sceneHierarchyPanel->onImGuiRender();
-    m_componentEditPanel->onImGuiRender();
-
-    // If SceneHierarchyPanel changed
-    if(sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
+    // Panel sync
     {
-        m_editController->resetTarget();
-        m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+        // Sync the target entities set
+        static std::set<Entity> sceneHierarchyPrevSet{};
+        static std::set<Entity> editControllerPrevSet{};
+
+        // Update the panels
+        m_sceneHierarchyPanel->onImGuiRender();
+        m_componentEditPanel->onImGuiRender();
+
+        // If SceneHierarchyPanel changed
+        if (sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
+        {
+            m_editController->resetTarget();
+            m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+        }
+
+        // If EditController changed
+        if (editControllerPrevSet != m_editController->getTargets())
+        {
+            m_sceneHierarchyPanel->resetTarget();
+            m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
+        }
+
+        sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
+        editControllerPrevSet = m_editController->getTargets();
+
+        auto &entSet = m_editController->getTargets();
+        if (entSet.size() == 1)
+        {
+            m_componentEditPanel->setTarget(*entSet.begin());
+        }
+        else
+            m_componentEditPanel->resetTarget();
     }
 
-    // If EditController changed
-    if(editControllerPrevSet != m_editController->getTargets())
-    {
-        m_sceneHierarchyPanel->resetTarget();
-        m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
-    }
-
-    sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
-    editControllerPrevSet = m_editController->getTargets();
-
-    auto &entSet = m_editController->getTargets();
-    if(entSet.size() == 1)
-    {
-        m_componentEditPanel->setTarget(*entSet.begin());
-    }
-    else
-        m_componentEditPanel->resetTarget();
-    //
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
@@ -293,7 +324,7 @@ void EditorLayer::onImGuiRender()
                 m_currentScene->onScenePlay();
             }
             else
-                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remoove me
+                m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remove me
         }
         ImGui::SameLine();
 
@@ -317,7 +348,8 @@ void EditorLayer::onImGuiRender()
         }
         ImGui::SameLine();
 
-        if(ImGui::Button(ICON_FA_BORDER_ALL)){
+        if(ImGui::Button(ICON_FA_BORDER_ALL))
+        {
             m_editController->toggleShowGrid();
         }
         ImGui::SameLine();
@@ -337,7 +369,7 @@ void EditorLayer::onImGuiRender()
         ImGui::SameLine();
 
         // Scale button
-        if( ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT) )
+        if(ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT))
         {
             m_editController->changeGizmoMode(Gizmo::GizmoMode::ScaleMode);
         }
@@ -393,6 +425,7 @@ void EditorLayer::onImGuiMainMenuRender()
         {
             if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
+                m_scenePath = "";
                 newScene();
             }
 
@@ -423,6 +456,8 @@ void EditorLayer::onImGuiMainMenuRender()
                 std::string path;
                 if(FileDialog::SelectSaveFile("sce", nullptr, path))
                 {
+                    if(!String::endswith(path, ".sce"))
+                        path += ".sce";
                     m_scenePath = path;
                     saveScene(m_scenePath);
                 }
@@ -438,6 +473,15 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::EndMenu();
         }
 
+        if(ImGui::BeginMenu("Edit"))
+        {
+            ImGui::MenuItem(m_action_copy);
+            ImGui::MenuItem(m_action_paste);
+            ImGui::Separator();
+            ImGui::MenuItem(m_action_delete);
+            ImGui::EndMenu();
+        }
+
         if(ImGui::BeginMenu("Tools"))
         {
             if(ImGui::MenuItem("Renderer Statistics"))
@@ -445,6 +489,13 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: Use overlay
                 auto stat = Renderer2D::GetStats();
                 RL_INFO("Renderer2D: quad = {}, line = {}, draw = {}", stat.QuadCount, stat.LineCount, stat.DrawCount);
+            }
+
+            ImGui::Separator();
+
+            if( ImGui::MenuItem("Setting", nullptr) )
+            {
+                m_settingPanel->showPanel();
             }
 
             ImGui::EndMenu();
@@ -456,7 +507,6 @@ void EditorLayer::onImGuiMainMenuRender()
             {
                 if(ImGui::BeginMenu("Editor Grid"))
                 {
-//                    ImGui::MenuItem("Show", nullptr, &m_editController->m_showGrid);
                     ImGui::MenuItem("Debug info", nullptr, &m_editController->m_debugEditorGrid);
                     ImGui::EndMenu();
                 }
@@ -495,6 +545,51 @@ void EditorLayer::onImGuiMainMenuRender()
         }
 
         ImGui::EndMenuBar();
+    }
+
+    // TODO: Refactor?
+    if (m_action_copy->IsShortcutPressed())
+    {
+        m_copyList.clear();
+        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        {
+            m_copyList.push_back(ent);
+        }
+
+        if(!m_copyList.empty())
+        {
+            m_action_paste->setEnabled(true);
+        }
+    }
+
+    // TODO: Same logic as SceneHierarchyPanel. Plz refactor
+    if(m_action_paste->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->resetTarget();
+        //
+        for(auto &ent : m_copyList)
+        {
+            if(ent)
+            {
+                auto dup = m_currentScene->duplicateEntity(ent);
+                m_sceneHierarchyPanel->addTarget(dup);
+            }
+        }
+    }
+
+    if(m_action_delete->IsShortcutPressed())
+    {
+        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        {
+            if(ent)
+                m_currentScene->destroyEntity(ent);
+            m_sceneHierarchyPanel->removeTarget(ent);
+        }
+    }
+
+    if(m_action_cancel->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->resetTarget();
     }
 }
 
@@ -563,7 +658,7 @@ void EditorLayer::loadSetting(const std::string &path)
 {
     std::string content;
     content = FileSystem::ReadTextFile(path);
-
+    //
     std::stringstream oos(content);
     cereal::JSONInputArchive inputArchive(oos);
     inputArchive(cereal::make_nvp("settings", m_editorSetting));
@@ -571,9 +666,6 @@ void EditorLayer::loadSetting(const std::string &path)
 
 void EditorLayer::saveSetting()
 {
-    m_editorSetting.isDefaultOpenScene = true;
-    m_editorSetting.path = m_scenePath;
-
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);
     outputArchive(cereal::make_nvp("settings", m_editorSetting));
@@ -646,6 +738,24 @@ void EditorLayer::saveScene(const std::string &path)
     std::ofstream os(path);
     cereal::JSONOutputArchive outputArchive(os);
     outputArchive(cereal::make_nvp("Scene", m_editorScene));
+}
+
+// TODO: Refactor Timer into timer thread
+// TODO: Use condition_variable
+void EditorLayer::autoSave()
+{
+    Clock clock;
+
+    while(m_autoSaveRun)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        if((clock.getElapsedTime() > m_editorSetting.autoSaveSecond) && (!m_scenePath.empty()))
+        {
+            saveScene(m_scenePath);
+            m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
+            clock.restart();
+        }
+    }
 }
 
 }

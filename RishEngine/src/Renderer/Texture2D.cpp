@@ -15,10 +15,10 @@ Texture2D::Texture2D(uint32_t width, uint32_t height)
 
     createTexture();
     setSize(width, height);
+    m_path = "None";
 }
 
 Texture2D::Texture2D(const std::string &path, bool flip)
-	: m_path(path)
 {
     RL_PROFILE_FUNCTION();
 
@@ -28,15 +28,7 @@ Texture2D::Texture2D(const std::string &path, bool flip)
 
     setSize(image->getWidth(), image->getHeight());
     setTexture(image->getPixelPtr());
-}
-
-Texture2D::Texture2D(Ref<Image> image)
-{
-    RL_PROFILE_FUNCTION();
-
-    createTexture();
-    setSize(image->getWidth(), image->getHeight());
-    setTexture(image->getPixelPtr());
+    m_path = path;
 }
 
 Texture2D::~Texture2D()
@@ -146,7 +138,8 @@ void Texture2D::setTexture(const void *imagePtr)
 
 bool Texture2D::operator==(const Texture2D &rhs) const
 {
-    return m_textureID == rhs.m_textureID;
+    std::hash<Texture2D> hasher;
+    return hasher(*this) == hasher(rhs);
 }
 
 bool Texture2D::operator!=(const Texture2D &rhs) const

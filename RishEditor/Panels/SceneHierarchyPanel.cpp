@@ -3,7 +3,7 @@
 #include <Rish/Utils/String.h>
 //
 #include <IconsFontAwesome5.h>
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 namespace rl {
 
@@ -33,8 +33,16 @@ void SceneHierarchyPanel::onImGuiRender()
         }
     });
 
+    // ???? by roy4801
     for(auto e : m_showEntity)
+    {
+        if(m_isFocusEntity && e == m_focusEntity)
+        {
+            ImGui::SetScrollHereY(0);
+            m_isFocusEntity = false;
+        }
         drawEntityNode(e);
+    }
 
     // Draw hide entity hierarchy
     for(auto e : m_hideEntity)
@@ -49,25 +57,24 @@ void SceneHierarchyPanel::onImGuiRender()
     }
 
     // Right click menu
-    if (ImGui::BeginPopupContextWindow()) {
-        if(!isSelected()){
-            if (ImGui::MenuItem("Create Entity")) {
-                m_currentScene->createEntity();
+    if (ImGui::BeginPopupContextWindow())
+    {
+        if(!isSelected())
+        {
+            if (ImGui::MenuItem("Create Entity"))
+            {
+                createEntity();
             }
         }
         if(isSelected())
         {
             if (ImGui::MenuItem("Delete Entity"))
             {
-                for (auto e : m_entitySet)
-                    e.destroy();
-                resetSelected();
+                deleteEntity();
             }
             if (ImGui::MenuItem("Duplicate Entity"))
             {
-                for (auto &ent : getSelectedEntities())
-                    m_currentScene->duplicateEntity(ent);
-                resetSelected();
+                duplicateEntity();
             }
             if (ImGui::MenuItem("Hide Entity"))
             {
@@ -127,6 +134,40 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 
 void SceneHierarchyPanel::drawHideEntityNode(Entity entity){
 
+}
+
+void SceneHierarchyPanel::createEntity()
+{
+    m_focusEntity = m_currentScene->createEntity();
+    resetTarget();
+    addTarget(m_focusEntity);
+    m_isFocusEntity = true;
+}
+
+void SceneHierarchyPanel::deleteEntity()
+{
+    for (auto e : m_entitySet)
+        e.destroy();
+    resetSelected();
+}
+
+void SceneHierarchyPanel::duplicateEntity()
+{
+    auto entSet = getSelectedEntities();
+    resetTarget();
+    //
+    bool first = true;
+    for (auto &ent : entSet)
+    {
+        auto copyEntity =  m_currentScene->duplicateEntity(ent);
+        addTarget(copyEntity);
+        if(first)
+        {
+            m_isFocusEntity = true;
+            m_focusEntity = copyEntity;
+        }
+        first = false;
+    }
 }
 
 } // end of namespace rl

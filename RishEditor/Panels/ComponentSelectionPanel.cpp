@@ -5,7 +5,7 @@
 #include <Rish/Scene/ComponentManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <entt/entt.hpp>
 
 namespace rl {
@@ -14,6 +14,9 @@ void ComponentSelectionPanel::onImGuiRender()
 {
     static std::string filterText;
     ImGui::InputText("##ComponentSelection", &filterText);
+    if( m_open )
+        ImGui::SetKeyboardFocusHere(0);
+    m_open = false;
 
     if(ImGui::ListBoxHeader("##Components"))
     {

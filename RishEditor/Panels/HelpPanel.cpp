@@ -4,13 +4,22 @@ namespace rl {
 
 void HelpPanel::onImGuiRender()
 {
-    if(!m_show) return;
 
     ImGuiIO &io = ImGui::GetIO();
     ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f),
                             ImGuiCond_Once, ImVec2(0.5f,0.5f));
-    if(ImGui::Begin("Help", nullptr, ImGuiWindowFlags_NoResize))
+
+    if(m_show)
     {
+        if (!ImGui::IsPopupOpen("Help"))
+            ImGui::OpenPopup("Help");
+
+        m_show = false;
+    }
+    if (ImGui::BeginPopupModal("Help",
+                               nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+
         if(ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
         {
             ImGui::BulletText("Left Click to select a entity, Hold Ctrl + Left Click can select multiple entities");
@@ -49,11 +58,13 @@ void HelpPanel::onImGuiRender()
             ImGui::TreePop();
         }
 
-        // TODO: beautify the button
-        if(ImGui::Button("Close"))
-            hidePanel();
-        ImGui::End();
+        if (ImGui::Button("Close")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
+
+
 }
 
 }

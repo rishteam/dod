@@ -20,6 +20,8 @@ public:
     static void Init();
     static void Shutdown();
 
+    static void OnImGuiRender();
+
     static void BeginScene(const OrthographicCamera &camera, bool depthTest=false);
     static void BeginScene(const Camera &camera, const glm::mat4 &transform, bool depthTest=false);
     static void EndScene();
@@ -99,7 +101,6 @@ public:
 private:
     // TODO: move to TextureQuadRenderer
     static void FlushStatesIfExceeds();
-    static float GetQuadTextureIndex(const Ref<Texture2D>& texture);
     static void SubmitQuad(const glm::vec4 position[4], const glm::vec4 &color, const glm::vec2 texCoords[4], float texIndex, float texTiling);
     static void SubmitLight(const glm::vec4 position[4], const glm::vec3 &lightPosition, const glm::vec4 &color, float constant, float linear, float quadratic, const glm::vec2 &screenSize);
 };

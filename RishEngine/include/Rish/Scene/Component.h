@@ -173,6 +173,22 @@ struct SpriteRenderComponent
     {
     }
 private:
+    friend class ComponentEditPanel;
+
+    void initSubTexture()
+    {
+        if (m_subSetting.type == SubTexture2DSetting::SubTextureSheet)
+        {
+            m_subtexture = SubTexture2D::CreateFromSheet(m_texture, m_subSetting.pos, m_subSetting.cellSize,
+                                                         m_subSetting.spriteGridSize);
+        }
+        else if (m_subSetting.type == SubTexture2DSetting::SubTextureCoordinate)
+        {
+            m_subtexture = SubTexture2D::CreateFromCoordinate(m_texture, m_subSetting.leftUpper,
+                                                              m_subSetting.size);
+        }
+    }
+
 	friend class cereal::access;
 	template<class Archive>
 	void serialize(Archive &ar)

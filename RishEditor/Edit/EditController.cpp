@@ -6,7 +6,7 @@
 #include <Rish/Math/AABB.h>
 #include <Rish/Math/BoundingBox.h>
 //
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 

@@ -36,12 +36,12 @@ struct SubTexture2DSetting
     };
     SubTextureType type{};
 
-    glm::vec2 pos;
-    glm::vec2 cellSize;
+    glm::vec2 pos{};
+    glm::vec2 cellSize{};
     glm::vec2 spriteGridSize{1.f, 1.f};
 
-    glm::vec2 leftUpper;
-    glm::vec2 size;
+    glm::vec2 leftUpper{};
+    glm::vec2 size{};
 
     template<typename Archive>
     void serialize(Archive &ar)
