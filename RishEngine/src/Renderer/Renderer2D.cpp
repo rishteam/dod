@@ -875,7 +875,6 @@ void Renderer2D::EndScene()
     if(s_data->lightRenderer)
     {
         s_data->lightRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
-
         // Reset
         s_data->lightRenderer.reset();
         //

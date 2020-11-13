@@ -182,6 +182,7 @@ void EditorLayer::onUpdate(Time dt)
         {
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
             Renderer2D::BeginScene(cameraController->getCamera(), false);
+            RL_INFO("m_sceneViewportPanelSize: {} {}", m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
             LightSystem::onViewportResize(m_sceneViewportPanelSize);
             LightSystem::onRender();
             Renderer2D::EndScene();
@@ -198,6 +199,7 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
+        RL_TRACE("m_gameViewportPanelSize: {} {}", m_gameViewportPanelSize.x, m_gameViewportPanelSize.y);
         LightSystem::onViewportResize(m_gameViewportPanelSize);
         m_currentScene->onUpdate(dt);
     }
@@ -271,6 +273,8 @@ void EditorLayer::onImGuiRender()
         m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
 
         ImVec2 windowCenter = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2{size.x / 2.f, fullH / 2.f};
+        RL_CORE_TRACE("windowCenter {} {}", windowCenter.x, windowCenter.y);
+        m_gameViewportPanelSize = glm::vec2{size.x, size.y};
         // Set *in editor* mouse pos for Input module
         auto pos = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
         pos.y = pos.y / (size.y / fullH);
@@ -281,7 +285,6 @@ void EditorLayer::onImGuiRender()
         uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
-        m_gameViewportPanelSize = glm::vec2{size.x, size.y};
     }
     ImGui::End();
 

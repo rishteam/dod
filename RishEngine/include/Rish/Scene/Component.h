@@ -737,7 +737,7 @@ struct LightComponent
     glm::vec3 lightPos; // Use Transform's Pos;
     glm::vec3 viewPortPos;
     bool customViewPos = false;
-    glm::vec2 viewPortSize = {1, 1};
+    glm::vec2 viewPortSize = {10, 10};
     glm::vec4 color = {1, 1, 1, 1};
     float radius = 100;
     float strength = 100;

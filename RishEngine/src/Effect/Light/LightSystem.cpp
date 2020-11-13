@@ -29,6 +29,7 @@ void LightSystem::onRender()
 
         Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
                                    light.viewPortSize, s_viewport, light.color);
+        // RL_CORE_TRACE("Light Position {} {}", transform.translate.x, transform.translate.y);
     }
 }
 
