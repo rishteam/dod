@@ -69,7 +69,7 @@ void DrawSceneCameraDebugWindow(const SceneCamera &camera, const glm::mat4 &tran
 void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
 {
     char title[50];
-    sprintf(title, "Debug Scene %p", scene);
+    snprintf(title, 50, "Debug Scene", scene);
     //
     ImGui::Begin(title);
     registry.each([&](auto ent) {

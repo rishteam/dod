@@ -9,12 +9,13 @@ namespace rl {
 
 void SceneHierarchyPanel::onImGuiRender()
 {
+    // Begin window
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 4));
     ImGui::Begin(ICON_FA_LIST " Hierarchy");
     ImGui::PopStyleVar();
     ImGui::Text("Entity List");
 
-    //
+    // Search bar
     static std::string filterText;
     ImGui::SetNextItemWidth(-1.f);
     ImGui::InputText("##EntitySelection", &filterText);
@@ -22,6 +23,8 @@ void SceneHierarchyPanel::onImGuiRender()
     // Entity List Window
     ImGuiWindowFlags window_flags = 0;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
+
+    resetDrawEntityState();
 
     // Draw entity hierarchy
     m_showEntity.clear();
@@ -87,30 +90,45 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::End();
 }
 
-void SceneHierarchyPanel::drawEntityNode(Entity entity)
+void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSubNode)
 {
+    UUID entUUID = entity.getUUID();
+    // If it's a sub entity
+    if(isSubNode)
+    {
+        m_subEntityUUID.insert(entUUID);
+    }
+    else // normal entity
+    {
+        // Skip the entity when its drawn in sub entities
+        if(m_subEntityUUID.count(entUUID))
+            return;
+    }
+
     auto &tag = entity.getComponent<TagComponent>().tag;
 
     ImGuiTreeNodeFlags nodeFlags = m_entitySet.count(entity) ? ImGuiTreeNodeFlags_Selected : 0;
     nodeFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
     nodeFlags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+    nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
     if(ImGui::IsItemClicked())
     {
         // If not pressed then clear
-        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift){
+        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift)
+        {
             resetTarget();
         }
         addTarget(entity);
 
+        // Multi selection
         if(isSelected() && ImGui::GetIO().KeyShift)
         {
             bool isPassSelect = false;
             bool isPassClick  = false;
-            for(auto ent:m_showEntity)
+            for(auto ent : m_showEntity)
             {
-//                Entity ent{entityID, m_currentScene.get()};
                 if( m_entitySet.count(ent) && ent != entity )
                     isPassSelect = true;
                 if( ent == entity )
@@ -119,29 +137,53 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
                     addTarget(ent);
             };
         }
-
     }
 
     if(opened)
     {
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-        if (opened)
-            ImGui::TreePop();
+        // Has sub entity?
+        if(entity.hasComponent<GroupComponent>())
+        {
+            auto &gc = entity.getComponent<GroupComponent>();
+            std::set<UUID> removeSet{};
+            //
+            for(const auto& id : gc.childEntity)
+            {
+                // Not valid
+                if(!m_currentScene->isValidUUID(id))
+                {
+                    removeSet.insert(id);
+                    continue;
+                }
+                // Get sub entity and draw
+                Entity ent = m_currentScene->getEntityByUUID(id);
+                drawEntityNode(ent, true);
+            }
+
+            // Cleanup
+            for(auto &i : removeSet)
+            {
+                auto start = std::remove(gc.childEntity.begin(), gc.childEntity.end(), i);
+                gc.childEntity.erase(start, gc.childEntity.end());
+                //
+                m_subEntityUUID.erase(i);
+            }
+        }
         ImGui::TreePop();
     }
 }
 
-void SceneHierarchyPanel::drawHideEntityNode(Entity entity){
+void SceneHierarchyPanel::drawHideEntityNode(Entity entity)
+{
 
 }
 
 void SceneHierarchyPanel::createEntity()
 {
-    m_focusEntity = m_currentScene->createEntity();
+    auto newEntity = m_currentScene->createEntity();
     resetTarget();
-    addTarget(m_focusEntity);
-    m_isFocusEntity = true;
+    addTarget(newEntity);
+    setFocus(newEntity);
 }
 
 void SceneHierarchyPanel::deleteEntity()
@@ -174,6 +216,11 @@ void SceneHierarchyPanel::setFocus(Entity entity)
 {
     m_isFocusEntity = true;
     m_focusEntity = entity;
+}
+
+void SceneHierarchyPanel::resetDrawEntityState()
+{
+    m_subEntityUUID.clear();
 }
 
 } // end of namespace rl

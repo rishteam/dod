@@ -57,7 +57,7 @@ bool Scene::isEntityInMap(Entity entity)
     return m_UUIDToEntityMap.count(entity.getUUID());
 }
 
-bool Scene::isUUIDValid(const UUID &id)
+bool Scene::isValidUUID(const UUID &id) const
 {
     return m_UUIDToEntityMap.count(id);
 }
@@ -327,11 +327,15 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     }
 }
 
-// TODO: Improve the performance
 Entity Scene::getEntityByUUID(UUID uuid)
 {
-    RL_CORE_ASSERT(isUUIDValid(uuid), "UUID {} is not in map", uuid.to_string());
-    return *m_UUIDToEntityMap[uuid];
+    if(!isValidUUID(uuid))
+    {
+        RL_CORE_ERROR("UUID {} is not in map", uuid.to_string());
+        return Entity{entt::null, this};
+    }
+    else
+        return *m_UUIDToEntityMap[uuid];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

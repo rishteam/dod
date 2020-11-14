@@ -53,7 +53,6 @@ public:
 	 */
 	Entity duplicateEntity(Entity src);
 
-    // TODO: Remove me
 	Entity getEntityByUUID(UUID uuid);
 
 	/**
@@ -119,7 +118,7 @@ public:
 	void addEntityToMap(const UUID& id, Entity entity);
 	void removeEntityFromMap(const UUID& id);
 	bool isEntityInMap(Entity entity);
-	bool isUUIDValid(const UUID &id);
+	bool isValidUUID(const UUID &id) const;
 
 	/**
 	 * @brief Manager of EntityNames
