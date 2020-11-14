@@ -68,7 +68,10 @@ void DrawSceneCameraDebugWindow(const SceneCamera &camera, const glm::mat4 &tran
 
 void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
 {
-    ImGui::Begin("Debug");
+    char title[50];
+    sprintf(title, "Debug Scene %p", scene);
+    //
+    ImGui::Begin(title);
     registry.each([&](auto ent) {
         Entity entity{ent, scene};
         std::string &tag = entity.getComponent<TagComponent>().tag;
@@ -81,6 +84,8 @@ void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
             DrawDebugCameraComponentInfo(entity);
             DrawDebugSpriteRenderComponentInfo(entity);
             DrawDebugNativeScriptComponentInfo(entity);
+            DrawDebugParticleComponentInfo(entity);
+            DrawDebugGroupComponentInfo(entity);
 
             ImGui::TreePop();
         }
@@ -190,6 +195,24 @@ void DrawDebugParticleComponentInfo(Entity entity)
     if(!entity.hasComponent<ParticleComponent>())
         return;
 
+}
+
+void DrawDebugGroupComponentInfo(Entity entity)
+{
+    if(!entity.hasComponent<GroupComponent>())
+        return;
+    auto &gc = entity.getComponent<GroupComponent>();
+    if(ImGui::TreeNodeEx("GroupComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Text("Child: ");
+        for(auto i : gc.childEntity)
+        {
+            ImGui::PushID(&i);
+            ImGui::BulletText("%s", i.to_c_str());
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
+    }
 }
 
 void DrawDebugTextureInfo(Ref<Texture2D> texture)

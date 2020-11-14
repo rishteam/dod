@@ -27,7 +27,7 @@ void SceneHierarchyPanel::onImGuiRender()
     m_showEntity.clear();
     m_currentScene->m_registry.each([&](auto entityID) {
         Entity entity(entityID, m_currentScene.get());
-        if((filterText.empty() || String::isSubString(entity.getName(), filterText)))
+        if((filterText.empty() || String::isSubStringIgnoreCase(entity.getName(), filterText)))
         {
             m_showEntity.insert(entity);
         }

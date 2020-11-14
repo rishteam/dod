@@ -122,6 +122,12 @@ void EditorLayer::onAttach()
         m_scenePath = m_editorSetting.path;
     }
 
+    auto ent = m_currentScene->createEntity("Test");
+    auto &gc = ent.addComponent<GroupComponent>();
+
+    gc.childEntity.push_back(m_currentScene->createEntity("A").getUUID());
+    gc.childEntity.push_back(m_currentScene->createEntity("B").getUUID());
+    gc.childEntity.push_back(m_currentScene->createEntity("C").getUUID());
 }
 
 void EditorLayer::onDetach()
@@ -380,17 +386,14 @@ void EditorLayer::onImGuiRender()
     // Log window
     defaultLogWindow.onImGuiRender();
 
-    // Status Bar
-    m_statusBarPanel->onImGuiRender();
-
-	ImGui::EndDockspace();
-
-	// Modals
-	m_errorModal.onImGuiRender();
-
 	// Simple Panels
     for(auto &panel : m_simplePanelList)
         panel->onImGuiRender();
+
+	ImGui::EndDockspace();
+
+    // Modals
+	m_errorModal.onImGuiRender();
 
 	// Debug Scene Window
 	if(m_debugNativeScript)
@@ -647,7 +650,21 @@ void EditorLayer::loadSetting(const std::string &path)
     //
     std::stringstream oos(content);
     cereal::JSONInputArchive inputArchive(oos);
-    inputArchive(cereal::make_nvp("settings", m_editorSetting));
+
+    try
+    {
+        inputArchive(cereal::make_nvp("settings", m_editorSetting));
+    }
+    catch (cereal::RapidJSONException &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        m_errorModal.setMessage(e.what());
+    }
+    catch (cereal::Exception &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        m_errorModal.setMessage(e.what());
+    }
 }
 
 void EditorLayer::saveSetting()

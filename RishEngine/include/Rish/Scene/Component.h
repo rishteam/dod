@@ -240,6 +240,23 @@ private:
 };
 
 /**
+ * @brief Group Component
+ * @details This is a special component for grouping entities
+ */
+struct GroupComponent
+{
+    std::vector<UUID> childEntity;
+
+private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("children", childEntity));
+    }
+};
+
+/**
  * @}
  */
 

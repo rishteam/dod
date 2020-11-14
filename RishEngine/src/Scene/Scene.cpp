@@ -331,15 +331,6 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
 Entity Scene::getEntityByUUID(UUID uuid)
 {
     RL_CORE_ASSERT(isUUIDValid(uuid), "UUID {} is not in map", uuid.to_string());
-//    Entity target;
-//
-//    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
-//        Entity entity{ent, this};
-//        if(tag.id == uuid)
-//            target = entity;
-//    });
-//
-//    return target;
     return *m_UUIDToEntityMap[uuid];
 }
 
