@@ -24,7 +24,20 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGuiWindowFlags window_flags = 0;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
+    // Reset
     resetDrawEntityState();
+    // Collects all sub entities
+    auto view = m_currentScene->m_registry.view<GroupComponent>();
+    for(auto ent : view)
+    {
+        Entity entity{ent, m_currentScene.get()};
+        auto &gc = entity.getComponent<GroupComponent>();
+        //
+        for(const auto &id : gc.childEntity)
+        {
+            m_subEntityUUID.insert(id);
+        }
+    }
 
     // Draw entity hierarchy
     m_showEntity.clear();
@@ -66,18 +79,22 @@ void SceneHierarchyPanel::onImGuiRender()
         {
             if (ImGui::MenuItem("Create Entity"))
             {
-                createEntity();
+                createEntityToTarget();
             }
         }
         if(isSelected())
         {
             if (ImGui::MenuItem("Delete Entity"))
             {
-                deleteEntity();
+                deleteTargetEntities();
             }
             if (ImGui::MenuItem("Duplicate Entity"))
             {
-                duplicateEntity();
+                duplicateTargetEntities();
+            }
+            if (ImGui::MenuItem("Group Entity"))
+            {
+                groupTargetEntities();
             }
             if (ImGui::MenuItem("Hide Entity"))
             {
@@ -90,20 +107,13 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::End();
 }
 
-void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSubNode)
+void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
 {
     UUID entUUID = entity.getUUID();
-    // If it's a sub entity
-    if(isSubNode)
-    {
-        m_subEntityUUID.insert(entUUID);
-    }
-    else // normal entity
-    {
-        // Skip the entity when its drawn in sub entities
-        if(m_subEntityUUID.count(entUUID))
-            return;
-    }
+
+    // Skip the entity when its drawn in sub entities
+    if(!isSub && m_subEntityUUID.count(entUUID))
+        return;
 
     auto &tag = entity.getComponent<TagComponent>().tag;
 
@@ -173,12 +183,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSubNode)
     }
 }
 
-void SceneHierarchyPanel::drawHideEntityNode(Entity entity)
-{
-
-}
-
-void SceneHierarchyPanel::createEntity()
+void SceneHierarchyPanel::createEntityToTarget()
 {
     auto newEntity = m_currentScene->createEntity();
     resetTarget();
@@ -186,14 +191,14 @@ void SceneHierarchyPanel::createEntity()
     setFocus(newEntity);
 }
 
-void SceneHierarchyPanel::deleteEntity()
+void SceneHierarchyPanel::deleteTargetEntities()
 {
     for (auto e : m_entitySet)
         e.destroy();
     resetSelected();
 }
 
-void SceneHierarchyPanel::duplicateEntity()
+void SceneHierarchyPanel::duplicateTargetEntities()
 {
     auto entSet = getSelectedEntities();
     resetTarget();
@@ -210,6 +215,24 @@ void SceneHierarchyPanel::duplicateEntity()
             first = false;
         }
     }
+}
+
+void SceneHierarchyPanel::groupTargetEntities()
+{
+    auto group = m_currentScene->createEntity("Group");
+    auto &gc = group.addComponent<GroupComponent>();
+    for(auto &ent : getTargets())
+    {
+        gc.childEntity.push_back(ent.getUUID());
+    }
+    // TODO: Handle entities that are already have their own group
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void SceneHierarchyPanel::drawHideEntityNode(Entity entity)
+{
+
 }
 
 void SceneHierarchyPanel::setFocus(Entity entity)

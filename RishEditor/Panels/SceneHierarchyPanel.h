@@ -19,19 +19,18 @@ public:
     void onImGuiRender() override;
     void setFocus(Entity entity);
 
-    void createEntity();
-    void deleteEntity();
-    void duplicateEntity();
-
+    void createEntityToTarget();
+    void deleteTargetEntities();
+    void duplicateTargetEntities();
+    void groupTargetEntities();
 private:
-    void resetDrawEntityState();
-
-    void drawEntityNode(Entity entity, bool isSubNode=false);
+    void drawEntityNode(Entity entity, bool isSub=false);
     void drawHideEntityNode(Entity entity);
 
     std::set <Entity> m_showEntity;
     std::set <Entity> m_hideEntity;
 
+    void resetDrawEntityState();
     std::set<UUID> m_subEntityUUID{};
 
     bool m_isFocusEntity = false;
