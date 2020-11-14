@@ -698,7 +698,7 @@ void EditorLayer::autoSave()
 
 void EditorLayer::setShortCut()
 {
-    m_sceneAction.createAction("SelectAll", ImCtrl | ImActionKey_A);
+    m_sceneAction.createAction("Select All", ImCtrl | ImActionKey_A);
     m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
     m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
     m_sceneAction.getAction("Paste")->setEnabled(false);
@@ -708,7 +708,8 @@ void EditorLayer::setShortCut()
 
 void EditorLayer::shortCutAction()
 {
-    if(m_sceneAction.getAction("SelectAll")->IsShortcutPressed()){
+    if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
+    {
         m_currentScene->m_registry.each([&](auto entityID) {
             Entity entity(entityID, m_currentScene.get());
             m_editController->addTarget(entity);
