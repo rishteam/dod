@@ -574,6 +574,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
                 ImGui::Text(": On");
             else
                 ImGui::Text(": Off");
+            ImGui::Checkbox("Restrict Rotation", &rigid.RestrictRotation);
             ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
             ImGui::Text("Torque: %.2f", rigid.torque);
             // Update Value  of physics
@@ -586,7 +587,6 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
 
         }
 
-        ImGui::Checkbox("Restrict Rotation", &rigid.RestrictRotation);
         ImGui::Separator();
         if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
         {
@@ -653,6 +653,7 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
     EndDrawEditComponent();
 }
 
+
 template<>
 void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 {
@@ -660,6 +661,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
     {
         DrawRightClickMenu(Joint2DComponent, false);
         // Options List building
+        auto &scene = m_targetEntity.m_scene;
         auto &registry = m_targetEntity.m_scene->m_registry;
         auto view = registry.view<RigidBody2DComponent>();
         std::vector<std::tuple<bool, UUID, std::string>> OptionsList;
@@ -709,14 +711,41 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             ImGui::ListBoxFooter();
         }
 
-        ImGui::Text("RigidBody1: %s", jit.rigidBody1.to_string().c_str());
-        ImGui::Text("RigidBody2: %s", jit.rigidBody2.to_string().c_str());
+        auto RigidBody1 = scene->getEntityByUUID(jit.rigidBody1);
+        auto RigidBody2 = scene->getEntityByUUID(jit.rigidBody2);
 
-        ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
-        jit.anchor.x = jitAnchor[0];
-        jit.anchor.y = jitAnchor[1];
+        ImGui::Text("RigidBody1: [%s] (%s)", RigidBody1.getComponent<TagComponent>().tag.c_str(), jit.rigidBody1.to_c_str());
+        ImGui::Text("RigidBody2: [%s] (%s)", RigidBody2.getComponent<TagComponent>().tag.c_str(), jit.rigidBody2.to_c_str());
+
+        static bool CustomAnchor = false;
+        static int item_current = 0;
+        // Bind Object Anchor
+        ImGui::Checkbox("RigidBody Bind Anchor", &CustomAnchor);
+        if(CustomAnchor)
+        {
+            ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
+            const char* items[] = {RigidBody1.getComponent<TagComponent>().tag.c_str(), RigidBody2.getComponent<TagComponent>().tag.c_str()};
+            ImGui::Combo("RigidBody List", &item_current, items, IM_ARRAYSIZE(items));
+
+            if (item_current == 0)
+            {
+                jit.anchor.x = RigidBody1.getComponent<TransformComponent>().translate.x;
+                jit.anchor.y = RigidBody1.getComponent<TransformComponent>().translate.y;
+            }
+            else if(item_current == 1)
+            {
+                jit.anchor.x = RigidBody2.getComponent<TransformComponent>().translate.x;
+                jit.anchor.y = RigidBody2.getComponent<TransformComponent>().translate.y;
+            }
+        }
+        // Custom the Anchor
+        else
+        {
+            ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
+            jit.anchor.x = jitAnchor[0];
+            jit.anchor.y = jitAnchor[1];
+        }
         ImGui::Separator();
-
         ImGui::Text("r1: (%.f, %.f)", jit.r1.x, jit.r1.y);
         ImGui::Text("r2: (%.f, %.f)", jit.r2.x, jit.r2.y);
         ImGui::Text("P: (%.f, %.f)", jit.P.x, jit.P.y);
