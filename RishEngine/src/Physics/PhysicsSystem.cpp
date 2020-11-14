@@ -5,7 +5,7 @@
 namespace rl {
 
 static float accumulateTime = 0.0f;
-static float MS_PER_UPDATE = 1.0f / 120.0f;
+static float MS_PER_UPDATE = 1.0f / 240.0f;
 static bool checkState = false;
 
 Ref<Scene> PhysicsSystem::s_Scene;

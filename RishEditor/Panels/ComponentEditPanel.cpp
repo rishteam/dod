@@ -567,7 +567,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::SameLine();
             ImGui::DragFloat("y", &attachPointY, 0.1, -transWH.y/2.0f, transWH.y/2.0f);
             ImGui::PopItemWidth();
-            ImGui::Checkbox("Show Attach Point", &rigid.showAttachPoint);
+            ImGui::Checkbox("Showing Force", &rigid.showAttachPoint);
             ImGui::Checkbox("Keeping Force", &rigid.keepingForce);
             ImGui::SameLine();
             if (rigid.keepingForce)

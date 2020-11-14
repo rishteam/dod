@@ -77,14 +77,48 @@ void EditController::onUpdate(Time dt)
 
         // draw attachPoint
         auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
-        for (auto entity : view)
-        {
+        for (auto entity : view) {
             Entity ent{entity, scene.get()};
             auto &rigid = ent.getComponent<RigidBody2DComponent>();
             auto &transform = ent.getComponent<TransformComponent>();
             //TODO: rotate Quad for collider
-            if(rigid.showAttachPoint)
-                Renderer2D::Renderer2D::DrawCircle({ transform.translate.x + rigid.attachPoint.x, transform.translate.y + rigid.attachPoint.y}, 0.1,  {0.160f, 0.254f, 1.0f, 1.0f});
+
+            float xForce = (int) rigid.force.x / 100 >= 10 ? 1 : rigid.force.x / 1000.0f;
+            float yForce = (int) rigid.force.y / 100 >= 10 ? 1 : rigid.force.y / 1000.0f;
+
+            float xForceIntensity = glm::lerp(0.0f, transform.scale.x/2, xForce);
+            float yForceIntensity = glm::lerp(0.0f, transform.scale.y/2, yForce);
+
+            float xForcePoint = transform.translate.x + rigid.attachPoint.x;
+            float yForcePoint = transform.translate.y + rigid.attachPoint.y;
+
+            if (rigid.showAttachPoint)
+            {
+                Renderer2D::DrawCircle(
+                        {xForcePoint, yForcePoint}, 0.1,
+                        {0.360f, 0.988f, 0.192f, 1.0f});
+                auto lineColor = glm::vec4(0.f, 1.f, 1.f, 1.f);
+                Renderer2D::DrawFgLine(glm::vec3(xForcePoint, yForcePoint, 0.f),
+                                       glm::vec3(xForcePoint + xForceIntensity, yForcePoint, 0.f),
+                                       lineColor);
+                if(rigid.force.x != 0.0f)
+                {
+                    Renderer2D::DrawTriangle(glm::vec3(xForcePoint + xForceIntensity, yForcePoint, 0.f),
+                                             glm::vec3(xForcePoint + xForceIntensity - 0.1f, yForcePoint - 0.1f, 0.f),
+                                             glm::vec3(xForcePoint + xForceIntensity - 0.1f, yForcePoint + 0.1f, 0.f),
+                                             lineColor);
+                }
+                Renderer2D::DrawFgLine(glm::vec3(xForcePoint, yForcePoint, 0.f),
+                                       glm::vec3(xForcePoint, yForcePoint + yForceIntensity, 0.f),
+                                       lineColor);
+                if(rigid.force.y != 0.0f)
+                {
+                    Renderer2D::DrawTriangle(glm::vec3(xForcePoint, yForcePoint + yForceIntensity, 0.f),
+                                             glm::vec3(xForcePoint + 0.1f, yForcePoint + yForceIntensity -0.1f, 0.f),
+                                             glm::vec3(xForcePoint - 0.1f, yForcePoint + yForceIntensity -0.1f, 0.f),
+                                             lineColor);
+                }
+            }
         }
 
         // draw boxcollider
@@ -98,7 +132,6 @@ void EditController::onUpdate(Time dt)
             Renderer2D::DrawRotatedRect({transform.translate.x + boxc.x, transform.translate.y + boxc.y},
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
-
 
 
         std::set<Entity> delTarget;
@@ -120,6 +153,8 @@ void EditController::onUpdate(Time dt)
         m_gizmo.setSelectedEntity(entSet);
         m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
         m_gizmo.onUpdate();
+
+
     }
 
     Renderer2D::EndScene();
