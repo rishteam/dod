@@ -120,12 +120,11 @@ private:
     // Editor Menu
     //////////////////////////////////////////
 
-    // TODO: Refactor action menu callback
+    // TODO: Refactor action menu callback and refactor into classes
+    void initShortCut();
+    void onShortcutActionUpdate();
+    void changeShortCut(const char* name, int shortcut, bool* selected);
     ImActionManager m_sceneAction;
-    ImAction *m_action_copy = nullptr;
-    ImAction *m_action_paste = nullptr;
-    ImAction *m_action_delete = nullptr;
-    ImAction *m_action_cancel = nullptr;
     std::vector<Entity> m_copyList;
 
     //////////////////////////////////////////

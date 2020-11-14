@@ -17,6 +17,7 @@ public:
     ~SceneHierarchyPanel() override = default;
 
     void onImGuiRender() override;
+    void setFocus(Entity entity);
 
     void createEntity();
     void deleteEntity();

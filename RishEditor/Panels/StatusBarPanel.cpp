@@ -10,7 +10,7 @@ void StatusBarPanel::onImGuiRender() {
     ImGui::Begin("StatusBar");
     ImGui::PopStyleVar();
     auto size = ImGui::GetContentRegionAvail();
-    ImGui::Dummy(ImVec2{10.f, size.y/2.f}); ImGui::SameLine();
+    ImGui::Dummy(ImVec2{5.f, size.y/2.f}); ImGui::SameLine();
     ImGui::Text("%s", m_message.c_str());
     ImGui::End();
 

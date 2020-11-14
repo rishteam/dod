@@ -161,13 +161,19 @@ void SceneHierarchyPanel::duplicateEntity()
     {
         auto copyEntity =  m_currentScene->duplicateEntity(ent);
         addTarget(copyEntity);
+        //
         if(first)
         {
-            m_isFocusEntity = true;
-            m_focusEntity = copyEntity;
+            setFocus(copyEntity);
+            first = false;
         }
-        first = false;
     }
+}
+
+void SceneHierarchyPanel::setFocus(Entity entity)
+{
+    m_isFocusEntity = true;
+    m_focusEntity = entity;
 }
 
 } // end of namespace rl
