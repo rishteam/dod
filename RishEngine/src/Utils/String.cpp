@@ -23,7 +23,7 @@ std::string &replaceAll(std::string &str, const std::string &from, const std::st
     return str;
 }
 
-bool isSubString(std::string target, std::string filter)
+bool isSubStringIgnoreCase(std::string target, std::string filter)
 {
     if(filter.size() > target.size())
         return false;
