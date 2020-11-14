@@ -4,27 +4,27 @@
 
 namespace  rl{
 
-void SettingPanel::onImGuiRender() {
-
+void SettingPanel::onImGuiRender()
+{
     ImGuiIO &io = ImGui::GetIO();
     ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f),
                             ImGuiCond_Once, ImVec2(0.5f,0.5f));
     ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f));
 
-    if(m_show)
+    if(isPanelShowed())
     {
-        if (!ImGui::IsPopupOpen(ICON_FA_COG " Setting")){
+        if (!ImGui::IsPopupOpen(m_panelTitle))
+        {
             readData();
-            ImGui::OpenPopup(ICON_FA_COG " Setting");
+            ImGui::OpenPopup(m_panelTitle);
         }
-        m_show = false;
+        hidePanel();
     }
 
-    if (ImGui::BeginPopupModal(ICON_FA_COG " Setting",
+    if (ImGui::BeginPopupModal(m_panelTitle,
            nullptr,
            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
     {
-
         if(ImGui::BeginTabBar("##SetingTab", ImGuiTabBarFlags_None))
         {
             if(ImGui::BeginTabItem("Key"))
@@ -61,22 +61,22 @@ void SettingPanel::onImGuiRender() {
 
                     ImGui::Text("Select All");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut.getAction("Select All")->ShortcutName());
+                    ImGui::Text(m_shortCut->getAction("Select All")->ShortcutName());
                     ImGui::NextColumn();
 
                     ImGui::Text("Copy");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut.getAction("Copy")->ShortcutName());
+                    ImGui::Text(m_shortCut->getAction("Copy")->ShortcutName());
                     ImGui::NextColumn();
 
                     ImGui::Text("Paste");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut.getAction("Paste")->ShortcutName());
+                    ImGui::Text(m_shortCut->getAction("Paste")->ShortcutName());
                     ImGui::NextColumn();
 
                     ImGui::Text("Delete");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut.getAction("Delete")->ShortcutName());
+                    ImGui::Text(m_shortCut->getAction("Delete")->ShortcutName());
                     ImGui::NextColumn();
 
                     ImGui::Columns(1);
@@ -94,8 +94,12 @@ void SettingPanel::onImGuiRender() {
                     ImGui::Separator();
                     ImGui::Columns(2, "EditorSettingsTable");
 
+                    ImGui::AlignTextToFramePadding();
                     ImGui::Text("Open Scene when editor is open");
+                    ImGui::AlignTextToFramePadding();
                     ImGui::Text("Scene");
+                    ImGui::AlignTextToFramePadding();
+                    ImGui::Text("");
 
                     ImGui::NextColumn();
 
@@ -140,11 +144,12 @@ void SettingPanel::onImGuiRender() {
 
 void SettingPanel::readData()
 {
-    m_shortCut = m_parent->m_sceneAction;
+    m_shortCut = &m_parent->m_sceneAction;
 }
 
 void SettingPanel::writeData()
 {
+    // TODO: implement write data function
 }
 
 }

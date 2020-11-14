@@ -17,8 +17,10 @@ public:
 private:
     void readData();
     void writeData();
-    ImActionManager m_shortCut;
-
+    //
+    ImActionManager *m_shortCut = nullptr;
+    //
+    const char* m_panelTitle = ICON_FA_COG " Setting";
 };
 
 }

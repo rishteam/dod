@@ -22,6 +22,8 @@ public:
     void showPanel() { m_show = true; }
     void hidePanel() { m_show = false; }
     void togglePanel() { m_show = !m_show; }
+
+    bool isPanelShowed() const { return m_show; }
     //
     void setContext(EditorLayer *layer) { m_parent = layer; }
     bool& getShowHandle() { return m_show; }

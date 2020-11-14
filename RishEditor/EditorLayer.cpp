@@ -77,7 +77,7 @@ EditorLayer::EditorLayer()
     std::thread autoSaveThread(&EditorLayer::autoSave, this);
     autoSaveThread.detach();
 
-    setShortCut();
+    initShortCut();
 
 }
 
@@ -528,8 +528,7 @@ void EditorLayer::onImGuiMainMenuRender()
         ImGui::EndMenuBar();
     }
 
-    shortCutAction();
-
+    onShortcutActionUpdate();
 }
 
 void EditorLayer::onEvent(rl::Event& e)
@@ -689,6 +688,7 @@ void EditorLayer::autoSave()
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         if(((clock.getElapsedTime() - lastSave) > 10.f) && (!m_scenePath.empty()))
         {
+            // TODO: refactor me and add setting to setting panel
             lastSave = clock.getElapsedTime();
             saveScene(m_scenePath);
             m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
@@ -696,17 +696,19 @@ void EditorLayer::autoSave()
     }
 }
 
-void EditorLayer::setShortCut()
+void EditorLayer::initShortCut()
 {
     m_sceneAction.createAction("Select All", ImCtrl | ImActionKey_A);
     m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
+    //
     m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
     m_sceneAction.getAction("Paste")->setEnabled(false);
+    //
     m_sceneAction.createAction("Delete", ImActionKey_Delete);
     m_sceneAction.createAction("Cancel", ImActionKey_Escape);
 }
 
-void EditorLayer::shortCutAction()
+void EditorLayer::onShortcutActionUpdate()
 {
     if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
     {

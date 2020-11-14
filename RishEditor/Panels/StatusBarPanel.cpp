@@ -12,6 +12,7 @@ void StatusBarPanel::onImGuiRender() {
     ImGui::Text("%s", m_message.c_str());
     ImGui::End();
 
+    // TODO: refactor me
     m_showTimeEnd = m_nowTime;
     if( m_message == "" )
         m_showTimeStart = m_nowTime;
