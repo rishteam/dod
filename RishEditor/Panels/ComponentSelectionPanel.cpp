@@ -18,21 +18,24 @@ void ComponentSelectionPanel::onImGuiRender()
         ImGui::SetKeyboardFocusHere(0);
     m_open = false;
 
-    if(ImGui::ListBoxHeader("##Components"))
-    {
-        auto &mapping = ComponentManager::getAddMapping();
-        for (auto &&[k, v] : mapping) {
-            if(filterText.empty() || String::isSubString(k, filterText))
+    auto &mapping = ComponentManager::getAddMapping();
+    for (auto &&[k, v] : mapping) {
+        if(filterText.empty() || String::isSubString(k, filterText))
+        {
+            if (ImGui::Selectable(k.c_str() + 4))
             {
-                if (ImGui::Selectable(k.c_str() + 4))
-                {
-                    ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
-                    ImGui::CloseCurrentPopup();
-                }
+                ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+            {
+                printf("%s\n", k.c_str());
+                ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                ImGui::CloseCurrentPopup();
             }
         }
-        ImGui::ListBoxFooter();
     }
+
 }
 
 void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)

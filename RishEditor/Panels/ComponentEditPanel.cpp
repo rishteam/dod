@@ -759,6 +759,11 @@ void ComponentEditPanel::onImGuiRender()
             m_componentSelectionPanel.m_open = true;
             ImGui::OpenPopup("ComponentSelectionPanel");
         }
+        if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+        {
+            m_componentSelectionPanel.m_open = true;
+            ImGui::OpenPopup("ComponentSelectionPanel");
+        }
         if(ImGui::BeginPopup("ComponentSelectionPanel"))
         {
             m_componentSelectionPanel.onImGuiRender();
