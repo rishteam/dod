@@ -132,6 +132,31 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity)
 
     }
 
+    if(ImGui::IsItemFocused()&&ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+    {
+        // If not pressed then clear
+        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift){
+            resetTarget();
+        }
+        addTarget(entity);
+
+        if(isSelected() && ImGui::GetIO().KeyShift)
+        {
+            bool isPassSelect = false;
+            bool isPassClick  = false;
+            for(auto ent:m_showEntity)
+            {
+//                Entity ent{entityID, m_currentScene.get()};
+                if( m_entitySet.count(ent) && ent != entity )
+                    isPassSelect = true;
+                if( ent == entity )
+                    isPassClick = true;
+                if((isPassSelect^isPassClick))
+                    addTarget(ent);
+            };
+        }
+    }
+
     if(opened)
     {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
