@@ -122,9 +122,9 @@ void EditorLayer::onAttach()
     auto ent = m_currentScene->createEntity("Test");
     auto &gc = ent.addComponent<GroupComponent>();
 
-    gc.childEntity.push_back(m_currentScene->createEntity("A").getUUID());
-    gc.childEntity.push_back(m_currentScene->createEntity("B").getUUID());
-    gc.childEntity.push_back(m_currentScene->createEntity("C").getUUID());
+    gc.addEntityUUID(m_currentScene->createEntity("A").getUUID());
+    gc.addEntityUUID(m_currentScene->createEntity("B").getUUID());
+    gc.addEntityUUID(m_currentScene->createEntity("C").getUUID());
 }
 
 void EditorLayer::onDetach()

@@ -173,8 +173,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
             // Cleanup
             for(auto &i : removeSet)
             {
-                auto start = std::remove(gc.childEntity.begin(), gc.childEntity.end(), i);
-                gc.childEntity.erase(start, gc.childEntity.end());
+                gc.delEntityUUID(i);
                 //
                 m_subEntityUUID.erase(i);
             }
@@ -223,7 +222,7 @@ void SceneHierarchyPanel::groupTargetEntities()
     auto &gc = group.addComponent<GroupComponent>();
     for(auto &ent : getTargets())
     {
-        gc.childEntity.push_back(ent.getUUID());
+        gc.addEntityUUID(ent.getUUID());
     }
     // TODO: Handle entities that are already have their own group
 }

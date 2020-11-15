@@ -1,6 +1,8 @@
 #include <Rish/Physics/Component.h>
 
+#include <Rish/Scene/Component.h>
 #include <Rish/Scene/Entity.h>
+
 
 namespace rl {
 

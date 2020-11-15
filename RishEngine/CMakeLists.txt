@@ -88,7 +88,9 @@ add_library(RishEngine
 
     src/Debug/DebugWindow.cpp
     src/Debug/ImGuiLogWindow.cpp
-        src/ImGui/ImGui.cpp
+
+    src/ImGui/ImGui.cpp
+    src/ImGui/MenuAction.cpp
 
     src/Utils/uuid.cpp
     src/Utils/String.cpp
@@ -143,6 +145,7 @@ add_library(RishEngine
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
     src/Scene/System/NativeScriptSystem.cpp
+    src/Scene/Component.cpp
 
     src/Math/AABB.cpp
     src/Math/BoundingBox.cpp
@@ -151,7 +154,7 @@ add_library(RishEngine
     src/Scene/System/SpriteRenderSystem.cpp
 
     ${RL_SCRIPT_FILES}
-        src/ImGui/MenuAction.cpp)
+ )
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
