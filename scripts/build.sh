@@ -93,6 +93,8 @@ case "$1" in
 ;;
 
 "docs")
+    cmake_go
+
     # Build RishEngine docs
     make doxygen-docs
 

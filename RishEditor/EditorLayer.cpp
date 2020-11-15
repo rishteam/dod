@@ -725,6 +725,8 @@ void EditorLayer::initShortCut()
     //
     m_sceneAction.createAction("Delete", ImActionKey_Delete);
     m_sceneAction.createAction("Cancel", ImActionKey_Escape);
+    //
+    m_sceneAction.createAction("Group", ImCtrl | ImActionKey_G);
 }
 
 void EditorLayer::onShortcutActionUpdate()
@@ -737,7 +739,7 @@ void EditorLayer::onShortcutActionUpdate()
         });
     }
 
-    if (m_sceneAction.getAction("Copy")->IsShortcutPressed())
+    if(m_sceneAction.getAction("Copy")->IsShortcutPressed())
     {
         m_copyList.clear();
         for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
@@ -769,6 +771,11 @@ void EditorLayer::onShortcutActionUpdate()
         }
         m_copyList.clear();
         m_sceneAction.getAction("Paste")->setEnabled(false);
+    }
+
+    if(m_sceneAction.getAction("Group")->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->groupTargetEntities();
     }
 
     if(m_sceneAction.getAction("Delete")->IsShortcutPressed())

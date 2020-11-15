@@ -13,4 +13,9 @@ void GroupComponent::delEntityUUID(const UUID &id)
     childEntity.erase(id);
 }
 
+void GroupComponent::clear()
+{
+    childEntity.clear();
+}
+
 } // end of namespace

@@ -249,6 +249,7 @@ struct GroupComponent
 {
     void addEntityUUID(const UUID &id);
     void delEntityUUID(const UUID &id);
+    void clear();
 
     using difference_type   = ptrdiff_t;
     using size_type         = size_t;

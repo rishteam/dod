@@ -205,7 +205,7 @@ void DrawDebugGroupComponentInfo(Entity entity)
     if(ImGui::TreeNodeEx("GroupComponent", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text("Child: ");
-        for(auto i : gc.childEntity)
+        for(auto i : gc)
         {
             ImGui::PushID(&i);
             ImGui::BulletText("%s", i.to_c_str());

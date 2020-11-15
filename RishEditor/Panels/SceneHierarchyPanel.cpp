@@ -33,7 +33,7 @@ void SceneHierarchyPanel::onImGuiRender()
         Entity entity{ent, m_currentScene.get()};
         auto &gc = entity.getComponent<GroupComponent>();
         //
-        for(const auto &id : gc.childEntity)
+        for(const auto &id : gc)
         {
             m_subEntityUUID.insert(id);
         }
@@ -157,7 +157,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
             auto &gc = entity.getComponent<GroupComponent>();
             std::set<UUID> removeSet{};
             //
-            for(const auto& id : gc.childEntity)
+            for(const auto& id : gc)
             {
                 // Not valid
                 if(!m_currentScene->isValidUUID(id))
