@@ -26,6 +26,9 @@ private:
     std::set <Entity> m_hideEntity;
     bool m_isFocusEntity = false;
     Entity m_focusEntity;
+
+    const char* m_panelTitle = ICON_FA_LIST " Hierarchy";
+
 };
 
 } // end of namespace rl
