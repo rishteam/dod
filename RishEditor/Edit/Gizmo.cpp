@@ -52,20 +52,20 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                     m_oriEntityPosition[ent] = entPos;
                     m_oriMousePosition[ent] = glm::vec3(mousePosInWorld, 0.f);
                     m_isNowMovingEntity[ent] = true;
-                    //
-                    if (Math::AABB2DPoint(boundPos+m_clickSize3*glm::vec3(.5f), m_clickSize3, mousePosInWorld))
+                    // In Center
+                    if (Math::AABB2DPoint(boundPos + m_clickSizeVec3 * glm::vec3(.5f), m_clickSizeVec3, mousePosInWorld))
                     {
                         m_moveEntityWeight[ent] = glm::vec3(1.f);
                     }
-                    // row
-                    else if(Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f,0.f)+m_clickSize3*glm::vec3(1.5f,0.f,0.f),
-                                              boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSize3*glm::vec3(3.f,1.f,0.f), mousePosInWorld))
+                    // row (x-axis)
+                    else if(Math::AABB2DPoint(boundPos +boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSizeVec3 * glm::vec3(1.5f, 0.f, 0.f),
+                                              boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSizeVec3 * glm::vec3(3.f, 1.f, 0.f), mousePosInWorld))
                     {
                         m_moveEntityWeight[ent] = glm::vec3(1.f, 0.f, 1.f);
                     }
-                    // column
-                    else if (Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f,0.f)+m_clickSize3*glm::vec3(0.f,1.5f,0.f),
-                                               boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSize3*glm::vec3(1.f,3.f,0.f), mousePosInWorld))
+                    // column (y-axis)
+                    else if (Math::AABB2DPoint(boundPos +boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSizeVec3 * glm::vec3(0.f, 1.5f, 0.f),
+                                               boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSizeVec3 * glm::vec3(1.f, 3.f, 0.f), mousePosInWorld))
                     {
                         m_moveEntityWeight[ent] = glm::vec3(0.f, 1.f, 1.f);
                     }
@@ -74,8 +74,10 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                         m_isNowMovingEntity.erase(ent);
                     }
 
-                } else {
-                    // Moving
+                }
+                else
+                {
+                    // Moving by its orientation
                     entPos = m_oriEntityPosition[ent] +
                              (glm::vec3(mousePosInWorld, 0.f) - m_oriMousePosition[ent]) * m_moveEntityWeight[ent];
 
@@ -97,43 +99,45 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                 glm::vec3 boundSize(bound.getScale(), 0.f);
 
                 // The entity is not moving but selected
-                if (!m_isNowMovingEntity[ent]) {
+                if (!m_isNowMovingEntity[ent])
+                {
                     // 當滑鼠點擊時，儲存滑鼠跟 entity 的座標
                     m_oriEntityPosition[ent] = entPos;
                     m_oriEntitySize[ent] = entSize;
                     m_oriMousePosition[ent] = glm::vec3(mousePosInWorld, 0.f);
-                    m_oriEntityNegative[ent] = glm::vec3(entSize.x > 0 ? 1.f : -1.f, entSize.y > 0 ? 1.f : -1.f,
-                                                         1.f);
+                    m_oriEntityNegative[ent] = glm::vec3(entSize.x > 0 ? 1.f : -1.f, entSize.y > 0 ? 1.f : -1.f, 1.f);
                     m_isNowMovingEntity[ent] = true;
-                    if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, .5f, 1.f), m_clickSize3,
+
+                    // 判斷八個 widget 是否有被按下
+                    if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, .5f, 1.f), m_clickSizeVec3,
                                           mousePosInWorld)) { // right up
                         m_zoomEntityWeight[ent] = glm::vec3(1.f, 1.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, 0.f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, 0.f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // right
                         m_zoomEntityWeight[ent] = glm::vec3(1.f, 0.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(.5f, 0.f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, -.5f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(.5f, -.5f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // right down
                         m_zoomEntityWeight[ent] = glm::vec3(1.f, -1.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(0.f, -.5f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(0.f, -.5f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // down
                         m_zoomEntityWeight[ent] = glm::vec3(0.f, -1.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(0.f, .5f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, -.5f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, -.5f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // left down
                         m_zoomEntityWeight[ent] = glm::vec3(-1.f, -1.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, 0.f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, 0.f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // left
                         m_zoomEntityWeight[ent] = glm::vec3(-1.f, 0.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(.5f, 0.f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, .5f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(-.5f, .5f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // left up
                         m_zoomEntityWeight[ent] = glm::vec3(-1.f, 1.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(.5f, .5f, 0.f);
-                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(0.f, .5f, 1.f), m_clickSize3,
+                    } else if (Math::AABB2DPoint(boundPos + boundSize * glm::vec3(0.f, .5f, 1.f), m_clickSizeVec3,
                                                  mousePosInWorld)) { // up
                         m_zoomEntityWeight[ent] = glm::vec3(0.f, 1.f, 0.f);
                         m_moveEntityWeight[ent] = glm::vec3(0.f, .5f, 0.f);
@@ -142,17 +146,13 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                     }
 
                     m_zoomEntityWeight[ent] *= glm::vec3(entSize.x>0?1.f:-1.f,entSize.y>0?1.f:-1.f,1.f);
-
-                } else {
-                    // zooming
-                    entSize = m_oriEntitySize[ent] +
-                              (glm::vec3(mousePosInWorld, 0.f) - m_oriMousePosition[ent]) * m_zoomEntityWeight[ent];
-                    entPos = m_oriEntityPosition[ent] +
-                             (glm::vec3(mousePosInWorld, 0.f) - m_oriMousePosition[ent]) * m_moveEntityWeight[ent];
-
                 }
-
-
+                else
+                {
+                    // zooming
+                    entSize = m_oriEntitySize[ent] + (glm::vec3(mousePosInWorld, 0.f) - m_oriMousePosition[ent]) * m_zoomEntityWeight[ent];
+                    entPos = m_oriEntityPosition[ent] + (glm::vec3(mousePosInWorld, 0.f) - m_oriMousePosition[ent]) * m_moveEntityWeight[ent];
+                }
             }
             break;
         }
@@ -163,8 +163,8 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                 const auto &entPos = ent.getComponent<TransformComponent>().translate;
                 auto &entSize = ent.getComponent<TransformComponent>().scale;
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
-                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f) + m_clickSize3*glm::vec3(3.f, 0.f, 1.f);
-                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f) + m_clickSize3*glm::vec3(0.f, 3.f, 1.f);
+                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f) + m_clickSizeVec3 * glm::vec3(3.f, 0.f, 1.f);
+                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f) + m_clickSizeVec3 * glm::vec3(0.f, 3.f, 1.f);
                 const auto sinR = std::sin(entRotate*M_PI/180);
                 const auto cosR = std::cos(entRotate*M_PI/180);
                 const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
@@ -173,14 +173,14 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                 // The entity is not moving but selected
                 if (!m_isNowMovingEntity[ent]) {
                     // Is mouse inside
-                    if (Math::AABB2DPoint(pointX, m_clickSize3, mousePosInWorld)) {
+                    if (Math::AABB2DPoint(pointX, m_clickSizeVec3, mousePosInWorld)) {
                         m_oriEntityPosition[ent] = entPos;
                         m_oriEntitySize[ent] = entSize;
                         m_oriMousePosition[ent] = pointX;
                         m_zoomEntityWeight[ent] = glm::vec3(1.f,0.f,1.f);
                         m_isNowMovingEntity[ent] = true;
                     }
-                    else if(Math::AABB2DPoint(pointY, m_clickSize3, mousePosInWorld)){
+                    else if(Math::AABB2DPoint(pointY, m_clickSizeVec3, mousePosInWorld)){
                         m_oriEntityPosition[ent] = entPos;
                         m_oriEntitySize[ent] = entSize;
                         m_oriMousePosition[ent] = pointY;
@@ -276,19 +276,19 @@ void Gizmo::onUpdate()
             // Draw the bounding box outside
             Renderer2D::DrawRect(boundPos, boundSize, glm::vec4(1.f));
 
-            auto moveQuadPos2 = glm::vec2(boundPos + m_clickSize2 * glm::vec2(.5f));
-            Renderer2D::DrawQuad(moveQuadPos2, m_clickSize2, colorY);
+            auto moveQuadPos2 = glm::vec2(boundPos + m_clickSizeVec2 * glm::vec2(.5f));
+            Renderer2D::DrawQuad(moveQuadPos2, m_clickSizeVec2, colorY);
             auto moveQuadPos3 = glm::vec3(moveQuadPos2, 2.f);
-            Renderer2D::DrawQuad(moveQuadPos3, m_clickSize2, colorY);
+            Renderer2D::DrawQuad(moveQuadPos3, m_clickSizeVec2, colorY);
 
-            auto PointX = boundPos + boundSize * glm::vec2(.5f, 0.f) + m_clickSize2 * glm::vec2(3.f, 0.f);
-            auto PointY = boundPos + boundSize * glm::vec2(0.f, .5f) + m_clickSize2 * glm::vec2(0.f, 3.f);
+            auto PointX = boundPos + boundSize * glm::vec2(.5f, 0.f) + m_clickSizeVec2 * glm::vec2(3.f, 0.f);
+            auto PointY = boundPos + boundSize * glm::vec2(0.f, .5f) + m_clickSizeVec2 * glm::vec2(0.f, 3.f);
             Renderer2D::DrawFgLine(boundPos, PointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
-            Renderer2D::DrawTriangle(PointX, PointX + m_clickSize2 * glm::vec2(-1.f, .5f),
-                                     PointX + m_clickSize2 * glm::vec2(-1.f, -.5f), colorB);
+            Renderer2D::DrawTriangle(PointX, PointX + m_clickSizeVec2 * glm::vec2(-1.f, .5f),
+                                     PointX + m_clickSizeVec2 * glm::vec2(-1.f, -.5f), colorB);
             Renderer2D::DrawFgLine(boundPos, PointY, glm::vec4(1.f, 0.f, 0.f, 1.f));
-            Renderer2D::DrawTriangle(PointY, PointY + m_clickSize2 * glm::vec2(.5f, -1.f),
-                                     PointY + m_clickSize2 * glm::vec2(-.5f, -1.f), colorR);
+            Renderer2D::DrawTriangle(PointY, PointY + m_clickSizeVec2 * glm::vec2(.5f, -1.f),
+                                     PointY + m_clickSizeVec2 * glm::vec2(-.5f, -1.f), colorR);
 
             break;
         }
@@ -303,18 +303,18 @@ void Gizmo::onUpdate()
                 auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
 
                 Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, 0.5f), m_clickSize2.x,
+                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, 0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, 0.0f), m_clickSize2, colorY);
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, -0.5f), m_clickSize2.x,
+                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, 0.0f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, -0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.0f, -0.5f), m_clickSize2, colorY);
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, -0.5f), m_clickSize2.x,
+                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.0f, -0.5f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, -0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, 0.0f), m_clickSize2, colorY);
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, 0.5f), m_clickSize2.x,
+                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, 0.0f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, 0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.0f, 0.5f), m_clickSize2, colorY);
+                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.0f, 0.5f), m_clickSizeVec2, colorY);
             }
             break;
         }
@@ -326,17 +326,17 @@ void Gizmo::onUpdate()
                 const auto &entSize = ent.getComponent<TransformComponent>().scale;
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
 
-                const auto tmpX = glm::vec3(entSize.x * 0.5, 0.f, 1.f) + m_clickSize3 * glm::vec3(3.f, 0.f, 1.f);
-                const auto tmpY = glm::vec3(0.f, entSize.y * 0.5, 1.f) + m_clickSize3 * glm::vec3(0.f, 3.f, 1.f);
+                const auto tmpX = glm::vec3(entSize.x * 0.5, 0.f, 1.f) + m_clickSizeVec3 * glm::vec3(3.f, 0.f, 1.f);
+                const auto tmpY = glm::vec3(0.f, entSize.y * 0.5, 1.f) + m_clickSizeVec3 * glm::vec3(0.f, 3.f, 1.f);
                 const auto sinR = std::sin(glm::radians(entRotate));
                 const auto cosR = std::cos(glm::radians(entRotate));
                 const auto pointX = entPos + glm::vec3(tmpX.x * cosR - tmpX.y * sinR, tmpX.x * sinR + tmpX.y * cosR, 0.f);
                 const auto pointY = entPos + glm::vec3(tmpY.x * cosR - tmpY.y * sinR, tmpY.x * sinR + tmpY.y * cosR, 0.f);
 
                 Renderer2D::DrawFgLine(entPos, pointX, glm::vec4(0.f, 0.f, 1.f, 1.f));
-                Renderer2D::DrawRotatedQuad(pointX, m_clickSize2, colorY, entRotate);
+                Renderer2D::DrawRotatedQuad(pointX, m_clickSizeVec2, colorY, entRotate);
                 Renderer2D::DrawFgLine(entPos, pointY, glm::vec4(1.f, 0.f, 0.f, 1.f));
-                Renderer2D::DrawRotatedQuad(pointY, m_clickSize2, colorY, entRotate);
+                Renderer2D::DrawRotatedQuad(pointY, m_clickSizeVec2, colorY, entRotate);
             }
             break;
         }
@@ -351,7 +351,7 @@ void Gizmo::onUpdate()
                 auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
 
                 Renderer2D::DrawCircleLine(entPos, std::max(entSize.x, entSize.y));
-                Renderer2D::DrawCircle(entPos, m_clickSize2.x, glm::vec4(0, 0.39, 0.79, 1));
+                Renderer2D::DrawCircle(entPos, m_clickSizeVec2.x, glm::vec4(0, 0.39, 0.79, 1));
 
                 const auto tmpPoint = glm::vec3(0.f, (double)std::max(entSize.x, entSize.y) * 0.7, 1.f);
                 const auto sinR = std::sin(glm::radians(entRotate));
@@ -386,9 +386,9 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
     {
         case GizmoMode::MoveMode:
         {
-            if(Math::AABB2DPoint(boundPos+m_clickSize3*glm::vec3(.5f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(.5f,0.f, 1.f)+m_clickSize3*glm::vec3(1.5f,0.f,1.f), boundSize*glm::vec3(.5f,0.f,1.f) + m_clickSize3*glm::vec3(3.f,1.f,1.f), mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(0.f,.5f, 1.f)+m_clickSize3*glm::vec3(0.f,1.5f,1.f), boundSize*glm::vec3(0.f,.5f,1.f) + m_clickSize3*glm::vec3(1.f,3.f,1.f), mousePosInWorld))
+            if(Math::AABB2DPoint(boundPos + m_clickSizeVec3 * glm::vec3(.5f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos +boundSize*glm::vec3(.5f,0.f, 1.f) + m_clickSizeVec3 * glm::vec3(1.5f, 0.f, 1.f), boundSize * glm::vec3(.5f, 0.f, 1.f) + m_clickSizeVec3 * glm::vec3(3.f, 1.f, 1.f), mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos +boundSize*glm::vec3(0.f,.5f, 1.f) + m_clickSizeVec3 * glm::vec3(0.f, 1.5f, 1.f), boundSize * glm::vec3(0.f, .5f, 1.f) + m_clickSizeVec3 * glm::vec3(1.f, 3.f, 1.f), mousePosInWorld))
             {
                 return true;
             }
@@ -396,14 +396,14 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
         }
         case GizmoMode::ZoomMode:
         {
-            if(Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f,  0.5f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f,  0.0f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f, -0.5f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.0f, -0.5f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f, -0.5f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f,  0.0f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f,  0.5f, 1.f), m_clickSize3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.0f,  0.5f, 1.f), m_clickSize3, mousePosInWorld) )
+            if(Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f,  0.5f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f,  0.0f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.5f, -0.5f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.0f, -0.5f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f, -0.5f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f,  0.0f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3(-0.5f,  0.5f, 1.f), m_clickSizeVec3, mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos+boundSize*glm::vec3( 0.0f,  0.5f, 1.f), m_clickSizeVec3, mousePosInWorld) )
             {
                 return true;
             }
@@ -417,15 +417,15 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
                 const auto &entSize = ent.getComponent<TransformComponent>().scale;
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
 
-                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f)+m_clickSize3*glm::vec3(3.f, 0.f,1.f);
-                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f)+m_clickSize3*glm::vec3(0.f, 3.f,1.f);
+                const auto tmpX = glm::vec3(entSize.x*0.5,0.f,1.f) + m_clickSizeVec3 * glm::vec3(3.f, 0.f, 1.f);
+                const auto tmpY = glm::vec3(0.f,entSize.y*0.5,1.f) + m_clickSizeVec3 * glm::vec3(0.f, 3.f, 1.f);
                 const auto sinR = std::sin(glm::radians(entRotate));
                 const auto cosR = std::cos(glm::radians(entRotate));
                 const auto pointX = entPos + glm::vec3(tmpX.x*cosR-tmpX.y*sinR, tmpX.x*sinR+tmpX.y*cosR, 0.f);
                 const auto pointY = entPos + glm::vec3(tmpY.x*cosR-tmpY.y*sinR, tmpY.x*sinR+tmpY.y*cosR, 0.f);
 
-                if(Math::AABB2DPoint(pointX,m_clickSize3*glm::vec3(1.5f, 1.5f, 1.f), mousePosInWorld) ||
-                   Math::AABB2DPoint(pointY,m_clickSize3*glm::vec3(1.5f, 1.5f, 1.f), mousePosInWorld))
+                if(Math::AABB2DPoint(pointX, m_clickSizeVec3 * glm::vec3(1.5f, 1.5f, 1.f), mousePosInWorld) ||
+                   Math::AABB2DPoint(pointY, m_clickSizeVec3 * glm::vec3(1.5f, 1.5f, 1.f), mousePosInWorld))
                 {
                     return true;
                 }
@@ -435,7 +435,7 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
         }
         case GizmoMode::RotationMode:
         {
-            if( Math::AABB2DPoint(boundPos, m_clickSize3, mousePosInWorld))
+            if( Math::AABB2DPoint(boundPos, m_clickSizeVec3, mousePosInWorld))
             {
                 return true;
             }
@@ -463,14 +463,14 @@ void Gizmo::setMousePosEnd(glm::vec2 pos)
 
 void Gizmo::setClickSize(glm::vec2 size)
 {
-    m_clickSize2 = size;
-    m_clickSize3 = glm::vec3(size,0.f);
+    m_clickSizeVec2 = size;
+    m_clickSizeVec3 = glm::vec3(size, 0.f);
 }
 
 void Gizmo::setClickSize(glm::vec3 size)
 {
-    m_clickSize2 = size;
-    m_clickSize3 = size;
+    m_clickSizeVec2 = size;
+    m_clickSizeVec3 = size;
 }
 
 void Gizmo::setSelectedEntity(std::set<Entity> &ent)

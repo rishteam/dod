@@ -199,7 +199,7 @@ void EditController::onImGuiRender()
         }
     }
 
-    // revolve entity
+    // 區域選取
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
        !m_gizmo.isMovingEntity())
@@ -210,6 +210,7 @@ void EditController::onImGuiRender()
         if(ImGui::IsMouseDown(ImGuiMouseButton_Left))
             m_gizmo.setMousePosEnd(mousePosInWorld);
 
+        // 當放開滑鼠時，區域選取 Entity
         if(ImGui::IsMouseReleased(ImGuiMouseButton_Left))
         {
             BoundingBox2D mouseBound = m_gizmo.getMouseBound();
@@ -244,7 +245,7 @@ void EditController::onImGuiRender()
         m_gizmo.setMousePosEnd(mousePosInWorld);
     }
 
-    // gizmo
+    // Update Gizmo
     m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
     bool isValid = m_sceneWindowFocused &&
                    m_sceneWindowHovered &&
@@ -297,7 +298,6 @@ void EditController::onEvent(Event &e)
 
 bool EditController::onMouseScrolled(MouseScrolledEvent &e)
 {
-    // TODO: think more correct implementation
     if( m_sceneWindowFocused && m_sceneWindowHovered )
     {
         if(!m_isNowScrollingCamera) // is not moving

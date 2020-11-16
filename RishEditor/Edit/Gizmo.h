@@ -44,8 +44,8 @@ private:
     glm::vec4 colorR = glm::vec4(1.f, 0.f, 0.f, 1.f);
     glm::vec4 colorB = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
-    glm::vec2 m_clickSize2;
-    glm::vec3 m_clickSize3;
+    glm::vec2 m_clickSizeVec2; ///< Click size in vec2
+    glm::vec3 m_clickSizeVec3; ///< Click size in vec3
 
     // Mouse position
     glm::vec2 m_mousePosBegin;

@@ -61,6 +61,7 @@ public:
     ~ImAction();
     //
     const char* Name() const;
+    // TODO: Support all shortcut names
     const char* ShortcutName() const;
     //
     bool isVisible();
