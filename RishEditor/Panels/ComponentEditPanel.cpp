@@ -528,6 +528,25 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 }
 
 template<>
+void ComponentEditPanel::drawEditComponentWidget<AmbientLightComponent>()
+{
+    BeginDrawEditComponent(AmbientLightComponent);
+    {
+        DrawRightClickMenu(AmbientLightComponent, false);
+
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        auto &light     = m_targetEntity.getComponent<AmbientLightComponent>();
+
+        ImGui::ColorEdit4("Ambient Color Mask", glm::value_ptr(light.colorMask));
+
+        ImGui::DragFloat3("Mask Position", glm::value_ptr(transform.translate));
+        ImGui::DragFloat3("Mask Size", glm::value_ptr(transform.scale));
+    }
+
+    EndDrawEditComponent();
+}
+
+template<>
 void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
 {
     BeginDrawEditComponent(LightComponent);
@@ -776,6 +795,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
         drawEditComponentWidget<LightComponent>();
+        drawEditComponentWidget<AmbientLightComponent>();
         
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))

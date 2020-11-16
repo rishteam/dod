@@ -23,6 +23,16 @@ void LightSystem::onRender()
 
     auto view = registry.view<TransformComponent, LightComponent>();
     auto rigidView = registry.view<TransformComponent, RigidBody2DComponent>();
+    auto ambientView = registry.view<TransformComponent, AmbientLightComponent>();
+
+    RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+    for(auto ambient : ambientView)
+    {
+        auto &transform = registry.get<TransformComponent>(ambient);
+        auto &ambientLight = registry.get<AmbientLightComponent>(ambient);
+
+        Renderer2D::DrawQuad(transform.translate, transform.scale, ambientLight.colorMask);
+    }
 
     for(auto entity : view)
     {
@@ -89,12 +99,15 @@ void LightSystem::onRender()
                     }
                 }
             }
-
         }
+
+        RenderCommand::SetBlendMode(true);
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
         Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
                                    light.viewPortSize, s_viewport, light.color);
-        // RL_CORE_TRACE("Light Position {} {}", transform.translate.x, transform.translate.y);
+        RenderCommand::SetBlendMode(false);
     }
+    RenderCommand::SetBlendMode(true);
 }
 
 void LightSystem::onViewportResize(const glm::vec2 &viewport)

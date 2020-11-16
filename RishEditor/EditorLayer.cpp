@@ -171,7 +171,6 @@ void EditorLayer::onUpdate(Time dt)
         {
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
             Renderer2D::BeginScene(cameraController->getCamera(), false);
-            RL_INFO("m_sceneViewportPanelSize: {} {}", m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
             LightSystem::onViewportResize(m_sceneViewportPanelSize);
             LightSystem::onRender();
             Renderer2D::EndScene();
@@ -199,7 +198,6 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
-        RL_TRACE("m_gameViewportPanelSize: {} {}", m_gameViewportPanelSize.x, m_gameViewportPanelSize.y);
         LightSystem::onViewportResize(m_gameViewportPanelSize);
         m_currentScene->onUpdate(dt);
     }

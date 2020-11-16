@@ -732,6 +732,19 @@ struct ParticleComponent
     }
 };
 
+struct AmbientLightComponent
+{
+    glm::vec4 colorMask = {1, 1, 1, 0.5};
+
+private:
+    friend class cereal::access;
+    template<typename Achrive>
+    void serialize(Achrive &ar)
+    {
+        ar(CEREAL_NVP(colorMask));
+    }
+};
+
 struct LightComponent
 {
 //    glm::vec3 lightPos; // Use Transform's Pos;
@@ -745,6 +758,7 @@ struct LightComponent
     glm::vec4 shadowColor{0, 0, 0, 0};
 
 private:
+    friend class cereal::access;
     template<typename Achrive>
     void serialize(Achrive &ar)
     {
