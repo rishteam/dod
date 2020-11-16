@@ -166,17 +166,6 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
-        m_editController->onUpdate(dt);
-
-        // Particle System
-        {
-            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
-            Renderer2D::BeginScene(cameraController->getCamera(), false);
-            ParticleSystem::onEditorRender(m_editController->m_debugSimulateParticle);
-            Renderer2D::EndScene();
-            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
-                                        RenderCommand::BlendFactor::OneMinusSrcAlpha);
-        }
 
         // Draw Light
         {
@@ -187,6 +176,17 @@ void EditorLayer::onUpdate(Time dt)
             LightSystem::onRender();
             Renderer2D::EndScene();
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        }
+        m_editController->onUpdate(dt);
+
+        // Particle System
+        {
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
+            Renderer2D::BeginScene(cameraController->getCamera(), false);
+            ParticleSystem::onEditorRender(m_editController->m_debugSimulateParticle);
+            Renderer2D::EndScene();
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
+                                        RenderCommand::BlendFactor::OneMinusSrcAlpha);
         }
     }
     m_editorFramebuffer->unbind();

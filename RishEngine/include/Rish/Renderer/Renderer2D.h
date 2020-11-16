@@ -39,7 +39,7 @@ public:
     static void DrawQuad(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4& color);
     static void DrawQuad(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec4& color);
 
-    static void DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n);
+    static void DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n, const glm::vec4& color = {1, 1, 1, 1});
 
     static void DrawPointLight(const glm::vec3 &position, float radius, float strength,
                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale,  const glm::vec2 &screenSize, const glm::vec4 color = {1, 1, 1, 1});

@@ -998,12 +998,14 @@ void Renderer2D::DrawQuad(const glm::vec3 &p0, const glm::vec3 &p1, const glm::v
     SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
 }
 
-void Renderer2D::DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n)
+void Renderer2D::DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n, const glm::vec4& color)
 {
-    glm::vec3 p2 = p0 + glm::vec3{p0 - lightPos} * n;
-    glm::vec3 p3 = p1 + glm::vec3{p1 - lightPos} * n;
+    float length = glm::distance(p0, lightPos);
+    glm::vec3 p2 = p0 + glm::vec3{p0 - lightPos} * n/length;
+    length = glm::distance(p1, lightPos);
+    glm::vec3 p3 = p1 + glm::vec3{p1 - lightPos} * n/length;
 
-    DrawQuad(p0, p1, p2, p3, {1, 1, 1, 1});
+    DrawQuad(p0, p1, p2, p3, color);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)

@@ -120,17 +120,25 @@ void Scene::onEditorInit()
 
 void Scene::onUpdate(Time dt)
 {
+    LightSystem::OnUpdate(dt);
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
     ColliderSystem::OnUpdate(dt);
-    LightSystem::OnUpdate(dt);
 
     // Find a primary camera
     // TODO: implement multiple camera
     if(!findPrimaryCamera())
         return;
 
+    // Draw Light
+    {
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
+        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+        LightSystem::onRender();
+        Renderer2D::EndScene();
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+    }
     // Draw SpriteRenderComponent
     {
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
@@ -143,15 +151,6 @@ void Scene::onUpdate(Time dt)
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
         ParticleSystem::onRender();
-        Renderer2D::EndScene();
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-    }
-
-    // Draw Light
-    {
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
-        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
-        LightSystem::onRender();
         Renderer2D::EndScene();
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }

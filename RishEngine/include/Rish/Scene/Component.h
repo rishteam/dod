@@ -734,25 +734,28 @@ struct ParticleComponent
 
 struct LightComponent
 {
-    glm::vec3 lightPos; // Use Transform's Pos;
+//    glm::vec3 lightPos; // Use Transform's Pos;
     glm::vec3 viewPortPos;
     bool customViewPos = false;
     glm::vec2 viewPortSize = {10, 10};
     glm::vec4 color = {1, 1, 1, 1};
     float radius = 100;
     float strength = 100;
+    float shadowScale = 10;
+    glm::vec4 shadowColor{0, 0, 0, 0};
 
 private:
     template<typename Achrive>
     void serialize(Achrive &ar)
     {
-        ar( CEREAL_NVP(lightPos),
-            CEREAL_NVP(viewPortPos),
+        ar( CEREAL_NVP(viewPortPos),
             CEREAL_NVP(customViewPos),
             CEREAL_NVP(viewPortSize),
             CEREAL_NVP(color),
             CEREAL_NVP(radius),
-            CEREAL_NVP(strength)
+            CEREAL_NVP(strength),
+            CEREAL_NVP(shadowScale),
+            CEREAL_NVP(shadowColor)
         );
     }
 
