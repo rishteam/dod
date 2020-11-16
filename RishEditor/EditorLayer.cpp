@@ -1,6 +1,7 @@
 #include <Rish/rlpch.h>
 
 // Core utilities
+#include <Rish/Core/Application.h>
 #include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Input/Input.h>
@@ -21,11 +22,10 @@
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
+#include <Rish/Debug/ImGuiLogWindow.h>
 
 #include <Rish/ImGui/MenuAction.h>
 #include <imgui_internal.h>
-
-#include <Rish/Scene/ScriptableManager.h>
 
 #include <Rish/Script/Script.h>
 
@@ -77,8 +77,10 @@ EditorLayer::EditorLayer()
     std::thread autoSaveThread(&EditorLayer::autoSave, this);
     autoSaveThread.detach();
 
+    // Actions
+    // TODO: Make actions into callback function?
+    // TODO: Rethink the whole action and shortcut situation and think about the undo&redo functionality
     initShortCut();
-
 }
 
 void EditorLayer::onAttach()
@@ -106,7 +108,8 @@ void EditorLayer::onAttach()
     ScriptableManager::Register<Cinemachine2D>();
     ScriptableManager::Register<TestScript>();
     ScriptableManager::Register<MonsterController>();
-    ScriptableManager::Register<EventBoxController>();
+    ScriptableManager::Register<BoxEventController>();
+    ScriptableManager::Register<ObjectController>();
 
     loadSetting("setting.conf");
 
@@ -369,17 +372,14 @@ void EditorLayer::onImGuiRender()
     // Log window
     defaultLogWindow.onImGuiRender();
 
-    // Status Bar
-    m_statusBarPanel->onImGuiRender();
-
-	ImGui::EndDockspace();
-
-	// Modals
-	m_errorModal.onImGuiRender();
-
 	// Simple Panels
     for(auto &panel : m_simplePanelList)
         panel->onImGuiRender();
+
+	ImGui::EndDockspace();
+
+    // Modals
+	m_errorModal.onImGuiRender();
 
 	// Debug Scene Window
 	if(m_debugNativeScript)
@@ -595,7 +595,21 @@ void EditorLayer::loadSetting(const std::string &path)
     //
     std::stringstream oos(content);
     cereal::JSONInputArchive inputArchive(oos);
-    inputArchive(cereal::make_nvp("settings", m_editorSetting));
+
+    try
+    {
+        inputArchive(cereal::make_nvp("settings", m_editorSetting));
+    }
+    catch (cereal::RapidJSONException &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        m_errorModal.setMessage(e.what());
+    }
+    catch (cereal::Exception &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        m_errorModal.setMessage(e.what());
+    }
 }
 
 void EditorLayer::saveSetting()
@@ -675,20 +689,19 @@ void EditorLayer::saveScene(const std::string &path)
 }
 
 // TODO: Refactor Timer into timer thread
+// TODO: Use condition_variable
 void EditorLayer::autoSave()
 {
     Clock clock;
-    Time lastSave = clock.getElapsedTime();
 
     while(m_autoSaveRun)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        if(((clock.getElapsedTime() - lastSave) > 10.f) && (!m_scenePath.empty()))
+        if((clock.getElapsedTime() > m_editorSetting.autoSaveSecond) && (!m_scenePath.empty()))
         {
-            // TODO: refactor me and add setting to setting panel
-            lastSave = clock.getElapsedTime();
             saveScene(m_scenePath);
             m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
+            clock.restart();
         }
     }
 }
@@ -703,6 +716,8 @@ void EditorLayer::initShortCut()
     //
     m_sceneAction.createAction("Delete", ImActionKey_Delete);
     m_sceneAction.createAction("Cancel", ImActionKey_Escape);
+    //
+    m_sceneAction.createAction("Group", ImCtrl | ImActionKey_G);
 }
 
 void EditorLayer::onShortcutActionUpdate()
@@ -712,7 +727,7 @@ void EditorLayer::onShortcutActionUpdate()
     m_sceneAction.getAction("Delete")->setEnabled(m_editController->isSelected());
     m_sceneAction.getAction("Cancel")->setEnabled(m_editController->isSelected());
 
-    if(m_isSceneWindowFocus||m_isMenuBarFocus)
+    if(m_isSceneWindowFocus || m_isMenuBarFocus)
     {
         if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
         {
@@ -765,6 +780,11 @@ void EditorLayer::onShortcutActionUpdate()
                 ent.destroy();
             m_sceneHierarchyPanel->resetTarget();
             m_statusBarPanel->sendMessage("Delete Selected Entity");
+        }
+
+        if(m_sceneAction.getAction("Group")->IsShortcutPressed())
+        {
+            m_sceneHierarchyPanel->groupTargetEntities();
         }
 
         if(m_sceneAction.getAction("Cancel")->IsShortcutPressed())

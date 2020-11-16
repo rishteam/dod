@@ -1,5 +1,6 @@
-#include "SettingPanel.h"
+#include <Rish/Utils/FileDialog.h>
 
+#include "SettingPanel.h"
 #include "EditorLayer.h"
 
 namespace  rl{
@@ -64,10 +65,6 @@ void SettingPanel::onImGuiRender()
                     ImGui::Text(m_shortCut->getAction("Select All")->ShortcutName());
                     ImGui::NextColumn();
 
-                    ImGui::Text("Copy");
-                    ImGui::NextColumn();
-                    ImGui::Text(m_shortCut->getAction("Copy")->ShortcutName());
-                    ImGui::NextColumn();
 
                     ImGui::Text("Paste");
                     ImGui::NextColumn();
@@ -99,7 +96,8 @@ void SettingPanel::onImGuiRender()
                     ImGui::AlignTextToFramePadding();
                     ImGui::Text("Scene");
                     ImGui::AlignTextToFramePadding();
-                    ImGui::Text("");
+                    ImGui::AlignTextToFramePadding();
+                    ImGui::Text("Auto save (sec.)");
 
                     ImGui::NextColumn();
 
@@ -113,6 +111,8 @@ void SettingPanel::onImGuiRender()
                             m_parent->m_editorSetting.path = FileSystem::RelativePath(tmpPath);
                         }
                     }
+
+                    ImGui::InputFloat("##AutoSaveSecond", &m_parent->m_editorSetting.autoSaveSecond);
 
                     ImGui::Columns(1);
                     ImGui::Separator();

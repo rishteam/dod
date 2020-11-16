@@ -46,6 +46,7 @@ enum ImActionKey
     ImActionKey_KeyPadEnter  = Keyboard::Enter,
     ImActionKey_A            = Keyboard::A,          // for text edit CTRL+A: select all
     ImActionKey_C            = Keyboard::C,          // for text edit CTRL+C: copy
+    ImActionKey_G            = Keyboard::G,
     ImActionKey_V            = Keyboard::V,          // for text edit CTRL+V: paste
     ImActionKey_X            = Keyboard::X,          // for text edit CTRL+X: cut
     ImActionKey_Y            = Keyboard::Y,          // for text edit CTRL+Y: redo
@@ -60,6 +61,7 @@ public:
     ~ImAction();
     //
     const char* Name() const;
+    // TODO: Support all shortcut names
     const char* ShortcutName() const;
     //
     bool isVisible();

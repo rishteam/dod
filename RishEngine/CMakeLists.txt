@@ -59,8 +59,9 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/Spawner.cpp
     ../NativeScript/Rish/Script/Cinemachine2D.cpp
     ../NativeScript/Rish/Script/TestScript.cpp
-    ../NativeScript/Rish/Script/EventBoxController.cpp
+    ../NativeScript/Rish/Script/BoxEventController.cpp
     ../NativeScript/Rish/Script/MonsterController.cpp
+    ../NativeScript/Rish/Script/ObjectController.cpp
 )
 
 # Add executable
@@ -88,7 +89,9 @@ add_library(RishEngine
 
     src/Debug/DebugWindow.cpp
     src/Debug/ImGuiLogWindow.cpp
-        src/ImGui/ImGui.cpp
+
+    src/ImGui/ImGui.cpp
+    src/ImGui/MenuAction.cpp
 
     src/Utils/uuid.cpp
     src/Utils/String.cpp
@@ -143,6 +146,7 @@ add_library(RishEngine
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
     src/Scene/System/NativeScriptSystem.cpp
+    src/Scene/Component.cpp
 
     src/Math/AABB.cpp
     src/Math/BoundingBox.cpp
@@ -151,7 +155,7 @@ add_library(RishEngine
     src/Scene/System/SpriteRenderSystem.cpp
 
     ${RL_SCRIPT_FILES}
-        src/ImGui/MenuAction.cpp)
+ )
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
@@ -252,6 +256,12 @@ target_link_libraries(RishEngine
 find_package(cereal REQUIRED)
 target_link_libraries(RishEngine
     cereal
+)
+
+# Add re2
+find_package(re2 REQUIRED)
+target_link_libraries(RishEngine
+    re2::re2
 )
 
 target_link_libraries(RishEngine IconFontCpp::IconFontCpp)

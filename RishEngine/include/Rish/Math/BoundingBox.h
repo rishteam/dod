@@ -4,10 +4,9 @@
 
 namespace rl {
 
-
 struct BoundingBox2D
 {
-    float x, y, w, h;
+    float x{0.f}, y{0.f}, w{0.f}, h{0.f};
 
     BoundingBox2D() = default;
     BoundingBox2D(const glm::vec2 &pos, const glm::vec2 &scale)
@@ -28,23 +27,24 @@ struct BoundingBox2D
     glm::vec2 getPosition() const { return glm::vec2{x, y}; }
     glm::vec2 getScale() const { return glm::vec2{w, h}; }
 
-    bool IsInside(const  BoundingBox2D entbound){
-        if( entbound.x+entbound.w/2 > x+w/2 )
+    bool isInside(const BoundingBox2D &bound)
+    {
+        float halfW = w / 2.f, halfH = h / 2.f;
+        float bHalfW = bound.w / 2.f, bHalfH = bound.h / 2.f;
+        //
+        if(bound.x + bHalfW > x + halfW ||
+           bound.x - bHalfW < x - halfW ||
+           bound.y + bHalfH > y + halfH ||
+           bound.y - bHalfH < y - halfH)
             return false;
-        if( entbound.x-entbound.w/2 < x-w/2 )
-            return false;
-        if( entbound.y+entbound.h/2 > y+h/2 )
-            return false;
-        if( entbound.y-entbound.h/2 < y-h/2 )
-            return false;
-        return true;
+        else
+            return true;
     }
 
+    static BoundingBox2D CalculateBoundingBox2D(const glm::vec2 &pos, const glm::vec2 &scale, float rotate);
+    static BoundingBox2D CombineBoundingBox2D(const BoundingBox2D &lhs, const BoundingBox2D &rhs);
+    static BoundingBox2D CalculateBoundingFromPoint(const glm::vec2 &p1, const glm::vec2 &p2);
 };
-
-BoundingBox2D CalculateBoundingBox2D(const glm::vec2 &pos, const glm::vec2 &scale, float rotate);
-BoundingBox2D CombinaBoundingBox2D(const BoundingBox2D lhs, const BoundingBox2D rhs);
-BoundingBox2D CalculateBounding2Point(const glm::vec2 p1, const glm::vec2 p2);
 
 
 } // end of namespace rl

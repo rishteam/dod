@@ -56,27 +56,28 @@ void EditController::onUpdate(Time dt)
 
     auto scene = getContext();
 
-    Renderer2D::BeginScene(m_cameraController->getCamera(), false);
+    // Draw grid
     {
-        // draw grid
+        Renderer2D::BeginScene(m_cameraController->getCamera(), false);
         m_editorGrid.onUpdate(m_showGrid);
+        Renderer2D::EndScene();
     }
-    Renderer2D::EndScene();
 
+    // Draw sprites
     {
         Renderer2D::BeginScene(m_cameraController->getCamera(), true);
         SpriteRenderSystem::onRender();
         Renderer2D::EndScene();
     }
 
-    Renderer2D::BeginScene(m_cameraController->getCamera(), false);
+    // Draw special entities
     {
+        Renderer2D::BeginScene(m_cameraController->getCamera(), false);
 
-        // Draw special entities
         drawCameraIconAndBorder(scene);
         // TODO: Draw other special entities
 
-        // draw attachPoint
+        // Draw the physics attachPoints
         auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
         for (auto entity : view)
         {
@@ -88,7 +89,7 @@ void EditController::onUpdate(Time dt)
                 Renderer2D::Renderer2D::DrawCircle({ transform.translate.x + rigid.attachPoint.x, transform.translate.y + rigid.attachPoint.y}, 0.1,  {0.160f, 0.254f, 1.0f, 1.0f});
         }
 
-        // draw boxcollider
+        // Draw the box colliders
         auto view2 = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
         for (auto entity : view2)
         {
@@ -100,6 +101,7 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
+        // Delete invalid target entities
         std::set<Entity> delTarget;
         auto &entSet = getTargets();
         for(auto &ent : entSet)
@@ -115,19 +117,20 @@ void EditController::onUpdate(Time dt)
         for(auto &ent : delTarget)
             removeTarget(ent);
 
-        // draw gizmo
+        // Draw the gizmo
         m_gizmo.setSelectedEntity(entSet);
         m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
         m_gizmo.onUpdate();
+
+        Renderer2D::EndScene();
     }
-    Renderer2D::EndScene();
 }
 
 void EditController::onImGuiRender()
 {
-    // states
-    m_sceneWindowFocused = ImGui::IsWindowFocused();
-    m_sceneWindowHovered = ImGui::IsWindowHovered();
+    // Update the window states
+    m_sceneWindowFocused        = ImGui::IsWindowFocused();
+    m_sceneWindowHovered        = ImGui::IsWindowHovered();
     m_scenePrevLeftMouseDown    = ImGui::IsMouseDown(ImGuiMouseButton_Left);
     m_scenePrevLeftMouseClicked = ImGui::IsMouseClicked(ImGuiMouseButton_Left);
 
@@ -142,7 +145,7 @@ void EditController::onImGuiRender()
                   + m_cameraController->getPosition().x;
     float yaxis = glm::lerp(m_cameraController->getBounds().bottom, m_cameraController->getBounds().top, 1.f - sceneMousePosNormalize.y)
                   + m_cameraController->getPosition().y;
-    mposInWorld = glm::vec2(xaxis, yaxis);
+    mousePosInWorld = glm::vec2(xaxis, yaxis);
 
     // Get Keyboard states
     bool isCtrlPressed = ImGui::GetIO().KeyCtrl;
@@ -151,7 +154,7 @@ void EditController::onImGuiRender()
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
        ImGui::IsMouseClicked(ImGuiMouseButton_Left) &&
-       !m_gizmo.isMouseOnGizmo(mposInWorld))
+       !m_gizmo.isMouseOnGizmo(mousePosInWorld))
     {
         Entity bestMatch;
         glm::vec3 minSize{std::numeric_limits<float>::max(),
@@ -166,13 +169,13 @@ void EditController::onImGuiRender()
             auto entPos = ent.getComponent<TransformComponent>().translate;
             auto entSize = ent.getComponent<TransformComponent>().scale;
             auto entRotate = ent.getComponent<TransformComponent>().rotate;
-            auto bound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+            auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
             const glm::vec3 boundPos(bound.getPosition(), 0.f);
             const glm::vec3 boundSize(bound.getScale(), 0.f);
             const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
 
             // Inside
-            if(Math::AABB2DPoint(boundPos, boundSize, mposInWorld))
+            if(Math::AABB2DPoint(boundPos, boundSize, mousePosInWorld))
             {
                 // Pick the smallest size one
                 if(minSize.x > boundSize.x && minSize.y > boundSize.y)
@@ -188,30 +191,32 @@ void EditController::onImGuiRender()
             if(!isCtrlPressed)
                 resetTarget();
             addTarget(bestMatch);
-        }else{
-
+        }
+        else
+        {
             if(!isCtrlPressed)
                 resetSelected();
         }
-
     }
 
-    // revolve entity
+    // 區域選取
     if(m_sceneWindowFocused &&
        m_sceneWindowHovered &&
-       !m_gizmo.isMovingEntity()){
-
+       !m_gizmo.isMovingEntity())
+    {
         if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-            m_gizmo.setMousePosBegin(mposInWorld);
+            m_gizmo.setMousePosBegin(mousePosInWorld);
 
         if(ImGui::IsMouseDown(ImGuiMouseButton_Left))
-            m_gizmo.setMousePosEnd(mposInWorld);
+            m_gizmo.setMousePosEnd(mousePosInWorld);
 
-        if(ImGui::IsMouseReleased(ImGuiMouseButton_Left)){
+        // 當放開滑鼠時，區域選取 Entity
+        if(ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+        {
             BoundingBox2D mouseBound = m_gizmo.getMouseBound();
 
-            if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f ){
-
+            if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f )
+            {
                 resetTarget();
 
                 // Iterate through all entities
@@ -222,31 +227,31 @@ void EditController::onImGuiRender()
                     auto entPos = ent.getComponent<TransformComponent>().translate;
                     auto entSize = ent.getComponent<TransformComponent>().scale;
                     auto entRotate = ent.getComponent<TransformComponent>().rotate;
-                    auto entBound = CalculateBoundingBox2D(entPos, entSize, entRotate);
+                    auto entBound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
 
-                    if( mouseBound.IsInside(entBound) ){
+                    if(mouseBound.isInside(entBound))
+                    {
                         addTarget(ent);
                     }
-
                 });
-
             }
-            m_gizmo.setMousePosBegin(mposInWorld);
-            m_gizmo.setMousePosEnd(mposInWorld);
+            m_gizmo.setMousePosBegin(mousePosInWorld);
+            m_gizmo.setMousePosEnd(mousePosInWorld);
         }
-
     }
-    else{
-        m_gizmo.setMousePosBegin(mposInWorld);
-        m_gizmo.setMousePosEnd(mposInWorld);
+    else
+    {
+        m_gizmo.setMousePosBegin(mousePosInWorld);
+        m_gizmo.setMousePosEnd(mousePosInWorld);
     }
 
-    // gizmo
+    // Update Gizmo
     m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
-    m_gizmo.onImGuiRender((m_sceneWindowFocused &&
-                           m_sceneWindowHovered &&
-                           ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
-                           isSelected()), mposInWorld);
+    bool isValid = m_sceneWindowFocused &&
+                   m_sceneWindowHovered &&
+                   ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
+                   isSelected();
+    m_gizmo.onImGuiRender(isValid,mousePosInWorld);
 
     // Camera pane
     if(m_sceneWindowFocused &&
@@ -255,11 +260,11 @@ void EditController::onImGuiRender()
         if(!m_isNowMovingCamera) // is not moving
         {
             m_isNowMovingCamera = true;
-            m_preMPos = mposInWorld;
+            m_preMousePos = mousePosInWorld;
         }
         else
         {
-            glm::vec2 vec = mposInWorld - m_preMPos;
+            glm::vec2 vec = mousePosInWorld - m_preMousePos;
             m_cameraController->move(-vec);
         }
     }
@@ -293,18 +298,18 @@ void EditController::onEvent(Event &e)
 
 bool EditController::onMouseScrolled(MouseScrolledEvent &e)
 {
-
     if( m_sceneWindowFocused && m_sceneWindowHovered )
     {
         if(!m_isNowScrollingCamera) // is not moving
         {
             m_isNowScrollingCamera = true;
-            m_preMPos = mposInWorld;
+            m_preMousePos = mousePosInWorld;
         }
         else
         {
-            glm::vec2 vec = mposInWorld - m_preMPos;
-            m_cameraController->move(-vec);
+            // Move the camera to opposite direction
+            glm::vec2 dir = mousePosInWorld - m_preMousePos;
+            m_cameraController->move(-dir);
         }
     }
     else

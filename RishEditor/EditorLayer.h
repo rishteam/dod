@@ -1,4 +1,5 @@
-#include <RishEngine.h>
+#include <Rish/rlpch.h>
+#include <Rish/Layer/Layer.h>
 
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ComponentEditPanel.h"
@@ -24,12 +25,15 @@ struct EditorSetting
     bool isDefaultOpenScene       = false;
     std::string path;
 
+    float autoSaveSecond = 60.f;
+
     template<typename Archive>
     void serialize(Archive &ar)
     {
         ar(CEREAL_NVP(isDefaultOpenScene));
         ar(CEREAL_NVP(path));
         ar(CEREAL_NVP(saveSettingOnExit));
+        ar(CEREAL_NVP(autoSaveSecond));
     }
 };
 

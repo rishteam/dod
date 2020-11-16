@@ -56,6 +56,8 @@ namespace glm
 
 namespace rl {
 
+class Entity;
+
 /**
  * @defgroup components Components
  * @brief Components for entities
@@ -236,6 +238,39 @@ private:
            cereal::make_nvp("lockAspect", lockAspect),
            cereal::make_nvp("primary", primary)
         );
+    }
+};
+
+/**
+ * @brief Group Component
+ * @details This is a special component for grouping entities
+ */
+struct GroupComponent
+{
+    void addEntityUUID(const UUID &id);
+    void delEntityUUID(const UUID &id);
+    void clear();
+
+    using difference_type   = ptrdiff_t;
+    using size_type         = size_t;
+    using value_type        = UUID;
+    using pointer           = UUID*;
+    using reference         = UUID&;
+    using iterator          = std::set<UUID>::iterator;
+    using const_iterator    = std::set<UUID>::const_iterator;
+
+    iterator begin() { return childEntity.begin(); }
+    iterator end()   { return childEntity.end();   }
+    const_iterator begin() const { return childEntity.begin(); }
+    const_iterator end() const   { return childEntity.end();   }
+private:
+    std::set<UUID> childEntity;
+    //
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("children", childEntity));
     }
 };
 

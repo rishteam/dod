@@ -53,7 +53,6 @@ public:
 	 */
 	Entity duplicateEntity(Entity src);
 
-    // TODO: Remove me
 	Entity getEntityByUUID(UUID uuid);
 
 	/**
@@ -112,7 +111,29 @@ public:
     SceneState m_sceneState = SceneState::Editor;
 
 	Entity createEntity(const UUID &id, const std::string &name);
-	std::unordered_map<std::string, size_t> m_entNameToNumMap{};  // TODO: think a more elegant way
+
+	// TODO: refactor in to class
+	// Entity map
+	std::unordered_map<UUID, Ref<Entity>> m_UUIDToEntityMap{};
+	void addEntityToMap(const UUID& id, Entity entity);
+	void removeEntityFromMap(const UUID& id);
+	bool isEntityInMap(Entity entity);
+	bool isValidUUID(const UUID &id) const;
+
+	/**
+	 * @brief Manager of EntityNames
+	 */
+	struct EntityNameManager
+    {
+        void incrementName(const std::string &name);
+        void decrementName(const std::string &name);
+        std::string getName(const std::string &name);
+
+        static std::string stripNumber(const std::string &str);
+
+        std::unordered_map<std::string, size_t> m_entNameToNumMap{};
+    };
+	EntityNameManager m_nameManager;
 
     ////////////////////////////////////////////////////////////////
     // Physics

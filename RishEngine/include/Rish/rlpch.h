@@ -24,6 +24,7 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <queue>
 #include <deque>
 #include <set>
 #include <unordered_map>

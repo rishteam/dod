@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Rish/rlpch.h>
+//
 #include <Rish/Core/Core.h>
 #include <Rish/Core/Log.h>
 #include <Rish/Core/Time.h>

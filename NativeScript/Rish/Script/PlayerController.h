@@ -1,6 +1,7 @@
 #pragma once
 #include <Rish/Script/Common.h>
 #include <Rish/Physics/Component.h>
+#include <Rish/Script/Script.h>
 
 #include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
@@ -28,12 +29,14 @@ public:
 
     enum class PlayerState
     {
-        Alive = 0,
+        Small = 0,
+        Big,
         Died
     };
 
     PlayerAction playerAction = PlayerAction::Stand;
     PlayerFace playerFace = PlayerFace::Right;
+    PlayerState playerState = PlayerState::Small;
 
     void onCreate() override;
 
@@ -42,6 +45,8 @@ public:
     void onUpdate(Time dt) override;
 
     void onImGuiRender() override;
+
+    void detectObject();
 
     void setSprite(SpriteRenderComponent &render, PlayerAction &playerAction, PlayerFace &playerFace);
 
