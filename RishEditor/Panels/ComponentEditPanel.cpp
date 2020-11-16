@@ -133,6 +133,10 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<SpriteRenderComponent>();
+    }
 }
 
 template<>
@@ -175,6 +179,10 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<CameraComponent>();
+    }
 }
 
 template<>
@@ -209,6 +217,10 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
             ImGui::Text("Fuck me plz");
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<NativeScriptComponent>();
+    }
 }
 
 // TODO Particle Component
@@ -533,6 +545,10 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<ParticleComponent>();
+    }
 }
 
 template<>
@@ -603,6 +619,10 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<RigidBody2DComponent>();
+    }
 }
 
 template<>
@@ -644,6 +664,10 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
 
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<BoxCollider2DComponent>();
+    }
 }
 
 template<>
@@ -717,8 +741,11 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         ImGui::Text("biasFactor: %.f", jit.biasFactor);
         ImGui::Text("softness: %.f", jit.softness);
     }
-
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<Joint2DComponent>();
+    }
 }
 
 
@@ -752,18 +779,15 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
-        
+
         // Popup
-        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)) ||
+           (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))))
         {
             m_componentSelectionPanel.m_open = true;
             ImGui::OpenPopup("ComponentSelectionPanel");
         }
-        if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
-        {
-            m_componentSelectionPanel.m_open = true;
-            ImGui::OpenPopup("ComponentSelectionPanel");
-        }
+
         if(ImGui::BeginPopup("ComponentSelectionPanel"))
         {
             m_componentSelectionPanel.onImGuiRender();
