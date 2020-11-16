@@ -1,4 +1,5 @@
-#include <RishEngine.h>
+#include <Rish/rlpch.h>
+#include <Rish/Layer/Layer.h>
 
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ComponentEditPanel.h"
@@ -7,9 +8,12 @@
 #include "Panels/ErrorModal.h"
 #include "Panels/HelpPanel.h"
 #include "Panels/AboutPanel.h"
+#include "Panels/SettingPanel.h"
 
 #include "Edit/EditorGrid.h"
 #include "Edit/EditController.h"
+
+#include <Rish/ImGui/MenuAction.h>
 
 namespace rl {
 
@@ -21,12 +25,15 @@ struct EditorSetting
     bool isDefaultOpenScene       = false;
     std::string path;
 
+    float autoSaveSecond = 60.f;
+
     template<typename Archive>
     void serialize(Archive &ar)
     {
         ar(CEREAL_NVP(isDefaultOpenScene));
         ar(CEREAL_NVP(path));
         ar(CEREAL_NVP(saveSettingOnExit));
+        ar(CEREAL_NVP(autoSaveSecond));
     }
 };
 
@@ -67,6 +74,10 @@ private:
     void openScene(const std::string &path);
     void saveScene(const std::string &path);
 
+    // Handleing time
+    std::atomic_bool m_autoSaveRun = true;
+    void autoSave();
+
     //////////////////////////////////////////
     // Scene
     //////////////////////////////////////////
@@ -101,8 +112,24 @@ private:
 	// simple panels
 	Ref<HelpPanel> m_helpPanel;
 	Ref<AboutPanel> m_aboutPanel;
+	Ref<SettingPanel> m_settingPanel;
 	std::vector<Ref<Panel>> m_simplePanelList;
+    friend class SettingPanel;
 
+    //////////////////////////////////////////
+    // Editor Menu
+    //////////////////////////////////////////
+
+    // TODO: Refactor action menu callback and refactor into classes
+    void initShortCut();
+    void onShortcutActionUpdate();
+    void changeShortCut(const char* name, int shortcut, bool* selected);
+    ImActionManager m_sceneAction;
+    std::vector<Entity> m_copyList;
+
+    //////////////////////////////////////////
+    // Debugs
+    //////////////////////////////////////////
 	bool m_debugNativeScript = false;
 	bool m_clickPlayButton = false;
     bool m_clickStopButton = true;

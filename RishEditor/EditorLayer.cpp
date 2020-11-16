@@ -1,12 +1,16 @@
 #include <Rish/rlpch.h>
 
+// Core utilities
+#include <Rish/Core/Application.h>
 #include <Rish/Core/Time.h>
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Input/Input.h>
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Utils/FileDialog.h>
+#include <Rish/Utils/String.h>
 
+// Script
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 
@@ -18,11 +22,10 @@
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 
 #include <Rish/Debug/DebugWindow.h>
+#include <Rish/Debug/ImGuiLogWindow.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/MenuAction.h>
 #include <imgui_internal.h>
-
-#include <Rish/Scene/ScriptableManager.h>
 
 #include <Rish/Script/Script.h>
 
@@ -53,6 +56,7 @@ EditorLayer::EditorLayer()
     //
     m_statusBarPanel = MakeRef<StatusBarPanel>();
     m_panelList.push_back(m_statusBarPanel);
+    //
     // Simple Panels
     m_helpPanel = MakeRef<HelpPanel>();
     m_simplePanelList.push_back(m_helpPanel);
@@ -60,7 +64,23 @@ EditorLayer::EditorLayer()
     m_aboutPanel = MakeRef<AboutPanel>();
     m_simplePanelList.push_back(m_aboutPanel);
     //
+    m_settingPanel = MakeRef<SettingPanel>();
+    m_simplePanelList.push_back(m_settingPanel);
+    // Bind contexts
+    for(auto &p : m_simplePanelList)
+        p->setContext(this);
+    //
     switchCurrentScene(m_editorScene);
+    // Start auto save thread
+    // TODO: Make RishEngine handle thread management
+    m_autoSaveRun = true;
+    std::thread autoSaveThread(&EditorLayer::autoSave, this);
+    autoSaveThread.detach();
+
+    // Actions
+    // TODO: Make actions into callback function?
+    // TODO: Rethink the whole action and shortcut situation and think about the undo&redo functionality
+    initShortCut();
 }
 
 void EditorLayer::onAttach()
@@ -98,10 +118,21 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
+
+    // TODO: For Debug use
+//    auto ent = m_currentScene->createEntity("Test");
+//    auto &gc = ent.addComponent<GroupComponent>();
+//
+//    gc.addEntityUUID(m_currentScene->createEntity("A").getUUID());
+//    gc.addEntityUUID(m_currentScene->createEntity("B").getUUID());
+//    gc.addEntityUUID(m_currentScene->createEntity("C").getUUID());
 }
 
 void EditorLayer::onDetach()
 {
+    // Close Auto Save Thread
+    m_autoSaveRun = false;
+
     ImGui::SaveIniSettingsToDisk("assets/layout/editor.ini");
     // Detach all panels
     for(auto &panel : m_panelList)
@@ -170,40 +201,43 @@ void EditorLayer::onImGuiRender()
     ImGui::BeginDockspace("EditorDockspace");
     // Menu Bar
     onImGuiMainMenuRender();
-    //
-    // Sync the target entities set
-    static std::set<Entity> sceneHierarchyPrevSet{};
-    static std::set<Entity> editControllerPrevSet{};
 
-    // Update the panels
-    m_sceneHierarchyPanel->onImGuiRender();
-    m_componentEditPanel->onImGuiRender();
-
-    // If SceneHierarchyPanel changed
-    if(sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
+    // Panel sync
     {
-        m_editController->resetTarget();
-        m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+        // Sync the target entities set
+        static std::set<Entity> sceneHierarchyPrevSet{};
+        static std::set<Entity> editControllerPrevSet{};
+
+        // Update the panels
+        m_sceneHierarchyPanel->onImGuiRender();
+        m_componentEditPanel->onImGuiRender();
+
+        // If SceneHierarchyPanel changed
+        if (sceneHierarchyPrevSet != m_sceneHierarchyPanel->getTargets())
+        {
+            m_editController->resetTarget();
+            m_editController->addTarget(m_sceneHierarchyPanel->getTargets());
+        }
+
+        // If EditController changed
+        if (editControllerPrevSet != m_editController->getTargets())
+        {
+            m_sceneHierarchyPanel->resetTarget();
+            m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
+        }
+
+        sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
+        editControllerPrevSet = m_editController->getTargets();
+
+        auto &entSet = m_editController->getTargets();
+        if (entSet.size() == 1)
+        {
+            m_componentEditPanel->setTarget(*entSet.begin());
+        }
+        else
+            m_componentEditPanel->resetTarget();
     }
 
-    // If EditController changed
-    if(editControllerPrevSet != m_editController->getTargets())
-    {
-        m_sceneHierarchyPanel->resetTarget();
-        m_sceneHierarchyPanel->addTarget(m_editController->getTargets());
-    }
-
-    sceneHierarchyPrevSet = m_sceneHierarchyPanel->getTargets();
-    editControllerPrevSet = m_editController->getTargets();
-
-    auto &entSet = m_editController->getTargets();
-    if(entSet.size() == 1)
-    {
-        m_componentEditPanel->setTarget(*entSet.begin());
-    }
-    else
-        m_componentEditPanel->resetTarget();
-    //
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin(ICON_FA_GAMEPAD " Game");
@@ -264,11 +298,6 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Entity Manager");
     {
-        Renderer2D::OnImGuiRender();
-
-        ImGui::Separator();
-
-
     }
     ImGui::End();
 
@@ -355,17 +384,14 @@ void EditorLayer::onImGuiRender()
     // Log window
     defaultLogWindow.onImGuiRender();
 
-    // Status Bar
-    m_statusBarPanel->onImGuiRender();
-
-	ImGui::EndDockspace();
-
-	// Modals
-	m_errorModal.onImGuiRender();
-
 	// Simple Panels
     for(auto &panel : m_simplePanelList)
         panel->onImGuiRender();
+
+	ImGui::EndDockspace();
+
+    // Modals
+	m_errorModal.onImGuiRender();
 
 	// Debug Scene Window
 	if(m_debugNativeScript)
@@ -387,6 +413,7 @@ void EditorLayer::onImGuiMainMenuRender()
         {
             if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
+                m_scenePath = "";
                 newScene();
             }
 
@@ -417,6 +444,8 @@ void EditorLayer::onImGuiMainMenuRender()
                 std::string path;
                 if(FileDialog::SelectSaveFile("sce", nullptr, path))
                 {
+                    if(!String::endswith(path, ".sce"))
+                        path += ".sce";
                     m_scenePath = path;
                     saveScene(m_scenePath);
                 }
@@ -432,6 +461,15 @@ void EditorLayer::onImGuiMainMenuRender()
             ImGui::EndMenu();
         }
 
+        if(ImGui::BeginMenu("Edit"))
+        {
+            ImGui::MenuItem(m_sceneAction.getAction("Copy"));
+            ImGui::MenuItem(m_sceneAction.getAction("Paste"));
+            ImGui::Separator();
+            ImGui::MenuItem(m_sceneAction.getAction("Delete"));
+            ImGui::EndMenu();
+        }
+
         if(ImGui::BeginMenu("Tools"))
         {
             if(ImGui::MenuItem("Renderer Statistics"))
@@ -439,6 +477,13 @@ void EditorLayer::onImGuiMainMenuRender()
                 // TODO: Use overlay
                 auto stat = Renderer2D::GetStats();
                 RL_INFO("Renderer2D: quad = {}, line = {}, draw = {}", stat.QuadCount, stat.LineCount, stat.DrawCount);
+            }
+
+            ImGui::Separator();
+
+            if( ImGui::MenuItem("Setting", nullptr) )
+            {
+                m_settingPanel->showPanel();
             }
 
             ImGui::EndMenu();
@@ -489,6 +534,8 @@ void EditorLayer::onImGuiMainMenuRender()
 
         ImGui::EndMenuBar();
     }
+
+    onShortcutActionUpdate();
 }
 
 void EditorLayer::onEvent(rl::Event& e)
@@ -555,17 +602,28 @@ void EditorLayer::loadSetting(const std::string &path)
 {
     std::string content;
     content = FileSystem::ReadTextFile(path);
-
+    //
     std::stringstream oos(content);
     cereal::JSONInputArchive inputArchive(oos);
-    inputArchive(cereal::make_nvp("settings", m_editorSetting));
+
+    try
+    {
+        inputArchive(cereal::make_nvp("settings", m_editorSetting));
+    }
+    catch (cereal::RapidJSONException &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        m_errorModal.setMessage(e.what());
+    }
+    catch (cereal::Exception &e)
+    {
+        RL_CORE_ERROR("Failed to load scene {}", e.what());
+        m_errorModal.setMessage(e.what());
+    }
 }
 
 void EditorLayer::saveSetting()
 {
-    if(!m_scenePath.empty())
-        m_editorSetting.path = FileSystem::RelativePath(m_scenePath);
-
     std::ofstream fp("setting.conf");
     cereal::JSONOutputArchive outputArchive(fp);
     outputArchive(cereal::make_nvp("settings", m_editorSetting));
@@ -638,6 +696,107 @@ void EditorLayer::saveScene(const std::string &path)
     std::ofstream os(path);
     cereal::JSONOutputArchive outputArchive(os);
     outputArchive(cereal::make_nvp("Scene", m_editorScene));
+}
+
+// TODO: Refactor Timer into timer thread
+// TODO: Use condition_variable
+void EditorLayer::autoSave()
+{
+    Clock clock;
+
+    while(m_autoSaveRun)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        if((clock.getElapsedTime() > m_editorSetting.autoSaveSecond) && (!m_scenePath.empty()))
+        {
+            saveScene(m_scenePath);
+            m_statusBarPanel->sendMessage(fmt::format("Auto Save: {}", m_scenePath));
+            clock.restart();
+        }
+    }
+}
+
+void EditorLayer::initShortCut()
+{
+    m_sceneAction.createAction("Select All", ImCtrl | ImActionKey_A);
+    m_sceneAction.createAction("Copy", ImCtrl | ImActionKey_C);
+    //
+    m_sceneAction.createAction("Paste", ImCtrl | ImActionKey_V);
+    m_sceneAction.getAction("Paste")->setEnabled(false);
+    //
+    m_sceneAction.createAction("Delete", ImActionKey_Delete);
+    m_sceneAction.createAction("Cancel", ImActionKey_Escape);
+    //
+    m_sceneAction.createAction("Group", ImCtrl | ImActionKey_G);
+}
+
+void EditorLayer::onShortcutActionUpdate()
+{
+    if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
+    {
+        m_currentScene->m_registry.each([&](auto entityID) {
+            Entity entity(entityID, m_currentScene.get());
+            m_editController->addTarget(entity);
+        });
+    }
+
+    if(m_sceneAction.getAction("Copy")->IsShortcutPressed())
+    {
+        m_copyList.clear();
+        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        {
+            m_copyList.push_back(ent);
+        }
+
+        if(!m_copyList.empty())
+        {
+            m_sceneAction.getAction("Paste")->setEnabled(true);
+        }
+    }
+
+    if(m_sceneAction.getAction("Paste")->IsShortcutPressed())
+    {
+        bool first = true;
+
+        m_sceneHierarchyPanel->resetTarget();
+        for(auto &ent : m_copyList)
+        {
+            if(ent){
+                auto copyEntity = m_currentScene->duplicateEntity(ent);
+                m_sceneHierarchyPanel->addTarget(copyEntity);
+                if( first ){
+                    m_sceneHierarchyPanel->setFocus(copyEntity);
+                }
+                first = false;
+            }
+        }
+        m_copyList.clear();
+        m_sceneAction.getAction("Paste")->setEnabled(false);
+    }
+
+    if(m_sceneAction.getAction("Group")->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->groupTargetEntities();
+    }
+
+    if(m_sceneAction.getAction("Delete")->IsShortcutPressed())
+    {
+        for(auto ent : m_sceneHierarchyPanel->getSelectedEntities())
+            ent.destroy();
+        m_sceneHierarchyPanel->resetTarget();
+    }
+
+    if(m_sceneAction.getAction("Cancel")->IsShortcutPressed())
+    {
+        m_sceneHierarchyPanel->resetTarget();
+    }
+
+}
+
+void EditorLayer::changeShortCut(const char *name, int shortcut, bool *selected)
+{
+    m_sceneAction.removeAction(name);
+    m_sceneAction.createAction(name, shortcut, selected);
 }
 
 }

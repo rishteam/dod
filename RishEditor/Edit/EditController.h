@@ -9,6 +9,10 @@
 
 namespace rl {
 
+/**
+ * @brief Edit Controller
+ * @details Control the editor view panel
+ */
 class RL_API EditController : public SceneMultiTargetPanel
 {
 public:
@@ -22,41 +26,41 @@ public:
     void onImGuiRender() override;
     void onEvent(Event &e);
 
-    // Gizmo
-    Gizmo m_gizmo;
+    /// Change the Gizmo mode
     void changeGizmoMode(Gizmo::GizmoMode mode);
 
-    // Grid
+    /// Toggle the grid
     void toggleShowGrid();
 
     Ref<OrthographicCameraController> getCameraController() const { return m_cameraController; }
-
 private:
     bool onMouseScrolled(MouseScrolledEvent &e);
 
     EditorGrid m_editorGrid;                              ///< Editor grid
     Ref<OrthographicCameraController> m_cameraController; ///< Editor camera
 
-    // Camera pane
-    glm::vec3 m_moveCameraDiff{0.f};
-    glm::vec2 m_preMPos{0.f};
-    bool m_isNowMovingCamera = false; ///< Is now moving camera
-    bool m_isNowScrollingCamera = false;
-    // mouse
-    glm::vec2 sceneMousePosNormalize{0.f};
-    glm::vec2 sceneMousePosCenterNormalize{0.f};
-    glm::vec2 mposInWorld;
+    Gizmo m_gizmo; ///< Gizmo
 
+    // Camera pane
+    glm::vec2 m_preMousePos{0.f};        ///< The mouse position in game world in the previous frame
+    bool m_isNowMovingCamera = false;    ///< Is now moving camera (pane)
+    bool m_isNowScrollingCamera = false; ///< Is now scrollint the camera (zoom)
+
+    // mouse
+    glm::vec2 sceneMousePosNormalize{0.f};       ///< Mouse position relative to the scene window (origin is left upper)
+    glm::vec2 sceneMousePosCenterNormalize{0.f}; ///< Mouse position relative to the scene window (origin is center)
+    glm::vec2 mousePosInWorld;                   ///< Mouse position in the game world
+
+    // States
     bool m_sceneWindowFocused        = false; ///< Is Scene window focused?
     bool m_sceneWindowHovered        = false; ///< Is Scene window hovered?
-    bool m_scenePrevLeftMouseDown    = false;
-    bool m_scenePrevLeftMouseClicked = false;
+    bool m_scenePrevLeftMouseDown    = false; ///< Is the mouse down in the previous frame
+    bool m_scenePrevLeftMouseClicked = false; ///< Is the mouse clicked in the previous frame
 
-    // Helper functions
+    /// Draw camera icon and border
     void drawCameraIconAndBorder(const Ref<Scene> &scene) const;
 
-    // Grid
-    bool m_showGrid = true;
+    bool m_showGrid = true; ///< Show Grid
 
 public:
     // Debug Window

@@ -18,6 +18,8 @@ public:
     void onAttach(const Ref <Scene> &scene) override;
     void onImGuiRender() override;
 
+    bool m_open = false;
+
 };
 
 } // end of namespace rl

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Rish/Scene/Entity.h>
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 #include <cereal/types/polymorphic.hpp>
 
@@ -133,7 +133,7 @@ private:
     template<typename Archive>      \
     void serialize(Archive &ar)     \
     {                               \
-        int mock;                   \
+        int mock{};                 \
         ar(CEREAL_NVP(mock));       \
     }
 

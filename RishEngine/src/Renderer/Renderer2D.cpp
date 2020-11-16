@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // TODO: For debug use, please clean
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <Rish/Debug/DebugWindow.h>
 
 namespace rl {
@@ -39,7 +39,7 @@ struct QuadShape
 };
 
 const size_t MaxTextures = 32;
-const size_t MaxQuadCount = 100000;
+const size_t MaxQuadCount = 500000;
 const size_t MaxQuadVertexCount = MaxQuadCount * 4;
 const size_t MaxQuadIndexCount = MaxQuadCount * 6;
 
@@ -122,7 +122,7 @@ struct Renderer2DData
 
         float getTextureIndex(const Ref<Texture2D> &texture)
         {
-            float textureIndex = 0.f;
+            float textureIndex = -1.f;
 
             // Search texture
             auto it = std::find_if(textureSlots.begin(), textureSlots.end(), 
@@ -136,7 +136,7 @@ struct Renderer2DData
             }
 
             // if not found then add it to the slot
-            if (textureIndex == 0.f)
+            if (textureIndex == -1.f)
             {
                 textureIndex = static_cast<float>(textureSlots.size());
                 textureSlots.push_back(texture);
