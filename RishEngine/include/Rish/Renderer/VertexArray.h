@@ -7,11 +7,9 @@
  */
 #pragma once
 
-
-//
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
-#include <Rish/Renderer/Buffer.h>
+
+#include <Rish/Renderer/fwd.h>
 
 namespace rl {
 

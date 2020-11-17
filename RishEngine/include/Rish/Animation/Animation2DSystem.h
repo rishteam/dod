@@ -2,11 +2,11 @@
 
 #include <Rish/rlpch.h>
 
-#include <Rish/Scene/Scene.h>
-
 namespace rl {
 
-class RL_API PhysicsSystem
+class Scene;
+
+class RL_API Animation2DSystem
 {
 public:
     static void RegisterScene(const Ref<Scene> &scene);
@@ -17,9 +17,6 @@ public:
     static void OnScenePlay();
     static void OnSceneStop();
 private:
-    static void UpdateNewPhysicsObject(entt::registry& registry, Scene::SceneState state);
-    static void CleanPhysicObject();
-    //
     static Ref<Scene> s_Scene;
 };
 

@@ -56,6 +56,10 @@
 #include <cereal/types/complex.hpp>
 #include <cereal/types/base_class.hpp>
 
+#include <re2/re2.h>
+
+#include <entt/entt.hpp>
+
 #include <Rish/Core/Core.h>
 
 // font

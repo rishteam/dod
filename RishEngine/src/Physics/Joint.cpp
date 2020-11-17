@@ -1,4 +1,7 @@
 #include <Rish/Physics/Joint.h>
+//
+#include <Rish/Physics/RigidBody2D.h>
+#include <Rish/Collider/Box.h>
 
 namespace rl {
 
@@ -7,7 +10,6 @@ Joint::Joint() {
     softness = 0.0f;
     biasFactor = 0.2f;
 }
-
 
 void Joint::Set(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_, const Vec2 &anchor) {
     b1 = b1_;

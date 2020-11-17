@@ -2,14 +2,11 @@
 
 #include <Rish/rlpch.h>
 
-#include <Rish/Scene/Entity.h>
-#include <Rish/Scene/ScriptableEntity.h>
-//
-#include <Rish/Renderer/Renderer2D.h>
 #include <entt/entt.hpp>
 
 namespace rl {
 
+class Entity;
 class Scene;
 
 class NativeScriptSystem

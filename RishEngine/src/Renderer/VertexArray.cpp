@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 
 #include <Rish/Renderer/VertexArray.h>
+#include <Rish/Renderer/Buffer.h>
 
 namespace rl {
 

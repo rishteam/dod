@@ -1,5 +1,7 @@
 #include <Rish/rlpch.h>
 //
+#include <Rish/Core/Time.h>
+//
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/RendererCommand.h>
@@ -9,6 +11,7 @@
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
+#include <Rish/Scene/SceneCamera.h>
 // Systems
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
@@ -16,18 +19,20 @@
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
 //
+
+//
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
 //
 #include <Rish/ImGui/ImGui.h>
 //
-#include <re2/re2.h>
 
 namespace rl {
 
 int Scene::entityNumber = 0;
 
 Scene::Scene()
+    : physicsWorld(Vec2(0.0f, -9.8f))
 {
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
 

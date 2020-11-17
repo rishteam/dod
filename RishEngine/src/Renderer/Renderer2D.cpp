@@ -6,8 +6,8 @@
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
-
-#include <glm/gtc/matrix_transform.hpp>
+#include <Rish/Renderer/Camera/Camera.h>
+#include <Rish/Renderer/Camera/OrthographicCamera.h>
 
 // TODO: For debug use, please clean
 #include <Rish/ImGui/ImGui.h>

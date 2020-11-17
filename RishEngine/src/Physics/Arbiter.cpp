@@ -1,4 +1,7 @@
 #include <Rish/Physics/Arbiter.h>
+//
+#include <Rish/Physics/RigidBody2D.h>
+#include <Rish/Physics/PhysicsWorld.h>
 
 namespace rl {
 

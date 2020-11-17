@@ -1,5 +1,15 @@
 #include <Rish/Physics/PhysicsSystem.h>
 
+#include <Rish/Scene/Component.h>
+#include <Rish/ImGui/ImGui.h>
+
+// Physics
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Physics/RigidBody2D.h>
+#include <Rish/Physics/Arbiter.h>
+#include <Rish/Physics/Joint.h>
+#include <Rish/Collider/Box.h>
+
 namespace rl {
 
 static float accumulateTime = 0.0f;

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-//
-#include <glm/glm.hpp>
 
 namespace rl {
 

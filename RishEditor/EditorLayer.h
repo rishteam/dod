@@ -1,5 +1,7 @@
 #include <Rish/rlpch.h>
+
 #include <Rish/Layer/Layer.h>
+#include <Rish/Renderer/Framebuffer.h>
 
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ComponentEditPanel.h"
@@ -41,8 +43,8 @@ class EditorLayer : public Layer
 {
 public:
 	EditorLayer();
-
 	virtual ~EditorLayer() = default;
+
 	virtual void onAttach() override;
 	virtual void onDetach() override;
 

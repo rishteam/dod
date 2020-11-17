@@ -1,26 +1,27 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Time.h>
-#include <Rish/Renderer/Framebuffer.h>
 //
-#include <Rish/Scene/SceneCamera.h>
 #include <Rish/Scene/Component.h>
-//
-#include <Rish/Utils/uuid.h>
-//
 #include <Rish/Physics/Component.h>
 #include <Rish/Physics/PhysicsWorld.h>
-//
-#include <entt/entt.hpp>
-#include <cereal/cereal.hpp>
 
 namespace rl
 {
 
 // Forward declaration
 class Entity;
+class Time;
+class SceneCamera;
+class UUID;
+
 class NativeScriptComponent;
+class RigidBody2DComponent;
+
+class PhysicsWorld;
+class RigidBody2D;
+class Box;
+class Joint;
 
 /**
  * @brief Scene object
@@ -138,7 +139,7 @@ public:
     ////////////////////////////////////////////////////////////////
     // Physics
     ////////////////////////////////////////////////////////////////
-    PhysicsWorld physicsWorld {Vec2(0.0f, -9.8f)};
+    PhysicsWorld physicsWorld;
     // physics engine management
     std::unordered_map<UUID, Ref<RigidBody2D>> mapPhysicsObj;
     std::unordered_map<UUID, Ref<Box>> mapBoxColliderObj;
