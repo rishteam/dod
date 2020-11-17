@@ -3,7 +3,9 @@
 #include <Rish/Utils/FileDialog.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
-
+//
+#include <Rish/Math/BoundingBox.h>
+//
 #include <Rish/ImGui/ImGui.h>
 
 #define BeginDrawEditComponent(c)                                    \
@@ -50,6 +52,32 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
         ImGui::DragFloat("Rotation", &transform.rotate, 0.1f);
         ImGui::SameLine();
         ImGui::HelpMarker("In degrees");
+
+        if(m_targetEntity.hasComponent<GroupComponent>())
+        {
+            auto &gc = m_targetEntity.getComponent<GroupComponent>();
+            BoundingBox2D curBound;
+            for(const auto& id : gc)
+            {
+                Entity ent = m_currentScene->getEntityByUUID(id);
+                const auto &trans = ent.getComponent<TransformComponent>();
+                const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
+                curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
+
+            }
+            auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
+            auto moveGroupTrans =  groupTransform.translate - glm::vec3(curBound.getPosition(),0.f);
+//            auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
+
+            for(const auto& id : gc)
+            {
+                Entity ent = m_currentScene->getEntityByUUID(id);
+                auto &trans = ent.getComponent<TransformComponent>();
+                trans.translate += moveGroupTrans;
+//                trans.scale *= moveGroupScale;
+            }
+        }
+
     }
     EndDrawEditComponent();
 }

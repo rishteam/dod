@@ -373,6 +373,14 @@ bool Gizmo::isMovingEntity()
     return !m_isNowMovingEntity.empty();
 }
 
+bool Gizmo::isMoving(Entity ent)
+{
+    if( m_isNowMovingEntity[ent] )
+        return true;
+    m_isNowMovingEntity.erase(ent);
+    return false;
+}
+
 bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
 {
     // Calculate the new bound

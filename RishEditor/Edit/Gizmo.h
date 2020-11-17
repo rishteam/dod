@@ -28,6 +28,7 @@ public:
     void onImGuiRender(bool isValid, glm::vec2 mousePosInWorld);
     //
     bool isMovingEntity();
+    bool isMoving(Entity ent);
     bool isMouseOnGizmo(glm::vec2 mousePosInWorld);
     //
     void setGizmoMode(GizmoMode mode);

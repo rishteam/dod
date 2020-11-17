@@ -253,6 +253,24 @@ void EditController::onImGuiRender()
                    isSelected();
     m_gizmo.onImGuiRender(isValid,mousePosInWorld);
 
+    // Update Group Entity
+    m_currentScene->m_registry.each([&](auto entityID)
+    {
+        Entity ent{entityID, m_currentScene.get()};
+        if( ent.hasComponent<GroupComponent>() )
+        {
+            if(m_gizmo.isMoving(ent))
+            {
+                updateGroupEntityTransform(ent);
+            }
+            else
+            {
+                initGroupEntityTransform(ent);
+            }
+        }
+
+    });
+
     // Camera pane
     if(m_sceneWindowFocused &&
        ImGui::IsMouseDown(ImGuiMouseButton_Right))
@@ -328,6 +346,49 @@ void EditController::changeGizmoMode(Gizmo::GizmoMode mode)
 void EditController::toggleShowGrid()
 {
     m_showGrid = !m_showGrid;
+}
+
+void EditController::initGroupEntityTransform(Entity groupEntity)
+{
+    auto &gc = groupEntity.getComponent<GroupComponent>();
+    BoundingBox2D curBound;
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        const auto &trans = ent.getComponent<TransformComponent>();
+        const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
+        curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
+
+    }
+    auto &groupTransform = groupEntity.getComponent<TransformComponent>();
+    groupTransform.translate = glm::vec3(curBound.getPosition(),0.f);
+    groupTransform.scale = glm::vec3(curBound.getScale(), 0.f);
+}
+
+void EditController::updateGroupEntityTransform(Entity groupEntity)
+{
+    auto &gc = groupEntity.getComponent<GroupComponent>();
+    BoundingBox2D curBound;
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        const auto &trans = ent.getComponent<TransformComponent>();
+        const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
+        curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
+
+    }
+    auto &groupTransform = groupEntity.getComponent<TransformComponent>();
+    auto moveGroupTrans =  groupTransform.translate - glm::vec3(curBound.getPosition(),0.f);
+//    auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
+
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        auto &trans = ent.getComponent<TransformComponent>();
+        trans.translate += moveGroupTrans;
+//        trans.scale *= moveGroupScale;
+    }
+
 }
 
 } // end of namespace rl

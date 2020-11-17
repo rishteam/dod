@@ -18,12 +18,29 @@ public:
     // For target
     std::set<Entity>&       getTargets()                { return m_entitySet; }
     const std::set<Entity>& getTargets() const          { return m_entitySet; }
-    void addTarget(const Entity targetEntity)           { m_isSelected = true; m_entitySet.insert(targetEntity); }
-    void addTarget(const std::set<Entity> &targetSet)   { m_entitySet.insert(targetSet.begin(), targetSet.end());
-                                                          m_isSelected = !m_entitySet.empty(); }
+    void addTarget(const Entity targetEntity)           { m_isSelected = true; m_entitySet.insert(targetEntity); removeGroupTarget(targetEntity); }
+    void addTarget(const std::set<Entity> &targetSet)
+    {
+        m_entitySet.insert(targetSet.begin(), targetSet.end());
+        for(auto ent : targetSet)
+          removeGroupTarget(ent);
+        m_isSelected = !m_entitySet.empty();
+    }
+
     void removeTarget(const Entity targetEntity)        { m_entitySet.erase(targetEntity);
                                                           if(m_entitySet.empty()) m_isSelected = false;}
     void resetTarget()                                  { m_isSelected = false; m_entitySet.clear(); }
+    void removeGroupTarget(const Entity targetEntity)
+    {
+        if(!targetEntity.hasComponent<GroupComponent>())
+            return;
+        auto &gc = targetEntity.getComponent<GroupComponent>();
+        for(const auto& id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            m_entitySet.erase(ent);
+        }
+    }
 
     // For selection
     std::set<Entity>&       getSelectedEntities()       { return m_entitySet; }
