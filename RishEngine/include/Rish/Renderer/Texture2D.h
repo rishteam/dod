@@ -48,6 +48,10 @@ public:
     std::string getPath() const {return m_path; }
     void setPath(const std::string &path) { m_path = path; }
 
+    // TODO : For testing
+    void setTextureID(uint32_t textureID);
+
+
     uint32_t getTextureID() const { return m_textureID; }
 
     void bind(uint32_t slot=0) const;
@@ -78,9 +82,10 @@ public:
     bool operator==(const Texture2D &rhs) const;
     bool operator!=(const Texture2D &rhs) const;
 
+    // TODO : For testing; It is private
+    void setSize(uint32_t width, uint32_t height);
 private:
     void createTexture();
-    void setSize(uint32_t width, uint32_t height);
     void setTexture(const void * imagePtr);
 
     /// Path to the image file

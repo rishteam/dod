@@ -97,6 +97,14 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
     m_editorFramebuffer = Framebuffer::Create(fbspec);
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
+    m_editorLightFramebuffer = Framebuffer::Create(fbspec);
+
+    ////////////////////////
+    // TODO : For testing
+    m_testFramebuffer = Framebuffer::Create(fbspec);
+    m_lightTexture = MakeRef<Texture2D>(fbspec.width, fbspec.height);
+    m_editorTexture = MakeRef<Texture2D>(fbspec.width, fbspec.height);
+    ///////////////////////
 
     // Attach all panels
     for(auto &panel : m_panelList)
@@ -154,6 +162,10 @@ void EditorLayer::onUpdate(Time dt)
     {
 
         // TODO : Light FrameBuffer Resize
+        m_testFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
+                                  (uint32_t) m_sceneViewportPanelSize.y);
+        m_editorLightFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
+                                         (uint32_t) m_sceneViewportPanelSize.y);
         m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
                                     (uint32_t) m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
@@ -168,12 +180,8 @@ void EditorLayer::onUpdate(Time dt)
 
     // TODO : ADD Light FrameBuffer
 
-    m_editorFramebuffer->bind();
+    m_editorLightFramebuffer->bind();
     {
-        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
-        //
-
         // Draw Light
         {
             Renderer2D::BeginScene(cameraController->getCamera(), false);
@@ -182,6 +190,19 @@ void EditorLayer::onUpdate(Time dt)
             Renderer2D::EndScene();
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
         }
+    }
+    m_editorLightFramebuffer->unbind();
+
+    m_lightTexture->setTextureID(m_editorLightFramebuffer->getColorAttachmentRendererID());
+    m_lightTexture->setSize((uint32_t) m_sceneViewportPanelSize.x,
+                            (uint32_t) m_sceneViewportPanelSize.y);
+
+    m_editorFramebuffer->bind();
+    {
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+        //
+
         m_editController->onUpdate(dt);
 
         // Particle System
@@ -195,8 +216,24 @@ void EditorLayer::onUpdate(Time dt)
         }
 
         // TODO : DrawQuad(LightTexture)
+//        Renderer2D::BeginScene(cameraController->getCamera(), false);
+//        Renderer2D::DrawQuad({0, 0}, {10, 10}, m_lightTexture);
+//        Renderer2D::EndScene();
     }
     m_editorFramebuffer->unbind();
+    m_editorTexture->setTextureID(m_editorFramebuffer->getColorAttachmentRendererID());
+    m_editorTexture->setSize((uint32_t) m_sceneViewportPanelSize.x,
+                             (uint32_t) m_sceneViewportPanelSize.y);
+
+//    m_testFramebuffer->bind();
+//    {
+//        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+//        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+//        Renderer2D::BeginScene(cameraController->getCamera(), false);
+//        Renderer2D::DrawQuad({0, 0}, {10, 10}, m_editorFramebuffer->getColorAttachmentRendererID());
+//        Renderer2D::EndScene();
+//    }
+//    m_testFramebuffer->unbind();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Scene
@@ -308,7 +345,9 @@ void EditorLayer::onImGuiRender()
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
+        // TODO : For testing
         uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
+//        uint32_t  textureID = m_editorLightFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();

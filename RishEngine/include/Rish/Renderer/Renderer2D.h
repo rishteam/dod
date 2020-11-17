@@ -29,6 +29,8 @@ public:
     // TODO: support to specify the origin
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+//    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const uint32_t textureID, float tiling=1.f);
+//    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const uint32_t textureID, float tiling=1.f);
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture, float tiling=1.f);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> &texture, float tiling=1.f);
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture, const glm::vec4 &color, float tiling=1.f);

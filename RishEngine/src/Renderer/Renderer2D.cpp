@@ -152,7 +152,7 @@ struct Renderer2DData
             float textureIndex = -1.f;
 
             // Search texture
-            auto it = std::find_if(textureSlots.begin(), textureSlots.end(), 
+            auto it = std::find_if(textureSlots.begin(), textureSlots.end(),
                 [&texture](auto tex){
                     return *texture == *tex;
                 });
