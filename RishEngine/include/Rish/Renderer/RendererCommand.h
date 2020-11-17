@@ -92,6 +92,28 @@ public:
     };
 
     /**
+     * @brief Stencil function option
+     * @details <https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glStencilFunc.xhtml>
+     */
+    enum class StencilFuncFactor
+    {
+        Less,
+        Equal,
+        Always
+    };
+
+    /**
+     * @brief Stencil function option
+     * @details <https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glStencilOp.xhtml>
+     */
+    enum class StencilOpFactor
+    {
+        Keep,
+        Zero,
+        Replace
+    };
+
+    /**
      * @brief Turn on/off Blend
      * @param state 
      */
@@ -103,6 +125,15 @@ public:
      * @param dst Destination Factor
      */
     static void SetBlendFunc(BlendFactor src, BlendFactor dst);
+
+
+    static void SetStencilTest(bool state);
+
+    static void SetStencilFunc(StencilFuncFactor func, int ref, int mask);
+
+    static void SetStencilOp(StencilOpFactor sfail, StencilOpFactor dpfail, StencilOpFactor dppass);
+
+    static void SetColorMask(bool r, bool g, bool b, bool a);
 
     /**
      * @brief Clear Mode

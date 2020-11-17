@@ -150,7 +150,10 @@ void EditorLayer::onUpdate(Time dt)
     auto framebufferSpec = m_editorFramebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
     if (m_sceneViewportPanelSize != framebufferSize &&
-        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f) {
+        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
+    {
+
+        // TODO : Light FrameBuffer Resize
         m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
                                     (uint32_t) m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
@@ -161,6 +164,10 @@ void EditorLayer::onUpdate(Time dt)
     // Editor
     /////////////////////////////////////////////////////////////////////////////////////////////
     Renderer2D::ResetStats();
+
+
+    // TODO : ADD Light FrameBuffer
+
     m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
@@ -169,7 +176,6 @@ void EditorLayer::onUpdate(Time dt)
 
         // Draw Light
         {
-            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
             Renderer2D::BeginScene(cameraController->getCamera(), false);
             LightSystem::onViewportResize(m_sceneViewportPanelSize);
             LightSystem::onRender();
@@ -187,12 +193,16 @@ void EditorLayer::onUpdate(Time dt)
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
                                         RenderCommand::BlendFactor::OneMinusSrcAlpha);
         }
+
+        // TODO : DrawQuad(LightTexture)
     }
     m_editorFramebuffer->unbind();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Scene
     /////////////////////////////////////////////////////////////////////////////////////////////
+
+    // TODO : Check if there is a need for resizing m_sceneFramebuffer
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});

@@ -133,12 +133,12 @@ void Scene::onUpdate(Time dt)
     if(!findPrimaryCamera())
         return;
 
+    // TODO: Let systems to decide how many draw calls i.e. move the BeginScene and EndScene inside onRender()
     // Draw Light
     {
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
-        Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform);
+
         LightSystem::onRender();
-        Renderer2D::EndScene();
+
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
     // Draw SpriteRenderComponent
