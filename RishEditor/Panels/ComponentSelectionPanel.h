@@ -4,7 +4,7 @@
 
 #include <Rish/Scene/ComponentManager.h>
 
-#include "SceneTargetPanel.h"
+#include "Panels/Common/SceneTargetPanel.h"
 
 namespace rl {
 

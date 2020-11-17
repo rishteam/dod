@@ -5,7 +5,7 @@
 #include <Rish/Scene/Entity.h>
 #include <Rish/Scene/Scene.h>
 
-#include "SceneMultiTargetPanel.h"
+#include "Panels/Common/SceneMultiTargetPanel.h"
 
 namespace rl {
 

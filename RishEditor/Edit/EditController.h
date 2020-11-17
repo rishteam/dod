@@ -3,7 +3,7 @@
 #include <Rish/rlpch.h>
 #include <Rish/Events/Event.h>
 
-#include "Panels/SceneMultiTargetPanel.h"
+#include "Panels/Common/SceneMultiTargetPanel.h"
 #include "Edit/EditorGrid.h"
 #include "Edit/Gizmo.h"
 

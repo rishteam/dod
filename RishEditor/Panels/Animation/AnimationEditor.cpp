@@ -1,19 +1,13 @@
-#include "Rish/rlpch.h"
+#include <Rish/rlpch.h>
 
 #include <Rish/ImGui/ImGui.h>
 
-#include "Rish/Core/ResManager.h"
-#include "Rish/Core/Log.h"
-#include "Rish/Animation/Editor/EditorApp.h"
+#include "AnimationEditor.h"
+
 #include "Rish/Animation/Loader.h"
 
 #include "Rish/Utils/FileDialog.h"
 
-#if defined(__APPLE__)
-namespace fs = boost::filesystem;
-#else
-namespace fs = std::filesystem;
-#endif
 
 namespace rl {
 

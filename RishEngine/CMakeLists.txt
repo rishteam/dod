@@ -77,7 +77,7 @@ add_library(RishEngine
     src/Animation/Animation.cpp
     src/Animation/Loader.cpp
     # Animation Editor
-    src/Animation/Editor/Editor.cpp
+        ../RishEditor/Panels/Animation/AnimationEditor.cpp
 
     # utilities
     src/Core/ResManager.cpp

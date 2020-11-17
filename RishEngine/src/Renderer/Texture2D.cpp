@@ -9,6 +9,11 @@
 
 namespace rl {
 
+Texture2D::Texture2D()
+{
+    createTexture();
+}
+
 Texture2D::Texture2D(uint32_t width, uint32_t height)
 {
     RL_PROFILE_FUNCTION();
@@ -29,6 +34,7 @@ Texture2D::Texture2D(const std::string &path, bool flip)
     setSize(image->getWidth(), image->getHeight());
     setTexture(image->getPixelPtr());
     m_path = path;
+    m_flip = flip;
 }
 
 Texture2D::~Texture2D()

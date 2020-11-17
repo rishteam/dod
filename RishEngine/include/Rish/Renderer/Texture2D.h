@@ -7,11 +7,10 @@
  */
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
-
+//
+#include <Rish/Core/FileSystem.h>
+//
 #include <Rish/Renderer/Image.h>
 
 namespace rl {
@@ -24,6 +23,7 @@ namespace rl {
 class RL_API Texture2D
 {
 public:
+    Texture2D();
     /**
      * @brief Create a empty texture
      * @param width Width
@@ -84,13 +84,47 @@ private:
     void setTexture(const void * imagePtr);
 
     /// Path to the image file
-	std::string m_path;
+	std::string m_path{};
     /// Width
-	uint32_t m_width;
+	uint32_t m_width{};
 	/// Height
-	uint32_t m_height;
+	uint32_t m_height{};
 	/// Texture ID
-	uint32_t m_textureID;
+	uint32_t m_textureID{};
+	/// Is the texture flip?
+	bool m_flip = false;
+
+	// Serialization function
+	friend class cereal::access;
+    template<typename Archive>
+    void save(Archive &ar) const
+    {
+        ar(cereal::make_nvp("path", FileSystem::RelativePath(m_path)));
+        ar(cereal::make_nvp("width", m_width));
+        ar(cereal::make_nvp("height", m_height));
+        ar(cereal::make_nvp("flip", m_flip));
+    }
+
+    template<typename Archive>
+    void load(Archive &ar)
+    {
+        ar(cereal::make_nvp("path", m_path));
+        ar(cereal::make_nvp("width", m_width));
+        ar(cereal::make_nvp("height", m_height));
+        ar(cereal::make_nvp("flip", m_flip));
+        //
+        if(m_path != "None")
+        {
+            Ref<Image> image = Image::LoadImage(m_path, m_flip);
+            setSize(image->getWidth(), image->getHeight());
+            setTexture(image->getPixelPtr());
+        }
+        else
+        {
+            createTexture();
+            setSize(m_width, m_height);
+        }
+    }
 };
 
 }

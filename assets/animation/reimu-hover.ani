@@ -2,10 +2,10 @@
     "duration": 0.5,
     "frames": {
         "separate": [
-            "./assets/reimu-hover0.png",
-            "./assets/reimu-hover1.png",
-            "./assets/reimu-hover2.png",
-            "./assets/reimu-hover3.png"
+            "assets/animation/reimu-hover0.png",
+            "assets/animation/reimu-hover1.png",
+            "assets/animation/reimu-hover2.png",
+            "assets/animation/reimu-hover3.png"
         ],
         "type": "separate"
     },

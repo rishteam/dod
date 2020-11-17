@@ -6,7 +6,7 @@
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/ComponentManager.h>
 
-#include "SceneTargetPanel.h"
+#include "Panels/Common/SceneTargetPanel.h"
 
 #include "ComponentSelectionPanel.h"
 

@@ -3,6 +3,10 @@
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
 
+#include <Rish/Animation/Animation.h>
+#include <Rish/Animation/Component.h>
+//#include "../RishEditor/Panels/Animation/AnimationEditor.h"
+
 using namespace rl;
 
 class ExampleSandboxLayer : public rl::Layer
@@ -18,9 +22,10 @@ public:
 
 private:
     OrthographicCameraController m_cameraController;
-    float m_rotate = 0.f;
 
-    Ref<Framebuffer> m_framebuffer;
-    Ref<Framebuffer> m_framebufferSecond;
-    Ref<Texture2D> gray_pic;
+    Ref<Texture2D> m_testTexture;
+    Animation m_testAni;
+    Animation2DComponent m_component;
+
+//    AnimationEditor m_aniEditor;
 };

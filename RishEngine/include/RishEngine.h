@@ -34,7 +34,6 @@
  */
 #include <Rish/Animation/Animation.h>
 #include <Rish/Animation/Loader.h>
-#include <Rish/Animation/Editor/EditorApp.h>
 
 // Layer
 #include <Rish/Layer/Layer.h>

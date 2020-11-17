@@ -4,7 +4,7 @@ project(Editor)
 
 add_executable(Editor
     # main
-    EditorApp.cpp
+        AnimationEditor.cpp
     EditorLayer.cpp
 
     # Panels
