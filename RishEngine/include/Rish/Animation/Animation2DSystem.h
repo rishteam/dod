@@ -12,6 +12,9 @@ public:
     static void RegisterScene(const Ref<Scene> &scene);
     //
     static void OnUpdate(float dt);
+    static void OnRender();
+    static void OnEditorUpdate(float dt);
+    static void OnEditorRender();
     static void OnImGuiRender();
     //
     static void OnScenePlay();

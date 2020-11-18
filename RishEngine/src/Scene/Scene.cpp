@@ -18,8 +18,7 @@
 #include <Rish/Collider/ColliderSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
-//
-
+#include <Rish/Animation/Animation2DSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
@@ -223,6 +222,7 @@ void Scene::onUpdate(Time dt)
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
     ColliderSystem::OnUpdate(dt);
+    Animation2DSystem::OnUpdate(dt);
 
     // Find a primary camera
     // TODO: implement multiple camera
@@ -233,6 +233,7 @@ void Scene::onUpdate(Time dt)
     {
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
         SpriteRenderSystem::onRender();
+        Animation2DSystem::OnRender();
         Renderer2D::EndScene();
     }
 

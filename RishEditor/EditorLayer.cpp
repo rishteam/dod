@@ -13,11 +13,11 @@
 // Script
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
+#include <Rish/Scene/SystemManager.h>
 
 // Systems
 #include <Rish/Effect/Particle/ParticleSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
-#include <Rish/Collider/ColliderSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 
@@ -26,8 +26,6 @@
 
 #include <Rish/ImGui/MenuAction.h>
 #include <imgui_internal.h>
-
-#include <Rish/Script/Script.h>
 
 #include "EditorLayer.h"
 
@@ -44,33 +42,40 @@ EditorLayer::EditorLayer()
 
     m_editorScene = MakeRef<Scene>();
     m_runtimeScene = nullptr;
-    //
-    m_editController = MakeRef<EditController>();
-    m_panelList.push_back(m_editController);
-    //
-    m_sceneHierarchyPanel = MakeRef<SceneHierarchyPanel>();
-    m_panelList.push_back(m_sceneHierarchyPanel);
-    //
-    m_componentEditPanel = MakeRef<ComponentEditPanel>();
-    m_panelList.push_back(m_componentEditPanel);
-    //
-    m_statusBarPanel = MakeRef<StatusBarPanel>();
-    m_panelList.push_back(m_statusBarPanel);
-    //
-    // Simple Panels
-    m_helpPanel = MakeRef<HelpPanel>();
-    m_simplePanelList.push_back(m_helpPanel);
-    //
-    m_aboutPanel = MakeRef<AboutPanel>();
-    m_simplePanelList.push_back(m_aboutPanel);
-    //
-    m_settingPanel = MakeRef<SettingPanel>();
-    m_simplePanelList.push_back(m_settingPanel);
-    // Bind contexts
-    for(auto &p : m_simplePanelList)
-        p->setContext(this);
-    //
+
+    // Initialize main panels
+    {
+        m_editController = MakeRef<EditController>();
+        m_panelList.push_back(m_editController);
+        //
+        m_sceneHierarchyPanel = MakeRef<SceneHierarchyPanel>();
+        m_panelList.push_back(m_sceneHierarchyPanel);
+        //
+        m_componentEditPanel = MakeRef<ComponentEditPanel>();
+        m_panelList.push_back(m_componentEditPanel);
+        //
+        m_statusBarPanel = MakeRef<StatusBarPanel>();
+        m_panelList.push_back(m_statusBarPanel);
+    }
+
+    // Initialize Simple Panels
+    {
+        m_helpPanel = MakeRef<HelpPanel>();
+        m_simplePanelList.push_back(m_helpPanel);
+        //
+        m_aboutPanel = MakeRef<AboutPanel>();
+        m_simplePanelList.push_back(m_aboutPanel);
+        //
+        m_settingPanel = MakeRef<SettingPanel>();
+        m_simplePanelList.push_back(m_settingPanel);
+        // Bind contexts
+        for(auto &p : m_simplePanelList)
+            p->setContext(this);
+    }
+
+    // Switch the current scene
     switchCurrentScene(m_editorScene);
+
     // Start auto save thread
     // TODO: Make RishEngine handle thread management
     m_autoSaveRun = true;
@@ -83,10 +88,16 @@ EditorLayer::EditorLayer()
     initShortCut();
 }
 
+EditorLayer::~EditorLayer()
+{
+    SystemManager::Shutdown();
+}
+
 void EditorLayer::onAttach()
 {
     ImGui::LoadIniSettingsFromDisk("assets/layout/editor.ini");
     RL_CORE_INFO("[EditorLayer] onAttach");
+    //
 	FramebufferSpecification fbspec;
 	fbspec.width = 1280;
 	fbspec.height = 720;
@@ -100,15 +111,7 @@ void EditorLayer::onAttach()
     for(auto &panel : m_simplePanelList)
         panel->onAttach();
 
-    // TODO: Move me to ScriptableManager
-    ScriptableManager::Register<SpriteRoatate>();
-    ScriptableManager::Register<CameraController>();
-    ScriptableManager::Register<PlayerController>();
-    ScriptableManager::Register<Spawner>();
-    ScriptableManager::Register<Cinemachine2D>();
-    ScriptableManager::Register<TestScript>();
-    ScriptableManager::Register<MonsterController>();
-    ScriptableManager::Register<EventBoxController>();
+    ScriptableManager::Init();
 
     loadSetting("setting.conf");
 
@@ -129,6 +132,8 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onDetach()
 {
+    ScriptableManager::Shutdown();
+
     // Close Auto Save Thread
     m_autoSaveRun = false;
 
@@ -572,11 +577,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
     setContextToPanels(scene);
 
     // Register the scene to systems
-    PhysicsSystem::RegisterScene(m_currentScene);
-    ColliderSystem::RegisterScene(m_currentScene);
-    NativeScriptSystem::RegisterScene(m_currentScene);
-    SpriteRenderSystem::RegisterScene(m_currentScene);
-    ParticleSystem::RegisterScene(m_currentScene);
+    SystemManager::Init(m_currentScene);
 
     // Reset Editor Panel target
     m_editController->resetTarget();

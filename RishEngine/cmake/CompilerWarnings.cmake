@@ -64,6 +64,7 @@ function(set_project_warnings project_name)
       # sign related things
       -Wno-sign-conversion # warn on sign conversions
       -Wno-sign-compare
+      -Wno-unused-function
       #########################
   )
 

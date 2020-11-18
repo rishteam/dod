@@ -43,7 +43,7 @@ class EditorLayer : public Layer
 {
 public:
 	EditorLayer();
-	virtual ~EditorLayer() = default;
+	virtual ~EditorLayer() override;
 
 	virtual void onAttach() override;
 	virtual void onDetach() override;
@@ -102,8 +102,8 @@ private:
     Ref<ComponentEditPanel> m_componentEditPanel;
     Ref<StatusBarPanel> m_statusBarPanel;
 
-    void switchCurrentScene(const Ref<Scene> &scene);
-    void setContextToPanels(const Ref<Scene> &scene);
+    void switchCurrentScene(const Ref<Scene> &scene); ///< Switch the current scene and register all systems and register panels
+    void setContextToPanels(const Ref<Scene> &scene); ///< Set main Panels with its context
 	std::vector<Ref<ScenePanel>> m_panelList;
 
     //////////////////////////////////////////

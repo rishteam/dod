@@ -3,16 +3,13 @@
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
 
-#include <Rish/Animation/Animation.h>
-#include <Rish/Animation/Component.h>
-//#include "../RishEditor/Panels/Animation/AnimationEditor.h"
-
 using namespace rl;
 
 class ExampleSandboxLayer : public rl::Layer
 {
 public:
     ExampleSandboxLayer();
+    ~ExampleSandboxLayer() override;
 
     void onAttach() override;
     void onDetach() override;
@@ -21,11 +18,10 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
+    bool onKeyPressEvent(KeyPressedEvent &event);
+    //
     OrthographicCameraController m_cameraController;
 
     Ref<Texture2D> m_testTexture;
-    Animation m_testAni;
-    Animation2DComponent m_component;
-
-//    AnimationEditor m_aniEditor;
+    Ref<Scene> m_scene;
 };

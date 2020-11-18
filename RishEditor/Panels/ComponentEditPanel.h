@@ -11,6 +11,8 @@
 #include "ComponentSelectionPanel.h"
 
 #include <Rish/ImGui/ImGui.h>
+#include <Rish/Scene/ScriptableManager.h>
+
 
 namespace rl {
 

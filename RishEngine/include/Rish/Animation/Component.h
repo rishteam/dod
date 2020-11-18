@@ -2,6 +2,7 @@
 
 #include <Rish/rlpch.h>
 
+#include <Rish/Core/Time.h>
 #include <Rish/Renderer/Texture2D.h>
 
 namespace rl {
@@ -14,9 +15,17 @@ struct Animation2DComponent
     bool loop = false;
     bool reverse = false;
     std::string texturePrefix;
+    Clock clk;
 
     std::vector<Ref<Texture2D>> textureList;
+    ////////////////////////////////////////
+    bool isTimerUp();
+    void resetTimer();
+
+    Ref<Texture2D> getCurrentFrame();
+    void playNextFrame();
 private:
+    //
     friend class cereal::access;
     template<typename Archive>
     void serialize(Archive &ar)

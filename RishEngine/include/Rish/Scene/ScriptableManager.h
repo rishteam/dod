@@ -15,6 +15,9 @@ class Entity;
 class RL_API ScriptableManager
 {
 public:
+    static void Init();
+    static void Shutdown();
+
     template<typename T>
     static void Register()
     {
@@ -35,10 +38,6 @@ public:
             auto &nativeScriptComponent = ent.getComponent<NativeScriptComponent>();
             return nativeScriptComponent.instance->clone<T>();
         };
-    }
-
-    static void Shutdown()
-    {
     }
 
     static bool Bind(Entity ent, const std::string &typeName)

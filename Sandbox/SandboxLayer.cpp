@@ -1,5 +1,8 @@
 #include "SandboxLayer.h"
 
+#include <Rish/Scene/SystemManager.h>
+#include <Rish/Animation/Component.h>
+
 template<typename T>
 void save(const std::string &name, T& obj, const std::string &path)
 {
@@ -27,53 +30,57 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 
 //    m_testTexture = Texture2D::LoadTextureVFS("/texture/RTS_Crate.png");
     load("animation", m_testTexture, "assets/a.rtex");
+
+    m_scene = MakeRef<Scene>();
+    SystemManager::Init(m_scene);
+
+    auto ent = m_scene->createEntity("test");
+    ent.addComponent<Animation2DComponent>();
+}
+
+ExampleSandboxLayer::~ExampleSandboxLayer()
+{
+    SystemManager::Shutdown();
 }
 
 void ExampleSandboxLayer::onAttach()
 {
     ImGui::LoadIniSettingsFromDisk("assets/layout/ExampleSandboxLayer.ini");
 
-//    m_component.currentFrame = 0;
-//    m_component.duration = 87.0f;
-//    m_component.reverseDuration = 56.f;
-//    m_component.loop = true;
-//    m_component.reverse = false;
-//    m_component.texturePrefix = "Test";
-//    m_component.textureList.push_back(m_testTexture);
-//    m_component.textureList.push_back(m_testTexture);
-//    m_component.textureList.push_back(m_testTexture);
-
-//    std::ofstream of("assets/test.rani");
-//    cereal::JSONOutputArchive outputArchive(of);
-//    outputArchive(cereal::make_nvp("AnimationComponent", m_component));
-    load("AnimationComponent", m_component, "assets/test.rani");
-
-    std::string path;
-    VFS::ResolvePhysicalPath("/animation/reimu-hover.ani", path);
-    m_testAni.loadConfig(path);
+    m_scene->onRuntimeInit();
+    m_scene->onScenePlay();
 }
 
 void ExampleSandboxLayer::onDetach()
 {
     ImGui::SaveIniSettingsToDisk("assets/layout/ExampleSandboxLayer.ini");
+    m_scene->onSceneStop();
 }
 
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
 
-    int cnt = 0;
-
-    Renderer2D::BeginScene(m_cameraController.getCamera());
-    Renderer2D::DrawQuad({cnt, 0.f}, {1.f, 1.f}, m_testTexture);
-    Renderer2D::EndScene();
+    m_scene->onUpdate(dt);
 }
 
 void ExampleSandboxLayer::onImGuiRender()
 {
+    m_scene->onImGuiRender();
 }
 
 void ExampleSandboxLayer::onEvent(rl::Event &event)
 {
     m_cameraController.onEvent(event);
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch<KeyPressedEvent>(RL_BIND_EVENT_FUNC(ExampleSandboxLayer::onKeyPressEvent));
+}
+
+bool ExampleSandboxLayer::onKeyPressEvent(KeyPressedEvent &event)
+{
+    if(event.keyCode == Keyboard::Tilde)
+    {
+        m_scene->m_debugScene ^= true;
+    }
+    return false;
 }

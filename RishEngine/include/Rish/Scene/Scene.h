@@ -159,10 +159,12 @@ public:
     friend class ComponentSelectionPanel;
     friend class ComponentEditPanel;
     friend class EditController;
-
+    // Systems
     friend class ParticleSystem;
     friend class PhysicsSystem;
     friend class NativeScriptSystem;
+    friend class Animation2DSystem;
+    //
     friend class ExampleSandboxLayer;
 
     // Debug functions

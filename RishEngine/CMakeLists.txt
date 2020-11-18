@@ -76,8 +76,6 @@ add_library(RishEngine
     # Animation
     src/Animation/Animation.cpp
     src/Animation/Loader.cpp
-    # Animation Editor
-        ../RishEditor/Panels/Animation/AnimationEditor.cpp
 
     # utilities
     src/Core/ResManager.cpp
@@ -153,8 +151,10 @@ add_library(RishEngine
 
     src/Scene/System/SpriteRenderSystem.cpp
 
+    src/Animation/Animation2DSystem.cpp
+
     ${RL_SCRIPT_FILES}
- )
+        src/Animation/Component.cpp include/Rish/Scene/SystemManager.h src/Scene/SystemManager.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)
