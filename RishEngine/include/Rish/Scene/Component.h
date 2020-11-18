@@ -275,6 +275,32 @@ private:
 };
 
 /**
+ * @brief SubGroup Component
+ */
+struct SubGroupComponent
+{
+    void setGroup(const UUID &id);
+    void setRelativePosition(glm::vec3 pos);
+    void setGroupPosition(glm::vec3 pos);
+    glm::vec3 calculateCurrentPosition();
+    glm::vec3 calculateCurrentScale();
+
+    const UUID& getGroupEntityID() { return groupEntity;}
+
+private:
+    UUID groupEntity;
+
+    glm::vec3 m_relativePosition;
+    glm::vec3 m_originScale;
+    float m_originRotate;
+
+    glm::vec3 m_groupPosition;
+    glm::vec3 m_groupScale;
+    float m_groupRotate;
+};
+
+
+/**
  * @}
  */
 

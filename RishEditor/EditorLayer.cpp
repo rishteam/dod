@@ -284,6 +284,8 @@ void EditorLayer::onImGuiRender()
 
 	m_currentScene->onImGuiRender();
 
+    m_statusBarPanel->onImGuiRender();
+
     ImGui::Begin("Entity Manager");
     {
     }

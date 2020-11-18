@@ -170,8 +170,8 @@ void EditController::onImGuiRender()
             auto entSize = ent.getComponent<TransformComponent>().scale;
             auto entRotate = ent.getComponent<TransformComponent>().rotate;
             auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
-            const glm::vec3 boundPos(bound.getPosition(), 0.f);
-            const glm::vec3 boundSize(bound.getScale(), 0.f);
+            const glm::vec3 boundPos = bound.getPositionVec3();
+            const glm::vec3 boundSize = bound.getScaleVec3();
             const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
 
             // Inside
@@ -215,7 +215,7 @@ void EditController::onImGuiRender()
         {
             BoundingBox2D mouseBound = m_gizmo.getMouseBound();
 
-            if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f )
+            if( mouseBound.getScaleVec2().x > .001f && mouseBound.getScaleVec2().y > .001f )
             {
                 resetTarget();
 
@@ -358,35 +358,44 @@ void EditController::initGroupEntityTransform(Entity groupEntity)
         const auto &trans = ent.getComponent<TransformComponent>();
         const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
         curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
-
     }
     auto &groupTransform = groupEntity.getComponent<TransformComponent>();
-    groupTransform.translate = glm::vec3(curBound.getPosition(),0.f);
-    groupTransform.scale = glm::vec3(curBound.getScale(), 0.f);
+    groupTransform.translate = curBound.getPositionVec3();
+    groupTransform.scale = curBound.getScaleVec3();
+
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        const auto &trans = ent.getComponent<TransformComponent>();
+        auto &sgc = ent.getComponent<SubGroupComponent>();
+        sgc.setGroupPosition(groupTransform.translate);
+        sgc.setRelativePosition(trans.translate-groupTransform.translate);
+    }
+
 }
 
 void EditController::updateGroupEntityTransform(Entity groupEntity)
 {
     auto &gc = groupEntity.getComponent<GroupComponent>();
-    BoundingBox2D curBound;
+    BoundingBox2D preBound;
     for(const auto& id : gc)
     {
         Entity ent = m_currentScene->getEntityByUUID(id);
         const auto &trans = ent.getComponent<TransformComponent>();
         const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
-        curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
-
+        preBound = BoundingBox2D::CombineBoundingBox2D(preBound, entBound);
     }
     auto &groupTransform = groupEntity.getComponent<TransformComponent>();
-    auto moveGroupTrans =  groupTransform.translate - glm::vec3(curBound.getPosition(),0.f);
-//    auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
+    auto scaleOffset = groupTransform.scale/preBound.getScaleVec3();
+//    groupTransform.translate = preBound.getPositionVec3();
 
     for(const auto& id : gc)
     {
         Entity ent = m_currentScene->getEntityByUUID(id);
+        auto &sgc = ent.getComponent<SubGroupComponent>();
         auto &trans = ent.getComponent<TransformComponent>();
-        trans.translate += moveGroupTrans;
-//        trans.scale *= moveGroupScale;
+        sgc.setGroupPosition(groupTransform.translate);
+        trans.translate = sgc.calculateCurrentPosition();
     }
 
 }

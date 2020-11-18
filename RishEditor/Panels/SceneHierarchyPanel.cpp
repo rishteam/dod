@@ -194,7 +194,18 @@ void SceneHierarchyPanel::createEntityToTarget()
 void SceneHierarchyPanel::deleteTargetEntities()
 {
     for (auto e : m_entitySet)
+    {
+        if(e.hasComponent<GroupComponent>())
+        {
+            auto &gc = e.getComponent<GroupComponent>();
+            for(auto &id : gc)
+            {
+                Entity ent = m_currentScene->getEntityByUUID(id);
+                ent.removeComponent<SubGroupComponent>();
+            }
+        }
         e.destroy();
+    }
     resetSelected();
 }
 
@@ -207,7 +218,20 @@ void SceneHierarchyPanel::duplicateTargetEntities()
     for (auto &ent : entSet)
     {
         auto copyEntity =  m_currentScene->duplicateEntity(ent);
+        if(ent.hasComponent<GroupComponent>())
+        {
+            auto &gcCopy = copyEntity.addComponent<GroupComponent>();
+            auto &gcEntity = ent.getComponent<GroupComponent>();
+            for(auto &id : gcEntity)
+            {
+                auto subGroupEntiy = m_currentScene->duplicateEntity(m_currentScene->getEntityByUUID(id));
+                gcCopy.addEntityUUID(subGroupEntiy.getUUID());
+                auto &sgc = subGroupEntiy.addComponent<SubGroupComponent>();
+                sgc.setGroup(copyEntity.getUUID());
+            }
+        }
         addTarget(copyEntity);
+
         //
         if(first)
         {
@@ -221,11 +245,34 @@ void SceneHierarchyPanel::groupTargetEntities()
 {
     auto group = m_currentScene->createEntity("Group");
     auto &gc = group.addComponent<GroupComponent>();
+
+    bool alreadyInGroup = false;
     for(auto &ent : getTargets())
     {
+        if(ent.hasComponent<SubGroupComponent>())
+            alreadyInGroup = true;
         gc.addEntityUUID(ent.getUUID());
     }
-    // TODO: Handle entities that are already have their own group
+
+    if(alreadyInGroup)
+    {
+        for(auto &id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            ent.removeComponent<SubGroupComponent>();
+        }
+        group.destroy();
+        RL_CORE_ERROR("Entities are already have their own group");
+        return;
+    }
+
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        auto &sgc = ent.addComponent<SubGroupComponent>();
+        sgc.setGroup(group.getUUID());
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

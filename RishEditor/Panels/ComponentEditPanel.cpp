@@ -66,7 +66,7 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
 
             }
             auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
-            auto moveGroupTrans =  groupTransform.translate - glm::vec3(curBound.getPosition(),0.f);
+            auto moveGroupTrans =  groupTransform.translate - curBound.getPositionVec3();
 //            auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
 
             for(const auto& id : gc)

@@ -18,4 +18,24 @@ void GroupComponent::clear()
     childEntity.clear();
 }
 
+void SubGroupComponent::setGroup(const UUID &id)
+{
+    groupEntity = id;
+}
+
+void SubGroupComponent::setRelativePosition(glm::vec3 pos)
+{
+    m_relativePosition = pos;
+}
+
+void SubGroupComponent::setGroupPosition(glm::vec3 pos)
+{
+    m_groupPosition = pos;
+}
+
+glm::vec3 SubGroupComponent::calculateCurrentPosition()
+{
+    return m_groupPosition+m_relativePosition;
+}
+
 } // end of namespace
