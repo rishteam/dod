@@ -55,6 +55,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <re2/re2.h>
 

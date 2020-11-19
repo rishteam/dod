@@ -18,7 +18,7 @@ void Animation2DComponent::resetTimer()
 void Animation2DComponent::playNextFrame()
 {
     currentFrame++;
-    if(currentFrame > textureList.size())
+    if(currentFrame >= textureList.size())
         currentFrame %= textureList.size();
 }
 

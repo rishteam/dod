@@ -1,9 +1,9 @@
 #pragma once
 
+#include <Rish/rlpch.h>
+
 #include <Rish/Scene/Entity.h>
 #include <Rish/ImGui/ImGui.h>
-
-#include <cereal/types/polymorphic.hpp>
 
 namespace rl {
 

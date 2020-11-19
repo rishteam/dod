@@ -2,6 +2,8 @@
 
 #include <Rish/Scene/ScriptableEntity.h>
 
+#include <Rish/Animation/Component.h>
+
 namespace rl {
 
 void DrawSceneDebugWindow(const char *name, Ref<Scene> scene)
@@ -83,9 +85,10 @@ void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
             DrawDebugTransformComponentInfo(entity);
             DrawDebugCameraComponentInfo(entity);
             DrawDebugSpriteRenderComponentInfo(entity);
-            DrawDebugNativeScriptComponentInfo(entity);
-            DrawDebugParticleComponentInfo(entity);
-            DrawDebugGroupComponentInfo(entity);
+//            DrawDebugNativeScriptComponentInfo(entity);
+//            DrawDebugParticleComponentInfo(entity);
+//            DrawDebugGroupComponentInfo(entity);
+            DrawDebugAnimation2DComponentInfo(entity);
 
             ImGui::TreePop();
         }
@@ -210,6 +213,30 @@ void DrawDebugGroupComponentInfo(Entity entity)
             ImGui::PushID(&i);
             ImGui::BulletText("%s", i.to_c_str());
             ImGui::PopID();
+        }
+        ImGui::TreePop();
+    }
+}
+
+void DrawDebugAnimation2DComponentInfo(Entity entity)
+{
+    if(!entity.hasComponent<Animation2DComponent>())
+        return;
+    auto &ani = entity.getComponent<Animation2DComponent>();
+    if(ImGui::TreeNodeEx("Animation2DComponent", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Text("currentFrame = %d\n", ani.currentFrame);
+        ImGui::Text("duration = %.2f\n", ani.duration);
+        ImGui::Text("currentFrame = %.2f\n", ani.reverseDuration);
+        ImGui::Text("loop = %d\n", ani.loop);
+        ImGui::Text("reverse = %d\n", ani.reverse);
+        ImGui::Text("texturePrefix = %s\n", ani.texturePrefix.c_str());
+        ImGui::Text("Textures: ");
+        for(const auto &i : ani.textureList)
+        {
+            ImGui::Indent();
+            DrawDebugTextureInfo(i);
+            ImGui::Unindent();
         }
         ImGui::TreePop();
     }

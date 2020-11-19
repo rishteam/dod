@@ -42,10 +42,11 @@ void Animation2DSystem::OnRender()
         auto &ani = entity.getComponent<Animation2DComponent>();
         auto &trans = entity.getComponent<TransformComponent>();
         //
-        if(trans.rotate != 0.f)
-            Renderer2D::DrawQuad(trans.translate, trans.scale, ani.getCurrentFrame());
+        auto curFrame = ani.getCurrentFrame();
+        if(trans.rotate == 0.f)
+            Renderer2D::DrawQuad(trans.translate, trans.scale, curFrame);
         else
-            Renderer2D::DrawRotatedQuad(trans.translate, trans.scale, ani.getCurrentFrame(), trans.rotate);
+            Renderer2D::DrawRotatedQuad(trans.translate, trans.scale, curFrame, trans.rotate);
     }
 }
 

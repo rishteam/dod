@@ -308,15 +308,6 @@ void Scene::onImGuiRender()
 
     if(m_debugScene)
         DrawDebugSceneWindow(m_registry, this);
-
-    ImGui::Begin("Debug");
-    for(auto &&[k, v] : m_nameManager.m_entNameToNumMap)
-    {
-        ImGui::PushID(k.c_str());
-        ImGui::Text("%s => %d", k.c_str(), v);
-        ImGui::PopID();
-    }
-    ImGui::End();
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)
