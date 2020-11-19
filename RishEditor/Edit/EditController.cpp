@@ -369,7 +369,9 @@ void EditController::initGroupEntityTransform(Entity groupEntity)
         const auto &trans = ent.getComponent<TransformComponent>();
         auto &sgc = ent.getComponent<SubGroupComponent>();
         sgc.setGroupPosition(groupTransform.translate);
+        sgc.setGroupScale(groupTransform.scale);
         sgc.setRelativePosition(trans.translate-groupTransform.translate);
+        sgc.setOriginScale(trans.scale);
     }
 
 }
@@ -377,17 +379,7 @@ void EditController::initGroupEntityTransform(Entity groupEntity)
 void EditController::updateGroupEntityTransform(Entity groupEntity)
 {
     auto &gc = groupEntity.getComponent<GroupComponent>();
-    BoundingBox2D preBound;
-    for(const auto& id : gc)
-    {
-        Entity ent = m_currentScene->getEntityByUUID(id);
-        const auto &trans = ent.getComponent<TransformComponent>();
-        const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
-        preBound = BoundingBox2D::CombineBoundingBox2D(preBound, entBound);
-    }
-    auto &groupTransform = groupEntity.getComponent<TransformComponent>();
-    auto scaleOffset = groupTransform.scale/preBound.getScaleVec3();
-//    groupTransform.translate = preBound.getPositionVec3();
+    const auto &groupTransform = groupEntity.getComponent<TransformComponent>();
 
     for(const auto& id : gc)
     {
@@ -395,7 +387,10 @@ void EditController::updateGroupEntityTransform(Entity groupEntity)
         auto &sgc = ent.getComponent<SubGroupComponent>();
         auto &trans = ent.getComponent<TransformComponent>();
         sgc.setGroupPosition(groupTransform.translate);
+        sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+
         trans.translate = sgc.calculateCurrentPosition();
+        trans.scale = sgc.calculateCurrentScale();
     }
 
 }

@@ -53,30 +53,30 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
         ImGui::SameLine();
         ImGui::HelpMarker("In degrees");
 
-        if(m_targetEntity.hasComponent<GroupComponent>())
-        {
-            auto &gc = m_targetEntity.getComponent<GroupComponent>();
-            BoundingBox2D curBound;
-            for(const auto& id : gc)
-            {
-                Entity ent = m_currentScene->getEntityByUUID(id);
-                const auto &trans = ent.getComponent<TransformComponent>();
-                const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
-                curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
-
-            }
-            auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
-            auto moveGroupTrans =  groupTransform.translate - curBound.getPositionVec3();
-//            auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
-
-            for(const auto& id : gc)
-            {
-                Entity ent = m_currentScene->getEntityByUUID(id);
-                auto &trans = ent.getComponent<TransformComponent>();
-                trans.translate += moveGroupTrans;
-//                trans.scale *= moveGroupScale;
-            }
-        }
+//        if(m_targetEntity.hasComponent<GroupComponent>())
+//        {
+//            auto &gc = m_targetEntity.getComponent<GroupComponent>();
+//            BoundingBox2D curBound;
+//            for(const auto& id : gc)
+//            {
+//                Entity ent = m_currentScene->getEntityByUUID(id);
+//                const auto &trans = ent.getComponent<TransformComponent>();
+//                const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
+//                curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
+//
+//            }
+//            auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
+//            auto moveGroupTrans =  groupTransform.translate - curBound.getPositionVec3();
+////            auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
+//
+//            for(const auto& id : gc)
+//            {
+//                Entity ent = m_currentScene->getEntityByUUID(id);
+//                auto &trans = ent.getComponent<TransformComponent>();
+//                trans.translate += moveGroupTrans;
+////                trans.scale *= moveGroupScale;
+//            }
+//        }
 
     }
     EndDrawEditComponent();
@@ -776,6 +776,42 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
     }
 }
 
+template <>
+void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
+{
+    BeginDrawEditComponent(GroupComponent);
+    {
+        DrawRightClickMenu(GroupComponent, false);
+
+        auto &registry = m_targetEntity.m_scene->m_registry;
+        auto &gc = m_targetEntity.getComponent<GroupComponent>();
+
+        for(const auto& id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            auto &tag = ent.getComponent<TagComponent>();
+            auto &trans = ent.getComponent<TransformComponent>();
+
+            auto groupPos = sgc.getGroupPosition();
+            auto relativePos = sgc.getRelativePosition();
+
+            if(ImGui::TreeNode(tag.tag.c_str()))
+            {
+                ImGui::Text("GroupPosition:    x: %2.2f, y: %2.2f", groupPos.x, groupPos.y );
+                ImGui::Text("RelativePosition: x: %2.2f, y: %2.2f", relativePos.x, relativePos.y);
+                ImGui::Text("Position:         x: %2.2f, y: %2.2f",trans.translate.x, trans.translate.y);
+                ImGui::Text("Scale:            x: %2.2f, y: %2.2f",trans.scale.x, trans.scale.y);
+                ImGui::Text("Offset:           x: %2.2f, y: %2.2f", sgc.getOffset().x, sgc.getOffset().y);
+                ImGui::TreePop();
+            }
+
+        }
+
+    }
+    EndDrawEditComponent();
+
+}
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
@@ -807,6 +843,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
+        drawEditComponentWidget<GroupComponent>();
 
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)) ||

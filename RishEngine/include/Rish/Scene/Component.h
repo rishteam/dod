@@ -282,6 +282,25 @@ struct SubGroupComponent
     void setGroup(const UUID &id);
     void setRelativePosition(glm::vec3 pos);
     void setGroupPosition(glm::vec3 pos);
+    void setGroupScale(glm::vec3 scale){
+        m_groupScale = scale;
+    }
+    void setOriginScale(glm::vec3 scale);
+    void setOffset(glm::vec3 offset){
+        m_offset = offset;
+    }
+
+    glm::vec3 getOffset(){
+        return m_offset;
+    }
+    glm::vec3 getRelativePosition();
+    glm::vec3 getGroupPosition(){
+        return m_groupPosition;
+    }
+    glm::vec3 getGroupScale(){
+        return m_groupScale;
+    }
+    glm::vec3 getOriginScale();
     glm::vec3 calculateCurrentPosition();
     glm::vec3 calculateCurrentScale();
 
@@ -297,6 +316,9 @@ private:
     glm::vec3 m_groupPosition;
     glm::vec3 m_groupScale;
     float m_groupRotate;
+
+    glm::vec3 m_offset;
+
 };
 
 
