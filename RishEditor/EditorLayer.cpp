@@ -221,19 +221,21 @@ void EditorLayer::onUpdate(Time dt)
 //        Renderer2D::EndScene();
     }
     m_editorFramebuffer->unbind();
+
+
     m_editorTexture->setTextureID(m_editorFramebuffer->getColorAttachmentRendererID());
     m_editorTexture->setSize((uint32_t) m_sceneViewportPanelSize.x,
                              (uint32_t) m_sceneViewportPanelSize.y);
 
-//    m_testFramebuffer->bind();
-//    {
-//        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-//        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
-//        Renderer2D::BeginScene(cameraController->getCamera(), false);
-//        Renderer2D::DrawQuad({0, 0}, {10, 10}, m_editorFramebuffer->getColorAttachmentRendererID());
-//        Renderer2D::EndScene();
-//    }
-//    m_testFramebuffer->unbind();
+    m_testFramebuffer->bind();
+    {
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+        Renderer2D::BeginScene(cameraController->getCamera(), false);
+        Renderer2D::DrawQuad({0, 0}, {100, 100}, m_editorTexture);
+        Renderer2D::EndScene();
+    }
+    m_testFramebuffer->unbind();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Scene
@@ -346,8 +348,8 @@ void EditorLayer::onImGuiRender()
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
         // TODO : For testing
-        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
-//        uint32_t  textureID = m_editorLightFramebuffer->getColorAttachmentRendererID();
+//        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
+        uint32_t  textureID = m_testFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();
