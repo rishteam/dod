@@ -102,6 +102,7 @@ void EditController::onUpdate(Time dt)
         }
 
         // Delete invalid target entities
+        removeGroupTarget();
         std::set<Entity> delTarget;
         auto &entSet = getTargets();
         for(auto &ent : entSet)
@@ -370,8 +371,11 @@ void EditController::initGroupEntityTransform(Entity groupEntity)
         auto &sgc = ent.getComponent<SubGroupComponent>();
         sgc.setGroupPosition(groupTransform.translate);
         sgc.setGroupScale(groupTransform.scale);
+        sgc.setGroupRotate(groupTransform.rotate);
         sgc.setRelativePosition(trans.translate-groupTransform.translate);
         sgc.setOriginScale(trans.scale);
+        sgc.setOriginRotate(trans.rotate-groupTransform.rotate);
+        sgc.setPreRotate(groupTransform.rotate);
     }
 
 }
@@ -388,9 +392,11 @@ void EditController::updateGroupEntityTransform(Entity groupEntity)
         auto &trans = ent.getComponent<TransformComponent>();
         sgc.setGroupPosition(groupTransform.translate);
         sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+        sgc.setGroupRotate(groupTransform.rotate);
 
         trans.translate = sgc.calculateCurrentPosition();
         trans.scale = sgc.calculateCurrentScale();
+        trans.rotate = sgc.calculateCurrentRotate();
     }
 
 }

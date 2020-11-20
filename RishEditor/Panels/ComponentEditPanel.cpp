@@ -803,6 +803,8 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
                 ImGui::Text("Position:         x: %2.2f, y: %2.2f",trans.translate.x, trans.translate.y);
                 ImGui::Text("Scale:            x: %2.2f, y: %2.2f",trans.scale.x, trans.scale.y);
                 ImGui::Text("Offset:           x: %2.2f, y: %2.2f", sgc.getOffset().x, sgc.getOffset().y);
+                ImGui::Text("GroupRotate:  %10.2f", sgc.getGroupRotate());
+                ImGui::Text("OriginRotate: %10.2f", sgc.getOriginRotate());
                 ImGui::TreePop();
             }
 

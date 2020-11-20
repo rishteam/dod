@@ -279,35 +279,33 @@ private:
  */
 struct SubGroupComponent
 {
-    void setGroup(const UUID &id);
-    void setRelativePosition(glm::vec3 pos);
-    void setGroupPosition(glm::vec3 pos);
-    void setGroupScale(glm::vec3 scale){
-        m_groupScale = scale;
-    }
-    void setOriginScale(glm::vec3 scale);
-    void setOffset(glm::vec3 offset){
-        m_offset = offset;
-    }
 
-    glm::vec3 getOffset(){
-        return m_offset;
-    }
-    glm::vec3 getRelativePosition();
-    glm::vec3 getGroupPosition(){
-        return m_groupPosition;
-    }
-    glm::vec3 getGroupScale(){
-        return m_groupScale;
-    }
-    glm::vec3 getOriginScale();
+    void setGroup(const UUID &id)           { groupEntityID = id; }
+    void setGroupPosition(glm::vec3 pos)    { m_groupPosition = pos; }
+    void setRelativePosition(glm::vec3 pos) { m_relativePosition = pos; }
+    void setGroupScale(glm::vec3 scale)     { m_groupScale = scale; }
+    void setOriginScale(glm::vec3 scale)    { m_originScale = scale; }
+    void setGroupRotate(float angle)        { m_groupRotate = angle; }
+    void setOriginRotate(float angle)       { m_originRotate = angle; }
+    void setPreRotate(float angle)          { m_preRotate = angle; }
+    void setOffset(glm::vec3 offset)        { m_offset = offset; }
+
+    const UUID& getGroupEntityID() const        { return groupEntityID;}
+    const glm::vec3 getOffset() const           { return m_offset; }
+    const glm::vec3 getRelativePosition() const { return m_relativePosition; }
+    const glm::vec3 getGroupPosition() const    { return m_groupPosition; }
+    const glm::vec3 getGroupScale() const       { return m_groupScale; }
+    const glm::vec3 getOriginScale() const      { return m_originScale; }
+    const float getGroupRotate() const          { return m_groupRotate; }
+    const float getOriginRotate() const         { return m_originRotate; }
+    const float getPreRotate() const            { return m_preRotate; }
+
     glm::vec3 calculateCurrentPosition();
     glm::vec3 calculateCurrentScale();
-
-    const UUID& getGroupEntityID() { return groupEntity;}
+    float calculateCurrentRotate();
 
 private:
-    UUID groupEntity;
+    UUID groupEntityID;
 
     glm::vec3 m_relativePosition;
     glm::vec3 m_originScale;
@@ -316,6 +314,7 @@ private:
     glm::vec3 m_groupPosition;
     glm::vec3 m_groupScale;
     float m_groupRotate;
+    float m_preRotate;
 
     glm::vec3 m_offset;
 

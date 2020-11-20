@@ -18,44 +18,24 @@ void GroupComponent::clear()
     childEntity.clear();
 }
 
-void SubGroupComponent::setGroup(const UUID &id)
-{
-    groupEntity = id;
-}
-
-void SubGroupComponent::setRelativePosition(glm::vec3 pos)
-{
-    m_relativePosition = pos;
-}
-
-void SubGroupComponent::setGroupPosition(glm::vec3 pos)
-{
-    m_groupPosition = pos;
-}
-
-void SubGroupComponent::setOriginScale(glm::vec3 scale)
-{
-    m_originScale = scale;
-}
-
-glm::vec3 SubGroupComponent::getRelativePosition()
-{
-    return m_relativePosition;
-}
-
-glm::vec3 SubGroupComponent::getOriginScale()
-{
-    return m_originScale;
-}
-
 glm::vec3 SubGroupComponent::calculateCurrentPosition()
 {
-    return m_groupPosition+m_relativePosition*m_offset;
+    auto pos = m_relativePosition*m_offset;
+    auto sinR = std::sin(glm::radians(m_groupRotate-m_preRotate));
+    auto cosR = std::cos(glm::radians(m_groupRotate-m_preRotate));
+
+    return m_groupPosition + glm::vec3(pos.x*cosR - pos.y*sinR, pos.x*sinR + pos.y*cosR , 0.f);
+
 }
 
 glm::vec3 SubGroupComponent::calculateCurrentScale()
 {
     return m_originScale*m_offset;
+}
+
+float  SubGroupComponent::calculateCurrentRotate()
+{
+    return m_originRotate+m_groupRotate;
 }
 
 } // end of namespace
