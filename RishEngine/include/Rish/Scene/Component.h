@@ -318,6 +318,21 @@ private:
 
     glm::vec3 m_offset;
 
+    //
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("groupID", groupEntityID));
+        ar(cereal::make_nvp("relativePosition", m_relativePosition));
+        ar(cereal::make_nvp("originScale", m_originScale));
+        ar(cereal::make_nvp("originRotate", m_originRotate));
+        ar(cereal::make_nvp("groupPosition", m_groupPosition));
+        ar(cereal::make_nvp("groupScale", m_groupScale));
+        ar(cereal::make_nvp("groupRotate", m_groupRotate));
+        ar(cereal::make_nvp("preRotate", m_preRotate));
+        ar(cereal::make_nvp("offset", m_offset));
+    }
 };
 
 

@@ -24,7 +24,7 @@ glm::vec3 SubGroupComponent::calculateCurrentPosition()
     auto sinR = std::sin(glm::radians(m_groupRotate-m_preRotate));
     auto cosR = std::cos(glm::radians(m_groupRotate-m_preRotate));
 
-    return m_groupPosition + glm::vec3(pos.x*cosR - pos.y*sinR, pos.x*sinR + pos.y*cosR , 0.f);
+    return m_groupPosition + glm::vec3(pos.x*cosR - pos.y*sinR, pos.x*sinR + pos.y*cosR , m_relativePosition.z);
 
 }
 

@@ -27,8 +27,8 @@ struct BoundingBox2D
     glm::vec2 getPositionVec2() const { return glm::vec2{x, y}; }
     glm::vec2 getScaleVec2() const { return glm::vec2{w, h}; }
 
-    glm::vec3 getPositionVec3() const { return glm::vec3{x, y, 1.f}; }
-    glm::vec3 getScaleVec3() const { return glm::vec3{w, h, 1.f}; }
+    glm::vec3 getPositionVec3() const { return glm::vec3{x, y, 0.f}; }
+    glm::vec3 getScaleVec3() const { return glm::vec3{w, h, 0.f}; }
 
 
     bool isInside(const BoundingBox2D &bound)

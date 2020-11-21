@@ -444,7 +444,8 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
         }
         case GizmoMode::RotationMode:
         {
-            if( Math::AABB2DPoint(boundPos, m_clickSizeVec3, mousePosInWorld))
+            float r = std::max(boundSize.x,boundSize.y);
+            if( Math::AABB2DPoint(boundPos, glm::vec3(r, r,0.f) , mousePosInWorld))
             {
                 return true;
             }

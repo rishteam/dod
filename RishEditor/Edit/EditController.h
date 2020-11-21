@@ -63,7 +63,6 @@ private:
     bool m_showGrid = true; ///< Show Grid
 
     void initGroupEntityTransform(Entity groupEntity);
-    void updateGroupEntityTransform(Entity groupEntity);
 
 public:
     // Debug Window

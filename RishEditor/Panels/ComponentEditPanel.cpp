@@ -53,30 +53,25 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
         ImGui::SameLine();
         ImGui::HelpMarker("In degrees");
 
-//        if(m_targetEntity.hasComponent<GroupComponent>())
-//        {
-//            auto &gc = m_targetEntity.getComponent<GroupComponent>();
-//            BoundingBox2D curBound;
-//            for(const auto& id : gc)
-//            {
-//                Entity ent = m_currentScene->getEntityByUUID(id);
-//                const auto &trans = ent.getComponent<TransformComponent>();
-//                const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
-//                curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
-//
-//            }
-//            auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
-//            auto moveGroupTrans =  groupTransform.translate - curBound.getPositionVec3();
-////            auto moveGroupScale = (groupTransform.scale/glm::vec3(curBound.getScale(),0.f));
-//
-//            for(const auto& id : gc)
-//            {
-//                Entity ent = m_currentScene->getEntityByUUID(id);
-//                auto &trans = ent.getComponent<TransformComponent>();
-//                trans.translate += moveGroupTrans;
-////                trans.scale *= moveGroupScale;
-//            }
-//        }
+        if(m_targetEntity.hasComponent<GroupComponent>())
+        {
+            auto &gc = m_targetEntity.getComponent<GroupComponent>();
+            const auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
+
+            for(const auto& id : gc)
+            {
+                Entity ent = m_currentScene->getEntityByUUID(id);
+                auto &sgc = ent.getComponent<SubGroupComponent>();
+                auto &trans = ent.getComponent<TransformComponent>();
+                sgc.setGroupPosition(groupTransform.translate);
+                sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+                sgc.setGroupRotate(groupTransform.rotate);
+
+                trans.translate = sgc.calculateCurrentPosition();
+                trans.scale = sgc.calculateCurrentScale();
+                trans.rotate = sgc.calculateCurrentRotate();
+            }
+        }
 
     }
     EndDrawEditComponent();

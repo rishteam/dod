@@ -179,7 +179,7 @@ void EditController::onImGuiRender()
             if(Math::AABB2DPoint(boundPos, boundSize, mousePosInWorld))
             {
                 // Pick the smallest size one
-                if(minSize.x > boundSize.x && minSize.y > boundSize.y)
+                if(minSize.x >= boundSize.x && minSize.y >= boundSize.y)
                 {
                     minSize = boundSize;
                     bestMatch = ent;
@@ -258,18 +258,8 @@ void EditController::onImGuiRender()
     m_currentScene->m_registry.each([&](auto entityID)
     {
         Entity ent{entityID, m_currentScene.get()};
-        if( ent.hasComponent<GroupComponent>() )
-        {
-            if(m_gizmo.isMoving(ent))
-            {
-                updateGroupEntityTransform(ent);
-            }
-            else
-            {
-                initGroupEntityTransform(ent);
-            }
-        }
-
+        if( ent.hasComponent<GroupComponent>() && !m_gizmo.isMoving(ent))
+            initGroupEntityTransform(ent);
     });
 
     // Camera pane
@@ -363,6 +353,7 @@ void EditController::initGroupEntityTransform(Entity groupEntity)
     auto &groupTransform = groupEntity.getComponent<TransformComponent>();
     groupTransform.translate = curBound.getPositionVec3();
     groupTransform.scale = curBound.getScaleVec3();
+    groupTransform.rotate = 0.f;
 
     for(const auto& id : gc)
     {
@@ -376,27 +367,6 @@ void EditController::initGroupEntityTransform(Entity groupEntity)
         sgc.setOriginScale(trans.scale);
         sgc.setOriginRotate(trans.rotate-groupTransform.rotate);
         sgc.setPreRotate(groupTransform.rotate);
-    }
-
-}
-
-void EditController::updateGroupEntityTransform(Entity groupEntity)
-{
-    auto &gc = groupEntity.getComponent<GroupComponent>();
-    const auto &groupTransform = groupEntity.getComponent<TransformComponent>();
-
-    for(const auto& id : gc)
-    {
-        Entity ent = m_currentScene->getEntityByUUID(id);
-        auto &sgc = ent.getComponent<SubGroupComponent>();
-        auto &trans = ent.getComponent<TransformComponent>();
-        sgc.setGroupPosition(groupTransform.translate);
-        sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
-        sgc.setGroupRotate(groupTransform.rotate);
-
-        trans.translate = sgc.calculateCurrentPosition();
-        trans.scale = sgc.calculateCurrentScale();
-        trans.rotate = sgc.calculateCurrentRotate();
     }
 
 }
