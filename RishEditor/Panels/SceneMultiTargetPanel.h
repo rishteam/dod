@@ -16,54 +16,23 @@ public:
     virtual void onImGuiRender() = 0;
 
     // For target
-    std::set<Entity> &getTargets(){
-        removeGroupTarget();
-        return m_entitySet;
-    }
-    void addTarget(const Entity targetEntity)
-    {
-        m_entitySet.insert(targetEntity);
-        removeGroupTarget();
-        m_isSelected = !m_entitySet.empty();
-    }
-    void addTarget(const std::set<Entity> &targetSet)
-    {
-        m_entitySet.insert(targetSet.begin(), targetSet.end());
-        removeGroupTarget();
-        m_isSelected = !m_entitySet.empty();
-    }
-
-    void removeTarget(const Entity targetEntity)
-    {
-        m_entitySet.erase(targetEntity);
-        if(m_entitySet.empty())
-            m_isSelected = false;
-    }
-    void resetTarget()
-    {
-        m_isSelected = false;
-        m_entitySet.clear();
-    }
-    void removeGroupTarget()
-    {
-        for(auto ent : m_entitySet )
-        {
-            if(!ent.hasComponent<GroupComponent>())
-                return;
-            auto &gc = ent.getComponent<GroupComponent>();
-            for(const auto& id : gc)
-            {
-                Entity RemoveEntity = m_currentScene->getEntityByUUID(id);
-                m_entitySet.erase(RemoveEntity);
-            }
-        }
-    }
+    std::set<Entity>&       getTargets()                { return m_entitySet; }
+    const std::set<Entity>& getTargets() const          { return m_entitySet; }
+    void addTarget(const Entity targetEntity)           { m_isSelected = true; m_entitySet.insert(targetEntity); }
+    void addTarget(const std::set<Entity> &targetSet)   { m_entitySet.insert(targetSet.begin(), targetSet.end());
+                                                          m_isSelected = !m_entitySet.empty(); }
+    void removeTarget(const Entity targetEntity)        { m_entitySet.erase(targetEntity);
+                                                          if(m_entitySet.empty()) m_isSelected = false;}
+    void resetTarget()                                  { m_isSelected = false; m_entitySet.clear(); }
 
     // For selection
-    std::set<Entity> &getSelectedEntities()             { removeGroupTarget(); return m_entitySet; }
+    std::set<Entity>&       getSelectedEntities()       { return m_entitySet; }
+    const std::set<Entity>& getSelectedEntities() const { return m_entitySet; }
     bool isSelected() const                             { return m_isSelected; }
+    bool isSelected(Entity ent) const                   { return m_entitySet.count(ent);}
     void resetSelected()                                { m_isSelected = false; m_entitySet.clear(); }
     size_t selectedSize() const                         { return m_entitySet.size(); }
+
 protected:
     bool m_isSelected = false;
     std::set<Entity> m_entitySet;

@@ -62,6 +62,9 @@ private:
 
     bool m_showGrid = true; ///< Show Grid
 
+    void arrangeSelectedEntity();
+    void arrangeSelectedGroup(std::set<Entity> &delTarget, Entity entity);
+
     void initGroupEntityTransform(Entity groupEntity);
 
 public:

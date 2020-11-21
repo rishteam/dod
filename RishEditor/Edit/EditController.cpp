@@ -101,22 +101,8 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
-        // Delete invalid target entities
-        removeGroupTarget();
-        std::set<Entity> delTarget;
-        auto &entSet = getTargets();
-        for(auto &ent : entSet)
-        {
-            // Make sure the entity is valid
-            // An entity could be deleted after it is selected
-            if(!ent)
-            {
-                delTarget.insert(ent);
-                continue;
-            }
-        }
-        for(auto &ent : delTarget)
-            removeTarget(ent);
+        arrangeSelectedEntity();
+        auto entSet = getTargets();
 
         // Draw the gizmo
         m_gizmo.setSelectedEntity(entSet);
@@ -337,6 +323,46 @@ void EditController::changeGizmoMode(Gizmo::GizmoMode mode)
 void EditController::toggleShowGrid()
 {
     m_showGrid = !m_showGrid;
+}
+
+void EditController::arrangeSelectedEntity()
+{
+    // Delete invalid target entities
+    std::set<Entity> delTarget;
+    auto &entSet = getTargets();
+    for(auto &ent : entSet)
+    {
+        // Make sure the entity is valid
+        // An entity could be deleted after it is selected
+        if(!ent)
+        {
+            delTarget.insert(ent);
+            continue;
+        }
+        // Make sure the entity in group wont select when group is select
+        if(ent.hasComponent<GroupComponent>())
+        {
+            arrangeSelectedGroup(delTarget, ent);
+        }
+    }
+    for(auto &ent : delTarget)
+    {
+        if(isSelected(ent))
+            removeTarget(ent);
+    }
+
+}
+
+void EditController::arrangeSelectedGroup(std::set<Entity> &delTarget, Entity entity)
+{
+    auto &gc = entity.getComponent<GroupComponent>();
+    for(const auto& id : gc)
+    {
+        Entity delEntity = m_currentScene->getEntityByUUID(id);
+        delTarget.insert(delEntity);
+        if(delEntity.hasComponent<GroupComponent>())
+            arrangeSelectedGroup(delTarget, delEntity);
+    }
 }
 
 void EditController::initGroupEntityTransform(Entity groupEntity)

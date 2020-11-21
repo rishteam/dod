@@ -23,14 +23,20 @@ public:
     void deleteTargetEntities();
     void duplicateTargetEntities();
     void groupTargetEntities();
+    void removeGroupEntity();
+    void moveOutGroupEntity();
+    void moveIntoGroupEntity(Entity groupEntity);
+    bool isCircleGroup(Entity groupEntity, Entity targetEntity);
+
 private:
     void drawEntityNode(Entity entity, bool isSub=false);
     void drawHideEntityNode(Entity entity);
 
     std::set <Entity> m_showEntity;
-    std::set <Entity> m_hideEntity;
+    void buildEntitySet(Entity entity);
 
     void resetDrawEntityState();
+    std::set<UUID> m_groupEntityUUID{};
     std::set<UUID> m_subEntityUUID{};
 
     bool m_isFocusEntity = false;
