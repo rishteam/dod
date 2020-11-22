@@ -781,7 +781,7 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
         auto &registry = m_targetEntity.m_scene->m_registry;
         auto &gc = m_targetEntity.getComponent<GroupComponent>();
 
-        for(const auto& id : gc)
+        for(const auto &id : gc)
         {
             Entity ent = m_currentScene->getEntityByUUID(id);
             auto &sgc = ent.getComponent<SubGroupComponent>();
@@ -808,6 +808,16 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
     }
     EndDrawEditComponent();
 
+}
+
+template <>
+void ComponentEditPanel::drawEditComponentWidget<SubGroupComponent>()
+{
+    BeginDrawEditComponent(SubGroupComponent);
+    {
+        DrawRightClickMenu(SubGroupComponent, false);
+    }
+    EndDrawEditComponent();
 }
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
@@ -841,6 +851,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
         drawEditComponentWidget<GroupComponent>();
+        drawEditComponentWidget<SubGroupComponent>();
 
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)) ||

@@ -21,7 +21,9 @@ public:
 
     void createEntityToTarget();
     void deleteTargetEntities();
+    void deleteEntity(Entity delEntity);
     void duplicateTargetEntities();
+    Entity duplicateEntity(Entity targetEntity);
     void groupTargetEntities();
     void removeGroupEntity();
     void moveOutGroupEntity();
