@@ -17,6 +17,42 @@ namespace rl {
 
 // TODO: Support other format (RGB, RGBA, ...) of textures. Now only support RGBA format
 
+
+enum Texture2DFilter
+{
+    TexNearest = BIT(0),
+    TexLinear  = BIT(1),
+    MipNearest = BIT(2),
+    MipLinear  = BIT(3)
+};
+
+enum Texture2DWrap
+{
+    Repeat = 0,
+    MirrorRepeat,
+    ClampToEdge,
+    ClampToBorder
+};
+
+struct Texture2DOption
+{
+    Texture2DFilter minFilter = Texture2DFilter::TexLinear;
+    Texture2DFilter magFilter = Texture2DFilter::TexLinear;
+    Texture2DWrap   wrapS     = Texture2DWrap::Repeat;
+    Texture2DWrap   wrapT     = Texture2DWrap::Repeat;
+
+    static Texture2DOption DefaultOption;
+
+    template<typename Archive>
+    void serialize(Archive &ar)
+    {
+        ar(CEREAL_NVP(minFilter));
+        ar(CEREAL_NVP(magFilter));
+        ar(CEREAL_NVP(wrapS));
+        ar(CEREAL_NVP(wrapT));
+    }
+};
+
 /**
  * @brief 2D Texture class
  */
@@ -24,18 +60,6 @@ class RL_API Texture2D
 {
 public:
     Texture2D();
-    /**
-     * @brief Create a empty texture
-     * @param width Width
-     * @param height Height
-     */
-    Texture2D(uint32_t width, uint32_t height);
-    /**
-     * @brief ctor
-     * @param path Image file path
-     */
-    Texture2D(const std::string &path, bool flip);
-
 	~Texture2D();
 
 	void setData(void *data, uint32_t size);
@@ -48,6 +72,8 @@ public:
     std::string getPath() const {return m_path; }
     void setPath(const std::string &path) { m_path = path; }
 
+    Texture2DOption getOption() const { return m_option; }
+
     uint32_t getTextureID() const { return m_textureID; }
 
     void bind(uint32_t slot=0) const;
@@ -59,27 +85,29 @@ public:
 	 * @param flip Flip the image?
 	 * @return Reference to the texture
 	 */
-	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=false);
+	static Ref<Texture2D> LoadTexture(const std::string &path, bool flip=false, Texture2DOption option=Texture2DOption{});
 	/**
 	 * @brief Load a Texture with rl::VFS
 	 * @param path Path to the file
 	 * @param flip Flip the image?
 	 * @return Reference to the texture
 	 */
-	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false);
+	static Ref<Texture2D> LoadTextureVFS(const std::string &virtualPath, bool flip=false, Texture2DOption option=Texture2DOption{});
     /**
      * @brief Create a empty Texture
      * @param width Width
      * @param height Height
      * @return Reference to the texture
      */
-	static Ref<Texture2D> Create(uint32_t width, uint32_t height);
+	static Ref<Texture2D> Create(uint32_t width, uint32_t height, Texture2DOption option=Texture2DOption{});
 
     bool operator==(const Texture2D &rhs) const;
     bool operator!=(const Texture2D &rhs) const;
 
 private:
     void createTexture();
+    void setOptions(const Texture2DOption &option);
+
     void setSize(uint32_t width, uint32_t height);
     void setTexture(const void * imagePtr);
 
@@ -93,6 +121,8 @@ private:
 	uint32_t m_textureID{};
 	/// Is the texture flip?
 	bool m_flip = false;
+    /// Setting of the texture
+    Texture2DOption m_option{};
 
 	// Serialization function
 	friend class cereal::access;
@@ -103,6 +133,7 @@ private:
         ar(cereal::make_nvp("width", m_width));
         ar(cereal::make_nvp("height", m_height));
         ar(cereal::make_nvp("flip", m_flip));
+        ar(cereal::make_nvp("option", m_option));
     }
 
     template<typename Archive>
@@ -112,7 +143,9 @@ private:
         ar(cereal::make_nvp("width", m_width));
         ar(cereal::make_nvp("height", m_height));
         ar(cereal::make_nvp("flip", m_flip));
+        ar(cereal::make_nvp("option", m_option));
         //
+        setOptions(m_option);
         if(m_path != "None")
         {
             Ref<Image> image = Image::LoadImage(m_path, m_flip);
@@ -121,8 +154,9 @@ private:
         }
         else
         {
-            createTexture();
-            setSize(m_width, m_height);
+            auto image = Image::LoadImage(m_path, m_flip);
+            setSize(image->getWidth(), image->getHeight());
+            setTexture(image->getPixelPtr());
         }
     }
 };
@@ -148,4 +182,5 @@ private:
  *
  */
 
-RL_MAKE_HASHABLE(rl::Texture2D, t.getPath(), t.getWidth(), t.getHeight())
+RL_MAKE_HASHABLE(rl::Texture2DOption, t.minFilter, t.magFilter, t.wrapS, t.wrapT)
+RL_MAKE_HASHABLE(rl::Texture2D, t.getPath(), t.getWidth(), t.getHeight(), t.getOption())

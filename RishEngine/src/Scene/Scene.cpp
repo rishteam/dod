@@ -223,7 +223,10 @@ void Scene::onUpdate(Time dt)
     PhysicsSystem::OnUpdate(dt);
     ColliderSystem::OnUpdate(dt);
     Animation2DSystem::OnUpdate(dt);
+}
 
+void Scene::onRender()
+{
     // Find a primary camera
     // TODO: implement multiple camera
     if(!findPrimaryCamera())
@@ -307,7 +310,10 @@ void Scene::onImGuiRender()
     }
 
     if(m_debugScene)
+    {
         DrawDebugSceneWindow(m_registry, this);
+    }
+
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)

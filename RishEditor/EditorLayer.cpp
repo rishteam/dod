@@ -196,6 +196,7 @@ void EditorLayer::onUpdate(Time dt)
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
         m_currentScene->onUpdate(dt);
+        m_currentScene->onRender();
     }
     m_sceneFramebuffer->unbind();
 }

@@ -4,7 +4,7 @@
 #include <Rish/Animation/Component.h>
 
 template<typename T>
-void save(const std::string &name, T& obj, const std::string &path)
+void saveToFile(const std::string &name, T& obj, const std::string &path)
 {
     std::ofstream of(path);
     cereal::JSONOutputArchive outputArchive(of);
@@ -12,7 +12,7 @@ void save(const std::string &name, T& obj, const std::string &path)
 }
 
 template<typename T>
-void load(const std::string &name, T& obj, const std::string &path)
+void loadFromFile(const std::string &name, T& obj, const std::string &path)
 {
     std::stringstream oos(FileSystem::ReadTextFile(path));
     cereal::JSONInputArchive inputArchive(oos);
@@ -20,8 +20,8 @@ void load(const std::string &name, T& obj, const std::string &path)
 }
 
 ExampleSandboxLayer::ExampleSandboxLayer()
-    : Layer("ExampleSandboxLayer"),
-      m_cameraController(Application::Get().getWindow().getAspectRatio(), false, true)
+    : Layer("ExampleSandboxLayer")//,
+//      m_cameraController(Application::Get().getWindow().getAspectRatio(), false, true)
 {
     RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     VFS::Mount("shader", "Sandbox/assets");
@@ -29,12 +29,12 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     VFS::Mount("animation", "assets/animation");
 
     m_testTexture = Texture2D::LoadTextureVFS("/texture/RTS_Crate.png");
-//    load("animation", m_testTexture, "assets/a.rtex");
 
     m_scene = MakeRef<Scene>();
     SystemManager::Init(m_scene);
 
     m_scene->m_debugScene = true;
+    m_scene->m_debugCamera = true;
 
     auto ent = m_scene->createEntity("Camera");
     auto &cam = ent.addComponent<CameraComponent>();
@@ -45,14 +45,21 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     ent = m_scene->createEntity("test");
     auto &ani = ent.addComponent<Animation2DComponent>();
 
-    ani.duration = 3.f;
-    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover0.png"));
-    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover1.png"));
-    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover2.png"));
-    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover3.png"));
+//    Texture2DOption opt;
+//    opt.minFilter = opt.magFilter = Texture2DFilter::TexNearest;
+//
+//    ani.duration = 1.f;
+//    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover0.png", false, opt));
+//    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover1.png", false, opt));
+//    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover2.png", false, opt));
+//    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover3.png", false, opt));
 
-    ent = m_scene->createEntity("aaaa");
-    ent.addComponent<SpriteRenderComponent>();
+    loadFromFile("test", ani, "assets/test.rani");
+
+//    ent = m_scene->createEntity("aaaa");
+//    auto &sprite = ent.addComponent<SpriteRenderComponent>();
+//    sprite.m_texture = m_testTexture;
+//    sprite.init = false;
 }
 
 ExampleSandboxLayer::~ExampleSandboxLayer()
@@ -76,23 +83,33 @@ void ExampleSandboxLayer::onDetach()
 
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
-    m_cameraController.onUpdate(dt);
+//    m_cameraController.onUpdate(dt);
 
-    Renderer2D::BeginScene(m_cameraController.getCamera());
-    Renderer2D::DrawQuad({0.f, 0.f}, {1.f, 1.f}, m_testTexture);
-    Renderer2D::EndScene();
+    Renderer2D::ResetStats();
+
+    RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+    RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
 
     m_scene->onUpdate(dt);
+    m_scene->onRender();
 }
 
 void ExampleSandboxLayer::onImGuiRender()
 {
+    auto stat = Renderer2D::GetStats();
+    ImGui::Begin("Renderer");
+    ImGui::Text("Quad = %d", stat.QuadCount);
+    ImGui::Text("Draw = %d", stat.DrawCount);
+    ImGui::End();
+
+    Renderer2D::OnImGuiRender();
+
     m_scene->onImGuiRender();
 }
 
 void ExampleSandboxLayer::onEvent(rl::Event &event)
 {
-    m_cameraController.onEvent(event);
+//    m_cameraController.onEvent(event);
     EventDispatcher dispatcher(event);
     dispatcher.dispatch<KeyPressedEvent>(RL_BIND_EVENT_FUNC(ExampleSandboxLayer::onKeyPressEvent));
 }
@@ -102,6 +119,7 @@ bool ExampleSandboxLayer::onKeyPressEvent(KeyPressedEvent &event)
     if(event.keyCode == Keyboard::Tilde)
     {
         m_scene->m_debugScene ^= true;
+        m_scene->m_debugCamera ^= true;
     }
     return false;
 }

@@ -20,8 +20,6 @@ public:
 private:
     bool onKeyPressEvent(KeyPressedEvent &event);
     //
-    OrthographicCameraController m_cameraController;
-
     Ref<Texture2D> m_testTexture;
     Ref<Scene> m_scene;
 };

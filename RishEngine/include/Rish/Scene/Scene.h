@@ -63,6 +63,8 @@ public:
 	 */
 	void onUpdate(Time dt);
 
+	void onRender();
+
 	void onEditorInit();
 	void onRuntimeInit();
 

@@ -43,6 +43,7 @@ void Animation2DSystem::OnRender()
         auto &trans = entity.getComponent<TransformComponent>();
         //
         auto curFrame = ani.getCurrentFrame();
+
         if(trans.rotate == 0.f)
             Renderer2D::DrawQuad(trans.translate, trans.scale, curFrame);
         else

@@ -33,45 +33,50 @@ void DrawSceneDebugWindow(const char *name, Ref<Scene> scene)
 
 void DrawSceneCameraDebugWindow(const SceneCamera &camera, const glm::mat4 &trans)
 {
-    ImGui::Begin("Scene Debug");
+    ImGui::Begin("Scene Camera");
     ImGui::Text("Projection");
-    auto proj = camera.getProjection();
-    for(int i = 0; i < 4; i++)
     {
-        ImGui::PushID(i);
-        for(int j = 0; j < 4; j++)
+        auto proj = camera.getProjection();
+        for (int i = 0; i < 4; i++)
         {
-            ImGui::PushID(j);
-            ImGui::Text("%.2f", static_cast<double>(proj[i][j])); ImGui::SameLine();
+            ImGui::PushID(i);
+            for (int j = 0; j < 4; j++)
+            {
+                ImGui::PushID(j);
+                ImGui::Text("%.2f", static_cast<double>(proj[i][j]));
+                ImGui::SameLine();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
             ImGui::PopID();
         }
-        ImGui::NewLine();
-        ImGui::PopID();
     }
     ImGui::Separator();
     ImGui::Text("Camera Transform");
-    for(int i = 0; i < 4; i++)
     {
-        ImGui::PushID(i);
-        for(int j = 0; j < 4; j++)
+        for (int i = 0; i < 4; i++)
         {
-            ImGui::PushID(j);
-            ImGui::Text("%.2f", static_cast<double>(trans[i][j])); ImGui::SameLine();
+            ImGui::PushID(i);
+            for (int j = 0; j < 4; j++)
+            {
+                ImGui::PushID(j);
+                ImGui::Text("%.2f", static_cast<double>(trans[i][j]));
+                ImGui::SameLine();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
             ImGui::PopID();
         }
-        ImGui::NewLine();
-        ImGui::PopID();
+        ImGui::Text("Size = %.2f", camera.m_orthoSize);
+        ImGui::Text("Near = %.2f, Far = %.2f", camera.m_orthoNear, camera.m_orthoFar);
+        ImGui::Text("Aspect = %.2f", camera.m_aspect);
     }
-    ImGui::Text("Size = %.2f", camera.m_orthoSize);
-    ImGui::Text("Near = %.2f, Far = %.2f", camera.m_orthoNear, camera.m_orthoFar);
-    ImGui::Text("Aspect = %.2f", camera.m_aspect);
     ImGui::End();
 }
 
 void DrawDebugSceneWindow(entt::registry &registry, Scene *scene)
 {
-    char title[50];
-    snprintf(title, 50, "Debug Scene", scene);
+    const char * title = "Debug Scene";
     //
     ImGui::Begin(title);
     registry.each([&](auto ent) {
@@ -120,7 +125,10 @@ void DrawDebugCameraComponentInfo(Entity entity)
         //
         auto &cam = camera.camera;
         ImGui::Text("Aspect = %f", cam.getAspect());
-        ImGui::Text("Size   = %f", cam.getOrthoSize());
+
+        static float size = cam.getOrthoSize();
+        ImGui::DragFloat("Size", &size);
+        cam.setOrthoSize(size);
 
         ImGui::TreePop();
     }
@@ -138,7 +146,7 @@ void DrawDebugSpriteRenderComponentInfo(Entity entity)
     if(!entity.hasComponent<SpriteRenderComponent>())
         return;
     auto &render = entity.getComponent<SpriteRenderComponent>();
-    if(ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen))
+    if(ImGui::TreeNodeEx("SpriteRender", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Indent();
         if(render.m_texture)
@@ -149,10 +157,10 @@ void DrawDebugSpriteRenderComponentInfo(Entity entity)
         else
             ImGui::Text("m_texture = nullptr");
         ImGui::Unindent();
-        ImGui::Text("-------------------");
 
         if(render.m_subtexture)
         {
+            ImGui::Text("-------------------");
             auto &setting = render.m_subSetting;
             //
             ImGui::Indent();
@@ -227,7 +235,7 @@ void DrawDebugAnimation2DComponentInfo(Entity entity)
     {
         ImGui::Text("currentFrame = %d\n", ani.currentFrame);
         ImGui::Text("duration = %.2f\n", ani.duration);
-        ImGui::Text("currentFrame = %.2f\n", ani.reverseDuration);
+        ImGui::Text("reverseDuration = %.2f\n", ani.reverseDuration);
         ImGui::Text("loop = %d\n", ani.loop);
         ImGui::Text("reverse = %d\n", ani.reverse);
         ImGui::Text("texturePrefix = %s\n", ani.texturePrefix.c_str());

@@ -97,8 +97,6 @@ const size_t MaxTriangleIndexCount = MaxTriangleCount * 3;
 ////////////////////////////////////////////////////////////////
 
 uint32_t debugQuadIndex = 0;
-uint32_t debugTextureIndex = 0;
-std::array<Ref<Texture2D>, MaxTextures> debugTextureSlots{};
 
 struct Renderer2DData
 {
@@ -209,13 +207,16 @@ struct Renderer2DData
                     quadIndices[i + j] = pattern[j] + offset;
                 offset += 4;
             }
+
             // Create the Index Buffer
             Ref<IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
             quadVertexArray->setIndexBuffer(squareIB);
             delete[] quadIndices; // deltete cpu side
 
-            // texture shader
+            // Load quad texture shader
             quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
+
+            // Set up the texture slots
             int sampler[MaxTextures];
             for (int i = 0; i < MaxTextures; i++)
                 sampler[i] = i;
@@ -236,13 +237,11 @@ struct Renderer2DData
             // Add vertices of a quad to buffer
             for(int i = 0; i < 4; i++)
             {
-                QuadVertex tmp{};
-                tmp.position    = position[i];
-                tmp.color       = color;
-                tmp.texCoord    = texCoords[i];
-                tmp.texIndex    = texIndex;
-                tmp.texTiling   = texTiling;
-                submitQuad.p[i] = tmp;
+                submitQuad.p[i].position  = position[i];
+                submitQuad.p[i].color     = color;
+                submitQuad.p[i].texCoord  = texCoords[i];
+                submitQuad.p[i].texIndex  = texIndex;
+                submitQuad.p[i].texTiling = texTiling;
             }
             //
             quadIndexCount += 6;
@@ -255,12 +254,13 @@ struct Renderer2DData
                   const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
         {
             // Send accumulated VB
-            auto &quadList = quadShapeList;
             // Sort by z-axis
             if(DepthTest)
-                sort(quadList.begin(), quadList.end());
-            // set the VB
-            quadVertexArray->getVertexBuffer()->setData(&quadList[0].p[0], quadList.size() * sizeof(QuadShape));
+                sort(quadShapeList.begin(), quadShapeList.end());
+
+            // Set the VB
+            quadVertexArray->getVertexBuffer()->setData(&quadShapeList[0].p[0],
+                                                        quadShapeList.size() * sizeof(QuadShape));
 
             // Shader
             quadTexShader->bind();
@@ -502,19 +502,19 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     // Common
     ////////////////////////////////////////////////////////////////
-    bool sceneState = false; ///< Is the scene now active (called BeginScene())
+    bool rendererState = false; ///< Is the scene now active (called BeginScene())
     bool depthTest = false;  ///< Is the scene enable depth test
     //
     OrthographicCamera orthoCamera;
     bool isEditorCamera = false; // TODO: this is dirty
     Camera camera = glm::mat4(1.f);
-    glm::mat4 m_viewProjMatrix;
+    glm::mat4 m_viewProjMatrix{};
+    glm::mat4 sceneCameraTrans{};
     //
     Renderer2D::Stats renderStats;
 };
 static Scope<Renderer2DData> s_data;
 
-// TODO: For debug use
 void Renderer2D::OnImGuiRender()
 {
     ImGui::Text("Quad     = %d", s_data->renderStats.QuadCount);
@@ -523,35 +523,9 @@ void Renderer2D::OnImGuiRender()
     ImGui::Text("Circle   = %d", s_data->renderStats.CircleCount);
     ImGui::Text("Triangle = %d", s_data->renderStats.TriangleCount);
     ImGui::Text("Draw     = %d", s_data->renderStats.DrawCount);
-
-    ImGui::Separator();
-
-    ImGui::Text("quadIndexCount = %d", debugQuadIndex);
-    debugQuadIndex = 0;
-    ImGui::Text("textureSlotAddIndex = %d", debugTextureIndex);
-
-    ImGui::Separator();
-
-    ImGui::Text("QuadVertex = %d, QuadShape = %d", sizeof(QuadVertex), sizeof(QuadShape));
-
-    ImGui::Separator();
-
-    if(ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        for(int i = 0; i > debugTextureIndex; i++)
-        {
-            ImGui::PushID(i);
-            if(debugTextureSlots[i])
-            {
-                DrawDebugTextureInfo(debugTextureSlots[i]);
-            }
-            else
-                ImGui::Text("None");
-            ImGui::PopID();
-        }
-        ImGui::TreePop();
-    }
 }
+
+///////////////////////////////////////////////////////////////////////////////////
 
 void Renderer2D::Init()
 {
@@ -615,7 +589,7 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
     s_data->isEditorCamera = true;
     s_data->orthoCamera = camera;
     //
-    s_data->sceneState = true;
+    s_data->rendererState = true;
 
     // Quad
     {
@@ -643,9 +617,10 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
 
     s_data->isEditorCamera = false;
     s_data->camera = camera;
-    s_data->m_viewProjMatrix = camera.getProjection() * glm::inverse(transform); // TODO: not support rotate now
+    s_data->sceneCameraTrans = transform;
+    s_data->m_viewProjMatrix = camera.getProjection() * glm::inverse(s_data->sceneCameraTrans); // TODO: not support rotate now
     //
-    s_data->sceneState = true;
+    s_data->rendererState = true;
 
     // Quad
     {
@@ -687,7 +662,6 @@ void Renderer2D::EndScene()
         s_data->quadRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
         // Reset
-        s_data->quadRenderer.reset();
         resetTexture = true;
         //
         s_data->renderStats.DrawCount++;
@@ -702,7 +676,6 @@ void Renderer2D::EndScene()
         s_data->triangleRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
         // Reset
-        s_data->quadRenderer.reset();
         resetTexture = true;
         //
         s_data->renderStats.DrawCount++;
@@ -716,8 +689,7 @@ void Renderer2D::EndScene()
         s_data->renderStats.DrawCount++;
     }
 
-    s_data->sceneState = false;
-
+    s_data->rendererState = false;
 
     if(resetTexture)
     {
@@ -770,7 +742,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -827,7 +799,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -866,7 +838,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -899,7 +871,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -931,7 +903,7 @@ void Renderer2D::FlushStatesIfExceeds()
         if(s_data->isEditorCamera)
             BeginScene(s_data->orthoCamera, s_data->depthTest);
         else
-            BeginScene(s_data->camera, s_data->m_viewProjMatrix);
+            BeginScene(s_data->camera, s_data->sceneCameraTrans, s_data->depthTest);
     }
 }
 
@@ -951,7 +923,7 @@ void Renderer2D::DrawBgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm:
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     if(s_data->bgLineRenderer.exceedDrawIndex())
     {
@@ -972,7 +944,7 @@ void Renderer2D::DrawFgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm:
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     if(s_data->fgLineRenderer.exceedDrawIndex())
     {
@@ -1161,7 +1133,7 @@ void Renderer2D::DrawTriangle(const glm::vec2 &p0, const glm::vec2 &p1, const gl
 void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec4 &color)
 {
     RL_PROFILE_RENDERER_FUNCTION();
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     // Split draw call if it exceeds the limits
     if(s_data->triangleRenderer.exceedDrawIndex() || s_data->textureManager.isExceed())
