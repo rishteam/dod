@@ -135,7 +135,7 @@ struct SpriteRenderComponent
 
     void loadFromSetting()
     {
-        if(useTexture)
+        if(useTexture && !m_texture)
         {
             m_texture = Texture2D::LoadTextureVFS(texturePath);
         }
@@ -198,7 +198,7 @@ private:
 	{
 		ar(
            cereal::make_nvp("Color", color),
-		   cereal::make_nvp("Texture", texturePath),
+		   cereal::make_nvp("Texture", m_texture),
 		   cereal::make_nvp("UseTexture", useTexture),
 		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
 		   cereal::make_nvp("setting", m_subSetting),

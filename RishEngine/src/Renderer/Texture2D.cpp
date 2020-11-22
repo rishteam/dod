@@ -92,6 +92,8 @@ Ref<Texture2D> Texture2D::LoadTexture(const std::string &path, bool flip, Textur
     texture->m_path = path;
     texture->m_flip = flip;
 
+    texture->m_init = true;
+
     return texture;
 }
 
@@ -108,7 +110,9 @@ Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool fl
     texture->setTexture(image->getPixelPtr());
     texture->m_path = path;
     texture->m_flip = flip;
-    //
+
+    texture->m_init = true;
+
     return texture;
 }
 
@@ -118,6 +122,7 @@ Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height, Texture2DOptio
 
     texture->setSize(width, height);
     texture->m_path = "None";
+    texture->m_init = true;
 
     return texture;
 }

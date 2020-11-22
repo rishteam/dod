@@ -1022,7 +1022,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\characters.gif",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "path": "assets\\texture\\mario\\characters.gif",
+                                "width": 513,
+                                "height": 401,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1058,7 +1074,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\bg_1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "path": "assets\\texture\\mario\\bg_1.png",
+                                "width": 300,
+                                "height": 168,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -1094,7 +1126,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\bg_1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "path": "assets\\texture\\mario\\bg_1.png",
+                                "width": 300,
+                                "height": 168,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -1130,7 +1178,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483653,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1166,7 +1230,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\bg_1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483654,
+                            "data": {
+                                "path": "assets\\texture\\mario\\bg_1.png",
+                                "width": 300,
+                                "height": 168,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -1202,7 +1282,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483655,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1238,7 +1334,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483656,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1274,7 +1386,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483657,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1310,7 +1438,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483658,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1346,7 +1490,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483659,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1382,7 +1542,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483660,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1418,7 +1594,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483661,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1454,7 +1646,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483662,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1490,7 +1698,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483663,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1526,7 +1750,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483664,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1562,7 +1802,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483665,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1598,7 +1854,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483666,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1634,7 +1906,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483667,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1670,7 +1958,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483668,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1706,7 +2010,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483669,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1742,7 +2062,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483670,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1778,7 +2114,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483671,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1814,7 +2166,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483672,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1850,7 +2218,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483673,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1886,7 +2270,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483674,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1922,7 +2322,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483675,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1958,7 +2374,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483676,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -1994,7 +2426,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483677,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2030,7 +2478,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483678,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2066,7 +2530,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483679,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2102,7 +2582,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483680,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2138,7 +2634,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483681,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2174,7 +2686,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\bg_1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483682,
+                            "data": {
+                                "path": "assets\\texture\\mario\\bg_1.png",
+                                "width": 300,
+                                "height": 168,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -2210,7 +2738,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483683,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2246,7 +2790,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483684,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2282,7 +2842,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\bg_1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483685,
+                            "data": {
+                                "path": "assets\\texture\\mario\\bg_1.png",
+                                "width": 300,
+                                "height": 168,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -2318,7 +2894,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\characters.gif",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483686,
+                            "data": {
+                                "path": "assets\\texture\\mario\\characters.gif",
+                                "width": 513,
+                                "height": 401,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2354,7 +2946,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483687,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2390,7 +2998,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483688,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2426,7 +3050,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\blocks.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483689,
+                            "data": {
+                                "path": "assets\\texture\\mario\\blocks.png",
+                                "width": 448,
+                                "height": 256,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2462,7 +3102,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\pipe.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483690,
+                            "data": {
+                                "path": "assets\\texture\\mario\\pipe.png",
+                                "width": 235,
+                                "height": 300,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -2498,7 +3154,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\pipe.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483691,
+                            "data": {
+                                "path": "assets\\texture\\mario\\pipe.png",
+                                "width": 235,
+                                "height": 300,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -2534,7 +3206,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\pipe.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483692,
+                            "data": {
+                                "path": "assets\\texture\\mario\\pipe.png",
+                                "width": 235,
+                                "height": 300,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -2570,7 +3258,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\bg_null.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483693,
+                            "data": {
+                                "path": "assets\\texture\\mario\\bg_null.png",
+                                "width": 295,
+                                "height": 120,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -2606,7 +3310,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\mario\\mmmisc.gif",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483694,
+                            "data": {
+                                "path": "assets\\texture\\mario\\mmmisc.gif",
+                                "width": 411,
+                                "height": 949,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 1,
+                                    "magFilter": 1,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": true,
                     "setting": {
@@ -2682,7 +3402,7 @@
                         "polymorphic_id": 2147483649,
                         "polymorphic_name": "rl::CameraController",
                         "ptr_wrapper": {
-                            "id": 2147483650,
+                            "id": 2147483695,
                             "data": {
                                 "speed": 10.0
                             }
@@ -2697,7 +3417,7 @@
                         "polymorphic_id": 2147483650,
                         "polymorphic_name": "rl::PlayerController",
                         "ptr_wrapper": {
-                            "id": 2147483651,
+                            "id": 2147483696,
                             "data": {
                                 "walkAccel": 5.0,
                                 "walkSpeedLimit": 7.0,
@@ -2714,7 +3434,7 @@
                         "polymorphic_id": 2147483651,
                         "polymorphic_name": "rl::EventBoxController",
                         "ptr_wrapper": {
-                            "id": 2147483652,
+                            "id": 2147483697,
                             "data": {
                                 "mock": 0
                             }
@@ -2728,7 +3448,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483653,
+                            "id": 2147483698,
                             "data": {
                                 "mock": 0
                             }
@@ -2742,7 +3462,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483654,
+                            "id": 2147483699,
                             "data": {
                                 "mock": 0
                             }
@@ -2756,7 +3476,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483655,
+                            "id": 2147483700,
                             "data": {
                                 "mock": 0
                             }
@@ -2770,7 +3490,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483656,
+                            "id": 2147483701,
                             "data": {
                                 "mock": 0
                             }
@@ -2784,7 +3504,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483657,
+                            "id": 2147483702,
                             "data": {
                                 "mock": 0
                             }
@@ -2798,7 +3518,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483658,
+                            "id": 2147483703,
                             "data": {
                                 "mock": 0
                             }
@@ -2812,7 +3532,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483659,
+                            "id": 2147483704,
                             "data": {
                                 "mock": 0
                             }
@@ -2826,7 +3546,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483660,
+                            "id": 2147483705,
                             "data": {
                                 "mock": 0
                             }
@@ -2840,7 +3560,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483661,
+                            "id": 2147483706,
                             "data": {
                                 "mock": 0
                             }
@@ -2854,7 +3574,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483662,
+                            "id": 2147483707,
                             "data": {
                                 "mock": 0
                             }
@@ -2869,7 +3589,7 @@
                         "polymorphic_id": 2147483652,
                         "polymorphic_name": "rl::MonsterController",
                         "ptr_wrapper": {
-                            "id": 2147483663,
+                            "id": 2147483708,
                             "data": {
                                 "mock": 0
                             }
@@ -2883,7 +3603,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483664,
+                            "id": 2147483709,
                             "data": {
                                 "mock": 0
                             }
@@ -2897,7 +3617,7 @@
                     "instance": {
                         "polymorphic_id": 3,
                         "ptr_wrapper": {
-                            "id": 2147483665,
+                            "id": 2147483710,
                             "data": {
                                 "mock": 0
                             }

@@ -104,6 +104,11 @@ public:
     bool operator==(const Texture2D &rhs) const;
     bool operator!=(const Texture2D &rhs) const;
 
+    operator bool() const
+    {
+        return m_init;
+    }
+
 private:
     void createTexture();
     void setOptions(const Texture2DOption &option);
@@ -123,6 +128,8 @@ private:
 	bool m_flip = false;
     /// Setting of the texture
     Texture2DOption m_option{};
+    /// Is initialized?
+    bool m_init = false;
 
 	// Serialization function
 	friend class cereal::access;
