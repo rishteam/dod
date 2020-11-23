@@ -37,6 +37,8 @@ private:
     std::set <Entity> m_showEntity;
     void buildEntitySet(Entity entity);
 
+    std::set <Entity> m_delEntity{};
+
     void resetDrawEntityState();
     std::set<UUID> m_groupEntityUUID{};
     std::set<UUID> m_subEntityUUID{};

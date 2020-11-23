@@ -21,7 +21,7 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::InputText("##EntitySelection", &filterText);
 
     // Entity List Window
-    ImGuiWindowFlags window_flags = 0;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysHorizontalScrollbar|ImGuiWindowFlags_AlwaysVerticalScrollbar;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
     // Reset
@@ -171,7 +171,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
 
     ImGuiTreeNodeFlags nodeFlags = isSelected(entity) ? ImGuiTreeNodeFlags_Selected : 0;
     nodeFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
-    nodeFlags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+    nodeFlags |= ImGuiTreeNodeFlags_SpanFullWidth;
     nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
@@ -245,18 +245,26 @@ void SceneHierarchyPanel::createEntityToTarget()
 
 void SceneHierarchyPanel::deleteTargetEntities()
 {
+
+    m_delEntity.clear();
     auto entSet = getSelectedEntities();
+
     for (auto ent : entSet)
     {
         if(ent.hasComponent<SubGroupComponent>())
         {
             auto &sgc = ent.getComponent<SubGroupComponent>();
-            Entity groupEntity = m_currentScene->getEntityByUUID(sgc.getGroupEntityID());
-            auto &gc = groupEntity.getComponent<GroupComponent>();
+            Entity preGroupEntity = m_currentScene->getEntityByUUID(sgc.getGroupEntityID());
+            auto &gc = preGroupEntity.getComponent<GroupComponent>();
             gc.delEntityUUID(ent.getUUID());
         }
         deleteEntity(ent);
     }
+
+    for(auto ent : m_delEntity)
+        ent.destroy();
+    m_delEntity.clear();
+
     resetSelected();
 }
 
@@ -271,7 +279,7 @@ void SceneHierarchyPanel::deleteEntity(Entity delEntity)
             deleteEntity(subEntity);
         }
     }
-    delEntity.destroy();
+    m_delEntity.insert(delEntity);
 }
 
 void SceneHierarchyPanel::duplicateTargetEntities()
@@ -280,17 +288,17 @@ void SceneHierarchyPanel::duplicateTargetEntities()
     resetTarget();
     //
     bool first = true;
-    for (auto &ent : entSet)
+    for (auto ent : entSet)
     {
         Entity copyEntity = duplicateEntity(ent);
         if(ent.hasComponent<SubGroupComponent>())
         {
-            auto &entSgc = ent.getComponent<SubGroupComponent>();
-            Entity groupEntity = m_currentScene->getEntityByUUID(entSgc.getGroupEntityID());
-            auto &groupGc = groupEntity.getComponent<GroupComponent>();
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            Entity preGroupEntity = m_currentScene->getEntityByUUID(sgc.getGroupEntityID());
+            auto &groupGc = preGroupEntity.getComponent<GroupComponent>();
             groupGc.addEntityUUID(copyEntity.getUUID());
             auto &copySgc = copyEntity.addComponent<SubGroupComponent>();
-            copySgc.setGroup(entSgc.getGroupEntityID());
+            copySgc.setGroup(preGroupEntity.getUUID());
         }
         addTarget(copyEntity);
         //
@@ -311,7 +319,8 @@ Entity SceneHierarchyPanel::duplicateEntity(Entity targetEntity)
         auto &targetGc = targetEntity.getComponent<GroupComponent>();
         for(auto &id : targetGc)
         {
-            Entity subEntity = duplicateEntity(m_currentScene->getEntityByUUID(id));
+            Entity targetSubEntity = m_currentScene->getEntityByUUID(id);
+            Entity subEntity = duplicateEntity(targetSubEntity);
             copyGc.addEntityUUID(subEntity.getUUID());
             auto &sgc = subEntity.addComponent<SubGroupComponent>();
             sgc.setGroup(copyEntity.getUUID());
@@ -323,6 +332,10 @@ Entity SceneHierarchyPanel::duplicateEntity(Entity targetEntity)
 
 void SceneHierarchyPanel::groupTargetEntities()
 {
+
+    if(!isSelected())
+        return;
+
     Entity group = m_currentScene->createEntity("Group");
     auto &gc = group.addComponent<GroupComponent>();
 
@@ -358,13 +371,29 @@ void SceneHierarchyPanel::removeGroupEntity()
     auto entSet = getSelectedEntities();
     for (auto ent : entSet)
     {
+        bool isSub = ent.hasComponent<SubGroupComponent>();
+        Entity preGroupEntity;
+        if(isSub)
+        {
+            preGroupEntity = m_currentScene->getEntityByUUID(ent.getComponent<SubGroupComponent>().getGroupEntityID());
+            preGroupEntity.getComponent<GroupComponent>().delEntityUUID(ent.getUUID());
+        }
+
         if(ent.hasComponent<GroupComponent>())
         {
             auto &gc = ent.getComponent<GroupComponent>();
             for(auto &id : gc)
             {
                 Entity SubEntity = m_currentScene->getEntityByUUID(id);
-                SubEntity.removeComponent<SubGroupComponent>();
+                if(isSub)
+                {
+                    preGroupEntity.getComponent<GroupComponent>().addEntityUUID(id);
+                    SubEntity.getComponent<SubGroupComponent>().setGroup(preGroupEntity.getUUID());
+                }
+                else
+                {
+                    SubEntity.removeComponent<SubGroupComponent>();
+                }
             }
         }
         ent.destroy();

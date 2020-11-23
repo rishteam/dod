@@ -305,7 +305,7 @@ struct SubGroupComponent
     float calculateCurrentRotate();
 
 private:
-    UUID groupEntityID;
+    UUID groupEntityID{};
 
     glm::vec3 m_relativePosition;
     glm::vec3 m_originScale;

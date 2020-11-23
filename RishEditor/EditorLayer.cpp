@@ -757,19 +757,11 @@ void EditorLayer::onShortcutActionUpdate()
 
         if(m_sceneAction.getAction("Paste")->IsShortcutPressed())
         {
-            bool first = true;
-
             m_sceneHierarchyPanel->resetTarget();
             for(auto &ent : m_copyList)
             {
-                if(ent){
-                    auto copyEntity = m_currentScene->duplicateEntity(ent);
-                    m_sceneHierarchyPanel->addTarget(copyEntity);
-                    if( first ){
-                        m_sceneHierarchyPanel->setFocus(copyEntity);
-                    }
-                    first = false;
-                }
+                m_sceneHierarchyPanel->addTarget(ent);
+                m_sceneHierarchyPanel->duplicateTargetEntities();
             }
             m_copyList.clear();
             m_sceneAction.getAction("Paste")->setEnabled(false);
@@ -778,8 +770,7 @@ void EditorLayer::onShortcutActionUpdate()
 
         if(m_sceneAction.getAction("Delete")->IsShortcutPressed())
         {
-            for(auto ent : m_sceneHierarchyPanel->getSelectedEntities())
-                ent.destroy();
+            m_sceneHierarchyPanel->deleteTargetEntities();
             m_sceneHierarchyPanel->resetTarget();
             m_statusBarPanel->sendMessage("Delete Selected Entity");
         }
