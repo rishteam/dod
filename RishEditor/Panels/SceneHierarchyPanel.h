@@ -44,6 +44,7 @@ private:
     std::set<UUID> m_subEntityUUID{};
 
     bool m_isFocusEntity = false;
+    bool m_isPreFocus = false;
     Entity m_focusEntity;
 
     const char* m_panelTitle = ICON_FA_LIST " Hierarchy";

@@ -21,7 +21,7 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::InputText("##EntitySelection", &filterText);
 
     // Entity List Window
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysHorizontalScrollbar|ImGuiWindowFlags_AlwaysVerticalScrollbar;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar|ImGuiWindowFlags_AlwaysHorizontalScrollbar|ImGuiWindowFlags_AlwaysVerticalScrollbar;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
 
     // Reset
@@ -49,13 +49,16 @@ void SceneHierarchyPanel::onImGuiRender()
         }
     });
 
+    if(!m_isPreFocus && isSelected())
+    {
+        auto entSet = getTargets();
+        setFocus(*entSet.begin());
+        m_isPreFocus = false;
+    }
+    m_isPreFocus = isSelected();
+
     for(auto e : m_showEntity)
     {
-        if(m_isFocusEntity && e == m_focusEntity)
-        {
-            ImGui::SetScrollHereY(0);
-            m_isFocusEntity = false;
-        }
         drawEntityNode(e);
     }
 
@@ -171,10 +174,18 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
 
     ImGuiTreeNodeFlags nodeFlags = isSelected(entity) ? ImGuiTreeNodeFlags_Selected : 0;
     nodeFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
-    nodeFlags |= ImGuiTreeNodeFlags_SpanFullWidth;
+    nodeFlags |= ImGuiTreeNodeFlags_SpanAvailWidth;
     nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, nodeFlags, tag.c_str());
+    // Set Focus at Hierarchy Window
+    if(m_isFocusEntity && entity == m_focusEntity)
+    {
+        ImGui::SetScrollHereX(0);
+        ImGui::SetScrollHereY(0);
+        m_isFocusEntity = false;
+    }
+
     if( ImGui::IsItemClicked() ||
        (ImGui::IsItemFocused()&&ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))))
     {
@@ -182,6 +193,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
         if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift)
         {
             resetTarget();
+            m_isPreFocus = false;
         }
         addTarget(entity);
 
