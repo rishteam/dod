@@ -32,7 +32,7 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 
     m_framebuffer->bind();
     RenderCommand::SetClearColor({0.f, 0.f, 0.f, 1.f});
-    RenderCommand::Clear();
+    RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
         for(int i = 0; i < 10000; i++)
@@ -43,7 +43,7 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
 
     m_framebufferSecond->bind();
     RenderCommand::SetClearColor({0.f, 0.f, 0.f, 1.f});
-    RenderCommand::Clear();
+    RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
     Renderer2D::BeginScene(m_cameraController.getCamera(), true);
     {
         for(int i = 0; i < 100; i++)

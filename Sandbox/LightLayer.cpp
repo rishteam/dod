@@ -29,10 +29,10 @@ void LightLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
     glm::vec2 viewPortSize = {Application::Get().getWindow().getWidth() / 2, Application::Get().getWindow().getHeight()/2};
-    Renderer2D::BeginScene(m_cameraController.getCamera(), true);
+    Renderer2D::BeginScene(m_cameraController.getCamera(), false);
     {
-        Renderer2D::DrawPointLight(lightPos, radius, strength, lightPos, {10, 10});
-        Renderer2D::DrawShadow(lightPos, glm::vec3{-1., 0.5, 0}, {1., 0.5, 0}, 10);
+        Renderer2D::DrawPointLight(lightPos, radius, strength, lightPos,
+                                   viewPortSize, {Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()}, {m_cameraController.getBounds().right, m_cameraController.getBounds().top}, color);
 //        Renderer2D::DrawQuad({0, 0}, {2, 2}, {1, 1, 1, 1});
     }
     Renderer2D::EndScene();

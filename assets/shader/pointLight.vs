@@ -18,7 +18,7 @@ uniform mat4 u_ViewProjection;
 void main()
 {
     gl_Position = u_ViewProjection * vec4(a_QuadPosition, 1.0);
-    v_LightPosition = (u_ViewProjection * vec4(a_LightPosition, 1.0)).xy;
+    v_LightPosition = vec4(a_LightPosition, 1.0).xy;
     v_Color = a_Color;
     v_Constant = a_Constant;
     v_Linear = a_Linear;
