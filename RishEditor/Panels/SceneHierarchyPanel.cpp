@@ -300,17 +300,14 @@ void SceneHierarchyPanel::duplicateTargetEntities()
     resetTarget();
     //
     bool first = true;
+    m_groupPair.clear();
     for (auto ent : entSet)
     {
         Entity copyEntity = duplicateEntity(ent);
         if(ent.hasComponent<SubGroupComponent>())
         {
             auto &sgc = ent.getComponent<SubGroupComponent>();
-            Entity preGroupEntity = m_currentScene->getEntityByUUID(sgc.getGroupEntityID());
-            auto &groupGc = preGroupEntity.getComponent<GroupComponent>();
-            groupGc.addEntityUUID(copyEntity.getUUID());
-            auto &copySgc = copyEntity.addComponent<SubGroupComponent>();
-            copySgc.setGroup(preGroupEntity.getUUID());
+            m_groupPair.push_back({sgc.getGroupEntityID(),copyEntity.getUUID()});
         }
         addTarget(copyEntity);
         //
@@ -320,6 +317,20 @@ void SceneHierarchyPanel::duplicateTargetEntities()
             first = false;
         }
     }
+    for(auto gp : m_groupPair)
+    {
+        Entity parentEntity = m_currentScene->getEntityByUUID(gp.first);
+        Entity childEntity = m_currentScene->getEntityByUUID(gp.second);
+
+        if(!parentEntity.hasComponent<GroupComponent>())
+            parentEntity.addComponent<GroupComponent>();
+        auto &gc = parentEntity.getComponent<GroupComponent>();
+        auto &sgc = childEntity.addComponent<SubGroupComponent>();
+
+        gc.addEntityUUID(childEntity.getUUID());
+        sgc.setGroup(parentEntity.getUUID());
+    }
+
 }
 
 Entity SceneHierarchyPanel::duplicateEntity(Entity targetEntity)
@@ -327,15 +338,12 @@ Entity SceneHierarchyPanel::duplicateEntity(Entity targetEntity)
     Entity copyEntity =  m_currentScene->duplicateEntity(targetEntity);
     if(targetEntity.hasComponent<GroupComponent>())
     {
-        auto &copyGc = copyEntity.addComponent<GroupComponent>();
         auto &targetGc = targetEntity.getComponent<GroupComponent>();
         for(auto &id : targetGc)
         {
             Entity targetSubEntity = m_currentScene->getEntityByUUID(id);
             Entity subEntity = duplicateEntity(targetSubEntity);
-            copyGc.addEntityUUID(subEntity.getUUID());
-            auto &sgc = subEntity.addComponent<SubGroupComponent>();
-            sgc.setGroup(copyEntity.getUUID());
+            m_groupPair.push_back({copyEntity.getUUID(),subEntity.getUUID()});
         }
     }
 

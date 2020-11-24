@@ -38,6 +38,7 @@ private:
     void buildEntitySet(Entity entity);
 
     std::set <Entity> m_delEntity{};
+    std::vector <std::pair<UUID,UUID>> m_groupPair{};
 
     void resetDrawEntityState();
     std::set<UUID> m_groupEntityUUID{};
