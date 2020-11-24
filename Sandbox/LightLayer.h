@@ -27,6 +27,8 @@ private:
     glm::vec4 color;
     glm::vec3 lightPos;
 
+    Ref<rl::Texture2D> texture;
+
     OrthographicCameraController m_cameraController;
 };
 

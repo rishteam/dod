@@ -573,10 +573,11 @@ struct Renderer2DData
         }
 
         void submit(const glm::vec4 position[4], const glm::vec3 lightPosition, const glm::vec4 color,
-                    const float constant, const float linear, const float quadratic,const glm::vec2 &screenSize, const glm::vec2& zoom)
+                    const float constant, const float linear, const float quadratic,const glm::vec2 &screenSize, float zoom, float aspect)
         {
             viewportSize = screenSize;
             this->zoom = zoom;
+            this->aspect = aspect;
             //
             LightShape submitLight{};
             for(int i = 0 ; i < 4 ; i++)
@@ -613,7 +614,7 @@ struct Renderer2DData
 
             lightShader->setFloat("screenWidth", viewportSize.x);
             lightShader->setFloat("screenHeight", viewportSize.y);
-            lightShader->setFloat2("zoom", zoom);
+            lightShader->setFloat2("zoom", {aspect*zoom, zoom});
 
             lightVertexArray->bind();
             RenderCommand::DrawElement(DrawTriangles, lightVertexArray, lightIndexCount, DepthTest);
@@ -635,7 +636,8 @@ struct Renderer2DData
         uint32_t lightIndexCount = 0;          ///< 現在有多少個 index
         std::vector<LightShape> lightShapeList; ///< Light data
         glm::vec2 viewportSize{};
-        glm::vec2 zoom;
+        float zoom;
+        float aspect;
     };
     LightRenderer lightRenderer;
 
@@ -1405,8 +1407,9 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
 // Light Renderer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// TODO : Remove aspect and zoom
 void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
-                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, const glm::vec2& zoom, glm::vec4 color)
+                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color)
 {
     RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
 
@@ -1419,13 +1422,13 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
     };
 
     // TODO : change radius and strength to linear and quadratic
-    SubmitLight(posi, position, color, 1/radius, 1/strength, 0, screenSize, zoom);
+    SubmitLight(posi, position, color, 1/radius, 1/strength, 0, screenSize, zoom, aspect);
 }
 
 void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,
-                             float linear, float quadratic, const glm::vec2 &screenSize, const glm::vec2& zoom)
+                             float linear, float quadratic, const glm::vec2 &screenSize, float zoom, float aspect)
 {
-    s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic, screenSize, zoom);
+    s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic, screenSize, zoom, aspect);
     s_data->renderStats.LineCount++;
 }
 
