@@ -165,6 +165,8 @@ public:
      */
     static void DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount=0, bool depthTest=false);
 
+
+
     static void SetLineThickness(float t);
     static void SetLineSmooth(bool state);
 };

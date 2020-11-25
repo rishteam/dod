@@ -646,6 +646,11 @@ struct Renderer2DData
     ////////////////////////////////////////////////////////////////
     // Common
     ////////////////////////////////////////////////////////////////
+    Ref<VertexArray> combineVA = nullptr;
+    Ref<Shader> combineShader = nullptr;
+    bool isCombineInit = true;
+
+    //
     bool sceneState = false; ///< Is the scene now active (called BeginScene())
     bool depthTest = false;  ///< Is the scene enable depth test
     //
@@ -1430,6 +1435,55 @@ void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPo
 {
     s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic, screenSize, zoom, aspect);
     s_data->renderStats.LineCount++;
+}
+
+void rl::Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb)
+{
+    auto &combineVA = s_data->combineVA;
+    auto &combineShader = s_data->combineShader;
+
+    if(s_data->isCombineInit)
+    {
+        combineVA = VertexArray::Create();
+        combineShader = Shader::LoadShaderVFS("/shader/combine.vs", "/shader/combine.fs");
+
+        float vertices[] = {
+            -1.f, 1.f, 0.0f,  0.f, 1.f,   // 左上角
+            -1.f, -1.f, 0.0f, 0.f, 0.f,   // 左下角
+            1.f, 1.f, 0.0f,   1.f, 1.f,   // 右上角
+            1.f, -1.f, 0.0f,  1.f, 0.f    // 右下角
+        };
+        Ref<VertexBuffer> combineVB = VertexBuffer::Create(vertices, sizeof(vertices));
+        combineVB->setLayout(BufferLayout{
+            {ShaderDataType::Float3, "a_Position"},
+            {ShaderDataType::Float2, "a_TexCoord"}
+        });
+        combineVA->setVertexBuffer(combineVB);
+        
+        // Create the Index Buffer
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> combineIB = IndexBuffer::Create(pattern, 6);
+        combineVA->setIndexBuffer(combineIB);
+        
+        combineShader->bind();
+        combineShader->setInt("u_Textures", 0);
+        
+        combineVA->unbind();
+        
+        s_data->isCombineInit = false;
+    }
+    
+    fa->bind();
+    {
+        combineVA->bind();
+        combineShader->bind();
+
+        glBindTextureUnit(0, fa->getColorAttachmentRendererID());
+        RenderCommand::DrawElement(DrawTriangles, combineVA, 6, false);
+
+        combineVA->unbind();
+    }
+    fa->unbind();
 }
 
 } // namespace of rl

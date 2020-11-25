@@ -1,14 +1,9 @@
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
 
-using rl::Ref;
-using rl::MakeRef;
-using rl::RigidBody2D;
-using rl::Renderer2D;
-using rl::OrthographicCameraController;
-using rl::Application;
+using namespace rl;
 
-class LightLayer : public rl::Layer
+class LightLayer : public Layer
 {
 public:
     LightLayer();
@@ -21,15 +16,14 @@ public:
     void onEvent(rl::Event &event) override;
 
 private:
-
     float strength;
     float radius;
     glm::vec4 color;
     glm::vec3 lightPos;
 
-    Ref<rl::Texture2D> texture;
+    Ref<Texture2D> texture;
+    Ref<Framebuffer> world, light;
 
     OrthographicCameraController m_cameraController;
 };
-
 
