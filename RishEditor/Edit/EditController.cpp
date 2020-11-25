@@ -241,12 +241,23 @@ void EditController::onImGuiRender()
     m_gizmo.onImGuiRender(isValid,mousePosInWorld);
 
     // Update Group Entity
-    m_currentScene->m_registry.each([&](auto entityID)
-    {
+    m_initGroupSet.clear();
+    m_movingGroupSet.clear();
+    m_currentScene->m_registry.each([&](auto entityID) {
         Entity ent{entityID, m_currentScene.get()};
-        if( ent.hasComponent<GroupComponent>() && !m_gizmo.isMoving(ent))
-            initGroupEntityTransform(ent);
+        if (ent.hasComponent<GroupComponent>()) {
+            m_initGroupSet.insert(ent);
+            if (m_gizmo.isMoving(ent))
+                movingGroupEntity(ent);
+        }
     });
+
+    for(auto ent : m_initGroupSet)
+    {
+        if(!m_movingGroupSet.count(ent))
+            initGroupEntityTransform(ent);
+    }
+
 
     // Camera pane
     if(m_sceneWindowFocused &&
@@ -365,19 +376,47 @@ void EditController::arrangeSelectedGroup(std::set<Entity> &delTarget, Entity en
     }
 }
 
+void EditController::movingGroupEntity(Entity targetEntity)
+{
+    m_movingGroupSet.insert(targetEntity);
+    if(targetEntity.hasComponent<GroupComponent>())
+    {
+        auto &gc = targetEntity.getComponent<GroupComponent>();
+        const auto &groupTransform = targetEntity.getComponent<TransformComponent>();
+
+        for(auto &id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            auto &trans = ent.getComponent<TransformComponent>();
+            sgc.setGroupPosition(groupTransform.translate);
+            sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+            sgc.setGroupRotate(groupTransform.rotate);
+
+            trans.translate = sgc.calculateCurrentPosition();
+            trans.scale = sgc.calculateCurrentScale();
+            trans.rotate = sgc.calculateCurrentRotate();
+
+            movingGroupEntity(ent);
+        }
+    }
+}
+
 void EditController::initGroupEntityTransform(Entity groupEntity)
 {
     auto &gc = groupEntity.getComponent<GroupComponent>();
     BoundingBox2D curBound;
+    float groupZ = 10.f;
     for(const auto& id : gc)
     {
         Entity ent = m_currentScene->getEntityByUUID(id);
         const auto &trans = ent.getComponent<TransformComponent>();
         const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
         curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
+        groupZ = std::min(groupZ,trans.translate.z);
     }
     auto &groupTransform = groupEntity.getComponent<TransformComponent>();
-    groupTransform.translate = curBound.getPositionVec3();
+    groupTransform.translate = glm::vec3(curBound.getPositionVec2(),groupZ-1.f);
     groupTransform.scale = curBound.getScaleVec3();
     groupTransform.rotate = 0.f;
 

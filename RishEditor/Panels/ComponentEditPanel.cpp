@@ -53,28 +53,34 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
         ImGui::SameLine();
         ImGui::HelpMarker("In degrees");
 
-        if(m_targetEntity.hasComponent<GroupComponent>())
-        {
-            auto &gc = m_targetEntity.getComponent<GroupComponent>();
-            const auto &groupTransform = m_targetEntity.getComponent<TransformComponent>();
-
-            for(const auto& id : gc)
-            {
-                Entity ent = m_currentScene->getEntityByUUID(id);
-                auto &sgc = ent.getComponent<SubGroupComponent>();
-                auto &trans = ent.getComponent<TransformComponent>();
-                sgc.setGroupPosition(groupTransform.translate);
-                sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
-                sgc.setGroupRotate(groupTransform.rotate);
-
-                trans.translate = sgc.calculateCurrentPosition();
-                trans.scale = sgc.calculateCurrentScale();
-                trans.rotate = sgc.calculateCurrentRotate();
-            }
-        }
+        updateGroupTransform(m_targetEntity);
 
     }
     EndDrawEditComponent();
+}
+
+void ComponentEditPanel::updateGroupTransform(Entity targetEntity)
+{
+    if(targetEntity.hasComponent<GroupComponent>())
+    {
+        auto &gc = targetEntity.getComponent<GroupComponent>();
+        const auto &groupTransform = targetEntity.getComponent<TransformComponent>();
+
+        for(const auto& id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            auto &trans = ent.getComponent<TransformComponent>();
+            sgc.setGroupPosition(groupTransform.translate);
+            sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+            sgc.setGroupRotate(groupTransform.rotate);
+
+            trans.translate = sgc.calculateCurrentPosition();
+            trans.scale = sgc.calculateCurrentScale();
+            trans.rotate = sgc.calculateCurrentRotate();
+            updateGroupTransform(ent);
+        }
+    }
 }
 
 template<>
@@ -850,8 +856,9 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
-        drawEditComponentWidget<GroupComponent>();
-        drawEditComponentWidget<SubGroupComponent>();
+        // for debug
+//        drawEditComponentWidget<GroupComponent>();
+//        drawEditComponentWidget<SubGroupComponent>();
 
         // Popup
         if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)) ||

@@ -182,7 +182,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
     if(m_isFocusEntity && entity == m_focusEntity)
     {
         ImGui::SetScrollHereX(0);
-        ImGui::SetScrollHereY(0);
+        ImGui::SetScrollHereY(0.25);
         m_isFocusEntity = false;
     }
 

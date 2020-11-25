@@ -48,6 +48,8 @@ public:
         }
         return res;
     }
+
+    void updateGroupTransform(Entity targetEntity);
 private:
     ComponentSelectionPanel m_componentSelectionPanel;
 };

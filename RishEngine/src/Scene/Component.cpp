@@ -35,7 +35,7 @@ glm::vec3 SubGroupComponent::calculateCurrentScale()
 
 float  SubGroupComponent::calculateCurrentRotate()
 {
-    return m_originRotate+m_groupRotate;
+    return fmod(m_originRotate+m_groupRotate,360.f);
 }
 
 } // end of namespace
