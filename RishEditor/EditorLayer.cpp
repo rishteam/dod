@@ -56,6 +56,9 @@ EditorLayer::EditorLayer()
         //
         m_statusBarPanel = MakeRef<StatusBarPanel>();
         m_panelList.push_back(m_statusBarPanel);
+        //
+        m_testAnimationEditor = MakeRef<AnimationEditor>(); // TODO: Remove me
+        // TODO: Make AnimationEditor editor
     }
 
     // Initialize Simple Panels
@@ -392,6 +395,9 @@ void EditorLayer::onImGuiRender()
 	// Simple Panels
     for(auto &panel : m_simplePanelList)
         panel->onImGuiRender();
+
+    // TODO: DEBUG
+    m_testAnimationEditor->onImGuiRender();
 
 	ImGui::EndDockspace();
 

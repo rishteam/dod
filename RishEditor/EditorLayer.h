@@ -11,11 +11,13 @@
 #include "Panels/HelpPanel.h"
 #include "Panels/AboutPanel.h"
 #include "Panels/SettingPanel.h"
+#include "Panels/Animation/AnimationEditor.h"
 
 #include "Edit/EditorGrid.h"
 #include "Edit/EditController.h"
 
 #include <Rish/ImGui/MenuAction.h>
+#include <Rish/ImGui/AttributeWidget.h> // TODO: Remove
 
 namespace rl {
 
@@ -101,6 +103,7 @@ private:
     Ref<SceneHierarchyPanel> m_sceneHierarchyPanel;
     Ref<ComponentEditPanel> m_componentEditPanel;
     Ref<StatusBarPanel> m_statusBarPanel;
+    Ref<AnimationEditor> m_testAnimationEditor;
 
     void switchCurrentScene(const Ref<Scene> &scene); ///< Switch the current scene and register all systems and register panels
     void setContextToPanels(const Ref<Scene> &scene); ///< Set main Panels with its context

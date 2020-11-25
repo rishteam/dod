@@ -74,8 +74,6 @@ add_library(RishEngine
     src/Platform/SFMLImage.cpp
 
     # Animation
-    src/Animation/Animation.cpp
-    src/Animation/Loader.cpp
 
     # utilities
     src/Core/ResManager.cpp
@@ -89,6 +87,7 @@ add_library(RishEngine
 
     src/ImGui/ImGui.cpp
     src/ImGui/MenuAction.cpp
+    src/ImGui/AttributeWidget.cpp
 
     src/Utils/uuid.cpp
     src/Utils/String.cpp
@@ -144,7 +143,9 @@ add_library(RishEngine
     src/Scene/ScriptableEntity.cpp
     src/Scene/System/NativeScriptSystem.cpp
     src/Scene/Component.cpp
+    src/Scene/SystemManager.cpp
 
+    # Math
     src/Math/AABB.cpp
     src/Math/BoundingBox.cpp
     src/Math/Random.cpp
@@ -152,9 +153,11 @@ add_library(RishEngine
     src/Scene/System/SpriteRenderSystem.cpp
 
     src/Animation/Animation2DSystem.cpp
+    src/Animation/Component.cpp
+    src/Animation/Animation.cpp
 
     ${RL_SCRIPT_FILES}
-        src/Animation/Component.cpp include/Rish/Scene/SystemManager.h src/Scene/SystemManager.cpp)
+        src/ImGui/CloseableWindow.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

@@ -32,8 +32,7 @@
  * @defgroup animation Animation Module
  * @brief Animation
  */
-#include <Rish/Animation/Animation.h>
-#include <Rish/Animation/Loader.h>
+
 
 // Layer
 #include <Rish/Layer/Layer.h>
