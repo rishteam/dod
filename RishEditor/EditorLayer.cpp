@@ -729,7 +729,7 @@ void EditorLayer::onShortcutActionUpdate()
     m_sceneAction.getAction("Delete")->setEnabled(m_editController->isSelected());
     m_sceneAction.getAction("Cancel")->setEnabled(m_editController->isSelected());
 
-    if(m_isSceneWindowFocus || m_isMenuBarFocus)
+    if(m_isSceneWindowFocus || m_isMenuBarFocus || m_sceneHierarchyPanel->isWindowFocus())
     {
         if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
         {

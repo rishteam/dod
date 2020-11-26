@@ -18,6 +18,7 @@ public:
 
     void onImGuiRender() override;
     void setFocus(Entity entity);
+    bool isWindowFocus() { return m_isWindowFocus; };
 
     void createEntityToTarget();
     void deleteTargetEntities();
@@ -35,6 +36,7 @@ private:
     void drawHideEntityNode(Entity entity);
 
     std::set <Entity> m_showEntity;
+    std::vector <Entity> m_entityOrder;
     void buildEntitySet(Entity entity);
 
     std::set <Entity> m_delEntity{};
@@ -49,6 +51,7 @@ private:
     Entity m_focusEntity;
 
     const char* m_panelTitle = ICON_FA_LIST " Hierarchy";
+    bool m_isWindowFocus = false;
 
 };
 

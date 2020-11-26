@@ -15,6 +15,7 @@ void SceneHierarchyPanel::onImGuiRender()
     ImGui::PopStyleVar();
     ImGui::Text("Entity List");
 
+
     // Search bar
     static std::string filterText;
     ImGui::SetNextItemWidth(-1.f);
@@ -23,113 +24,114 @@ void SceneHierarchyPanel::onImGuiRender()
     // Entity List Window
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar|ImGuiWindowFlags_AlwaysHorizontalScrollbar|ImGuiWindowFlags_AlwaysVerticalScrollbar;
     ImGui::BeginChild("EntityListWindow", ImVec2(0, 0), true, window_flags);
-
-    // Reset
-    resetDrawEntityState();
-    // Collects all sub entities
-    auto view = m_currentScene->m_registry.view<GroupComponent>();
-    for(auto ent : view)
     {
-        Entity entity{ent, m_currentScene.get()};
-        auto &gc = entity.getComponent<GroupComponent>();
-        //
-        m_groupEntityUUID.insert(entity.getUUID());
-        for(const auto &id : gc)
-            m_subEntityUUID.insert(id);
-    }
-
-    // Draw entity hierarchy
-    m_showEntity.clear();
-    m_currentScene->m_registry.each([&](auto entityID) {
-        Entity entity(entityID, m_currentScene.get());
-        if((filterText.empty() || String::isSubStringIgnoreCase(entity.getName(), filterText)))
+        m_isWindowFocus = ImGui::IsWindowFocused();
+        // Reset
+        resetDrawEntityState();
+        // Collects all sub entities
+        auto view = m_currentScene->m_registry.view<GroupComponent>();
+        for(auto ent : view)
         {
-            if( !m_subEntityUUID.count(entity.getUUID()) )
-                buildEntitySet(entity);
+            Entity entity{ent, m_currentScene.get()};
+            auto &gc = entity.getComponent<GroupComponent>();
+            //
+            m_groupEntityUUID.insert(entity.getUUID());
+            for(const auto &id : gc)
+                m_subEntityUUID.insert(id);
         }
-    });
 
-    if(!m_isPreFocus && isSelected())
-    {
-        auto entSet = getTargets();
-        setFocus(*entSet.begin());
-        m_isPreFocus = false;
-    }
-    m_isPreFocus = isSelected();
-
-    for(auto e : m_showEntity)
-    {
-        drawEntityNode(e);
-    }
-
-
-    // Reset selected when click empty space in the window
-    if(isSelected() &&
-       /*ImGui::IsWindowFocused() &&*/ ImGui::IsWindowHovered() &&
-       ImGui::IsAnyItemActive())
-    {
-        resetSelected();
-    }
-
-    // Right click menu
-    if (ImGui::BeginPopupContextWindow())
-    {
-        if(!isSelected())
-        {
-            if (ImGui::MenuItem("Create Entity"))
+        // Draw entity hierarchy
+        m_showEntity.clear();
+        m_currentScene->m_registry.each([&](auto entityID) {
+            Entity entity(entityID, m_currentScene.get());
+            if((filterText.empty() || String::isSubStringIgnoreCase(entity.getName(), filterText)))
             {
-                createEntityToTarget();
+                if( !m_subEntityUUID.count(entity.getUUID()) )
+                    buildEntitySet(entity);
             }
+        });
+
+        if(!m_isPreFocus && isSelected())
+        {
+            auto entSet = getTargets();
+            setFocus(*entSet.begin());
+            m_isPreFocus = false;
         }
-        if(isSelected())
-        {
-            auto entSet = getSelectedEntities();
-            bool isAllGroupEntity = true;
-            bool isAllSubGroupEntity = true;
-            for(auto &ent : entSet)
-            {
-                if(!ent.hasComponent<GroupComponent>())
-                    isAllGroupEntity = false;
-                if(!ent.hasComponent<SubGroupComponent>())
-                    isAllSubGroupEntity = false;
-            }
+        m_isPreFocus = isSelected();
 
-            if (ImGui::MenuItem("Delete Entity"))
+        m_entityOrder.clear();
+        for(auto e : m_showEntity)
+        {
+            drawEntityNode(e);
+        }
+
+        // Reset selected when click empty space in the window
+        if(isSelected() &&
+           /*ImGui::IsWindowFocused() &&*/ ImGui::IsWindowHovered() &&
+           ImGui::IsAnyItemActive())
+        {
+            resetSelected();
+        }
+
+        // Right click menu
+        if (ImGui::BeginPopupContextWindow())
+        {
+            if(!isSelected())
             {
-                deleteTargetEntities();
-            }
-            if (ImGui::MenuItem("Duplicate Entity"))
-            {
-                duplicateTargetEntities();
-            }
-            if (ImGui::MenuItem("Group Entity"))
-            {
-                groupTargetEntities();
-            }
-            if ( isAllGroupEntity )
-            {
-                if (ImGui::MenuItem("Remove Group"))
+                if (ImGui::MenuItem("Create Entity"))
                 {
-                    removeGroupEntity();
+                    createEntityToTarget();
                 }
             }
-            if ( isAllSubGroupEntity )
+            if(isSelected())
             {
-                if (ImGui::MenuItem("Move out Group"))
+                auto entSet = getSelectedEntities();
+                bool isAllGroupEntity = true;
+                bool isAllSubGroupEntity = true;
+                for(auto &ent : entSet)
                 {
-                    moveOutGroupEntity();
+                    if(!ent.hasComponent<GroupComponent>())
+                        isAllGroupEntity = false;
+                    if(!ent.hasComponent<SubGroupComponent>())
+                        isAllSubGroupEntity = false;
                 }
-            }
-            if (ImGui::BeginMenu("Move into Group"))
-            {
-                for(auto &id : m_groupEntityUUID)
+
+                if (ImGui::MenuItem("Delete Entity"))
                 {
-                    Entity groupEntity = m_currentScene->getEntityByUUID(id);
-                    bool isLegal = true;
-                    for(auto &ent : entSet)
+                    deleteTargetEntities();
+                }
+                if (ImGui::MenuItem("Duplicate Entity"))
+                {
+                    duplicateTargetEntities();
+                }
+                if (ImGui::MenuItem("Group Entity"))
+                {
+                    groupTargetEntities();
+                }
+                if ( isAllGroupEntity )
+                {
+                    if (ImGui::MenuItem("Remove Group"))
                     {
-                        // check is entity already under this group
-                        if(isCircleGroup(ent, groupEntity)) {
+                        removeGroupEntity();
+                    }
+                }
+                if ( isAllSubGroupEntity )
+                {
+                    if (ImGui::MenuItem("Move out Group"))
+                    {
+                        moveOutGroupEntity();
+                    }
+                }
+                if (ImGui::BeginMenu("Move into Group"))
+                {
+                    for(auto &id : m_groupEntityUUID)
+                    {
+                        Entity groupEntity = m_currentScene->getEntityByUUID(id);
+                        bool isLegal = true;
+                        for(auto &ent : entSet)
+                        {
+                            // check is entity already under this group
+                            if(isCircleGroup(ent, groupEntity)) {
                                 isLegal = false;
                             }
                             if(ent.hasComponent<SubGroupComponent>())
@@ -137,26 +139,27 @@ void SceneHierarchyPanel::onImGuiRender()
                                 auto &sgc = ent.getComponent<SubGroupComponent>();
                                 if(sgc.getGroupEntityID() == groupEntity.getUUID())
                                     isLegal = false;
+                            }
                         }
-                    }
 
-                    if( !isSelected(groupEntity) && isLegal )
-                    {
-                        if( ImGui::MenuItem(groupEntity.getName().c_str()) )
+                        if( !isSelected(groupEntity) && isLegal )
                         {
-                            moveIntoGroupEntity(groupEntity);
+                            if( ImGui::MenuItem(groupEntity.getName().c_str()) )
+                            {
+                                moveIntoGroupEntity(groupEntity);
+                            }
                         }
                     }
+                    ImGui::EndMenu();
                 }
-                ImGui::EndMenu();
+
+                if (ImGui::MenuItem("Hide Entity"))
+                {
+                }
             }
 
-            if (ImGui::MenuItem("Hide Entity"))
-            {
-            }
+            ImGui::EndPopup();
         }
-
-        ImGui::EndPopup();
     }
     ImGui::EndChild();
     ImGui::End();
@@ -169,6 +172,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
     // Skip the entity when its drawn in sub entities
     if(!isSub && m_subEntityUUID.count(entUUID))
         return;
+    m_entityOrder.push_back(entity);
 
     auto &tag = entity.getComponent<TagComponent>().tag;
 
@@ -202,7 +206,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
         {
             bool isPassSelect = false;
             bool isPassClick  = false;
-            for(auto ent : m_entitySet)
+            for(auto ent : m_entityOrder)
             {
                 if( isSelected(ent) && ent != entity )
                     isPassSelect = true;
