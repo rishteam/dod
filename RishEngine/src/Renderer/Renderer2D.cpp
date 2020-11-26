@@ -1467,6 +1467,7 @@ void rl::Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb
         
         combineShader->bind();
         combineShader->setInt("u_Textures", 0);
+        combineShader->setInt("u_Textures2", 1);
         
         combineVA->unbind();
         
@@ -1479,6 +1480,7 @@ void rl::Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb
         combineShader->bind();
 
         glBindTextureUnit(0, fa->getColorAttachmentRendererID());
+        glBindTextureUnit(1, fb->getColorAttachmentRendererID());
         RenderCommand::DrawElement(DrawTriangles, combineVA, 6, false);
 
         combineVA->unbind();

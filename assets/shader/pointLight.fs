@@ -23,7 +23,7 @@ void main()
 
     float attenuation = 1.0 / (v_Constant + v_Linear * distance + v_Quadratic * (distance * distance));
 
-    vec4 color = vec4(attenuation, attenuation, attenuation, pow(attenuation, 3)) * v_Color;
+    vec4 color = vec4(attenuation, attenuation, attenuation, pow(attenuation, 1)) * v_Color;
 
 //    vec4 color = {1, 1, 1, 1};
 

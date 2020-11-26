@@ -348,8 +348,8 @@ void EditorLayer::onImGuiRender()
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
         // TODO : For testing
-//        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
-        uint32_t  textureID = m_testFramebuffer->getColorAttachmentRendererID();
+        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
+//        uint32_t  textureID = m_testFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();
