@@ -5,7 +5,6 @@
 #include <Rish/Scene/Entity.h>
 
 #include <entt/entt.hpp>
-#include <utility>
 
 namespace rl {
 

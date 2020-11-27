@@ -13,11 +13,14 @@
 
 namespace rl {
 
+// fwd
+class Animation2DComponent;
+
 /**
  * @brief Animation Editor class
  * @details Editor for editing Animation
  */
-class AnimationEditor : public rl::ImGuiWindow
+class AnimationEditor : public ImGuiWindow
 {
 public:
     AnimationEditor();
@@ -25,8 +28,13 @@ public:
 
     void onImGuiUpdate() override;
 
+    void setTargetComponent(Animation2DComponent *target);
+    void resetTargetComponent();
 private:
+    void loadAnimation();
+
     ImGui::AttributeWidget m_attribWidget;
+    Animation2DComponent *m_editTarget = nullptr;
 };
 
 } // end of namespace rl

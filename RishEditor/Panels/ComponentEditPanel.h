@@ -9,12 +9,16 @@
 #include "Panels/Common/SceneTargetPanel.h"
 
 #include "ComponentSelectionPanel.h"
+#include "Panels/Animation/AnimationEditor.h"
 
 #include <Rish/ImGui/ImGui.h>
 #include <Rish/Scene/ScriptableManager.h>
 
 
 namespace rl {
+
+// fwd
+class AnimationEditor;
 
 class RL_API ComponentEditPanel : public SceneTargetPanel
 {
@@ -53,7 +57,8 @@ public:
 
     void updateGroupTransform(Entity targetEntity);
 private:
-    ComponentSelectionPanel m_componentSelectionPanel;
+    ComponentSelectionPanel m_componentSelectionPanel; ///< Component selection
+    AnimationEditor m_animationEditor; ///< Editor for Animation2DCompoennt
 };
 
 } // end of namespace rl

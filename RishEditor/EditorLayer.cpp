@@ -21,6 +21,9 @@
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 
+// Components
+#include <Rish/Animation/Component.h>
+
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Debug/ImGuiLogWindow.h>
 
@@ -56,9 +59,6 @@ EditorLayer::EditorLayer()
         //
         m_statusBarPanel = MakeRef<StatusBarPanel>();
         m_panelList.push_back(m_statusBarPanel);
-        //
-        m_testAnimationEditor = MakeRef<AnimationEditor>(); // TODO: Remove me
-        // TODO: Make AnimationEditor editor
     }
 
     // Initialize Simple Panels
@@ -81,9 +81,9 @@ EditorLayer::EditorLayer()
 
     // Start auto save thread
     // TODO: Make RishEngine handle thread management
-    m_autoSaveRun = true;
-    std::thread autoSaveThread(&EditorLayer::autoSave, this);
-    autoSaveThread.detach();
+//    m_autoSaveRun = true;
+//    std::thread autoSaveThread(&EditorLayer::autoSave, this);
+//    autoSaveThread.detach();
 
     // Actions
     // TODO: Make actions into callback function?
@@ -123,6 +123,9 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
+
+    auto ent = m_currentScene->createEntity("AniTestEnt");
+    auto &ani = ent.addComponent<Animation2DComponent>();
 
 }
 
@@ -385,9 +388,6 @@ void EditorLayer::onImGuiRender()
 	// Simple Panels
     for(auto &panel : m_simplePanelList)
         panel->onImGuiRender();
-
-    // TODO: DEBUG
-    m_testAnimationEditor->onImGuiRender();
 
 	ImGui::EndDockspace();
 

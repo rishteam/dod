@@ -4,6 +4,8 @@
 //
 #include <Rish/Scene/Component.h>
 #include <Rish/Physics/Component.h>
+#include <Rish/Animation/Component.h>
+//
 #include <Rish/Physics/PhysicsWorld.h>
 
 namespace rl

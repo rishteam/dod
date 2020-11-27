@@ -103,7 +103,6 @@ private:
     Ref<SceneHierarchyPanel> m_sceneHierarchyPanel;
     Ref<ComponentEditPanel> m_componentEditPanel;
     Ref<StatusBarPanel> m_statusBarPanel;
-    Ref<AnimationEditor> m_testAnimationEditor;
 
     void switchCurrentScene(const Ref<Scene> &scene); ///< Switch the current scene and register all systems and register panels
     void setContextToPanels(const Ref<Scene> &scene); ///< Set main Panels with its context

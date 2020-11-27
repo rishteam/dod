@@ -17,6 +17,7 @@ void AttributeWidget::onImGuiRender()
 
 void AttributeWidget::addAttributeField(const char *label, AttributeWidget::AfterInputAttrFunc func)
 {
+    m_labelList.push_back(label);
     m_attributeFieldsMap[label] = std::move(func);
 }
 
@@ -29,8 +30,11 @@ void AttributeWidget::updateAttributeWidgets()
     ImGui::Separator();
 
     // attributes
-    for(auto &&[label, func] : m_attributeFieldsMap)
+    for(auto &label : m_labelList)
     {
+        RL_CORE_ASSERT(m_attributeFieldsMap.count(label), "Label not found in the attribute fields map");
+        //
+        auto func = m_attributeFieldsMap[label];
         ImGui::PushID(label);
         ImGui::AlignTextToFramePadding();
         // left

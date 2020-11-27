@@ -6,7 +6,11 @@ namespace rl {
 
 ImGuiWindow::ImGuiWindow()
 {
+}
 
+ImGuiWindow::ImGuiWindow(const char *title)
+{
+    setTitle(title);
 }
 
 ImGuiWindow::~ImGuiWindow()
@@ -19,7 +23,7 @@ void ImGuiWindow::onImGuiRender()
     if(!m_showEditor)
         return;
 
-    if(ImGui::Begin("Animation RishEditor", &m_showEditor, ImGuiWindowFlags_NoCollapse))
+    if(ImGui::Begin(m_title, &m_showEditor, ImGuiWindowFlags_NoCollapse))
     {
         onImGuiUpdate();
         ImGui::End();

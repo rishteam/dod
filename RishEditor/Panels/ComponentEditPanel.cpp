@@ -1,5 +1,6 @@
 #include "ComponentEditPanel.h"
 
+//
 #include <Rish/Utils/FileDialog.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
@@ -252,7 +253,6 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
     }
 }
 
-// TODO Particle Component
 template<>
 void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 {
@@ -826,6 +826,23 @@ void ComponentEditPanel::drawEditComponentWidget<SubGroupComponent>()
     EndDrawEditComponent();
 }
 
+template<>
+void ComponentEditPanel::drawEditComponentWidget<Animation2DComponent>()
+{
+    BeginDrawEditComponent(Animation2DComponent);
+    {
+        DrawRightClickMenu(Animation2DComponent, false);
+        //
+        if(ImGui::Button("Edit"))
+        {
+            auto &ani = m_targetEntity.getComponent<Animation2DComponent>();
+            m_animationEditor.setTargetComponent(&ani);
+            m_animationEditor.showWindow();
+        }
+    }
+    EndDrawEditComponent();
+}
+
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
@@ -847,6 +864,7 @@ void ComponentEditPanel::onImGuiRender()
     ImGui::BeginChild("EntityComponentEdit");
     {
         // TODO: Make this into dispatcher
+        // TODO: Make these into moveable panels;
         drawEditComponentWidget<TagComponent>();
         drawEditComponentWidget<TransformComponent>();
         drawEditComponentWidget<SpriteRenderComponent>();
@@ -856,6 +874,8 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
+        drawEditComponentWidget<Animation2DComponent>();
+
         // for debug
 //        drawEditComponentWidget<GroupComponent>();
 //        drawEditComponentWidget<SubGroupComponent>();
@@ -876,6 +896,8 @@ void ComponentEditPanel::onImGuiRender()
     }
     ImGui::EndChild();
     ImGui::End();
+
+    m_animationEditor.onImGuiRender();
 }
 
 } // end of namespace rl

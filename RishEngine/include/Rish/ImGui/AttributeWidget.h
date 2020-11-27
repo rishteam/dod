@@ -18,6 +18,7 @@ public:
     void addAttributeField(const char *label, AfterInputAttrFunc func = nullptr);
 protected:
     std::unordered_map<const char *, AfterInputAttrFunc> m_attributeFieldsMap{};
+    std::vector<const char*> m_labelList{};
 
     void updateAttributeWidgets();
 

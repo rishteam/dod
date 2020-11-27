@@ -24,6 +24,7 @@ struct Animation2DComponent
 
     Ref<Texture2D> getCurrentFrame();
     void playNextFrame();
+    size_t getFrameCount() const { return textureList.size(); }
 private:
     //
     friend class cereal::access;
