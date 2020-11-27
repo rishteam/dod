@@ -29,26 +29,43 @@ void LightSystem::onRender()
     auto ambientView = registry.view<TransformComponent, AmbientLightComponent>();
 
     // Draw Ambient Light
+//    {
+////        Renderer2D::BeginScene(mainCamera, mainCameraTransform);
+//        RenderCommand::SetBlendMode(true);
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//
+//        for (auto ambient : ambientView) {
+//            auto &transform = registry.get<TransformComponent>(ambient);
+//            auto &ambientLight = registry.get<AmbientLightComponent>(ambient);
+//
+//            Renderer2D::DrawQuad(transform.translate, transform.scale, ambientLight.colorMask);
+//        }
+////        Renderer2D::EndScene();
+//    }
+
     {
         Renderer2D::BeginScene(mainCamera, mainCameraTransform);
-        RenderCommand::SetBlendMode(true);
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        RL_CORE_TRACE("{} {}", mainCamera.getOrthoSize(), mainCamera.getAspect());
+        for(auto entity : view)
+        {
+            auto &transform = registry.get<TransformComponent>(entity);
+            auto &light = registry.get<LightComponent>(entity);
 
-        for (auto ambient : ambientView) {
-            auto &transform = registry.get<TransformComponent>(ambient);
-            auto &ambientLight = registry.get<AmbientLightComponent>(ambient);
-
-            Renderer2D::DrawQuad(transform.translate, transform.scale, ambientLight.colorMask);
+            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, transform.translate,
+                                       {10, 10}, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
         }
         Renderer2D::EndScene();
     }
 
-    // Draw Shadow And Light
+
+
+//     Draw Shadow And Light
 //    {
 //        Renderer2D::BeginScene(mainCamera, mainCameraTransform);
 //        RenderCommand::SetStencilTest(true);
 //
-//        for (auto entity : view) {
+//        for (auto entity : view)
+//        {
 //            auto &transform = registry.get<TransformComponent>(entity);
 //            auto &light = registry.get<LightComponent>(entity);
 //
@@ -62,7 +79,8 @@ void LightSystem::onRender()
 //                auto &rigidTransform = registry.get<TransformComponent>(rigidEntity);
 //                auto &rigidBody = registry.get<RigidBody2DComponent>(rigidEntity);
 //
-//                auto rotate = [&](glm::vec3 center, glm::vec3 pt, float angle) -> glm::vec3 {
+//                auto rotate = [&](glm::vec3 center, glm::vec3 pt, float angle) -> glm::vec3
+//                {
 //                    auto tmp = pt - center;
 //                    glm::mat4 trans{1.f};
 //                    trans = glm::rotate(trans, glm::radians(angle), glm::vec3(0, 0, 1.f));
@@ -92,7 +110,8 @@ void LightSystem::onRender()
 //                point = rotate(rigidTransform.translate, point, rigidTransform.rotate);
 //                vertices.push_back(point);
 //
-//                auto inRange = [&](std::vector<glm::vec3> vertices) -> bool {
+//                auto inRange = [&](std::vector<glm::vec3> vertices) -> bool
+//                {
 //                    for (int i = 0; i < vertices.size(); i++) {
 //                        if (((light.viewPortPos.x - light.viewPortSize.x) <= vertices[i].x &&
 //                             vertices[i].x <= (light.viewPortPos.x + light.viewPortSize.x)) &&
@@ -104,7 +123,8 @@ void LightSystem::onRender()
 //                    return false;
 //                };
 //
-//                if (inRange(vertices)) {
+//                if (inRange(vertices))
+//                {
 //                    for (int i = 0; i < vertices.size(); i++) {
 //                        glm::vec3 currentVertex = vertices[i];
 //                        glm::vec3 nextVertex = vertices[(i + 1) % vertices.size()];
@@ -127,17 +147,18 @@ void LightSystem::onRender()
 //                                        RenderCommand::StencilOpFactor::Keep);
 //            RenderCommand::SetColorMask(true, true, true, true);
 //            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
-//                                       light.viewPortSize, s_viewport, light.color);
+//                                       light.viewPortSize, s_viewport, mainCamera.getAspect(), mainCamera.getOrthoSize(),light.color);
 //            RenderCommand::Clear(RenderCommand::ClearBufferTarget::StencilBuffer);
 //            RenderCommand::SetBlendMode(false);
 //        }
 //        Renderer2D::EndScene();
 //    }
-//    RenderCommand::SetBlendMode(true);
+    RenderCommand::SetBlendMode(true);
 }
 
 void LightSystem::onViewportResize(const glm::vec2 &viewport)
 {
+    RL_CORE_TRACE("{} {}", viewport.x, viewport.y);
     s_viewport = viewport;
 }
 

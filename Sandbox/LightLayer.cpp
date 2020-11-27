@@ -8,6 +8,7 @@ LightLayer::LightLayer()
     radius = 1000;
     strength = 20;
     color = glm::vec4(1, 1, 1, 1);
+    maskColor = glm::vec4(1, 1, 1, 1);
     lightPos = glm::vec3(0, 0, 0);
     texture = MakeRef<rl::Texture2D>("assets/texture/gardevoir.jpg", false);
 
@@ -40,6 +41,7 @@ void LightLayer::onUpdate(rl::Time dt)
         RenderCommand::SetClearColor(glm::vec4(0, .0, .0, 1));
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         Renderer2D::BeginScene(m_cameraController.getCamera(), false);
+//        Renderer2D::DrawQuad({0, 0}, {10, 10}, glm::vec4(1, 1, 1, 1));
         Renderer2D::DrawQuad({0, 0}, {2, 2}, texture);
         Renderer2D::EndScene();
     }
@@ -47,11 +49,12 @@ void LightLayer::onUpdate(rl::Time dt)
 
     {
         light->bind();
-        RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 0));
+        RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 1));
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         Renderer2D::BeginScene(m_cameraController.getCamera(), false);
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-        Renderer2D::DrawQuad({0, 0}, {m_cameraController.getAspect() * m_cameraController.getZoom() * 2, m_cameraController.getZoom() * 2}, {0, 0, 0, 1});
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        Renderer2D::DrawQuad(lightPos, {m_cameraController.getAspect() * m_cameraController.getZoom() * 2, m_cameraController.getZoom() * 2}, maskColor);
+//        Renderer2D::DrawQuad({0, 0}, {2, 2}, maskColor);
         Renderer2D::DrawPointLight(lightPos, radius, strength, lightPos,
                                    viewPortSize,
                                    {Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()},
@@ -71,6 +74,7 @@ void LightLayer::onImGuiRender()
 {
     ImGui::Begin("Attribute");
     ImGui::ColorEdit4("Color", glm::value_ptr(color), ImGuiColorEditFlags_Float);
+    ImGui::ColorEdit4("maskColor", glm::value_ptr(maskColor), ImGuiColorEditFlags_Float);
     ImGui::DragFloat("Radius", &radius, 1, 0, FLT_MAX, "%.2f");
     ImGui::DragFloat("Strength", &strength, 1, 0, FLT_MAX, "%.2f");
     ImGui::DragFloat("PosX", &lightPos.x, 0.01);

@@ -91,6 +91,7 @@ private:
 	////////////////////////////////////
 
     //
+    Ref<Framebuffer> m_sceneLightFramebuffer;
 	Ref<Framebuffer> m_sceneFramebuffer;
     Ref<Scene> m_currentScene;        ///< Current Scene
     Ref<Scene> m_editorScene;         ///< Editor Scene

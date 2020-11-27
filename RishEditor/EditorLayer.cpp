@@ -98,6 +98,7 @@ void EditorLayer::onAttach()
     m_editorFramebuffer = Framebuffer::Create(fbspec);
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
     m_editorLightFramebuffer = Framebuffer::Create(fbspec);
+    m_sceneLightFramebuffer = Framebuffer::Create(fbspec);
 
     ////////////////////////
     // TODO : For testing
@@ -162,14 +163,22 @@ void EditorLayer::onUpdate(Time dt)
     {
 
         // TODO : Light FrameBuffer Resize
-        m_testFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
-                                  (uint32_t) m_sceneViewportPanelSize.y);
         m_editorLightFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
                                          (uint32_t) m_sceneViewportPanelSize.y);
         m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
                                     (uint32_t) m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
+
+    auto sceneFramebufferSpec = m_sceneFramebuffer->getSpecification();
+    auto sceneFramebufferSize = glm::vec2{sceneFramebufferSpec.width, sceneFramebufferSpec.height};
+
+    if(m_gameViewportPanelSize != sceneFramebufferSize && m_gameViewportPanelSize.x > 0.f && m_gameViewportPanelSize.y > 0.f)
+    {
+        m_sceneFramebuffer->resize((uint32_t) m_gameViewportPanelSize.x , (uint32_t) m_gameViewportPanelSize.y);
+        m_sceneLightFramebuffer->resize((uint32_t) m_gameViewportPanelSize.x , (uint32_t) m_gameViewportPanelSize.y);
+    }
+
 
     // TODO: Rendering Queue
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,23 +188,6 @@ void EditorLayer::onUpdate(Time dt)
 
 
     // TODO : ADD Light FrameBuffer
-
-    m_editorLightFramebuffer->bind();
-    {
-        // Draw Light
-        {
-            Renderer2D::BeginScene(cameraController->getCamera(), false);
-            LightSystem::onViewportResize(m_sceneViewportPanelSize);
-            LightSystem::onRender();
-            Renderer2D::EndScene();
-            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-        }
-    }
-    m_editorLightFramebuffer->unbind();
-
-    m_lightTexture->setTextureID(m_editorLightFramebuffer->getColorAttachmentRendererID());
-    m_lightTexture->setSize((uint32_t) m_sceneViewportPanelSize.x,
-                            (uint32_t) m_sceneViewportPanelSize.y);
 
     m_editorFramebuffer->bind();
     {
@@ -215,40 +207,39 @@ void EditorLayer::onUpdate(Time dt)
                                         RenderCommand::BlendFactor::OneMinusSrcAlpha);
         }
 
-        // TODO : DrawQuad(LightTexture)
-//        Renderer2D::BeginScene(cameraController->getCamera(), false);
-//        Renderer2D::DrawQuad({0, 0}, {10, 10}, m_lightTexture);
-//        Renderer2D::EndScene();
     }
     m_editorFramebuffer->unbind();
-
-
-    m_editorTexture->setTextureID(m_editorFramebuffer->getColorAttachmentRendererID());
-    m_editorTexture->setSize((uint32_t) m_sceneViewportPanelSize.x,
-                             (uint32_t) m_sceneViewportPanelSize.y);
-
-    m_testFramebuffer->bind();
-    {
-        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
-        Renderer2D::BeginScene(cameraController->getCamera(), false);
-        Renderer2D::DrawQuad({0, 0}, {100, 100}, m_editorTexture);
-        Renderer2D::EndScene();
-    }
-    m_testFramebuffer->unbind();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Scene
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     // TODO : Check if there is a need for resizing m_sceneFramebuffer
+    m_sceneLightFramebuffer->bind();
+    {
+        // Draw Light
+        {
+            RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 1));
+            RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+            LightSystem::onViewportResize(m_gameViewportPanelSize);
+            LightSystem::onRender();
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        }
+    }
+    m_sceneLightFramebuffer->unbind();
+
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
-        LightSystem::onViewportResize(m_gameViewportPanelSize);
         m_currentScene->onUpdate(dt);
+    }
+    m_sceneFramebuffer->unbind();
+
+    m_sceneFramebuffer->bind();
+    {
+        Renderer2D::CombineFramebuffer(m_sceneFramebuffer, m_sceneLightFramebuffer);
     }
     m_sceneFramebuffer->unbind();
 }
@@ -320,7 +311,6 @@ void EditorLayer::onImGuiRender()
         m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
 
         ImVec2 windowCenter = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2{size.x / 2.f, fullH / 2.f};
-        RL_CORE_TRACE("windowCenter {} {}", windowCenter.x, windowCenter.y);
         m_gameViewportPanelSize = glm::vec2{size.x, size.y};
         // Set *in editor* mouse pos for Input module
         auto pos = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
@@ -349,7 +339,6 @@ void EditorLayer::onImGuiRender()
         // show scene
         // TODO : For testing
         uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
-//        uint32_t  textureID = m_testFramebuffer->getColorAttachmentRendererID();
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();

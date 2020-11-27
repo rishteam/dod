@@ -122,7 +122,6 @@ void Scene::onEditorInit()
 
 void Scene::onUpdate(Time dt)
 {
-    LightSystem::OnUpdate(dt);
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
@@ -134,13 +133,13 @@ void Scene::onUpdate(Time dt)
         return;
 
     // TODO: Let systems to decide how many draw calls i.e. move the BeginScene and EndScene inside onRender()
-    // Draw Light
-    {
-
-        LightSystem::onRender();
-
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-    }
+//    // Draw Light
+//    {
+//
+//        LightSystem::onRender();
+//
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//    }
     // Draw SpriteRenderComponent
     {
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);

@@ -19,7 +19,7 @@ void main()
     ndc = vec3(ndc.x * zoom.x, ndc.y * zoom.y, ndc.z);
     vec2 light = vec2(v_LightPosition.x * zoom.x, v_LightPosition.y * zoom.y);
 
-    float distance = length(light - ndc.xy) * 50;
+    float distance = length(light - ndc.xy) * 25;
 
     float attenuation = 1.0 / (v_Constant + v_Linear * distance + v_Quadratic * (distance * distance));
 

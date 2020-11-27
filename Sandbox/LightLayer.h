@@ -20,6 +20,7 @@ private:
     float radius;
     glm::vec4 color;
     glm::vec3 lightPos;
+    glm::vec4 maskColor;
 
     Ref<Texture2D> texture;
     Ref<Framebuffer> world, light;
