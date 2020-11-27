@@ -1,5 +1,7 @@
 #include <Rish/rlpch.h>
 //
+#include <Rish/Core/Time.h>
+//
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/RendererCommand.h>
@@ -9,25 +11,27 @@
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
+#include <Rish/Scene/SceneCamera.h>
 // Systems
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 #include <Rish/Collider/ColliderSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
+#include <Rish/Animation/Animation2DSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
 //
 #include <Rish/ImGui/ImGui.h>
 //
-#include <re2/re2.h>
 
 namespace rl {
 
 int Scene::entityNumber = 0;
 
 Scene::Scene()
+    : physicsWorld(Vec2(0.0f, -9.8f))
 {
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
 
@@ -218,7 +222,11 @@ void Scene::onUpdate(Time dt)
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
     ColliderSystem::OnUpdate(dt);
+    Animation2DSystem::OnUpdate(dt);
+}
 
+void Scene::onRender()
+{
     // Find a primary camera
     // TODO: implement multiple camera
     if(!findPrimaryCamera())
@@ -228,6 +236,7 @@ void Scene::onUpdate(Time dt)
     {
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
         SpriteRenderSystem::onRender();
+        Animation2DSystem::OnRender();
         Renderer2D::EndScene();
     }
 
@@ -301,16 +310,10 @@ void Scene::onImGuiRender()
     }
 
     if(m_debugScene)
-        DrawDebugSceneWindow(m_registry, this);
-
-    ImGui::Begin("Debug");
-    for(auto &&[k, v] : m_nameManager.m_entNameToNumMap)
     {
-        ImGui::PushID(k.c_str());
-        ImGui::Text("%s => %d", k.c_str(), v);
-        ImGui::PopID();
+        DrawDebugSceneWindow(m_registry, this);
     }
-    ImGui::End();
+
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)

@@ -1,6 +1,8 @@
 #include <Rish/Renderer/Renderer.h>
 #include <Rish/Renderer/Renderer2D.h>
 
+#include <Rish/Renderer/VertexArray.h>
+
 namespace rl {
 
 struct SceneData

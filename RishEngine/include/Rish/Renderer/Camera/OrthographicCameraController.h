@@ -1,8 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-//
-#include <Rish/Core/Core.h>
+#include <Rish/rlpch.h>
 #include <Rish/Core/Time.h>
 //
 #include <Rish/Events/Event.h>

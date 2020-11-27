@@ -14,12 +14,16 @@ add_executable(Editor
     Panels/ErrorModal.cpp
     Panels/HelpPanel.cpp
     Panels/AboutPanel.cpp
+    Panels/StatusBarPanel.cpp
+    Panels/SettingPanel.cpp
+    Panels/Animation/AnimationEditor.cpp
 
     # Edit
     Edit/EditorGrid.cpp
     Edit/EditorGrid.h
     Edit/EditController.cpp
-        Edit/Gizmo.cpp Edit/Gizmo.h Panels/StatusBarPanel.cpp Panels/StatusBarPanel.h Panels/SettingPanel.cpp Panels/SettingPanel.h)
+    Edit/Gizmo.cpp
+)
 
 target_include_directories(Editor PUBLIC ${PROJECT_SOURCE_DIR})
 target_link_libraries(Editor

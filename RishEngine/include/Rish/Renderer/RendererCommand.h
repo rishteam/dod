@@ -1,10 +1,8 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
-#include <Rish/Renderer/VertexArray.h>
 
-#include <glm/glm.hpp>
+#include <Rish/Renderer/fwd.h>
 
 namespace rl {
 

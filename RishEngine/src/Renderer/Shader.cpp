@@ -1,10 +1,8 @@
 #include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <Rish/Core/Core.h>
+//
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Core/VFS.h>
-
+//
 #include <Rish/Renderer/Shader.h>
 
 namespace rl {

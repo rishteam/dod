@@ -1,5 +1,9 @@
 #include <Rish/Scene/System/NativeScriptSystem.h>
 
+#include <Rish/Scene/Entity.h>
+#include <Rish/Scene/Scene.h>
+#include <Rish/Renderer/Renderer2D.h>
+#include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 
 namespace rl {

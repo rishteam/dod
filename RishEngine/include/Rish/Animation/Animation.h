@@ -31,29 +31,14 @@ class AnimationEditor;
  * @brief Animation class
  * @details
  */
-class Animation : public sf::Transformable, public sf::Drawable
+class Animation
 {
     friend class AnimationLoader;
     friend class AnimationEditor;
 public:
     // Constructors
-    Animation();
-    virtual ~Animation() = default;
-
-    Animation(const sf::Texture &texture)
-    {
-        addFrame(texture);
-        duration = reverseDuration = 0.5f;
-    }
-
-    // Load animation from a config file
-    Animation(const std::string &configPath);
-
-    // Load animation config
-    void loadConfig(const std::string &configPath);
-
-    // Main function
-    virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    Animation() = default;
+    ~Animation() = default;
 
     void pause() { m_pause = true; }
     void resume() { m_pause = false; }
@@ -116,49 +101,6 @@ private:
     bool m_ready = false; //! is the animation ready
 
     bool m_pause = false; //! is the animation pause
-
-// For Debug ONLY
-public:
-    bool debugDrawFlag = false;
-
-    void debugImGuiWindow()
-    {
-        ImGui::Begin(m_texName.c_str());
-        debugImGuiWidgets();
-        ImGui::End();
-    }
-    void debugImGuiWidgets()
-    {
-        ImGui::Text("Animation: %s", m_texName.c_str());
-        ImGui::Checkbox("draw", &debugDrawFlag);
-        // Position
-        float pos[2] = {getPosition().x, getPosition().y};
-        ImGui::DragFloat2("Position", pos, 1.f);
-        setPosition(pos[0], pos[1]);
-        // Rotate
-        float rotate = getRotation();
-        ImGui::SliderFloat("Rotate", &rotate, 0.f, 360.f);
-        setRotation(rotate);
-        // Origin
-        float ori[2] = {getOrigin().x, getOrigin().y};
-        ImGui::DragFloat2("Origin", ori, 1.f);
-        setOrigin(ori[0], ori[1]);
-    }
-
-    mutable sf::CircleShape debugOrigCir;
-    float debugCirRadius = 5.f;
-    mutable sf::RectangleShape debugRect;
-    float debugRectThick = 1.f;
-
-// print
-public:
-    friend std::ostream &operator<<(std::ostream& os, const Animation &ani)
-    {
-        std::string info = fmt::format("<Animation \"{}\" {}>\n", ani.m_texName, ani.m_count);
-        info += fmt::format("  ready={}\n", ani.m_ready);
-        os << info;
-        return os;
-    }
 };
 
 }

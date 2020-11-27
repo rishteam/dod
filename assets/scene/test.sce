@@ -245,7 +245,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets/texture/1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -281,7 +297,23 @@
                         "z": 0.9999899864196777,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\dev_128_gr_032x.jpg",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "path": "assets\\texture\\dev_128_gr_032x.jpg",
+                                "width": 128,
+                                "height": 128,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -317,7 +349,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\RTS_Crate.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "path": "assets\\texture\\RTS_Crate.png",
+                                "width": 512,
+                                "height": 512,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -353,7 +401,23 @@
                         "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\RTS_Crate.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483653,
+                            "data": {
+                                "path": "assets\\texture\\RTS_Crate.png",
+                                "width": 512,
+                                "height": 512,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -389,7 +453,11 @@
                         "z": 0.5588179230690002,
                         "w": 1.0
                     },
-                    "Texture": "assets/texture/1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 0
+                        }
+                    },
                     "UseTexture": false,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -425,7 +493,11 @@
                         "z": 0.5588179230690002,
                         "w": 1.0
                     },
-                    "Texture": "assets/texture/1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 0
+                        }
+                    },
                     "UseTexture": false,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -461,7 +533,23 @@
                         "z": 0.9999899864196777,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\dev_128_gr_032x.jpg",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483654,
+                            "data": {
+                                "path": "assets\\texture\\dev_128_gr_032x.jpg",
+                                "width": 128,
+                                "height": 128,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -497,7 +585,11 @@
                         "z": 0.5588179230690002,
                         "w": 1.0
                     },
-                    "Texture": "assets/texture/1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 0
+                        }
+                    },
                     "UseTexture": false,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -533,7 +625,11 @@
                         "z": 0.5588179230690002,
                         "w": 1.0
                     },
-                    "Texture": "assets/texture/1.png",
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 0
+                        }
+                    },
                     "UseTexture": false,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -609,7 +705,7 @@
                         "polymorphic_id": 2147483649,
                         "polymorphic_name": "rl::PlayerController",
                         "ptr_wrapper": {
-                            "id": 2147483650,
+                            "id": 2147483655,
                             "data": {
                                 "walkAccel": 5.0,
                                 "walkSpeedLimit": 7.0,
@@ -626,7 +722,7 @@
                         "polymorphic_id": 2147483650,
                         "polymorphic_name": "rl::Cinemachine2D",
                         "ptr_wrapper": {
-                            "id": 2147483651,
+                            "id": 2147483656,
                             "data": {
                                 "cameraTransSpeed": 2.0,
                                 "startTransSpeed": 1.0,
@@ -647,7 +743,7 @@
                         "polymorphic_id": 2147483651,
                         "polymorphic_name": "rl::Spawner",
                         "ptr_wrapper": {
-                            "id": 2147483652,
+                            "id": 2147483657,
                             "data": {
                                 "SpawnPerSecond": 5.0
                             }

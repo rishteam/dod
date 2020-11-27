@@ -9,6 +9,7 @@ class ExampleSandboxLayer : public rl::Layer
 {
 public:
     ExampleSandboxLayer();
+    ~ExampleSandboxLayer() override;
 
     void onAttach() override;
     void onDetach() override;
@@ -17,10 +18,8 @@ public:
     void onEvent(rl::Event& event) override;
 
 private:
-    OrthographicCameraController m_cameraController;
-    float m_rotate = 0.f;
-
-    Ref<Framebuffer> m_framebuffer;
-    Ref<Framebuffer> m_framebufferSecond;
-    Ref<Texture2D> gray_pic;
+    bool onKeyPressEvent(KeyPressedEvent &event);
+    //
+    Ref<Texture2D> m_testTexture;
+    Ref<Scene> m_scene;
 };

@@ -5,6 +5,9 @@
 
 namespace rl {
 
+// fwd
+class Entity;
+
 /**
  * @brief Camera for Scene
  * @details Have orthographic projection attributes
@@ -18,9 +21,10 @@ public:
 
     void setOrthographic(float size, float near, float far);
     void setViewportSize(uint32_t width, uint32_t height);
+
     void setAspect(float aspect);
     float getAspect() const { return m_aspect; }
-
+    void setOrthoSize(float size);
     float getOrthoSize() const { return m_orthoSize; }
 private:
     void recalculateProjection();
@@ -32,6 +36,7 @@ private:
     // Friend class
     friend class Scene;
     friend void DrawSceneCameraDebugWindow(const SceneCamera &camera, const glm::mat4 &trans);
+    friend void DrawDebugCameraComponentInfo(Entity entity);
 
     // Serialization function
     friend cereal::access;

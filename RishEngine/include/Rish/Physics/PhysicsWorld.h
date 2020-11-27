@@ -1,17 +1,15 @@
 #pragma once
+
 #include <Rish/rlpch.h>
 
-#include <Rish/Collider/Box.h>
-#include <Rish/Physics/RigidBody2D.h>
 #include <Rish/Physics/Arbiter.h>
-#include <Rish/Physics/Joint.h>
-
 #include <Rish/Physics/vector_math.h>
 
-class ArbiterKey;
-class Arbiter;
-
 namespace rl {
+
+class RigidBody2D;
+class Box;
+class Joint;
 
 class RL_API PhysicsWorld
 {
@@ -19,17 +17,13 @@ public:
     // TODO: object constructor
 
     PhysicsWorld(Vec2 gravity_);
-
     PhysicsWorld(Vec2 gravity_, float width_, float height_);
 
     void Add(const Ref<RigidBody2D> &body);
-
     void AddJoints(const Ref<Joint> &joint);
 
     void Clear();
-
     void Step(float dt);
-
     void BoardPhase();
 
     // TODO: Move these to the PhysicsLayer
@@ -43,9 +37,7 @@ public:
     void demo8();
     void demo9();
 
-
     static Vec2 ChangeToPhysicsWorld(const Vec2 &ps);
-
     static Vec2 ConvertWorldToScreen(const Vec2 &pw);
 
     Vec2 gravity;

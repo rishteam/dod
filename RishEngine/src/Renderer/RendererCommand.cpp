@@ -1,7 +1,9 @@
+#include <Rish/rlpch.h>
 #include <glad/glad.h>
 
-#include <Rish/Core/Core.h>
 #include <Rish/Renderer/RendererCommand.h>
+#include <Rish/Renderer/VertexArray.h>
+#include <Rish/Renderer/Buffer.h>
 
 void APIENTRY OpenGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {

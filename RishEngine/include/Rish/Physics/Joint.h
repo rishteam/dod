@@ -1,23 +1,20 @@
-#include <Rish/Collider/Box.h>
-#include <Rish/Physics/vector_math.h>
-#include <Rish/Physics/RigidBody2D.h>
-#include <Rish/Physics/PhysicsWorld.h>
+#pragma once
 
-#ifndef Joint_H
-#define Joint_H
+#include <Rish/Physics/vector_math.h>
 
 namespace rl {
+
+// fwd
+class RigidBody2D;
+
 class Joint
 {
 public:
     Joint();
-
     ~Joint() = default;
 
     void Set(Ref <RigidBody2D> &b1_, Ref<RigidBody2D> &b2_, const Vec2 &anchor);
-
     void PreStep(float inv_dt);
-
     void ApplyImpulse();
 
     Mat22 M;
@@ -30,6 +27,7 @@ public:
     float biasFactor;
     float softness;
 };
-}
 
-#endif
+} // namespace rl
+
+//#endif

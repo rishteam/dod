@@ -1,8 +1,6 @@
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
-#include <Rish/rlpch.h>
 #include <Rish/Input/Input.h>
-
 #include <Rish/ImGui/ImGui.h>
 
 namespace rl {

@@ -1,14 +1,11 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Scene/Component.h>
-#include <Rish/Physics/PhysicsWorld.h>
-#include <Rish/Scene/Scene.h>
-
-#include <Rish/ImGui/ImGui.h>
-#include <entt/entt.hpp>
 
 namespace rl {
+
+// fwd
+class Scene;
 
 // TODO: Detected collision for collider Use QuadTree
 class RL_API ColliderSystem

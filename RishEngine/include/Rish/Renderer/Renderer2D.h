@@ -1,13 +1,8 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <Rish/Core/Core.h>
+#include <Rish/rlpch.h>
 
-#include <Rish/Renderer/Framebuffer.h>
-#include <Rish/Renderer/Texture2D.h>
-#include <Rish/Renderer/SubTexture2D.h>
-#include <Rish/Renderer/Camera/Camera.h>
-#include <Rish/Renderer/Camera/OrthographicCamera.h>
+#include <Rish/Renderer/fwd.h>
 
 namespace rl {
 

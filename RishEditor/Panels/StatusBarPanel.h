@@ -7,7 +7,7 @@
 
 #include <Rish/Core/Time.h>
 
-#include "SceneMultiTargetPanel.h"
+#include "Panels/Common/SceneMultiTargetPanel.h"
 
 namespace rl{
 

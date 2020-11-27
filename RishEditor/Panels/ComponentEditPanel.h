@@ -6,11 +6,13 @@
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/ComponentManager.h>
 
-#include "SceneTargetPanel.h"
+#include "Panels/Common/SceneTargetPanel.h"
 
 #include "ComponentSelectionPanel.h"
 
 #include <Rish/ImGui/ImGui.h>
+#include <Rish/Scene/ScriptableManager.h>
+
 
 namespace rl {
 
