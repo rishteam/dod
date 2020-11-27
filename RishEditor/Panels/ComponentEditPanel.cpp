@@ -3,7 +3,9 @@
 #include <Rish/Utils/FileDialog.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
-
+//
+#include <Rish/Math/BoundingBox.h>
+//
 #include <Rish/ImGui/ImGui.h>
 
 #define BeginDrawEditComponent(c)                                    \
@@ -50,8 +52,35 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
         ImGui::DragFloat("Rotation", &transform.rotate, 0.1f);
         ImGui::SameLine();
         ImGui::HelpMarker("In degrees");
+
+        updateGroupTransform(m_targetEntity);
+
     }
     EndDrawEditComponent();
+}
+
+void ComponentEditPanel::updateGroupTransform(Entity targetEntity)
+{
+    if(targetEntity.hasComponent<GroupComponent>())
+    {
+        auto &gc = targetEntity.getComponent<GroupComponent>();
+        const auto &groupTransform = targetEntity.getComponent<TransformComponent>();
+
+        for(const auto& id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            auto &trans = ent.getComponent<TransformComponent>();
+            sgc.setGroupPosition(groupTransform.translate);
+            sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+            sgc.setGroupRotate(groupTransform.rotate);
+
+            trans.translate = sgc.calculateCurrentPosition();
+            trans.scale = sgc.calculateCurrentScale();
+            trans.rotate = sgc.calculateCurrentRotate();
+            updateGroupTransform(ent);
+        }
+    }
 }
 
 template<>
@@ -133,6 +162,10 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<SpriteRenderComponent>();
+    }
 }
 
 template<>
@@ -175,6 +208,10 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<CameraComponent>();
+    }
 }
 
 template<>
@@ -209,6 +246,10 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
             ImGui::Text("Fuck me plz");
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<NativeScriptComponent>();
+    }
 }
 
 // TODO Particle Component
@@ -533,6 +574,10 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<ParticleComponent>();
+    }
 }
 
 template<>
@@ -603,6 +648,10 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         }
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<RigidBody2DComponent>();
+    }
 }
 
 template<>
@@ -644,6 +693,10 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
 
     }
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<BoxCollider2DComponent>();
+    }
 }
 
 template<>
@@ -717,10 +770,61 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         ImGui::Text("biasFactor: %.f", jit.biasFactor);
         ImGui::Text("softness: %.f", jit.softness);
     }
-
     EndDrawEditComponent();
+    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+    {
+        m_targetEntity.removeComponent<Joint2DComponent>();
+    }
 }
 
+template <>
+void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
+{
+    BeginDrawEditComponent(GroupComponent);
+    {
+        DrawRightClickMenu(GroupComponent, false);
+
+        auto &registry = m_targetEntity.m_scene->m_registry;
+        auto &gc = m_targetEntity.getComponent<GroupComponent>();
+
+        for(const auto &id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            auto &tag = ent.getComponent<TagComponent>();
+            auto &trans = ent.getComponent<TransformComponent>();
+
+            auto groupPos = sgc.getGroupPosition();
+            auto relativePos = sgc.getRelativePosition();
+
+            if(ImGui::TreeNode(tag.tag.c_str()))
+            {
+                ImGui::Text("GroupPosition:    x: %2.2f, y: %2.2f", groupPos.x, groupPos.y );
+                ImGui::Text("RelativePosition: x: %2.2f, y: %2.2f", relativePos.x, relativePos.y);
+                ImGui::Text("Position:         x: %2.2f, y: %2.2f",trans.translate.x, trans.translate.y);
+                ImGui::Text("Scale:            x: %2.2f, y: %2.2f",trans.scale.x, trans.scale.y);
+                ImGui::Text("Offset:           x: %2.2f, y: %2.2f", sgc.getOffset().x, sgc.getOffset().y);
+                ImGui::Text("GroupRotate:  %10.2f", sgc.getGroupRotate());
+                ImGui::Text("OriginRotate: %10.2f", sgc.getOriginRotate());
+                ImGui::TreePop();
+            }
+
+        }
+
+    }
+    EndDrawEditComponent();
+
+}
+
+template <>
+void ComponentEditPanel::drawEditComponentWidget<SubGroupComponent>()
+{
+    BeginDrawEditComponent(SubGroupComponent);
+    {
+        DrawRightClickMenu(SubGroupComponent, false);
+    }
+    EndDrawEditComponent();
+}
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
 {
@@ -752,13 +856,18 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
-        
+        // for debug
+//        drawEditComponentWidget<GroupComponent>();
+//        drawEditComponentWidget<SubGroupComponent>();
+
         // Popup
-        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)) ||
+           (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))))
         {
             m_componentSelectionPanel.m_open = true;
             ImGui::OpenPopup("ComponentSelectionPanel");
         }
+
         if(ImGui::BeginPopup("ComponentSelectionPanel"))
         {
             m_componentSelectionPanel.onImGuiRender();

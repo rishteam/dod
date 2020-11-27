@@ -33,6 +33,12 @@ public:
     bool drawEditComponentRightClickMenu(bool disableDelete=false)
     {
         bool res = false;
+        if( !disableDelete && (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+        {
+            m_targetEntity.removeComponent<T>();
+            res = true;
+        }
+
         if(ImGui::BeginPopupContextItem()) // Right-click menu
         {
             if(ImGui::MenuItem("Delete Component", nullptr, false, !disableDelete))
@@ -44,6 +50,8 @@ public:
         }
         return res;
     }
+
+    void updateGroupTransform(Entity targetEntity);
 private:
     ComponentSelectionPanel m_componentSelectionPanel;
 };

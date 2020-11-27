@@ -275,6 +275,68 @@ private:
 };
 
 /**
+ * @brief SubGroup Component
+ */
+struct SubGroupComponent
+{
+
+    void setGroup(const UUID &id)           { groupEntityID = id; }
+    void setGroupPosition(glm::vec3 pos)    { m_groupPosition = pos; }
+    void setRelativePosition(glm::vec3 pos) { m_relativePosition = pos; }
+    void setGroupScale(glm::vec3 scale)     { m_groupScale = scale; }
+    void setOriginScale(glm::vec3 scale)    { m_originScale = scale; }
+    void setGroupRotate(float angle)        { m_groupRotate = angle; }
+    void setOriginRotate(float angle)       { m_originRotate = angle; }
+    void setPreRotate(float angle)          { m_preRotate = angle; }
+    void setOffset(glm::vec3 offset)        { m_offset = offset; }
+
+    const UUID& getGroupEntityID() const        { return groupEntityID;}
+    const glm::vec3 getOffset() const           { return m_offset; }
+    const glm::vec3 getRelativePosition() const { return m_relativePosition; }
+    const glm::vec3 getGroupPosition() const    { return m_groupPosition; }
+    const glm::vec3 getGroupScale() const       { return m_groupScale; }
+    const glm::vec3 getOriginScale() const      { return m_originScale; }
+    const float getGroupRotate() const          { return m_groupRotate; }
+    const float getOriginRotate() const         { return m_originRotate; }
+    const float getPreRotate() const            { return m_preRotate; }
+
+    glm::vec3 calculateCurrentPosition();
+    glm::vec3 calculateCurrentScale();
+    float calculateCurrentRotate();
+
+private:
+    UUID groupEntityID{};
+
+    glm::vec3 m_relativePosition;
+    glm::vec3 m_originScale;
+    float m_originRotate;
+
+    glm::vec3 m_groupPosition;
+    glm::vec3 m_groupScale;
+    float m_groupRotate;
+    float m_preRotate;
+
+    glm::vec3 m_offset;
+
+    //
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("groupID", groupEntityID));
+        ar(cereal::make_nvp("relativePosition", m_relativePosition));
+        ar(cereal::make_nvp("originScale", m_originScale));
+        ar(cereal::make_nvp("originRotate", m_originRotate));
+        ar(cereal::make_nvp("groupPosition", m_groupPosition));
+        ar(cereal::make_nvp("groupScale", m_groupScale));
+        ar(cereal::make_nvp("groupRotate", m_groupRotate));
+        ar(cereal::make_nvp("preRotate", m_preRotate));
+        ar(cereal::make_nvp("offset", m_offset));
+    }
+};
+
+
+/**
  * @}
  */
 

@@ -29,8 +29,10 @@ public:
     std::set<Entity>&       getSelectedEntities()       { return m_entitySet; }
     const std::set<Entity>& getSelectedEntities() const { return m_entitySet; }
     bool isSelected() const                             { return m_isSelected; }
+    bool isSelected(Entity ent) const                   { return m_entitySet.count(ent);}
     void resetSelected()                                { m_isSelected = false; m_entitySet.clear(); }
     size_t selectedSize() const                         { return m_entitySet.size(); }
+
 protected:
     bool m_isSelected = false;
     std::set<Entity> m_entitySet;

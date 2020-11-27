@@ -191,7 +191,9 @@ public:
                 NativeScriptComponent,
                 RigidBody2DComponent,
                 BoxCollider2DComponent,
-                Joint2DComponent
+                Joint2DComponent,
+                GroupComponent,
+                SubGroupComponent
             >(ar);
 	}
 
@@ -208,7 +210,9 @@ public:
 			    NativeScriptComponent,
                 RigidBody2DComponent,
                 BoxCollider2DComponent,
-                Joint2DComponent
+                Joint2DComponent,
+                GroupComponent,
+                SubGroupComponent
             >(ar);
 	}
 };

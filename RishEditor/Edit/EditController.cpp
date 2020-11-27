@@ -101,21 +101,8 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
-        // Delete invalid target entities
-        std::set<Entity> delTarget;
-        auto &entSet = getTargets();
-        for(auto &ent : entSet)
-        {
-            // Make sure the entity is valid
-            // An entity could be deleted after it is selected
-            if(!ent)
-            {
-                delTarget.insert(ent);
-                continue;
-            }
-        }
-        for(auto &ent : delTarget)
-            removeTarget(ent);
+        arrangeSelectedEntity();
+        auto entSet = getTargets();
 
         // Draw the gizmo
         m_gizmo.setSelectedEntity(entSet);
@@ -170,15 +157,15 @@ void EditController::onImGuiRender()
             auto entSize = ent.getComponent<TransformComponent>().scale;
             auto entRotate = ent.getComponent<TransformComponent>().rotate;
             auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
-            const glm::vec3 boundPos(bound.getPosition(), 0.f);
-            const glm::vec3 boundSize(bound.getScale(), 0.f);
+            const glm::vec3 boundPos = bound.getPositionVec3();
+            const glm::vec3 boundSize = bound.getScaleVec3();
             const glm::vec3 clickSize(m_editorGrid.getOffset()/10, m_editorGrid.getOffset()/10, 0.f);
 
             // Inside
             if(Math::AABB2DPoint(boundPos, boundSize, mousePosInWorld))
             {
                 // Pick the smallest size one
-                if(minSize.x > boundSize.x && minSize.y > boundSize.y)
+                if(minSize.x >= boundSize.x && minSize.y >= boundSize.y)
                 {
                     minSize = boundSize;
                     bestMatch = ent;
@@ -215,7 +202,7 @@ void EditController::onImGuiRender()
         {
             BoundingBox2D mouseBound = m_gizmo.getMouseBound();
 
-            if( mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f )
+            if( mouseBound.getScaleVec2().x > .001f && mouseBound.getScaleVec2().y > .001f )
             {
                 resetTarget();
 
@@ -252,6 +239,25 @@ void EditController::onImGuiRender()
                    ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
                    isSelected();
     m_gizmo.onImGuiRender(isValid,mousePosInWorld);
+
+    // Update Group Entity
+    m_initGroupSet.clear();
+    m_movingGroupSet.clear();
+    m_currentScene->m_registry.each([&](auto entityID) {
+        Entity ent{entityID, m_currentScene.get()};
+        if (ent.hasComponent<GroupComponent>()) {
+            m_initGroupSet.insert(ent);
+            if (m_gizmo.isMoving(ent))
+                movingGroupEntity(ent);
+        }
+    });
+
+    for(auto ent : m_initGroupSet)
+    {
+        if(!m_movingGroupSet.count(ent))
+            initGroupEntityTransform(ent);
+    }
+
 
     // Camera pane
     if(m_sceneWindowFocused &&
@@ -328,6 +334,106 @@ void EditController::changeGizmoMode(Gizmo::GizmoMode mode)
 void EditController::toggleShowGrid()
 {
     m_showGrid = !m_showGrid;
+}
+
+void EditController::arrangeSelectedEntity()
+{
+    // Delete invalid target entities
+    std::set<Entity> delTarget;
+    auto &entSet = getTargets();
+    for(auto &ent : entSet)
+    {
+        // Make sure the entity is valid
+        // An entity could be deleted after it is selected
+        if(!ent)
+        {
+            delTarget.insert(ent);
+            continue;
+        }
+        // Make sure the entity in group wont select when group is select
+        if(ent.hasComponent<GroupComponent>())
+        {
+            arrangeSelectedGroup(delTarget, ent);
+        }
+    }
+    for(auto &ent : delTarget)
+    {
+        if(isSelected(ent))
+            removeTarget(ent);
+    }
+
+}
+
+void EditController::arrangeSelectedGroup(std::set<Entity> &delTarget, Entity entity)
+{
+    auto &gc = entity.getComponent<GroupComponent>();
+    for(const auto& id : gc)
+    {
+        Entity delEntity = m_currentScene->getEntityByUUID(id);
+        delTarget.insert(delEntity);
+        if(delEntity.hasComponent<GroupComponent>())
+            arrangeSelectedGroup(delTarget, delEntity);
+    }
+}
+
+void EditController::movingGroupEntity(Entity targetEntity)
+{
+    m_movingGroupSet.insert(targetEntity);
+    if(targetEntity.hasComponent<GroupComponent>())
+    {
+        auto &gc = targetEntity.getComponent<GroupComponent>();
+        const auto &groupTransform = targetEntity.getComponent<TransformComponent>();
+
+        for(auto &id : gc)
+        {
+            Entity ent = m_currentScene->getEntityByUUID(id);
+            auto &sgc = ent.getComponent<SubGroupComponent>();
+            auto &trans = ent.getComponent<TransformComponent>();
+            sgc.setGroupPosition(groupTransform.translate);
+            sgc.setOffset(groupTransform.scale/sgc.getGroupScale());
+            sgc.setGroupRotate(groupTransform.rotate);
+
+            trans.translate = sgc.calculateCurrentPosition();
+            trans.scale = sgc.calculateCurrentScale();
+            trans.rotate = sgc.calculateCurrentRotate();
+
+            movingGroupEntity(ent);
+        }
+    }
+}
+
+void EditController::initGroupEntityTransform(Entity groupEntity)
+{
+    auto &gc = groupEntity.getComponent<GroupComponent>();
+    BoundingBox2D curBound;
+    float groupZ = 10.f;
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        const auto &trans = ent.getComponent<TransformComponent>();
+        const BoundingBox2D entBound = BoundingBox2D::CalculateBoundingBox2D(trans.translate, trans.scale, trans.rotate);
+        curBound = BoundingBox2D::CombineBoundingBox2D(curBound, entBound);
+        groupZ = std::min(groupZ,trans.translate.z);
+    }
+    auto &groupTransform = groupEntity.getComponent<TransformComponent>();
+    groupTransform.translate = glm::vec3(curBound.getPositionVec2(),groupZ-1.f);
+    groupTransform.scale = curBound.getScaleVec3();
+    groupTransform.rotate = 0.f;
+
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        const auto &trans = ent.getComponent<TransformComponent>();
+        auto &sgc = ent.getComponent<SubGroupComponent>();
+        sgc.setGroupPosition(groupTransform.translate);
+        sgc.setGroupScale(groupTransform.scale);
+        sgc.setGroupRotate(groupTransform.rotate);
+        sgc.setRelativePosition(trans.translate-groupTransform.translate);
+        sgc.setOriginScale(trans.scale);
+        sgc.setOriginRotate(trans.rotate-groupTransform.rotate);
+        sgc.setPreRotate(groupTransform.rotate);
+    }
+
 }
 
 } // end of namespace rl

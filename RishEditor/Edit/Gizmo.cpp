@@ -29,7 +29,7 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
     }
 
     BoundingBox2D mouseBound = BoundingBox2D::CalculateBoundingFromPoint(m_mousePosBegin, m_mousePosEnd);
-    if( mouseBound.getScale().x > .001f || mouseBound.getScale().y > .001f )
+    if( mouseBound.getScaleVec2().x > .001f || mouseBound.getScaleVec2().y > .001f )
     {
         return;
     }
@@ -95,8 +95,8 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
                 const auto &transform = ent.getComponent<TransformComponent>();
                 const auto bound = BoundingBox2D::CalculateBoundingBox2D(transform.translate, transform.scale, transform.rotate);
-                glm::vec3 boundPos(bound.getPosition(), 0.f);
-                glm::vec3 boundSize(bound.getScale(), 0.f);
+                glm::vec3 boundPos = bound.getPositionVec3();
+                glm::vec3 boundSize = bound.getScaleVec3();
 
                 // The entity is not moving but selected
                 if (!m_isNowMovingEntity[ent])
@@ -214,8 +214,9 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                 const auto &entSize = ent.getComponent<TransformComponent>().scale;
                 auto &entRotate = ent.getComponent<TransformComponent>().rotate;
                 const auto bound = BoundingBox2D::CalculateBoundingBox2D(entPosition, entSize, entRotate);
-                const glm::vec3 boundPos(bound.getPosition(), 0.f);
-                const glm::vec3 boundSize(bound.getScale(), 0.f);
+                const glm::vec3 boundPos = bound.getPositionVec3();
+                const float r = std::max(bound.getScaleVec2().x,bound.getScaleVec2().y);
+                const glm::vec3 boundSize(r, r, 0.f);
 
                 // The entity is not moving but selected
                 if (!m_isNowMovingEntity[ent]) {
@@ -243,9 +244,9 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
 void Gizmo::onUpdate()
 {
     BoundingBox2D mouseBound = BoundingBox2D::CalculateBoundingFromPoint(m_mousePosBegin, m_mousePosEnd);
-    if (mouseBound.getScale().x > .001f && mouseBound.getScale().y > .001f)
+    if (mouseBound.getScaleVec2().x > .001f && mouseBound.getScaleVec2().y > .001f)
     {
-        Renderer2D::DrawQuad(mouseBound.getPosition(), mouseBound.getScale(), glm::vec4(0.f, 0.f, .3f, .3f));
+        Renderer2D::DrawQuad(mouseBound.getPositionVec2(), mouseBound.getScaleVec2(), glm::vec4(0.f, 0.f, .3f, .3f));
     }
 
     // Early out if there is no any entity.
@@ -270,7 +271,7 @@ void Gizmo::onUpdate()
                 const auto &entRotate = ent.getComponent<TransformComponent>().rotate;
                 // Get bounding box of evenry entity and draw it
                 auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
-                Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(0.8f));
+                Renderer2D::DrawRect(bound.getPositionVec2(), bound.getScaleVec2(), glm::vec4(0.8f));
             }
 
             // Draw the bounding box outside
@@ -302,19 +303,19 @@ void Gizmo::onUpdate()
                 // Get bounding box
                 auto bound = BoundingBox2D::CalculateBoundingBox2D(entPos, entSize, entRotate);
 
-                Renderer2D::DrawRect(bound.getPosition(), bound.getScale(), glm::vec4(1.f));
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, 0.5f), m_clickSizeVec2.x,
+                Renderer2D::DrawRect(bound.getPositionVec2(), bound.getScaleVec2(), glm::vec4(1.f));
+                Renderer2D::DrawCircle(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(0.5f, 0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, 0.0f), m_clickSizeVec2, colorY);
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(0.5f, -0.5f), m_clickSizeVec2.x,
+                Renderer2D::DrawQuad(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(0.5f, 0.0f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawCircle(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(0.5f, -0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.0f, -0.5f), m_clickSizeVec2, colorY);
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, -0.5f), m_clickSizeVec2.x,
+                Renderer2D::DrawQuad(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(0.0f, -0.5f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawCircle(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(-0.5f, -0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, 0.0f), m_clickSizeVec2, colorY);
-                Renderer2D::DrawCircle(bound.getPosition() + bound.getScale() * glm::vec2(-0.5f, 0.5f), m_clickSizeVec2.x,
+                Renderer2D::DrawQuad(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(-0.5f, 0.0f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawCircle(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(-0.5f, 0.5f), m_clickSizeVec2.x,
                                        colorY);
-                Renderer2D::DrawQuad(bound.getPosition() + bound.getScale() * glm::vec2(0.0f, 0.5f), m_clickSizeVec2, colorY);
+                Renderer2D::DrawQuad(bound.getPositionVec2() + bound.getScaleVec2() * glm::vec2(0.0f, 0.5f), m_clickSizeVec2, colorY);
             }
             break;
         }
@@ -356,8 +357,8 @@ void Gizmo::onUpdate()
                 const auto tmpPoint = glm::vec3(0.f, (double)std::max(entSize.x, entSize.y) * 0.7, 1.f);
                 const auto sinR = std::sin(glm::radians(entRotate));
                 const auto cosR = std::cos(glm::radians(entRotate));
-                Renderer2D::DrawFgLine(bound.getPosition(),
-                                       glm::vec3(bound.getPosition(), 0.f) +
+                Renderer2D::DrawFgLine(bound.getPositionVec2(),
+                                       bound.getPositionVec3() +
                                                 glm::vec3(tmpPoint.x * cosR - tmpPoint.y * sinR,
                                                           tmpPoint.x * sinR + tmpPoint.y * cosR,
                                                           0.f),
@@ -373,14 +374,22 @@ bool Gizmo::isMovingEntity()
     return !m_isNowMovingEntity.empty();
 }
 
+bool Gizmo::isMoving(Entity ent)
+{
+    if( m_isNowMovingEntity[ent] )
+        return true;
+    m_isNowMovingEntity.erase(ent);
+    return false;
+}
+
 bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
 {
     // Calculate the new bound
     glm::vec3 boundPos(0.f);
     glm::vec3 boundSize(0.f);
     auto tmp = calculateEntitySetBound();
-    boundPos = glm::vec3(tmp.getPosition(), 0.f);
-    boundSize = glm::vec3(tmp.getScale(), 0.f);
+    boundPos = tmp.getPositionVec3();
+    boundSize = tmp.getScaleVec3();
 
     switch (m_gizmoMode)
     {
@@ -435,7 +444,8 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
         }
         case GizmoMode::RotationMode:
         {
-            if( Math::AABB2DPoint(boundPos, m_clickSizeVec3, mousePosInWorld))
+            float r = std::max(boundSize.x,boundSize.y);
+            if( Math::AABB2DPoint(boundPos, glm::vec3(r, r,0.f) , mousePosInWorld))
             {
                 return true;
             }

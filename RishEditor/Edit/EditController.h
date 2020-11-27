@@ -62,6 +62,15 @@ private:
 
     bool m_showGrid = true; ///< Show Grid
 
+    void arrangeSelectedEntity();
+    void arrangeSelectedGroup(std::set<Entity> &delTarget, Entity entity);
+
+    // init group
+    std::set <Entity> m_initGroupSet;
+    std::set <Entity> m_movingGroupSet;
+    void movingGroupEntity(Entity targetEntity);
+    void initGroupEntityTransform(Entity groupEntity);
+
 public:
     // Debug Window
     bool m_debugEditorGrid       = false;

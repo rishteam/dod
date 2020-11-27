@@ -124,13 +124,6 @@ void EditorLayer::onAttach()
         m_scenePath = m_editorSetting.path;
     }
 
-    // TODO: For Debug use
-//    auto ent = m_currentScene->createEntity("Test");
-//    auto &gc = ent.addComponent<GroupComponent>();
-//
-//    gc.addEntityUUID(m_currentScene->createEntity("A").getUUID());
-//    gc.addEntityUUID(m_currentScene->createEntity("B").getUUID());
-//    gc.addEntityUUID(m_currentScene->createEntity("C").getUUID());
 }
 
 void EditorLayer::onDetach()
@@ -248,12 +241,8 @@ void EditorLayer::onImGuiRender()
 
     // Scene View
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin(ICON_FA_GAMEPAD " Game");
+    ImGui::Begin(m_gameWindowTitle);
     {
-        if( m_clickPlayButton ){
-            ImGui::SetWindowFocus();
-            m_clickPlayButton = false;
-        }
         // Pull states
         bool isGameWindowFocus = ImGui::IsWindowFocused();
         bool isGameWindowHover = ImGui::IsWindowHovered();
@@ -284,12 +273,11 @@ void EditorLayer::onImGuiRender()
     }
     ImGui::End();
 
-    ImGui::Begin(ICON_FA_BORDER_ALL " Scene");
+    ImGui::Begin(m_sceneWindowTitle);
     {
-        if( m_clickStopButton ){
-            ImGui::SetWindowFocus();
-            m_clickStopButton = false;
-        }
+        // Pull states
+        m_isSceneWindowFocus = ImGui::IsWindowFocused();
+
         // update edit controller
         m_editController->onImGuiRender();
         // Update viewport size (For resizing the framebuffer)
@@ -304,6 +292,8 @@ void EditorLayer::onImGuiRender()
 
 	m_currentScene->onImGuiRender();
 
+    m_statusBarPanel->onImGuiRender();
+
     ImGui::Begin("Entity Manager");
     {
     }
@@ -314,7 +304,6 @@ void EditorLayer::onImGuiRender()
         // Play button
         if(ImGui::Button(ICON_FA_PLAY))
         {
-            m_clickPlayButton = true;
             if(m_currentScene->getSceneState() == Scene::SceneState::Editor)
             {
                 m_runtimeScene = MakeRef<Scene>();
@@ -324,6 +313,7 @@ void EditorLayer::onImGuiRender()
             }
             else
                 m_currentScene->setSceneState(Scene::SceneState::Play); // TODO: remove me
+            ImGui::SetWindowFocus(m_gameWindowTitle);
         }
         ImGui::SameLine();
 
@@ -337,13 +327,13 @@ void EditorLayer::onImGuiRender()
         // Stop button
         if(ImGui::Button(ICON_FA_STOP))
         {
-            m_clickStopButton = true;
             if(m_currentScene->getSceneState() != Scene::SceneState::Editor)
             {
                 m_currentScene->onSceneStop();
                 switchCurrentScene(m_editorScene);
                 m_runtimeScene.reset();
             }
+            ImGui::SetWindowFocus(m_sceneWindowTitle);
         }
         ImGui::SameLine();
 
@@ -420,6 +410,8 @@ void EditorLayer::onImGuiMainMenuRender()
 {
     if(ImGui::BeginMenuBar())
     {
+        m_isMenuBarFocus = ImGui::IsWindowFocused();
+
         if(ImGui::BeginMenu("File"))
         {
             if(ImGui::MenuItem("New Scene", "Ctrl+N"))
@@ -739,63 +731,67 @@ void EditorLayer::initShortCut()
 
 void EditorLayer::onShortcutActionUpdate()
 {
-    if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
-    {
-        m_currentScene->m_registry.each([&](auto entityID) {
-            Entity entity(entityID, m_currentScene.get());
-            m_editController->addTarget(entity);
-        });
-    }
 
-    if(m_sceneAction.getAction("Copy")->IsShortcutPressed())
+    m_sceneAction.getAction("Copy")->setEnabled(m_editController->isSelected());
+    m_sceneAction.getAction("Delete")->setEnabled(m_editController->isSelected());
+    m_sceneAction.getAction("Cancel")->setEnabled(m_editController->isSelected());
+
+    if(m_isSceneWindowFocus || m_isMenuBarFocus || m_sceneHierarchyPanel->isWindowFocus())
     {
-        m_copyList.clear();
-        for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+        if(m_sceneAction.getAction("Select All")->IsShortcutPressed())
         {
-            m_copyList.push_back(ent);
+            m_currentScene->m_registry.each([&](auto entityID) {
+                Entity entity(entityID, m_currentScene.get());
+                m_editController->addTarget(entity);
+            });
+            m_statusBarPanel->sendMessage("Select All Entity");
         }
 
-        if(!m_copyList.empty())
+        if (m_sceneAction.getAction("Copy")->IsShortcutPressed())
         {
-            m_sceneAction.getAction("Paste")->setEnabled(true);
-        }
-    }
-
-    if(m_sceneAction.getAction("Paste")->IsShortcutPressed())
-    {
-        bool first = true;
-
-        m_sceneHierarchyPanel->resetTarget();
-        for(auto &ent : m_copyList)
-        {
-            if(ent){
-                auto copyEntity = m_currentScene->duplicateEntity(ent);
-                m_sceneHierarchyPanel->addTarget(copyEntity);
-                if( first ){
-                    m_sceneHierarchyPanel->setFocus(copyEntity);
-                }
-                first = false;
+            m_copyList.clear();
+            for(auto &ent : m_sceneHierarchyPanel->getSelectedEntities())
+            {
+                m_copyList.push_back(ent);
             }
+
+            if(!m_copyList.empty())
+            {
+                m_sceneAction.getAction("Paste")->setEnabled(true);
+            }
+            m_statusBarPanel->sendMessage("Copy Selected Entity");
         }
-        m_copyList.clear();
-        m_sceneAction.getAction("Paste")->setEnabled(false);
-    }
 
-    if(m_sceneAction.getAction("Group")->IsShortcutPressed())
-    {
-        m_sceneHierarchyPanel->groupTargetEntities();
-    }
+        if(m_sceneAction.getAction("Paste")->IsShortcutPressed())
+        {
+            m_sceneHierarchyPanel->resetTarget();
+            for(auto &ent : m_copyList)
+            {
+                m_sceneHierarchyPanel->addTarget(ent);
+                m_sceneHierarchyPanel->duplicateTargetEntities();
+            }
+            m_copyList.clear();
+            m_sceneAction.getAction("Paste")->setEnabled(false);
+            m_statusBarPanel->sendMessage("Paste copy Entity");
+        }
 
-    if(m_sceneAction.getAction("Delete")->IsShortcutPressed())
-    {
-        for(auto ent : m_sceneHierarchyPanel->getSelectedEntities())
-            ent.destroy();
-        m_sceneHierarchyPanel->resetTarget();
-    }
+        if(m_sceneAction.getAction("Delete")->IsShortcutPressed())
+        {
+            m_sceneHierarchyPanel->deleteTargetEntities();
+            m_sceneHierarchyPanel->resetTarget();
+            m_statusBarPanel->sendMessage("Delete Selected Entity");
+        }
 
-    if(m_sceneAction.getAction("Cancel")->IsShortcutPressed())
-    {
-        m_sceneHierarchyPanel->resetTarget();
+        if(m_sceneAction.getAction("Group")->IsShortcutPressed())
+        {
+            m_sceneHierarchyPanel->groupTargetEntities();
+        }
+
+        if(m_sceneAction.getAction("Cancel")->IsShortcutPressed())
+        {
+            m_sceneHierarchyPanel->resetTarget();
+            m_statusBarPanel->sendMessage("Cancel Select Entity");
+        }
     }
 
 }

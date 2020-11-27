@@ -28,6 +28,7 @@ public:
     void onImGuiRender(bool isValid, glm::vec2 mousePosInWorld);
     //
     bool isMovingEntity();
+    bool isMoving(Entity ent);
     bool isMouseOnGizmo(glm::vec2 mousePosInWorld);
     //
     void setGizmoMode(GizmoMode mode);
@@ -59,15 +60,15 @@ private:
     std::pair<glm::vec2, glm::vec2> calculateNewBoundVec2()
     {
         auto tmp = calculateEntitySetBound();
-        auto boundPos = tmp.getPosition();
-        auto boundSize = tmp.getScale();
+        auto boundPos = tmp.getPositionVec2();
+        auto boundSize = tmp.getScaleVec2();
         return std::make_pair(boundPos, boundSize);
     }
     std::pair<glm::vec3, glm::vec3> calculateNewBoundVec3()
     {
         auto tmp = calculateEntitySetBound();
-        auto boundPos = glm::vec3{tmp.getPosition(), 0.f};
-        auto boundSize = glm::vec3{tmp.getScale(), 0.f};
+        auto boundPos = tmp.getPositionVec3();
+        auto boundSize = tmp.getScaleVec3();
         return std::make_pair(boundPos, boundSize);
     }
 

@@ -109,6 +109,10 @@ private:
     void setContextToPanels(const Ref<Scene> &scene); ///< Set main Panels with its context
 	std::vector<Ref<ScenePanel>> m_panelList;
 
+	const char* m_sceneWindowTitle = ICON_FA_BORDER_ALL " Scene";
+	const char* m_gameWindowTitle  = ICON_FA_GAMEPAD " Game";
+	bool m_isSceneWindowFocus = false;
+    bool m_isMenuBarFocus = false;
     //////////////////////////////////////////
     // Common Widgets
     //////////////////////////////////////////
@@ -136,8 +140,6 @@ private:
     // Debugs
     //////////////////////////////////////////
 	bool m_debugNativeScript = false;
-	bool m_clickPlayButton = false;
-    bool m_clickStopButton = true;
 
 };
 

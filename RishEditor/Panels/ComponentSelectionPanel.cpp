@@ -29,6 +29,12 @@ void ComponentSelectionPanel::onImGuiRender()
                     ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
                     ImGui::CloseCurrentPopup();
                 }
+                if (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+                {
+                    printf("%s\n", k.c_str());
+                    ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                    ImGui::CloseCurrentPopup();
+                }
             }
         }
         ImGui::ListBoxFooter();
