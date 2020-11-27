@@ -35,6 +35,9 @@ private:
     void drawEntityNode(Entity entity, bool isSub=false);
     void drawHideEntityNode(Entity entity);
 
+    std::set <Entity> m_clickEntity;
+    void updateClickAction();
+
     std::set <Entity> m_showEntity;
     std::vector <Entity> m_entityOrder;
     void buildEntitySet(Entity entity);

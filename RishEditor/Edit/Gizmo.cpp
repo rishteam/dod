@@ -384,6 +384,9 @@ bool Gizmo::isMoving(Entity ent)
 
 bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
 {
+    if(m_entitySet.empty())
+        return false;
+
     // Calculate the new bound
     glm::vec3 boundPos(0.f);
     glm::vec3 boundSize(0.f);
