@@ -157,7 +157,7 @@ add_library(RishEngine
     src/Animation/Animation.cpp
 
     ${RL_SCRIPT_FILES}
-        src/ImGui/CloseableWindow.cpp)
+        src/ImGui/ImGuiWindow.cpp)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

@@ -2,13 +2,13 @@
 
 #include <Rish/rlpch.h>
 
-namespace ImGui {
+namespace rl {
 
-class CloseableWindow
+class ImGuiWindow
 {
 public:
-    CloseableWindow();
-    virtual ~CloseableWindow();
+    ImGuiWindow();
+    virtual ~ImGuiWindow();
 
     virtual void onImGuiUpdate() = 0;
     void onImGuiRender();

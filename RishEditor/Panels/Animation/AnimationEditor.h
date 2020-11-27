@@ -8,7 +8,7 @@
 
 #include <Rish/rlpch.h>
 
-#include <Rish/ImGui/CloseableWindow.h>
+#include <Rish/ImGui/ImGuiWindow.h>
 #include <Rish/ImGui/AttributeWidget.h>
 
 namespace rl {
@@ -17,7 +17,7 @@ namespace rl {
  * @brief Animation Editor class
  * @details Editor for editing Animation
  */
-class AnimationEditor : public ImGui::CloseableWindow
+class AnimationEditor : public rl::ImGuiWindow
 {
 public:
     AnimationEditor();

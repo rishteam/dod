@@ -1,20 +1,20 @@
-#include <Rish/ImGui/CloseableWindow.h>
+#include <Rish/ImGui/ImGuiWindow.h>
 
 #include <Rish/ImGui/ImGui.h>
 
-namespace ImGui {
+namespace rl {
 
-CloseableWindow::CloseableWindow()
+ImGuiWindow::ImGuiWindow()
 {
 
 }
 
-CloseableWindow::~CloseableWindow()
+ImGuiWindow::~ImGuiWindow()
 {
 
 }
 
-void CloseableWindow::onImGuiRender()
+void ImGuiWindow::onImGuiRender()
 {
     if(!m_showEditor)
         return;
