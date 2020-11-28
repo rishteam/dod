@@ -569,8 +569,8 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
             light.viewPortPos = transform.translate;
         }
         ImGui::DragFloat2("View Port Size", glm::value_ptr(light.viewPortSize), 0.01);
-        ImGui::DragFloat("Light Radius", &light.radius, 0.01);
-        ImGui::DragFloat("Light Strength", &light.strength, 0.01);
+        ImGui::DragFloat("Light Radius", &light.radius, 1);
+        ImGui::DragFloat("Light Strength", &light.strength, 1);
         ImGui::DragFloat("Shadow Scale", &light.shadowScale, 0.01);
         ImGui::ColorEdit4("Shadow Color", glm::value_ptr(light.shadowColor), ImGuiColorEditFlags_Float);
     }

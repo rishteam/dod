@@ -1427,7 +1427,7 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
     };
 
     // TODO : change radius and strength to linear and quadratic
-    SubmitLight(posi, position, color, 1/radius, 1/strength, 0, screenSize, zoom, aspect);
+    SubmitLight(posi, position, color, 1, 1/radius, 1/strength, screenSize, zoom, aspect);
 }
 
 void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,

@@ -34,40 +34,57 @@ void LightLayer::onDetach()
 void LightLayer::onUpdate(rl::Time dt)
 {
     m_cameraController.onUpdate(dt);
-    world->bind();
-    glm::vec2 viewPortSize = {Application::Get().getWindow().getWidth() / 2, Application::Get().getWindow().getHeight()/2};
+//    world->bind();
+    glm::vec2 viewPortSize = {10, 10};
 
-    {
-        RenderCommand::SetClearColor(glm::vec4(0, .0, .0, 1));
-        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
-        Renderer2D::BeginScene(m_cameraController.getCamera(), false);
-//        Renderer2D::DrawQuad({0, 0}, {10, 10}, glm::vec4(1, 1, 1, 1));
-        Renderer2D::DrawQuad({0, 0}, {2, 2}, texture);
-        Renderer2D::EndScene();
-    }
-    world->unbind();
+    RenderCommand::SetClearColor(glm::vec4(0, .0, .0, 1));
+    RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+    Renderer2D::BeginScene(m_cameraController.getCamera(), false);
+//    Renderer2D::DrawQuad({0, 0}, {1, 1}, glm::vec4(1, 1, 1, 1));
+    Renderer2D::DrawQuad({1.5, 1.5}, {2, 2}, texture);
 
-    {
-        light->bind();
-        RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 1));
-        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
-        Renderer2D::BeginScene(m_cameraController.getCamera(), false);
-//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
-        Renderer2D::DrawQuad(lightPos, {m_cameraController.getAspect() * m_cameraController.getZoom() * 2, m_cameraController.getZoom() * 2}, maskColor);
-//        Renderer2D::DrawQuad({0, 0}, {2, 2}, maskColor);
-        Renderer2D::DrawPointLight(lightPos, radius, strength, lightPos,
-                                   viewPortSize,
-                                   {Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()},
-                                   m_cameraController.getZoom(), m_cameraController.getAspect(), color);
-        Renderer2D::EndScene();
-        light->unbind();
-    }
+    Renderer2D::DrawPointLight(lightPos, radius, strength, lightPos,
+                               viewPortSize,
+                               {Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()},
+                               m_cameraController.getZoom(), m_cameraController.getAspect(), color);
 
-    {
-        world->bind();
-        Renderer2D::CombineFramebuffer(world, light);
-        world->unbind();
-    }
+    Renderer2D::DrawShadow(lightPos, {0.5, 0.5, 0}, {2.5, 0.5, 0}, 10, {1, 1, 1, 1});
+
+    Renderer2D::EndScene();
+
+//    {
+//        RenderCommand::SetClearColor(glm::vec4(0, .0, .0, 1));
+//        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+//        Renderer2D::BeginScene(m_cameraController.getCamera(), false);
+////        Renderer2D::DrawQuad({0, 0}, {10, 10}, glm::vec4(1, 1, 1, 1));
+//        Renderer2D::DrawQuad({2, 2}, {2, 2}, texture);
+//        Renderer2D::EndScene();
+//    }
+//    world->unbind();
+//
+//    {
+//        light->bind();
+//        RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 1));
+//        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+//        Renderer2D::BeginScene(m_cameraController.getCamera(), false);
+////        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//        Renderer2D::DrawQuad(lightPos, {m_cameraController.getAspect() * m_cameraController.getZoom() * 2, m_cameraController.getZoom() * 2}, maskColor);
+//        Renderer2D::DrawPointLight(lightPos, radius, strength, lightPos,
+//                                   viewPortSize,
+//                                   {Application::Get().getWindow().getWidth(), Application::Get().getWindow().getHeight()},
+//                                   m_cameraController.getZoom(), m_cameraController.getAspect(), color);
+//
+//        Renderer2D::DrawShadow(lightPos, glm::vec3{1, 1, 0}, {2, 1, 0}, 10, glm::vec4(1, 1, 1, 1));
+//
+//        Renderer2D::EndScene();
+//        light->unbind();
+//    }
+
+//    {
+//        world->bind();
+//        Renderer2D::CombineFramebuffer(world, light);
+//        world->unbind();
+//    }
 }
 
 void LightLayer::onImGuiRender()
@@ -81,10 +98,10 @@ void LightLayer::onImGuiRender()
     ImGui::DragFloat("PosY", &lightPos.y, 0.01);
     ImGui::End();
 
-    ImGui::Begin("world");
-    uint32_t textureID = world->getColorAttachmentRendererID();
-    ImGui::Image(textureID, {(float)world->getWidth(), (float)world->getHeight()}, {0, 0}, {1, -1});
-    ImGui::End();
+//    ImGui::Begin("world");
+//    uint32_t textureID = world->getColorAttachmentRendererID();
+//    ImGui::Image(textureID, {(float)world->getWidth(), (float)world->getHeight()}, {0, 0}, {1, -1});
+//    ImGui::End();
 
 //    ImGui::SetNextWindowSize(ImVec2{1280, 720});
 //    ImGui::Begin("Light", nullptr, ImGuiWindowFlags_NoResize);

@@ -11,7 +11,6 @@ out vec4 v_Color;
 out float v_Constant;
 out float v_Linear;
 out float v_Quadratic;
-out mat4 v_ViewProjection;
 
 uniform mat4 u_ViewProjection;
 
@@ -23,5 +22,4 @@ void main()
     v_Constant = a_Constant;
     v_Linear = a_Linear;
     v_Quadratic = a_Quadratic;
-    v_ViewProjection = u_ViewProjection;
 }

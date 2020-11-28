@@ -19,6 +19,8 @@ public:
 
     static void onRender();
 
+    static void onEditorRender();
+
     static void onViewportResize(const glm::vec2 &viewport);
 
 private:

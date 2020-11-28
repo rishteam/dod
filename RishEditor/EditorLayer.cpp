@@ -197,6 +197,13 @@ void EditorLayer::onUpdate(Time dt)
 
         m_editController->onUpdate(dt);
 
+        // Light System
+        {
+            Renderer2D::BeginScene(cameraController->getCamera(), false);
+            LightSystem::onEditorRender();
+            Renderer2D::EndScene();
+        }
+
         // Particle System
         {
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);
