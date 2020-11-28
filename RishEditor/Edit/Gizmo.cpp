@@ -58,14 +58,14 @@ void Gizmo::onImGuiRender(bool isValid, glm::vec2 mousePosInWorld)
                         m_moveEntityWeight[ent] = glm::vec3(1.f);
                     }
                     // row (x-axis)
-                    else if(Math::AABB2DPoint(boundPos +boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSizeVec3 * glm::vec3(1.5f, 0.f, 0.f),
-                                              boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSizeVec3 * glm::vec3(3.f, 1.f, 0.f), mousePosInWorld))
+                    else if(Math::AABB2DPoint(boundPos +boundSize*glm::vec3(.25f,0.f,0.f) + m_clickSizeVec3 * glm::vec3(1.5f, 0.f, 0.f),
+                                              boundSize*glm::vec3(.5f,0.f,0.f) + m_clickSizeVec3 * glm::vec3(3.f, 2.f, 0.f), mousePosInWorld))
                     {
                         m_moveEntityWeight[ent] = glm::vec3(1.f, 0.f, 1.f);
                     }
                     // column (y-axis)
-                    else if (Math::AABB2DPoint(boundPos +boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSizeVec3 * glm::vec3(0.f, 1.5f, 0.f),
-                                               boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSizeVec3 * glm::vec3(1.f, 3.f, 0.f), mousePosInWorld))
+                    else if (Math::AABB2DPoint(boundPos +boundSize*glm::vec3(0.f,.25f,0.f) + m_clickSizeVec3 * glm::vec3(0.f, 1.5f, 0.f),
+                                               boundSize*glm::vec3(0.f,.5f,0.f) + m_clickSizeVec3 * glm::vec3(2.f, 3.f, 0.f), mousePosInWorld))
                     {
                         m_moveEntityWeight[ent] = glm::vec3(0.f, 1.f, 1.f);
                     }
@@ -399,8 +399,8 @@ bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)
         case GizmoMode::MoveMode:
         {
             if(Math::AABB2DPoint(boundPos + m_clickSizeVec3 * glm::vec3(.5f), m_clickSizeVec3, mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos +boundSize*glm::vec3(.5f,0.f, 1.f) + m_clickSizeVec3 * glm::vec3(1.5f, 0.f, 1.f), boundSize * glm::vec3(.5f, 0.f, 1.f) + m_clickSizeVec3 * glm::vec3(3.f, 1.f, 1.f), mousePosInWorld) ||
-               Math::AABB2DPoint(boundPos +boundSize*glm::vec3(0.f,.5f, 1.f) + m_clickSizeVec3 * glm::vec3(0.f, 1.5f, 1.f), boundSize * glm::vec3(0.f, .5f, 1.f) + m_clickSizeVec3 * glm::vec3(1.f, 3.f, 1.f), mousePosInWorld))
+               Math::AABB2DPoint(boundPos + boundSize*glm::vec3(.25f,0.f, 1.f) + m_clickSizeVec3*glm::vec3(1.5f, 0.f, 1.f), boundSize*glm::vec3(.5f, 0.f, 1.f) + m_clickSizeVec3*glm::vec3(3.f, 2.f, 1.f), mousePosInWorld) ||
+               Math::AABB2DPoint(boundPos + boundSize*glm::vec3(0.f,.25f, 1.f) + m_clickSizeVec3*glm::vec3(0.f, 1.5f, 1.f), boundSize*glm::vec3(0.f, .5f, 1.f) + m_clickSizeVec3*glm::vec3(2.f, 3.f, 1.f), mousePosInWorld))
             {
                 return true;
             }
