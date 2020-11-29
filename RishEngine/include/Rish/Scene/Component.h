@@ -757,8 +757,41 @@ struct LightComponent
     float shadowScale = 10;
     glm::vec4 shadowColor{0, 0, 0, 0};
 
+    static std::set<UUID> ENTITY_NO_RAY_CAST;
+
 private:
     friend class cereal::access;
+
+//    template<typename Achrive>
+//    void load(Achrive &ar)
+//    {
+//        ar( CEREAL_NVP(viewPortPos),
+//            CEREAL_NVP(customViewPos),
+//            CEREAL_NVP(viewPortSize),
+//            CEREAL_NVP(color),
+//            CEREAL_NVP(radius),
+//            CEREAL_NVP(strength),
+//            CEREAL_NVP(shadowScale),
+//            CEREAL_NVP(shadowColor),
+//            CEREAL_NVP(ENTITY_NO_RAY_CAST)
+//        );
+//    }
+//    template<typename Achrive>
+//    void save(Achrive &ar) const
+//    {
+//        ar( CEREAL_NVP(viewPortPos),
+//            CEREAL_NVP(customViewPos),
+//            CEREAL_NVP(viewPortSize),
+//            CEREAL_NVP(color),
+//            CEREAL_NVP(radius),
+//            CEREAL_NVP(strength),
+//            CEREAL_NVP(shadowScale),
+//            CEREAL_NVP(shadowColor),
+//            CEREAL_NVP(ENTITY_NO_RAY_CAST)
+//        );
+//    }
+
+
     template<typename Achrive>
     void serialize(Achrive &ar)
     {
@@ -769,10 +802,10 @@ private:
             CEREAL_NVP(radius),
             CEREAL_NVP(strength),
             CEREAL_NVP(shadowScale),
-            CEREAL_NVP(shadowColor)
+            CEREAL_NVP(shadowColor),
+            CEREAL_NVP(ENTITY_NO_RAY_CAST)
         );
     }
-
 };
 
 } // end of rl

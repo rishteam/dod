@@ -60,8 +60,7 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/Cinemachine2D.cpp
     ../NativeScript/Rish/Script/TestScript.cpp
     ../NativeScript/Rish/Script/EventBoxController.cpp
-    ../NativeScript/Rish/Script/MonsterController.cpp
-)
+    ../NativeScript/Rish/Script/MonsterController.cpp)
 
 # Add executable
 add_library(RishEngine
@@ -138,6 +137,7 @@ add_library(RishEngine
 
     # Scene
     src/Scene/Scene.cpp
+    src/Scene/Component.cpp
     src/Scene/Entity.cpp
     src/Scene/ComponentManager.cpp
     src/Scene/SceneCamera.cpp

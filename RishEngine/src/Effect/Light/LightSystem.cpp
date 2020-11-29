@@ -69,15 +69,20 @@ void LightSystem::onRender()
             auto &transform = registry.get<TransformComponent>(entity);
             auto &light = registry.get<LightComponent>(entity);
 
-//            RenderCommand::SetColorMask(false, false, false, false);
+            RenderCommand::SetColorMask(false, false, false, false);
             RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Always, 1, 1);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
                                         RenderCommand::StencilOpFactor::Replace);
 
+            // Ray-Casting for all rigidEntity
             for (auto rigidEntity : rigidView)
             {
                 auto &rigidTransform = registry.get<TransformComponent>(rigidEntity);
                 auto &rigidBody = registry.get<RigidBody2DComponent>(rigidEntity);
+                auto &rigidTag = registry.get<TagComponent>(rigidEntity);
+                auto &rigidID  = rigidTag.id;
+
+                if(light.ENTITY_NO_RAY_CAST.find(rigidID) != light.ENTITY_NO_RAY_CAST.end()) continue;
 
                 auto rotate = [&](glm::vec3 center, glm::vec3 pt, float angle) -> glm::vec3
                 {
@@ -123,6 +128,7 @@ void LightSystem::onRender()
                     return false;
                 };
 
+                // Ray-Casting
                 if (inRange(vertices))
                 {
                     for (int i = 0; i < vertices.size(); i++) {
@@ -140,11 +146,12 @@ void LightSystem::onRender()
                 }
             }
 
+            // Draw Light
             RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
                                         RenderCommand::StencilOpFactor::Keep);
             RenderCommand::SetColorMask(true, true, true, true);
-            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, transform.translate,
+            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
                                        light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
             RenderCommand::Clear(RenderCommand::ClearBufferTarget::StencilBuffer);
         }
@@ -165,9 +172,9 @@ void LightSystem::onEditorRender()
 
     // Draw Ambient Light
     {
-        for (auto ambient : ambientView) {
+        for (auto ambient : ambientView)
+        {
             auto &transform = registry.get<TransformComponent>(ambient);
-
             Renderer2D::DrawRect(transform.translate, transform.scale, glm::vec4(1, 1, 0, 1));
         }
     }
@@ -176,7 +183,8 @@ void LightSystem::onEditorRender()
         for(auto entity : view)
         {
             auto &transform = registry.get<TransformComponent>(entity);
-            Renderer2D::DrawRect(transform.translate, transform.scale, glm::vec4(1, 0, 1, 1));
+            auto &light     = registry.get<LightComponent>(entity);
+            Renderer2D::DrawRect(transform.translate, light.viewPortSize, glm::vec4(1, 0, 1, 1));
 
         }
     }
