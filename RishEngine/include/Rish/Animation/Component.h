@@ -18,14 +18,29 @@ struct Animation2DComponent
     Clock clk;
 
     std::vector<Ref<Texture2D>> textureList;
-    ////////////////////////////////////////
+
+    bool playing = false;
+    bool stopped = true;
+
+    void play();
+    void stop();
+    void pause();
+    void toggle();
+
+    bool isPlay();
+    bool isStop();
+    bool isPause();
+private:
     bool isTimerUp();
     void resetTimer();
 
     Ref<Texture2D> getCurrentFrame();
     void playNextFrame();
     size_t getFrameCount() const { return textureList.size(); }
-private:
+
+    friend class Animation2DSystem;
+    friend class AnimationEditor;
+    friend class ComponentEditPanel;
     //
     friend class cereal::access;
     template<typename Archive>

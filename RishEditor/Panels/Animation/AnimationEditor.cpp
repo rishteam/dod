@@ -16,12 +16,12 @@ AnimationEditor::AnimationEditor() : ImGuiWindow("Animation Editor")
     //
     m_attribWidget.addAttributeField("Duration", [=](){
         if(!m_editTarget) return;
-        ImGui::InputFloat("##AnimationDuration", &m_editTarget->duration);
+        ImGui::InputFloat("##AnimationDuration", &m_editTarget->duration, 0.1f, 1.f);
     });
     //
     m_attribWidget.addAttributeField("Reverse Duration", [=](){
         if(!m_editTarget) return;
-        ImGui::InputFloat("##AnimationReverseDuration", &m_editTarget->reverseDuration);
+        ImGui::InputFloat("##AnimationReverseDuration", &m_editTarget->reverseDuration, 0.1f, 1.f);
     });
     //
     m_attribWidget.addAttributeField("Is Loop", [=](){
@@ -46,8 +46,8 @@ void AnimationEditor::onImGuiUpdate()
     if(ImGui::Button("Load"))
     {
         if(FileDialog::SelectSingleFile("rani",
-                                      (FileSystem::GetCurrentDirectory() + "\\assets\\animation").c_str(),
-                                      path))
+          (FileSystem::GetCurrentDirectory() + "\\assets\\animation").c_str(),
+          path))
         {
             loadFromFile("Animation2D", *m_editTarget, path);
         }
@@ -75,6 +75,7 @@ void AnimationEditor::onImGuiUpdate()
             m_editTarget->textureList.push_back(Texture2D::LoadTexture(path));
         }
     }
+    ImGui::SameLine();
 
     auto curFrame = m_editTarget->getCurrentFrame();
     if(curFrame)
@@ -97,11 +98,6 @@ void AnimationEditor::setTargetComponent(Animation2DComponent *target)
 void AnimationEditor::resetTargetComponent()
 {
     m_editTarget = nullptr;
-}
-
-void AnimationEditor::loadAnimation()
-{
-
 }
 
 } // end of namespace rl

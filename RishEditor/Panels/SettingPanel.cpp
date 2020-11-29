@@ -111,6 +111,11 @@ void SettingPanel::onImGuiRender()
                             m_parent->m_editorSetting.path = FileSystem::RelativePath(tmpPath);
                         }
                     }
+                    ImGui::SameLine();
+                    if(ImGui::Button("Load current"))
+                    {
+                        m_parent->m_editorSetting.path = m_parent->m_scenePath;
+                    }
 
                     ImGui::InputFloat("##AutoSaveSecond", &m_parent->m_editorSetting.autoSaveSecond);
 

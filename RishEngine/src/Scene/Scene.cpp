@@ -257,6 +257,7 @@ void Scene::onScenePlay()
 
     NativeScriptSystem::OnScenePlay();
     PhysicsSystem::OnScenePlay();
+    Animation2DSystem::OnScenePlay();
 }
 
 void Scene::onScenePause()
@@ -270,6 +271,7 @@ void Scene::onSceneStop()
 
     NativeScriptSystem::OnSceneStop();
     PhysicsSystem::OnSceneStop();
+    Animation2DSystem::OnSceneStop();
 }
 
 void Scene::copySceneTo(Ref<Scene> &target)

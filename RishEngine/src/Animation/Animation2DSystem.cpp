@@ -16,9 +16,6 @@ void Animation2DSystem::RegisterScene(const Ref <Scene> &scene)
 
 void Animation2DSystem::OnUpdate(float dt)
 {
-    if(s_Scene->getSceneState() != Scene::SceneState::Play)
-        return;
-
     auto &registry = s_Scene->m_registry;
     auto view = registry.view<Animation2DComponent>();
     for(auto ent : view)
@@ -29,7 +26,8 @@ void Animation2DSystem::OnUpdate(float dt)
         //
         if(ani.isTimerUp())
         {
-            ani.playNextFrame();
+            if(ani.playing && !ani.stopped)
+                ani.playNextFrame();
             ani.resetTimer();
         }
     }
@@ -37,9 +35,6 @@ void Animation2DSystem::OnUpdate(float dt)
 
 void Animation2DSystem::OnRender()
 {
-    if(s_Scene->getSceneState() != Scene::SceneState::Play)
-        return;
-
     auto &registry = s_Scene->m_registry;
     auto view = registry.view<Animation2DComponent>();
     for(auto ent : view)
@@ -49,6 +44,9 @@ void Animation2DSystem::OnRender()
         auto &trans = entity.getComponent<TransformComponent>();
         //
         auto curFrame = ani.getCurrentFrame();
+
+        if(!curFrame)
+            continue;
 
         if(trans.rotate == 0.f)
             Renderer2D::DrawQuad(trans.translate, trans.scale, curFrame);
@@ -101,7 +99,14 @@ void Animation2DSystem::OnImGuiRender()
 
 void Animation2DSystem::OnScenePlay()
 {
-
+    auto &registry = s_Scene->m_registry;
+    auto view = registry.view<Animation2DComponent>();
+    for(auto ent : view)
+    {
+        Entity entity{ent, s_Scene.get()};
+        auto &ani = entity.getComponent<Animation2DComponent>();
+        ani.stop();
+    }
 }
 
 void Animation2DSystem::OnSceneStop()

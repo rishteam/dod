@@ -13,6 +13,7 @@
 
 #include <Rish/ImGui/ImGui.h>
 #include <Rish/Scene/ScriptableManager.h>
+#include <Rish/Animation/Component.h>
 
 
 namespace rl {

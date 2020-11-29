@@ -124,10 +124,6 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
-
-    auto ent = m_currentScene->createEntity("AniTestEnt");
-    auto &ani = ent.addComponent<Animation2DComponent>();
-
 }
 
 void EditorLayer::onDetach()

@@ -833,11 +833,25 @@ void ComponentEditPanel::drawEditComponentWidget<Animation2DComponent>()
     {
         DrawRightClickMenu(Animation2DComponent, false);
         //
+        auto &ani = m_targetEntity.getComponent<Animation2DComponent>();
+        //
         if(ImGui::Button("Edit"))
         {
-            auto &ani = m_targetEntity.getComponent<Animation2DComponent>();
             m_animationEditor.setTargetComponent(&ani);
             m_animationEditor.showWindow();
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("Preview"))
+        {
+            ani.toggle();
+        }
+
+        auto curFrame = ani.getCurrentFrame();
+        if(curFrame)
+        {
+            ImVec2 size{(float) curFrame->getWidth(), (float) curFrame->getHeight()};
+            auto textureID = curFrame->getTextureID();
+            ImGui::Image(textureID, size, {0, 0}, {1, -1});
         }
     }
     EndDrawEditComponent();

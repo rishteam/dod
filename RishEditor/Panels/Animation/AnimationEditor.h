@@ -10,6 +10,8 @@
 
 #include <Rish/ImGui/ImGuiWindow.h>
 #include <Rish/ImGui/AttributeWidget.h>
+#include <Rish/Animation/Component.h>
+
 
 namespace rl {
 
@@ -31,7 +33,6 @@ public:
     void setTargetComponent(Animation2DComponent *target);
     void resetTargetComponent();
 private:
-    void loadAnimation();
 
     ImGui::AttributeWidget m_attribWidget;
     Animation2DComponent *m_editTarget = nullptr;
