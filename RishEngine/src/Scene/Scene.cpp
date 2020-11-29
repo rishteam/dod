@@ -188,6 +188,7 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<BoxCollider2DComponent>(ent, src);
     CopyComponentToEntityIfExists<Joint2DComponent>(ent, src);
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
+    CopyComponentToEntityIfExists<Animation2DComponent>(ent, src);
 
     return ent;
 }
@@ -292,6 +293,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<Animation2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     
     // Copy other states
     target->m_nameManager = m_nameManager;

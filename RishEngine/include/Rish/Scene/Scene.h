@@ -195,7 +195,8 @@ public:
                 BoxCollider2DComponent,
                 Joint2DComponent,
                 GroupComponent,
-                SubGroupComponent
+                SubGroupComponent,
+                Animation2DComponent
             >(ar);
 	}
 
@@ -214,7 +215,8 @@ public:
                 BoxCollider2DComponent,
                 Joint2DComponent,
                 GroupComponent,
-                SubGroupComponent
+                SubGroupComponent,
+                Animation2DComponent
             >(ar);
 	}
 };

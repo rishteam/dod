@@ -58,7 +58,7 @@ public:
     void updateGroupTransform(Entity targetEntity);
 private:
     ComponentSelectionPanel m_componentSelectionPanel; ///< Component selection
-    AnimationEditor m_animationEditor; ///< Editor for Animation2DCompoennt
+    AnimationEditor m_animationEditor;                 ///< Editor for Animation2DCompoennt
 };
 
 } // end of namespace rl

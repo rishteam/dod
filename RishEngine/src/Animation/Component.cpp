@@ -17,14 +17,26 @@ void Animation2DComponent::resetTimer()
 
 void Animation2DComponent::playNextFrame()
 {
-    currentFrame++;
-    if(currentFrame >= textureList.size())
-        currentFrame %= textureList.size();
+    if(loop)
+    {
+        if(reverse)
+        {
+            currentFrame--;
+            if (currentFrame < 0)
+                currentFrame = !textureList.empty() ? textureList.size() - 1 : 0;
+        }
+        else
+        {
+            currentFrame++;
+            if (currentFrame >= textureList.size())
+                currentFrame %= textureList.size();
+        }
+    }
 }
 
 Ref<Texture2D> Animation2DComponent::getCurrentFrame()
 {
-    return textureList[currentFrame];
+    return !textureList.empty() ? textureList[currentFrame] : nullptr;
 }
 
 } // end of namespace rl

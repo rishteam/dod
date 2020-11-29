@@ -20,6 +20,7 @@
 #include <Rish/Scene/System/NativeScriptSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
+#include <Rish/Animation/Animation2DSystem.h>
 
 // Components
 #include <Rish/Animation/Component.h>
@@ -182,6 +183,12 @@ void EditorLayer::onUpdate(Time dt)
             Renderer2D::EndScene();
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
                                         RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        }
+        // Animation2D
+        {
+            Renderer2D::BeginScene(cameraController->getCamera(), true);
+            Animation2DSystem::OnEditorRender();
+            Renderer2D::EndScene();
         }
     }
     m_editorFramebuffer->unbind();

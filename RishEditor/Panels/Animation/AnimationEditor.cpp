@@ -64,7 +64,27 @@ void AnimationEditor::onImGuiUpdate()
             saveToFile("Animation2D", *m_editTarget, path);
         }
     }
+    //
+    if(ImGui::Button("Add Frame"))
+    {
+        if(FileDialog::SelectSingleFile(nullptr,
+            (FileSystem::GetCurrentDirectory() + "\\assets\\animation").c_str(),
+            path))
+        {
+            path = FileSystem::RelativePath(path);
+            m_editTarget->textureList.push_back(Texture2D::LoadTexture(path));
+        }
+    }
 
+    auto curFrame = m_editTarget->getCurrentFrame();
+    if(curFrame)
+    {
+        ImVec2 size{(float) curFrame->getWidth(), (float) curFrame->getHeight()};
+        auto textureID = curFrame->getTextureID();
+        ImGui::Image(textureID, size, {0, 0}, {1, -1});
+    }
+
+    ImGui::SliderInt("Frames", &m_editTarget->currentFrame, 0, m_editTarget->getFrameCount()-1);
 
     m_attribWidget.onImGuiRender();
 }
