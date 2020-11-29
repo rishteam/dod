@@ -75,7 +75,7 @@ void EditController::onUpdate(Time dt)
         drawCameraIconAndBorder(scene);
         // TODO: Draw other special entities
 
-        // draw attachPoint
+        // Draw attachPoint
         auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
         for (auto entity : view) {
             Entity ent{entity, scene.get()};
@@ -86,6 +86,7 @@ void EditController::onUpdate(Time dt)
             float xForce = (int) rigid.force.x / 100 >= 10 ? 1 : rigid.force.x / 1000.0f;
             float yForce = (int) rigid.force.y / 100 >= 10 ? 1 : rigid.force.y / 1000.0f;
 
+            // use Lerp to calculate the force Intensity
             float xForceIntensity = glm::lerp(0.0f, transform.scale.x/2, xForce);
             float yForceIntensity = glm::lerp(0.0f, transform.scale.y/2, yForce);
 
@@ -121,12 +122,12 @@ void EditController::onUpdate(Time dt)
             }
         }
 
-        // draw boxcollider
-        auto view2 = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
+        // Draw Boxcollider
+        auto view2 = scene->m_registry.view<TransformComponent, Collider2DComponent>();
         for (auto entity : view2)
         {
             Entity ent{entity, scene.get()};
-            auto &boxc = ent.getComponent<BoxCollider2DComponent>();
+            auto &boxc = ent.getComponent<Collider2DComponent>();
             auto &transform = ent.getComponent<TransformComponent>();
             //TODO: rotate Quad for collider
             Renderer2D::DrawRotatedRect({transform.translate.x + boxc.x, transform.translate.y + boxc.y},
@@ -153,8 +154,6 @@ void EditController::onUpdate(Time dt)
         m_gizmo.setSelectedEntity(entSet);
         m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
         m_gizmo.onUpdate();
-
-
     }
 
     Renderer2D::EndScene();

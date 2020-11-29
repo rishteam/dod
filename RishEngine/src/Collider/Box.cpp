@@ -1,118 +1,38 @@
-#include "Rish/Collider/Box.h"
+#include <Rish/Collider/Box.h>
+#include <Rish/Collider/Circle.h>
+#include <Rish/Collider/Polygon.h>
 
 namespace rl {
 
 Box::Box(float x_, float y_, float w_, float h_)
 {
-    x = x_;
-    y = y_;
+    position.x = x_;
+    position.y = y_;
     w = w_;
     h = h_;
-    rotation = 0.0f;
-    m_corner.emplace_back(w / 2.0, -h / 2.0);
-    m_corner.emplace_back(w / 2.0, h / 2.0);
-    m_corner.emplace_back(-w / 2.0, h / 2.0);
-    m_corner.emplace_back(-w / 2.0, -h / 2.0);
-    _setVertices();
-}
+    angle = 0.0f;
+    m_vertices[0] = Vec2(w / 2.0, -h / 2.0);
+    m_vertices[1] = Vec2(w / 2.0, h / 2.0);
+    m_vertices[2] = Vec2(-w / 2.0, h / 2.0);
+    m_vertices[3] = Vec2(-w / 2.0, -h / 2.0);
 
-Box::Box(Ref<RigidBody2D> &body)
-{
-    w = float(body->wh.x);
-    h = float(body->wh.y);
-    x = body->position.x;
-    y = body->position.y;
-    rotation = body->angle;
-    m_corner.emplace_back(w / 2.0, -h / 2.0);
-    m_corner.emplace_back(w / 2.0, h / 2.0);
-    m_corner.emplace_back(-w / 2.0, h / 2.0);
-    m_corner.emplace_back(-w / 2.0, -h / 2.0);
-    _setVertices();
-}
-
-void Box::_setVertices()
-{
-    m_vertices.clear();
-    float angle_rad = rotation;
-    Vec2 cent(x, y);
-    for (auto &idx : m_corner)
+    // Compute face normals
+    for(int i1 = 0; i1 < m_vertexCount; ++i1)
     {
-        Vec2 vec(cent.x + idx.x, cent.y + idx.y);
-        vec.rotate_ref(angle_rad, cent);
-        m_vertices.push_back(vec);
+        int i2 = i1 + 1 < m_vertexCount ? i1 + 1 : 0;
+        Vec2 face = m_vertices[i2] - m_vertices[i1];
+
+        // Ensure no zero-length edges, because that's bad
+        assert( face.LenSqr( ) > EPSILON * EPSILON );
+
+        // Calculate normal with 2D cross product between vector and scalar
+        m_normals[i1] = Vec2( face.y, -face.x );
+        m_normals[i1].Normalize( );
     }
+
+    setMatrix(0.0f);
+    angle = 0.0f;
 }
 
-void Box::_findSAT()
-{
-    m_SAT.clear();
-    int total_pt = m_vertices.size();
-    for (int i = 1; i < total_pt; i++)
-    {
-        float tmp_x = m_vertices[i].x - m_vertices[i - 1].x;
-        float tmp_y = m_vertices[i].y - m_vertices[i - 1].y;
-        Vec2 tmp(tmp_x, tmp_y);
-        m_SAT.push_back(tmp.normalL());
-    }
-    Vec2 tmp2((m_vertices[0].x - m_vertices[total_pt - 1].x), (m_vertices[0].y - m_vertices[total_pt - 1].y));
-    m_SAT.push_back(tmp2.normalL());
-}
-
-float Box::getX()
-{
-    return x;
-}
-
-float Box::getY()
-{
-    return y;
-}
-
-float Box::getWidth()
-{
-    return w;
-}
-
-float Box::getHeight()
-{
-    return h;
-}
-
-bool Box::isCollide(Ref<Box> &b)
-{
-    _setVertices();
-    _findSAT();
-
-    b->_setVertices();
-    b->_findSAT();
-    auto b_sat = b->m_SAT;
-
-    // 分離軸枚舉，只需枚舉兩個向量，因為另外兩個只是反向而已
-    auto PA = getMinMax(m_SAT[0], m_vertices);
-    auto PB = getMinMax(m_SAT[0], b->m_vertices);
-    auto QA = getMinMax(m_SAT[1], m_vertices);
-    auto QB = getMinMax(m_SAT[1], b->m_vertices);
-
-    auto WA = getMinMax(b_sat[0], m_vertices);
-    auto WB = getMinMax(b_sat[0], b->m_vertices);
-    auto XA = getMinMax(b_sat[1], m_vertices);
-    auto XB = getMinMax(b_sat[1], b->m_vertices);
-
-    // 檢查分離軸上投影區段是否分開
-    bool sep_P = (PB.first > PA.second) || (PA.first > PB.second);
-    bool sep_Q = (QB.first > QA.second) || (QA.first > QB.second);
-
-    bool sep_W = (WB.first > WA.second) || (WA.first > WB.second);
-    bool sep_X = (XB.first > XA.second) || (XA.first > XB.second);
-
-    if (sep_P || sep_Q || sep_W || sep_X)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
 
 }

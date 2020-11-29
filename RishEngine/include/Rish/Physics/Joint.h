@@ -1,12 +1,11 @@
-#include <Rish/Collider/Box.h>
-#include <Rish/Physics/vector_math.h>
 #include <Rish/Physics/RigidBody2D.h>
-#include <Rish/Physics/PhysicsWorld.h>
 
-#ifndef Joint_H
-#define Joint_H
+
 
 namespace rl {
+
+class PhysicsWorld;
+
 class Joint
 {
 public:
@@ -23,7 +22,6 @@ public:
     void ApplyImpulse();
 
     Mat22 M;
-    // TODO: Anchor Update
     Vec2 Anchor;
     Vec2 localAnchor1, localAnchor2;
     Vec2 r1, r2;
@@ -34,6 +32,5 @@ public:
     float biasFactor;
     float softness;
 };
-}
 
-#endif
+}

@@ -7,8 +7,15 @@
 
 #include <Rish/rlpch.h>
 
+/**
+ * @file vector_math.h
+ * @author  halloworld <william31212@gmail.com>
+ * @brief 更詳細的向量數學計算function，繼承sf::Vector2<float>
+ */
+
 /** @brief 徑度與度度量的轉換 */
 #define M_PI 3.14159265358979323846
+const float EPSILON = 0.0001f;
 #define degreesToRadians(angleDegrees) (angleDegrees * M_PI / 180.0)
 #define radiansToDegrees(angleRadians) (angleRadians * 180.0 / M_PI)
 
@@ -17,7 +24,7 @@
 #define MIN_float std::numeric_limits<float>::min()
 
 /**
- * @brief 自行建立一個特化的Vector
+ * @brief 補足sf::Vector2f無法做的計算，自行建立一個特化的Vector
  * @details 包括向量長度、內積、左右法向量等數學基本工具
  */
 class Vec2 {
@@ -46,10 +53,15 @@ public:
    * @brief Reverse Vector
    */
     Vec2 operator - ()  {
-        Vec2 v;
-        v.x = -x;
-        v.y = -y;
-        return v;
+        return Vec2(-x, -y);
+    }
+
+    Vec2 operator * (float scale)  {
+        return Vec2(x * scale, y * scale);
+    }
+
+    Vec2 operator / (float scale)  {
+        return Vec2(x / scale, y / scale);
     }
 
     void operator = (const Vec2& v)
@@ -64,27 +76,27 @@ public:
     Vec2 operator - (const Vec2& v)  {
         return Vec2(x - v.x, y - v.y);
     }
-
+    /**
+    * @brief add vector
+    */
     void operator += (const Vec2& v)
     {
         x += v.x; y += v.y;
     }
-
+    /**
+    * @brief sub vector
+    */
     void operator -= (const Vec2& v)
     {
         x -= v.x; y -= v.y;
     }
-
+    /**
+    * @brief scale vector
+    */
     void operator *= (float a)
     {
         x *= a; y *= a;
     }
-
-    operator glm::vec2 () const
-    {
-        return glm::vec2{x, y};
-    }
-
     /**
     * @brief set Vector
     */
@@ -96,6 +108,18 @@ public:
     /**
      * @brief get length of vector
      */
+    float DistSqr( const Vec2& a, const Vec2& b )
+    {
+        Vec2 c = Vec2(a.x - b.x,  a.y - b.y);
+        return c.dot(c);
+    }
+    /**
+     * @brief vector square
+     */
+    float LenSqr( ) const
+    {
+        return x * x + y * y;
+    }
     float getLength();
     /**
      * @brief vector dot
@@ -106,6 +130,20 @@ public:
      */
     float projectLengthOnto(Vec2 &vec2);
     /**
+     * @brief 轉單位向量
+     */
+    void Normalize()
+    {
+        float len = getLength( );
+
+        if(len > 0.0001f)
+        {
+            float invLen = 1.0f / len;
+            x *= invLen;
+            y *= invLen;
+        }
+    }
+    /**
      * @brief 左法向量
      */
     Vec2 normalL();
@@ -113,9 +151,10 @@ public:
      * @brief 右法向量
      */
     Vec2 normalR();
+
     /**
-     * @brief 向量放大
-     */
+    * @brief 向量放大
+    */
     void Times(float K){
         x *= K;
         y *= K;
@@ -145,23 +184,16 @@ public:
      * @retval float 旋轉過後的向量
      */
     void rotate_ref(float angle, Vec2 &ref);
-    float x, y;
 
-private:
-    friend class cereal::access;
-    template<class Archive>
-    void serialize(Archive &ar)
-    {
-        ar(
-                CEREAL_NVP(x),
-                CEREAL_NVP(y)
-        );
-    }
-
+    float x;
+    float y;
 };
+
 
 std::pair<float, float> getMinMax(Vec2 &axis, std::deque<Vec2> corner);
 int randomint(int min, int max);
+float DistSqr( Vec2& a, Vec2& b );
+
 
 class Mat22 {
 public:
@@ -183,6 +215,15 @@ public:
     }
 
     Mat22(const Vec2 &col1, const Vec2 &col2) : col1(col1), col2(col2) {}
+
+    void SetRotateMatrix(float angle)
+    {
+        float c = cosf(angle), s = sinf(angle);
+        col1.x = c;
+        col2.x = -s;
+        col1.y = s;
+        col2.y = c;
+    }
 
     //轉至矩陣
     Mat22 Transpose() const
@@ -302,12 +343,4 @@ template<typename T> inline void Swap(T& a, T& b)
     T tmp = a;
     a = b;
     b = tmp;
-}
-
-inline float Random(float lo, float hi)
-{
-    float r = (float)rand();
-    r /= RAND_MAX;
-    r = (hi - lo) * r + lo;
-    return r;
 }

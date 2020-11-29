@@ -1,4 +1,5 @@
 #include <Rish/Physics/Joint.h>
+#include <Rish/Physics/PhysicsWorld.h>
 
 namespace rl {
 
@@ -72,13 +73,13 @@ void Joint::PreStep(float inv_dt) {
     Vec2 p2 = b2->position + r2;
     Vec2 dp = p2 - p1;
 
-    if (rl::PhysicsWorld::positionCorrection) {
+    if (PhysicsWorld::positionCorrection) {
         bias = -biasFactor * inv_dt * dp;
     } else {
         bias.Set(0.0f, 0.0f);
     }
 
-    if (rl::PhysicsWorld::warmStarting)
+    if (PhysicsWorld::warmStarting)
     {
         // Apply accumulated impulse.
         b1->velocity -= b1->invMass * P;

@@ -98,7 +98,7 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<CameraComponent>(ent, src);
     CopyComponentToEntityIfExists<NativeScriptComponent>(ent, src);
     CopyComponentToEntityIfExists<RigidBody2DComponent>(ent, src);
-    CopyComponentToEntityIfExists<BoxCollider2DComponent>(ent, src);
+    CopyComponentToEntityIfExists<Collider2DComponent>(ent, src);
     CopyComponentToEntityIfExists<Joint2DComponent>(ent, src);
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
 }
@@ -184,7 +184,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<NativeScriptComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<ParticleComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
-    CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<Collider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     
     // Copy other states

@@ -108,9 +108,12 @@ add_library(RishEngine
     # Effect
     src/Effect/Particle/ParticleSystem.cpp
 
-    # Box
+    # Collider
     src/Collider/Box.cpp
+    src/Collider/Circle.cpp
     src/Collider/ColliderSystem.cpp
+    src/Collider/Polygon.cpp
+    src/Collider/Shape.cpp
 
     # Physics
     src/Physics/Arbiter.cpp

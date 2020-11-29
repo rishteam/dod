@@ -8,7 +8,7 @@
 
 #include <Rish/Physics/vector_math.h>
 
-class ArbiterKey;
+
 class Arbiter;
 
 namespace rl {
@@ -28,21 +28,11 @@ public:
 
     void Clear();
 
-    void Step(float dt);
+    void Step(float delta_t);
 
     void BoardPhase();
 
     // TODO: Move these to the PhysicsLayer
-//    void demo1();
-//    void demo2();
-//    void demo3();
-//    void demo4();
-//    void demo5();
-//    void demo6();
-//    void demo7();
-//    void demo8();
-//    void demo9();
-
 
     static Vec2 ChangeToPhysicsWorld(const Vec2 &ps);
 
@@ -60,7 +50,7 @@ public:
 
     std::vector<Ref<RigidBody2D>> bodies;
     std::vector<Ref<Joint>> joints;
-    std::map<ArbiterKey, Arbiter> arbiters;
+    std::vector<Arbiter> arbList;
 
 };
 }

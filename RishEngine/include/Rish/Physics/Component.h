@@ -32,6 +32,8 @@ struct RigidBody2DComponent
     Vec2 attachPoint = Vec2(0.0f, 0.0f);
     /// 質量，質量倒數
     float mass = 10.0f;
+    /// 轉動慣量
+    float I = 0.0f;
     /// 受的力
     Vec2 force = Vec2(0.0f, 0.0f);
     /// 力矩
@@ -59,6 +61,7 @@ private:
             CEREAL_NVP(velocity),
             CEREAL_NVP(friction),
             CEREAL_NVP(mass),
+            CEREAL_NVP(I),
             CEREAL_NVP(force),
             CEREAL_NVP(torque),
             CEREAL_NVP(keepingForce),
@@ -70,35 +73,44 @@ private:
     }
 };
 
-struct BoxCollider2DComponent
+struct Collider2DComponent
 {
+    enum class Type
+    {
+        Circle,
+        Box,
+        Polygon
+    } type;
     float x = 0.0f;
     float y = 0.0f;
     float w = 1.0f;
     float h = 1.0f;
+    float radius = 1.0f;
+    std::deque<Vec2> pt;
     std::vector<UUID> whoCollide;
     bool FollowTransform = false;
     bool isCollision = false;
 
-    BoxCollider2DComponent();
-    BoxCollider2DComponent(float x, float y, float w, float h)
-        : x(x), y(y), w(w), h(h)
-    {
-    }
+    Collider2DComponent();
 private:
     friend class cereal::access;
     template<class Archive>
     void serialize(Archive &ar)
     {
         ar(
+
             CEREAL_NVP(x),
             CEREAL_NVP(y),
             CEREAL_NVP(w),
-            CEREAL_NVP(h)
+            CEREAL_NVP(h),
+            CEREAL_NVP(radius),
+            CEREAL_NVP(pt),
+            CEREAL_NVP(type)
             // TODO: add serializable parameter
         );
     }
 };
+
 
 struct Joint2DComponent
 {

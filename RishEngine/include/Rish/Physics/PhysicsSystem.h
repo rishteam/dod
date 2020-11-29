@@ -10,6 +10,9 @@
 #include <entt/entt.hpp>
 
 class Event;
+class Box;
+class Circle;
+class Polygon;
 
 namespace rl {
 
