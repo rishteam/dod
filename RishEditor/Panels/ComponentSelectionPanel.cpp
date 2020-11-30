@@ -26,13 +26,13 @@ void ComponentSelectionPanel::onImGuiRender()
             {
                 if (ImGui::Selectable(k.c_str() + 4))
                 {
-                    ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                    ComponentManager::AddComponentByTypeName(getSelectedEntity(), k);
                     ImGui::CloseCurrentPopup();
                 }
                 if (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
                 {
                     printf("%s\n", k.c_str());
-                    ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                    ComponentManager::AddComponentByTypeName(getSelectedEntity(), k);
                     ImGui::CloseCurrentPopup();
                 }
             }
@@ -44,14 +44,15 @@ void ComponentSelectionPanel::onImGuiRender()
 void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
-    ComponentManager::registerComponent<TransformComponent>();
-    ComponentManager::registerComponent<SpriteRenderComponent>();
-    ComponentManager::registerComponent<CameraComponent>();
-    ComponentManager::registerComponent<NativeScriptComponent>();
-    ComponentManager::registerComponent<RigidBody2DComponent>();
-    ComponentManager::registerComponent<BoxCollider2DComponent>();
-    ComponentManager::registerComponent<Joint2DComponent>();
-    ComponentManager::registerComponent<ParticleComponent>();
+    ComponentManager::RegisterComponent<TransformComponent>();
+    ComponentManager::RegisterComponent<SpriteRenderComponent>();
+    ComponentManager::RegisterComponent<CameraComponent>();
+    ComponentManager::RegisterComponent<NativeScriptComponent>();
+    ComponentManager::RegisterComponent<RigidBody2DComponent>();
+    ComponentManager::RegisterComponent<BoxCollider2DComponent>();
+    ComponentManager::RegisterComponent<Joint2DComponent>();
+    ComponentManager::RegisterComponent<ParticleComponent>();
+    ComponentManager::RegisterComponent<Animation2DComponent>();
 }
 
 } // end of namespace rl
