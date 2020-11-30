@@ -583,28 +583,26 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
         static std::set<std::tuple<bool, UUID, std::string>> NoRayCastList;
         static std::set<std::tuple<bool, UUID, std::string>> DeleteList;
 
-        if(RayCastList.empty() && NoRayCastList.empty())
+        for(auto ent : rigidView)
         {
-            for(auto ent : rigidView)
+            Entity entity{ent, m_targetEntity.m_scene};
+            auto &RigidBodyID = entity.getComponent<TagComponent>().id;
+            auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
+            auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
+
+            std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
+
+            if(light.ENTITY_NO_RAY_CAST.find(RigidBodyID) != light.ENTITY_NO_RAY_CAST.end())
             {
-                Entity entity{ent, m_targetEntity.m_scene};
-                auto &RigidBodyID = entity.getComponent<TagComponent>().id;
-                auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
-                auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
+                NoRayCastList.insert(make_tuple(false, RigidBodyID, options_single));
+            }
 
-                std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
-
-                if(light.ENTITY_NO_RAY_CAST.find(RigidBodyID) != light.ENTITY_NO_RAY_CAST.end())
-                {
-                    NoRayCastList.insert(make_tuple(false, RigidBodyID, options_single));
-                }
-
-                else
-                {
-                    RayCastList.insert(make_tuple(false, RigidBodyID, options_single));
-                }
+            else
+            {
+                RayCastList.insert(make_tuple(false, RigidBodyID, options_single));
             }
         }
+
 
         std::set<UUID>::iterator it;
         if(ImGui::ListBoxHeader("Entity Has Ray Cast", rigidView.size(), 4))

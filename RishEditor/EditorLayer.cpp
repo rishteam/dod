@@ -227,7 +227,7 @@ void EditorLayer::onUpdate(Time dt)
         // Draw Light
         {
             RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 1));
-            RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+            RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer | RenderCommand::ClearBufferTarget::StencilBuffer);
             LightSystem::onViewportResize(m_gameViewportPanelSize);
             LightSystem::onRender();
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
