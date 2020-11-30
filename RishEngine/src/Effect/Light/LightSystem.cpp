@@ -43,22 +43,6 @@ void LightSystem::onRender()
         Renderer2D::EndScene();
     }
 
-//    {
-//        Renderer2D::BeginScene(mainCamera, mainCameraTransform);
-//        for(auto entity : view)
-//        {
-//            auto &transform = registry.get<TransformComponent>(entity);
-//            auto &light = registry.get<LightComponent>(entity);
-//
-////            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, transform.translate,
-////                                       light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
-//            Renderer2D::DrawShadow(transform.translate, {1, 1, 0}, {2, 1, 0}, 10, glm::vec4(1, 1, 1, 1));
-//        }
-//        Renderer2D::EndScene();
-//    }
-
-
-
 //     Draw Shadow And Light
     {
         Renderer2D::BeginScene(mainCamera, mainCameraTransform);
@@ -68,7 +52,6 @@ void LightSystem::onRender()
         {
             auto &transform = registry.get<TransformComponent>(entity);
             auto &light = registry.get<LightComponent>(entity);
-
             RenderCommand::SetColorMask(false, false, false, false);
             RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Always, 1, 1);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
@@ -146,17 +129,40 @@ void LightSystem::onRender()
                 }
             }
 
-            // Draw Light
-            RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
+//             Draw Light
+            RenderCommand::SetBlendMode(true);
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
                                         RenderCommand::StencilOpFactor::Keep);
+            RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
             RenderCommand::SetColorMask(true, true, true, true);
             Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
                                        light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
             RenderCommand::Clear(RenderCommand::ClearBufferTarget::StencilBuffer);
+            RenderCommand::SetBlendMode(false);
         }
+        RenderCommand::SetBlendMode(true);
         Renderer2D::EndScene();
     }
+
+//    {
+//        Renderer2D::BeginScene(mainCamera, mainCameraTransform);
+//        RenderCommand::SetBlendMode(true);
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
+//        RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
+//        RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
+//                                    RenderCommand::StencilOpFactor::Keep);
+//        RenderCommand::SetColorMask(true, true, true, true);
+//        for(auto entity : view)
+//        {
+//            auto &transform = registry.get<TransformComponent>(entity);
+//            auto &light = registry.get<LightComponent>(entity);
+//
+//            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
+//                                       light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
+//        }
+//        Renderer2D::EndScene();
+//    }
 }
 
 void LightSystem::onEditorRender()
@@ -184,7 +190,7 @@ void LightSystem::onEditorRender()
         {
             auto &transform = registry.get<TransformComponent>(entity);
             auto &light     = registry.get<LightComponent>(entity);
-            Renderer2D::DrawRect(transform.translate, light.viewPortSize, glm::vec4(1, 0, 1, 1));
+            Renderer2D::DrawRect(transform.translate, light.viewPortSize*2.f, glm::vec4(1, 0, 1, 1));
 
         }
     }

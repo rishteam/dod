@@ -644,6 +644,22 @@ struct Renderer2DData
     glm::vec4 lightVertexPosition[4]{};
 
     ////////////////////////////////////////////////////////////////
+    // Light (Not Batch Rendering)
+    ////////////////////////////////////////////////////////////////
+    Ref<VertexArray> lightVA = nullptr;
+    Ref<VertexBuffer> lightVB = nullptr;
+    Ref<Shader> lightShader = nullptr;
+    bool isLightInit = true;
+
+    ////////////////////////////////////////////////////////////////
+    // Quad (Not Batch Rendering)
+    ////////////////////////////////////////////////////////////////
+    Ref<VertexArray> quadVA = nullptr;
+    Ref<VertexBuffer> quadVB = nullptr;
+    Ref<Shader> quadShader = nullptr;
+    bool isQuadInit = true;
+
+    ////////////////////////////////////////////////////////////////
     // Common
     ////////////////////////////////////////////////////////////////
     Ref<VertexArray> combineVA = nullptr;
@@ -1015,7 +1031,7 @@ void Renderer2D::DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, cons
     length = glm::distance(p1, lightPos);
     glm::vec3 p3 = p1 + glm::vec3{p1 - lightPos} * n/length;
 
-    DrawQuad(p0, p1, p2, p3, color);
+    DrawQuadNonBatch(p0, p1, p2, p3, color);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -1413,21 +1429,120 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // TODO : Remove aspect and zoom
+//void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
+//                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color)
+//{
+//    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+//
+//    glm::vec2 si = viewportScale;
+//    glm::vec4 posi[4] = {
+//            {viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
+//            {viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
+//            {viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z, 1.f},
+//            {viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z, 1.f}
+//    };
+//
+//    // TODO : change radius and strength to linear and quadratic
+//    SubmitLight(posi, position, color, 1, 1/radius, 1/strength, screenSize, zoom, aspect);
+//}
+
 void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
                                 const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color)
 {
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
+    auto &lightVA = s_data->lightVA;
+    auto &lightShader = s_data->lightShader;
+    auto &lightVB = s_data->lightVB;
+
+    if(s_data->isLightInit)
+    {
+        lightVA = VertexArray::Create();
+        lightShader = Shader::LoadShaderVFS("/shader/pointLightNonBatch.vs", "/shader/pointLightNonBatch.fs");
+
+        lightVB = VertexBuffer::Create(30);
+
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> lightIB = IndexBuffer::Create(pattern, 6);
+        lightVA->setIndexBuffer(lightIB);
+
+        s_data->isLightInit = false;
+    }
 
     glm::vec2 si = viewportScale;
-    glm::vec4 posi[4] = {
-            {viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
-            {viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
-            {viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z, 1.f},
-            {viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z, 1.f}
+    float posi[] = {
+            viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z, position.x, position.y, position.z,
+            viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z, position.x, position.y, position.z,
+            viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z, position.x, position.y, position.z,
+            viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z, position.x, position.y, position.z
     };
 
-    // TODO : change radius and strength to linear and quadratic
-    SubmitLight(posi, position, color, 1, 1/radius, 1/strength, screenSize, zoom, aspect);
+    lightVB->setData(posi, sizeof(posi));
+    BufferLayout layout = {
+            {ShaderDataType::Float3, "a_QuadPosition"},
+            {ShaderDataType::Float3, "a_LightPosition"}
+    };
+    lightVB->setLayout(layout);
+    lightVA->setVertexBuffer(lightVB);
+
+    lightShader->bind();
+    lightShader->setFloat4("v_Color", color);
+    lightShader->setFloat("v_Linear", 1/radius);
+    lightShader->setFloat("v_Quadratic", 1/strength);
+    lightShader->setMat4("u_ViewProjection", s_data->m_viewProjMatrix);
+    lightShader->setFloat2("zoom", {aspect*zoom, zoom});
+    lightShader->setFloat2("v_ViewPort", screenSize);
+
+    lightVA->bind();
+    RenderCommand::DrawElement(DrawTriangles, lightVA, 6, false);
+    lightVA->unbind();
+}
+
+void Renderer2D::DrawQuadNonBatch(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4 &color)
+{
+    DrawQuadNonBatch(glm::vec3{p0, 0}, {p1, 0}, {p2, 0}, {p3, 0}, color);
+}
+
+void Renderer2D::DrawQuadNonBatch(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec4 &color)
+{
+    auto &quadVA = s_data->quadVA;
+    auto &quadVB = s_data->quadVB;
+    auto &quadShader = s_data->quadShader;
+
+    if(s_data->isQuadInit)
+    {
+        quadVA = VertexArray::Create();
+        quadVB = VertexBuffer::Create(12);
+        quadShader = Shader::LoadShaderVFS("/shader/quadTextureNonBatch.vs", "/shader/quadTextureNonBatch.fs");
+
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> quadIB = IndexBuffer::Create(pattern, 6);
+        quadVA->setIndexBuffer(quadIB);
+
+        s_data->isQuadInit = false;
+    }
+
+    float quadVertices[] = {
+
+            p0.x, p0.y, p0.z,
+            p1.x, p1.y, p1.z,
+            p2.x, p2.y, p2.z,
+            p3.x, p3.y, p3.z
+    };
+
+    quadVB->setData(quadVertices, sizeof(quadVertices));
+    BufferLayout layout = {
+            {ShaderDataType::Float3, "a_Position"},
+    };
+    quadVB->setLayout(layout);
+    quadVA->setVertexBuffer(quadVB);
+
+    quadShader->bind();
+    quadShader->setMat4("u_ViewProjection", s_data->m_viewProjMatrix);
+    quadShader->setFloat4("v_Color", color);
+
+    quadVA->bind();
+    RenderCommand::DrawElement(DrawTriangles, quadVA, 6, false);
+    quadVA->unbind();
 }
 
 void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,
