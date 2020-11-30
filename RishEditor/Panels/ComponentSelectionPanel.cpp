@@ -44,14 +44,13 @@ void ComponentSelectionPanel::onImGuiRender()
 void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
-    ComponentManager::registerComponent<TransformComponent>();
     ComponentManager::registerComponent<SpriteRenderComponent>();
     ComponentManager::registerComponent<CameraComponent>();
     ComponentManager::registerComponent<NativeScriptComponent>();
+    ComponentManager::registerComponent<ParticleComponent>();
     ComponentManager::registerComponent<RigidBody2DComponent>();
     ComponentManager::registerComponent<BoxCollider2DComponent>();
     ComponentManager::registerComponent<Joint2DComponent>();
-    ComponentManager::registerComponent<ParticleComponent>();
 }
 
 } // end of namespace rl
