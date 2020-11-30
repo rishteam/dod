@@ -2,15 +2,14 @@
 
 namespace rl {
 
-Circle::Circle(float x_, float y_, float radius_)
+Circle::Circle(float x_, float y_, float radius_, float angle_)
 {
     type = Shape::Type::Circle;
     position.x = x_;
     position.y = y_;
     radius = radius_;
-
-    setMatrix(0.0f);
-    angle = 0.0f;
+    angle = angle_;
+    setMatrix(angle_);
 }
 
 

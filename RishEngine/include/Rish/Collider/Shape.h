@@ -19,6 +19,8 @@ public:
         Polygon
     } type;
 
+    Shape();
+
     /// 找向量的最遠點
     virtual Vec2 GetSupport(const Vec2 dir);
 
@@ -32,9 +34,11 @@ public:
 
     // TODO: move to derived class
     Vec2 position;
+    float angle;
     float w, h;
     float radius;
-    std::deque<Vec2> &pt;
+    float pointSize;
+    Vec2 pt[MaxVertexCount];
 
 
     bool selected = false;

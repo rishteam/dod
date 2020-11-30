@@ -18,7 +18,7 @@ void PlayerController::onUpdate(Time dt)
 {
     auto &trans = GetComponent<TransformComponent>();
     auto &rigid = GetComponent<RigidBody2DComponent>();
-    auto &boxc = GetComponent<BoxCollider2DComponent>();
+    auto &boxc = GetComponent<Collider2DComponent>();
     auto &render = GetComponent<SpriteRenderComponent>();
 
     Vec2 &velocity = rigid.velocity;
@@ -94,7 +94,7 @@ void PlayerController::onImGuiRender()
 void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &playerAction, PlayerFace &playerFace)
 {
     auto &trans = GetComponent<TransformComponent>();
-    auto &boxc = GetComponent<BoxCollider2DComponent>();
+    auto &boxc = GetComponent<Collider2DComponent>();
     // Player Draw State
     // TODO: Simplify, Flip features
     render.loadTexture("assets\\texture\\mario\\characters.gif");
@@ -225,7 +225,7 @@ void PlayerController::setSprite(SpriteRenderComponent &render, PlayerAction &pl
 
 void PlayerController::detectObject()
 {
-    auto &collideList = GetComponent<BoxCollider2DComponent>().whoCollide;
+    auto &collideList = GetComponent<Collider2DComponent>().whoCollide;
     for(auto uuid : collideList)
     {
         Entity collideEntity = GetScene().getEntityByUUID(uuid);

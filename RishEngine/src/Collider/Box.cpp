@@ -4,13 +4,14 @@
 
 namespace rl {
 
-Box::Box(float x_, float y_, float w_, float h_)
+Box::Box(float x_, float y_, float w_, float h_, float angle_)
 {
     position.x = x_;
     position.y = y_;
     w = w_;
     h = h_;
-    angle = 0.0f;
+
+
     m_vertices[0] = Vec2(w / 2.0, -h / 2.0);
     m_vertices[1] = Vec2(w / 2.0, h / 2.0);
     m_vertices[2] = Vec2(-w / 2.0, h / 2.0);
@@ -30,8 +31,8 @@ Box::Box(float x_, float y_, float w_, float h_)
         m_normals[i1].Normalize( );
     }
 
-    setMatrix(0.0f);
-    angle = 0.0f;
+    angle = angle_;
+    setMatrix(angle_);
 }
 
 

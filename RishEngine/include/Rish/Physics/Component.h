@@ -18,6 +18,8 @@ struct RigidBody2DComponent
     };
     BodyType BodyTypeState;
 
+
+
     /// 角速度
     float angularVelocity = 0.0f;
     /// 角度
@@ -86,7 +88,8 @@ struct Collider2DComponent
     float w = 1.0f;
     float h = 1.0f;
     float radius = 1.0f;
-    std::deque<Vec2> pt;
+    int pointSize = 0;
+    Vec2 pt[64];
     std::vector<UUID> whoCollide;
     bool FollowTransform = false;
     bool isCollision = false;
@@ -114,7 +117,7 @@ private:
 
 struct Joint2DComponent
 {
-    // Can Change
+    // TODO: How to Clean Up
     UUID rigidBody1;
     UUID rigidBody2;
     Vec2 anchor = Vec2(0.0f, 0.0f);

@@ -18,7 +18,7 @@ void MonsterController::onUpdate(Time dt)
 {
     auto &rigid = GetComponent<RigidBody2DComponent>();
     auto &trans = GetComponent<TransformComponent>();;
-    auto &boxc = GetComponent<BoxCollider2DComponent>();
+    auto &boxc = GetComponent<Collider2DComponent>();
     auto &render = GetComponent<SpriteRenderComponent>();
 
 

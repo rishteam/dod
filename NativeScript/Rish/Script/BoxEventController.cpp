@@ -26,7 +26,7 @@ void BoxEventController::spawnObject(EventContent eventContent)
             Entity ent = CreateEntity(fmt::format("New Object"), glm::vec3(trans.translate.x, trans.translate.y + trans.scale.y + 0.5, trans.translate.z));
             ent.addComponent<SpriteRenderComponent>("assets\\texture\\mario\\items.png");
             ent.addComponent<RigidBody2DComponent>(10.f);
-            ent.addComponent<BoxCollider2DComponent>(0.f, 0.f, trans.scale.x, trans.scale.y);
+//            ent.addComponent<Collider2DComponent>(0.f, 0.f, trans.scale.x, trans.scale.y);
             ent.addComponent<NativeScriptComponent>().bind<ObjectController>(ent);
 
             auto &render = ent.getComponent<SpriteRenderComponent>();
@@ -56,13 +56,13 @@ void BoxEventController::spawnObject(EventContent eventContent)
 
 void BoxEventController::onUpdate(Time dt)
 {
-    auto view = GetScene().m_registry.view<TransformComponent, BoxCollider2DComponent, SpriteRenderComponent>();
+    auto view = GetScene().m_registry.view<TransformComponent, Collider2DComponent, SpriteRenderComponent>();
 
     for (auto ent : view)
     {
         auto entity = GetEntityByHandle(ent);
         auto &trans = entity.getComponent<TransformComponent>();
-        auto &boxc = entity.getComponent<BoxCollider2DComponent>();
+        auto &boxc = entity.getComponent<Collider2DComponent>();
         auto &render = entity.getComponent<SpriteRenderComponent>();
         if (boxc.isCollision)
         {

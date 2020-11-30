@@ -24,8 +24,8 @@ RigidBody2D::RigidBody2D(RigidBody2D::Type type_)
 void RigidBody2D::setBox(Vec2 pos, Vec2 wh, float angle)
 {
     RigidShapeType = Type::Box;
-    box = MakeRef<Box>(pos.x, pos.y, wh.x, wh.y);
-    box->setMatrix(degreesToRadians(angle));
+    box = MakeRef<Box>(pos.x, pos.y, wh.x, wh.y, angle);
+
     shape = box;
 
     if (mass < FLT_MAX)
@@ -45,8 +45,7 @@ void RigidBody2D::setBox(Vec2 pos, Vec2 wh, float angle)
 void RigidBody2D::setCircle(Vec2 pos, float radius_, float angle)
 {
     RigidShapeType = Type::Circle;
-    circle = MakeRef<Circle>(pos.x, pos.y, radius_);
-    circle->setMatrix(degreesToRadians(angle));
+    circle = MakeRef<Circle>(pos.x, pos.y, radius_, angle);
     shape = circle;
 
     if (mass < FLT_MAX)
@@ -64,11 +63,10 @@ void RigidBody2D::setCircle(Vec2 pos, float radius_, float angle)
 }
 
 
-void RigidBody2D::setPolygon(Vec2 pos, std::deque<Vec2> &pt, float angle)
+void RigidBody2D::setPolygon(Vec2 pt[], Vec2 pos, int pointSize, float angle)
 {
     RigidShapeType = Type::Polygon;
-    polygon = MakeRef<Polygon>(pt, pos);
-    polygon->setMatrix(degreesToRadians(angle));
+    polygon = MakeRef<Polygon>(pt, pos, pointSize, angle);
     shape = polygon;
 
     // Calculate centroid and moment of Inertia

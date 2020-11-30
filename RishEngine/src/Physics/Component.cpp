@@ -4,7 +4,7 @@
 
 namespace rl {
 
-BoxCollider2DComponent::BoxCollider2DComponent()
+Collider2DComponent::Collider2DComponent()
 {
 
 }

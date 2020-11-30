@@ -164,7 +164,7 @@ public:
                 ParticleComponent,
                 NativeScriptComponent,
                 RigidBody2DComponent,
-                BoxCollider2DComponent,
+                Collider2DComponent,
                 Joint2DComponent
             >(ar);
 	}
@@ -181,7 +181,7 @@ public:
 			    ParticleComponent,
 			    NativeScriptComponent,
                 RigidBody2DComponent,
-                BoxCollider2DComponent,
+                Collider2DComponent,
                 Joint2DComponent
             >(ar);
 	}

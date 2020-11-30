@@ -15,7 +15,7 @@ void ObjectController::onDestroy()
 
 void ObjectController::onUpdate(Time dt)
 {
-    auto view = GetScene().m_registry.view<TransformComponent, BoxCollider2DComponent, SpriteRenderComponent, RigidBody2DComponent, NativeScriptComponent>();
+    auto view = GetScene().m_registry.view<TransformComponent, Collider2DComponent, SpriteRenderComponent, RigidBody2DComponent, NativeScriptComponent>();
 
     for (auto ent : view) {
         auto entity = GetEntityByHandle(ent);
@@ -23,7 +23,7 @@ void ObjectController::onUpdate(Time dt)
         if(entity.getComponent<NativeScriptComponent>().scriptName == "rl::ObjectController")
         {
             auto &trans = entity.getComponent<TransformComponent>();
-            auto &boxc = entity.getComponent<BoxCollider2DComponent>();
+            auto &boxc = entity.getComponent<Collider2DComponent>();
             auto &render = entity.getComponent<SpriteRenderComponent>();
             auto &rigid = entity.getComponent<RigidBody2DComponent>();
 

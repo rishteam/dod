@@ -1,5 +1,5 @@
+#pragma once
 #include <Rish/Physics/RigidBody2D.h>
-
 
 
 namespace rl {

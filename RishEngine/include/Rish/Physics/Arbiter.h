@@ -26,6 +26,18 @@ public:
     Arbiter(Ref<RigidBody2D> &b1_, Ref<RigidBody2D> &b2_);
     ~Arbiter() = default;
 
+    bool operator == (const Arbiter& a1)
+    {
+        if (a1.b1 == b1 && a1.b2 == b2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     void Solve();
     void PreStep(float inv_dt, Vec2 gravity);
     void ApplyImpulse();

@@ -28,7 +28,7 @@ public:
 
     void setBox(Vec2 pos, Vec2 wh, float angle);
     void setCircle(Vec2 pos, float radius_, float angle);
-    void setPolygon(Vec2 pos, std::deque<Vec2> &pt, float angle);
+    void setPolygon(Vec2 pt[], Vec2 pos, int pointSize, float angle);
 
 
     void IntegrateVelocities(float delta_t);

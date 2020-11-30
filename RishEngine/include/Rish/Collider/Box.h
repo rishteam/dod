@@ -6,7 +6,7 @@ namespace rl {
 class RL_API Box : public Shape
 {
 public:
-    Box(float x_, float y_, float w_, float h_);
+    Box(float x_, float y_, float w_, float h_, float angle_);
     ~Box() = default;
 
 

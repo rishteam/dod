@@ -187,6 +187,16 @@ public:
 
     float x;
     float y;
+private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(
+                CEREAL_NVP(x),
+                CEREAL_NVP(y)
+        );
+    }
 };
 
 

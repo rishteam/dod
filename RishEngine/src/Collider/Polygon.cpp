@@ -4,10 +4,10 @@
 
 namespace rl {
 
-Polygon::Polygon(std::deque<Vec2> &pt, Vec2 pos)
+Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
 {
     type = Shape::Type::Polygon;
-    int count = pt.size();
+    int count = pointSize;
 
     // 找凸包
     // No hulls with less than 3 vertices (ensure actual polygon)
@@ -93,8 +93,8 @@ Polygon::Polygon(std::deque<Vec2> &pt, Vec2 pos)
     }
 
     position = pos;
-    setMatrix(0.0f);
-    angle = 0.0f;
+    angle = angle_;
+    setMatrix(angle);
 }
 
 
