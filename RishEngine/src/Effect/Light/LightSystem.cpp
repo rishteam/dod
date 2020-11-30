@@ -135,10 +135,10 @@ void LightSystem::onRender()
                         glm::vec3 currentVertex = vertices[i];
                         glm::vec3 nextVertex = vertices[(i + 1) % vertices.size()];
                         glm::vec3 edge = nextVertex - currentVertex;
-                        glm::vec3 normal = glm::vec3(edge.y, -edge.x, edge.z);
+                        glm::vec3 normal = glm::vec3(-edge.y, edge.x, edge.z);
                         glm::vec3 lightToCurrent = currentVertex - transform.translate;
 
-                        if (glm::dot(normal, lightToCurrent) < 0) {
+                        if (glm::dot(normal, lightToCurrent) > 0) {
                             Renderer2D::DrawShadow(transform.translate, currentVertex, nextVertex, light.shadowScale,
                                                    light.shadowColor);
                         }
