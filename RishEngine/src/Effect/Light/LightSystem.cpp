@@ -50,12 +50,12 @@ void LightSystem::onRender()
 
         for (auto entity : view)
         {
+            auto &transform = registry.get<TransformComponent>(entity);
+            auto &light = registry.get<LightComponent>(entity);
             RenderCommand::SetColorMask(false, false, false, false);
             RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Always, 1, 1);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
-                                    RenderCommand::StencilOpFactor::Replace);
-            auto &transform = registry.get<TransformComponent>(entity);
-            auto &light = registry.get<LightComponent>(entity);
+                                        RenderCommand::StencilOpFactor::Replace);
 
             // Ray-Casting for all rigidEntity
             for (auto rigidEntity : rigidView)
@@ -130,13 +130,18 @@ void LightSystem::onRender()
             }
 
 //             Draw Light
-            RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
+            RenderCommand::SetBlendMode(true);
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
                                         RenderCommand::StencilOpFactor::Keep);
+            RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
             RenderCommand::SetColorMask(true, true, true, true);
             Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
                                        light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
+            RenderCommand::Clear(RenderCommand::ClearBufferTarget::StencilBuffer);
+            RenderCommand::SetBlendMode(false);
         }
+        RenderCommand::SetBlendMode(true);
         Renderer2D::EndScene();
     }
 
