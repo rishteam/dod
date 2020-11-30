@@ -1,0 +1,62 @@
+{
+    "Animation2D": {
+        "duration": 0.20000001788139344,
+        "reverseDuration": 0.0,
+        "loop": true,
+        "reverse": false,
+        "texturePrefix": "",
+        "textureList": [
+            {
+                "ptr_wrapper": {
+                    "id": 2147483649,
+                    "data": {
+                        "path": "assets\\animation\\1.png",
+                        "width": 16,
+                        "height": 33,
+                        "flip": false,
+                        "option": {
+                            "minFilter": 2,
+                            "magFilter": 2,
+                            "wrapS": 0,
+                            "wrapT": 0
+                        }
+                    }
+                }
+            },
+            {
+                "ptr_wrapper": {
+                    "id": 2147483650,
+                    "data": {
+                        "path": "assets\\animation\\2.png",
+                        "width": 16,
+                        "height": 33,
+                        "flip": false,
+                        "option": {
+                            "minFilter": 2,
+                            "magFilter": 2,
+                            "wrapS": 0,
+                            "wrapT": 0
+                        }
+                    }
+                }
+            },
+            {
+                "ptr_wrapper": {
+                    "id": 2147483651,
+                    "data": {
+                        "path": "assets\\animation\\3.png",
+                        "width": 16,
+                        "height": 33,
+                        "flip": false,
+                        "option": {
+                            "minFilter": 2,
+                            "magFilter": 2,
+                            "wrapS": 0,
+                            "wrapT": 0
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

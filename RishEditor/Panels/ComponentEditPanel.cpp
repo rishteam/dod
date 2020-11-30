@@ -871,6 +871,8 @@ void ComponentEditPanel::onImGuiRender()
     if(!m_targetEntity)
     {
         ImGui::End();
+        m_animationEditor.resetTargetComponent();
+        m_animationEditor.hideWindow();
         return;
     }
     m_componentSelectionPanel.setTarget(m_targetEntity);

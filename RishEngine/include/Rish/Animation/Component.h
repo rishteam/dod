@@ -4,6 +4,7 @@
 
 #include <Rish/Core/Time.h>
 #include <Rish/Renderer/Texture2D.h>
+#include <Rish/Renderer/SubTexture2D.h>
 
 namespace rl {
 
@@ -17,7 +18,9 @@ struct Animation2DComponent
     std::string texturePrefix;
     Clock clk;
 
+    // TODO: Make into union
     std::vector<Ref<Texture2D>> textureList;
+    std::vector<Ref<SubTexture2D>> subTextureList;
 
     bool playing = false;
     bool stopped = true;
