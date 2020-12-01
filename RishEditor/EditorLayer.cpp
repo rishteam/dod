@@ -246,7 +246,8 @@ void EditorLayer::onUpdate(Time dt)
 
     m_sceneFramebuffer->bind();
     {
-        Renderer2D::CombineFramebuffer(m_sceneFramebuffer, m_sceneLightFramebuffer);
+        if(LightSystem::haveLight())
+            Renderer2D::CombineFramebuffer(m_sceneFramebuffer, m_sceneLightFramebuffer);
     }
     m_sceneFramebuffer->unbind();
 }

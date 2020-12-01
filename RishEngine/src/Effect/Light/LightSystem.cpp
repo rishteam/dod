@@ -4,6 +4,7 @@ namespace rl {
 
 Ref<Scene> LightSystem::s_Scene;
 glm::vec2 LightSystem::s_viewport;
+bool LightSystem::s_haveLight;
 
 void LightSystem::RegisterScene(const rl::Ref<rl::Scene> &scene)
 {
@@ -27,6 +28,12 @@ void LightSystem::onRender()
     auto view = registry.view<TransformComponent, LightComponent>();
     auto rigidView = registry.view<TransformComponent, RigidBody2DComponent>();
     auto ambientView = registry.view<TransformComponent, AmbientLightComponent>();
+
+    if(!ambientView.size() && !view.size())
+    {
+        s_haveLight = false;
+    }
+    else s_haveLight = true;
 
     // Draw Ambient Light
     {
@@ -200,6 +207,11 @@ void LightSystem::onEditorRender()
 void LightSystem::onViewportResize(const glm::vec2 &viewport)
 {
     s_viewport = viewport;
+}
+
+bool LightSystem::haveLight() {
+
+    return s_haveLight;
 }
 
 }

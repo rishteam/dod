@@ -46,7 +46,7 @@ public:
     static void DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n, const glm::vec4& color = {1, 1, 1, 1});
 
     static void DrawPointLight(const glm::vec3 &position, float radius, float strength,
-                               const glm::vec3 &viewportPos, const glm::vec2 &viewportScale,  const glm::vec2 &screenSize, float zoom, float aspect, const glm::vec4 color = {1, 1, 1, 1});
+                               const glm::vec3 &viewportPos, const glm::vec2 &viewportScale,  const glm::vec2 &screenSize, float zoom, float aspect, const glm::vec4 color = {1, 1, 1, 1}, const bool penetrateRadius=true);
 
 //    static void DrawSpotLight(const glm::vec3 &position, const glm::vec4 color, float radius, float strength,
 //                              const glm::vec3 &direction, float theta,

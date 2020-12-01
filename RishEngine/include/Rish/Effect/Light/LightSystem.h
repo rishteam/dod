@@ -23,10 +23,14 @@ public:
 
     static void onViewportResize(const glm::vec2 &viewport);
 
+    // If Scene have LightComponent or AmbientLightComponent
+    static bool haveLight();
+
 private:
 
     static Ref<Scene> s_Scene;
     static glm::vec2 s_viewport;
+    static bool s_haveLight;
 };
 
 }

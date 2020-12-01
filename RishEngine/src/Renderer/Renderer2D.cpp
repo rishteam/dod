@@ -1447,7 +1447,8 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
 //}
 
 void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
-                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color)
+                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color
+                                , const bool penetrateRadius)
 {
 
     auto &lightVA = s_data->lightVA;
@@ -1459,7 +1460,7 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
         lightVA = VertexArray::Create();
         lightShader = Shader::LoadShaderVFS("/shader/pointLightNonBatch.vs", "/shader/pointLightNonBatch.fs");
 
-        lightVB = VertexBuffer::Create(30);
+        lightVB = VertexBuffer::Create(12);
 
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         Ref<IndexBuffer> lightIB = IndexBuffer::Create(pattern, 6);
@@ -1470,27 +1471,28 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
 
     glm::vec2 si = viewportScale;
     float posi[] = {
-            viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z, position.x, position.y, position.z,
-            viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z, position.x, position.y, position.z,
-            viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z, position.x, position.y, position.z,
-            viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z, position.x, position.y, position.z
+            viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z,
+            viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z,
+            viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z,
+            viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z
     };
 
     lightVB->setData(posi, sizeof(posi));
     BufferLayout layout = {
             {ShaderDataType::Float3, "a_QuadPosition"},
-            {ShaderDataType::Float3, "a_LightPosition"}
     };
     lightVB->setLayout(layout);
     lightVA->setVertexBuffer(lightVB);
 
     lightShader->bind();
     lightShader->setFloat4("v_Color", color);
-    lightShader->setFloat("v_Linear", 1/radius);
-    lightShader->setFloat("v_Quadratic", 1/strength);
+    lightShader->setFloat("v_Radius", radius);
+    lightShader->setFloat("v_Strength", strength);
     lightShader->setMat4("u_ViewProjection", s_data->m_viewProjMatrix);
     lightShader->setFloat2("zoom", {aspect*zoom, zoom});
     lightShader->setFloat2("v_ViewPort", screenSize);
+    lightShader->setBool("penetrateRadius", penetrateRadius);
+    lightShader->setFloat3("a_LightPosition", position);
 
     lightVA->bind();
     RenderCommand::DrawElement(DrawTriangles, lightVA, 6, false);

@@ -3,10 +3,11 @@ out vec4 FragColor;
 
 in vec2 v_LightPosition;
 uniform vec4 v_Color;
-uniform float v_Linear;
-uniform float v_Quadratic;
+uniform float v_Radius;
+uniform float v_Strength;
 uniform vec2 v_ViewPort;
 uniform vec2 zoom;
+uniform bool penetrateRadius;
 
 void main()
 {
@@ -17,7 +18,11 @@ void main()
 
     float distance = length(light - ndc.xy);
 
-    float attenuation = 1.0 / (1 + v_Linear * distance + v_Quadratic * (distance * distance));
+//    float attenuation = 1.0 / (1 + v_Linear * distance + v_Quadratic * (distance * distance));
+    if(penetrateRadius)
+        if(distance > v_Radius) discard;
+
+    float attenuation = 1 / (1 + distance * 1/v_Strength);
 
     vec4 color = vec4(attenuation, attenuation, attenuation, pow(attenuation, 3)) * v_Color;
 

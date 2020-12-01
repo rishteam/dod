@@ -1,9 +1,9 @@
 #version 450 core
 layout (location = 0) in vec3 a_QuadPosition;
-layout (location = 1) in vec3 a_LightPosition;
 
 out vec2 v_LightPosition;
 uniform mat4 u_ViewProjection;
+uniform vec3 a_LightPosition;
 
 void main()
 {
