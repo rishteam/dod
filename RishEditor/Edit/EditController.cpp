@@ -254,8 +254,7 @@ void EditController::onImGuiRender()
 
     for(auto ent : m_initGroupSet)
     {
-        if(!m_movingGroupSet.count(ent))
-            initGroupEntityTransform(ent);
+        initGroupEntityTransform(ent);
     }
 
 
@@ -404,7 +403,16 @@ void EditController::movingGroupEntity(Entity targetEntity)
 
 void EditController::initGroupEntityTransform(Entity groupEntity)
 {
+    if( !groupEntity.hasComponent<GroupComponent>() || m_movingGroupSet.count(groupEntity) )
+        return;
     auto &gc = groupEntity.getComponent<GroupComponent>();
+
+    for(const auto& id : gc)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        initGroupEntityTransform(ent);
+    }
+
     BoundingBox2D curBound;
     float groupZ = 10.f;
     for(const auto& id : gc)

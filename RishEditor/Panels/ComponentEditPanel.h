@@ -52,6 +52,7 @@ public:
     }
 
     void updateGroupTransform(Entity targetEntity);
+    void showGroupEntity(Entity targetEntity);
 private:
     ComponentSelectionPanel m_componentSelectionPanel;
 };

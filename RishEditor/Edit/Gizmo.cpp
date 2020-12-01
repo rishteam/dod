@@ -376,10 +376,7 @@ bool Gizmo::isMovingEntity()
 
 bool Gizmo::isMoving(Entity ent)
 {
-    if( m_isNowMovingEntity[ent] )
-        return true;
-    m_isNowMovingEntity.erase(ent);
-    return false;
+    return m_isNowMovingEntity.count(ent);
 }
 
 bool Gizmo::isMouseOnGizmo(glm::vec2 mousePosInWorld)

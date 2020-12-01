@@ -755,10 +755,18 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
     BeginDrawEditComponent(GroupComponent);
     {
         DrawRightClickMenu(GroupComponent, false);
+        showGroupEntity(m_targetEntity);
 
-        auto &registry = m_targetEntity.m_scene->m_registry;
-        auto &gc = m_targetEntity.getComponent<GroupComponent>();
+    }
+    EndDrawEditComponent();
 
+}
+
+void ComponentEditPanel::showGroupEntity(Entity targetEntity)
+{
+    if( targetEntity.hasComponent<GroupComponent>() )
+    {
+        auto &gc = targetEntity.getComponent<GroupComponent>();
         for(const auto &id : gc)
         {
             Entity ent = m_currentScene->getEntityByUUID(id);
@@ -768,7 +776,6 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
 
             auto groupPos = sgc.getGroupPosition();
             auto relativePos = sgc.getRelativePosition();
-
             if(ImGui::TreeNode(tag.tag.c_str()))
             {
                 ImGui::Text("GroupPosition:    x: %2.2f, y: %2.2f", groupPos.x, groupPos.y );
@@ -778,14 +785,12 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
                 ImGui::Text("Offset:           x: %2.2f, y: %2.2f", sgc.getOffset().x, sgc.getOffset().y);
                 ImGui::Text("GroupRotate:  %10.2f", sgc.getGroupRotate());
                 ImGui::Text("OriginRotate: %10.2f", sgc.getOriginRotate());
+                showGroupEntity(ent);
                 ImGui::TreePop();
             }
-
         }
 
     }
-    EndDrawEditComponent();
-
 }
 
 template <>
