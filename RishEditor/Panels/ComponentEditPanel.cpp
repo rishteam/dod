@@ -32,7 +32,7 @@ void ComponentEditPanel::drawEditComponentWidget<TagComponent>()
         std::string &tag = m_targetEntity.getComponent<TagComponent>().tag;
         std::string id = m_targetEntity.getComponent<TagComponent>().id.to_string();
         // TODO: Wrap?
-        ImGui::PushItemWidth(300);
+        ImGui::PushItemWidth(250);
         ImGui::InputText("Tag", &tag);
         ImGui::InputText("Id", &id, ImGuiInputTextFlags_ReadOnly);
         ImGui::PopItemWidth();
@@ -47,12 +47,14 @@ void ComponentEditPanel::drawEditComponentWidget<TransformComponent>()
     {
         DrawRightClickMenu(TagComponent, true);
         //
+        ImGui::PushItemWidth(250);
         auto &transform = m_targetEntity.getComponent<TransformComponent>();
         ImGui::DragFloat3("Translate", glm::value_ptr(transform.translate), 0.01f);
         ImGui::DragFloat2("Scale", glm::value_ptr(transform.scale), 0.01f);
         ImGui::DragFloat("Rotation", &transform.rotate, 0.1f);
         ImGui::SameLine();
         ImGui::HelpMarker("In degrees");
+        ImGui::PopItemWidth();
 
         updateGroupTransform(m_targetEntity);
 
@@ -91,8 +93,10 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
     {
         DrawRightClickMenu(SpriteRenderComponent, false);
         //
+        ImGui::PushItemWidth(250);
         auto &render = m_targetEntity.getComponent<SpriteRenderComponent>();
         ImGui::ColorEdit4("Color", glm::value_ptr(render.color));
+        ImGui::PopItemWidth();
 
         ImGui::Separator();
 
@@ -102,6 +106,7 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
             ImGui::Text("Texture");
             {
                 std::string tPath;
+                ImGui::PushItemWidth(100);
                 if (ImGui::Button("Load Texture"))
                 {
                     std::string cur = FileSystem::GetCurrentDirectory();
@@ -113,9 +118,13 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
                         render.loadTexture(tPath);
                     }
                 }
+                ImGui::PopItemWidth();
+
                 ImGui::SameLine();
                 //
+                ImGui::PushItemWidth(150);
                 ImGui::InputText("##texturePath", &render.texturePath, ImGuiInputTextFlags_ReadOnly);
+                ImGui::PopItemWidth();
                 if (render.m_texture)
                 {
                     ImGui::BeginChild("texture_viewer", ImVec2(ImGui::GetWindowWidth(), 64));
@@ -126,7 +135,9 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
                 else
                     ImGui::Dummy(ImVec2(64, 64));
 
+                ImGui::PushItemWidth(250);
                 ImGui::DragFloat("Tiling", &render.tiling, 1.f);
+                ImGui::PopItemWidth();
             }
             //
             SubTexture2DSetting &setting = render.m_subSetting;
@@ -191,12 +202,15 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
         if(camera.lockAspect)
         {
             // Aspect
+            ImGui::PushItemWidth(250);
             ImGui::Combo("Aspect", &aspectNowSelect, aspectName, 2);
             camera.camera.setAspect(aspectList[aspectNowSelect][0] / aspectList[aspectNowSelect][1]);
             //
             ImGui::DragFloat("Size", &size, 0.1f);
             ImGui::DragFloat("Near Plane", &near, 0.1f);
             ImGui::DragFloat("Far Plane", &far, 0.1f);
+            ImGui::PopItemWidth();
+
             camera.camera.setOrthographic(size, near, far);
             //
             transform.scale.y = size;
@@ -235,10 +249,12 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
         }
 
         // Drop down combo
+        ImGui::PushItemWidth(250);
         if(ImGui::Combo("Script", &currentScript, scriptList))
         {
             ScriptableManager::Bind(m_targetEntity, scriptList[currentScript]);
         }
+        ImGui::PopItemWidth();
 
         // Script Fields
         if(scriptComponent.instance)
@@ -266,170 +282,129 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
         ImGui::Text("Texture");
         {
             std::string tpath;
-            if(ImGui::Button("Select"))
-            {
-                if(FileDialog::SelectSingleFile(nullptr, nullptr, tpath))
-                {
+            ImGui::PushItemWidth(50);
+            if (ImGui::Button("Select")) {
+                if (FileDialog::SelectSingleFile(nullptr, nullptr, tpath)) {
                     emitter.texturePath = tpath;
                     emitter.texture = Texture2D::LoadTextureVFS(emitter.texturePath);
                 }
             }
+            ImGui::PopItemWidth();
 
             ImGui::SameLine();
+            ImGui::PushItemWidth(200);
             ImGui::InputText("##texturePath", &emitter.texturePath, ImGuiInputTextFlags_ReadOnly);
-            if(emitter.texture)
+            ImGui::PopItemWidth();
+            if (emitter.texture)
                 ImGui::Image(emitter.texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
             else
                 ImGui::Dummy(ImVec2(64, 64));
+        }
 
+        ImGui::Text("EmitData");
+        {
 
-            ImGui::Text("EmitData");
+            glm::vec2 emitterDistance(emitter.disX, emitter.disY);
+            glm::vec2 emitterOffset(emitter.offset);
+            glm::vec2 emitterSize(emitter.startSize, emitter.endSize);
+            glm::vec2 emitterAngleRange(emitter.angleRange);
+            glm::vec2 emitterSpeed(emitter.startSpeed, emitter.endSpeed);
+            float emitterRotateSpeed(emitter.rotateSpeed);
+
             std::vector<File> file;
             FileSystem::List("assets/Effect/Particle", file);
 
             std::vector<std::string> filename;
-            for(auto f : file) filename.push_back(f.getFilename());
+            for (auto f : file) filename.push_back(f.getFilename());
+
+            ImGui::PushItemWidth(250);
 
             static int currentEmitData = -1;
-            if(ImGui::Combo("Select Emit Data", &currentEmitData, filename))
-            {
+            if (ImGui::Combo("Select Emit Data", &currentEmitData, filename)) {
                 emitter.dataPath = file[currentEmitData].getPath();
                 emitter.loadEmitData();
             }
-
-//            if(ImGui::Button("Select##dataPath"))
-//            {
-//                if(FileDialog::SelectSingleFile(nullptr, nullptr, dataPath))
-//                {
-//                    emitter.dataPath = dataPath;
-//                    emitter.loadEmitData();
-//                }
-//            }
-            ImGui::SameLine();
-            ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputText("Emit Data Path", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
 
             ImGui::ColorEdit4("Start Color", glm::value_ptr(emitter.startColor));
             ImGui::ColorEdit4("End Color", glm::value_ptr(emitter.endColor));
-
-            ImGui::PushItemWidth(100);
-            ImGui::DragFloat("PosX", &transform.translate.x, 0.1f, 0.f, 0.f, "%.2f");
-            ImGui::SameLine();
-            ImGui::DragFloat("PosY", &transform.translate.y, 0.1f, 0.f, 0.f, "%.2f");
-
-            ImGui::DragFloat("DistanceX", &emitter.disX, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("DistanceY", &emitter.disY, .1f, 0.f, 0.f, "%.1f");
-
-            ImGui::DragFloat("Offset##x", &emitter.offset.x, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("Offset##y", &emitter.offset.y, .1f, 0.f, 0.f, "%.1f");
-
-            ImGui::Separator();
-
-            ImGui::DragFloat("Start Size", &emitter.startSize, 0.1f, 0.f, 0.f, "%.2f");
-            ImGui::SameLine();
-            ImGui::DragFloat("End Size", &emitter.endSize, 0.1f, 0.f, 0.f, "%.2f");
-
-            ImGui::Separator();
-
-            ImGui::DragFloat("AngleX", &emitter.angleRange.x, 0.5f, 0.f, 360.f, "%.2f");
-            ImGui::SameLine();
-            ImGui::DragFloat("AngleY", &emitter.angleRange.y, 0.5f, 0.f, 360.f, "%.2f");
-
-            ImGui::Separator();
-
-            ImGui::DragFloat("Start Speed", &emitter.startSpeed, 0.1f, 0.f, 0.f, "%.2f");
-            ImGui::SameLine();
-            ImGui::DragFloat("End Speed", &emitter.endSpeed, 0.1f, 0.0f, 0.0f, "%.2f");
-
-            ImGui::Separator();
-
             ImGui::PopItemWidth();
 
-            ImGui::DragFloat("Rotate Speed", &emitter.rotateSpeed, 0.01f, 0.0f, 0.0f, "%.2f");
-            ImGui::Separator();
-
-            ImGui::PushItemWidth(100);
+            ImGui::PushItemWidth(250);
+            ImGui::DragFloat2("Position", glm::value_ptr(transform.translate), .1f, 0.f, 0.f, "%.2f");
+            ImGui::DragFloat2("Distance", glm::value_ptr(emitterDistance), .1f, 0.f, 0.f, "%.1f");
+            ImGui::DragFloat2("Offset", glm::value_ptr(emitterOffset), .1f, 0.f, 0.f, "%.1f");
+            ImGui::DragFloat2("Size", glm::value_ptr(emitterSize), 0.1f, 0.f, 0.f, "%.2f");
+            ImGui::DragFloat2("Angle", glm::value_ptr(emitterAngleRange), 0.5f, 0.f, 360.f, "%.2f");
+            ImGui::DragFloat2("Speed", glm::value_ptr(emitterSpeed), 0.1f, 0.f, 0.f, "%.2f");
+            ImGui::DragFloat("Rotate Speed", &emitterRotateSpeed, 0.01f, 0.0f, 0.0f, "%.2f");
 
             bool calSize = false;
-            if(ImGui::DragScalar("Emit Number", ImGuiDataType_U32, &emitter.emitNumber, 1.f, 0, 0, "%d"))
-            {
+            if (ImGui::DragScalar("Emit Number", ImGuiDataType_U32, &emitter.emitNumber, 1.f, 0, 0, "%d")) {
                 calSize = true;
             }
 
-            if(ImGui::DragScalar("Emit Variance", ImGuiDataType_U32, &emitter.emitVariance, 1.f, 0, 0, "%d"))
-            {
+            if (ImGui::DragScalar("Emit Variance", ImGuiDataType_U32, &emitter.emitVariance, 1.f, 0, 0, "%d")) {
                 calSize = true;
             }
 
-            if(ImGui::DragScalar("Particle Life (frame)", ImGuiDataType_U32, &emitter.maxParticleLife, 1.f, 0,0, "%d"))
-            {
+            if (ImGui::DragScalar("Particle Life (frame)", ImGuiDataType_U32, &emitter.maxParticleLife, 1.f, 0, 0,
+                                  "%d")) {
                 calSize = true;
             }
-            if(calSize)
-            {
+            if (calSize) {
                 emitter.poolSize = (emitter.emitNumber + emitter.emitVariance) * (emitter.maxParticleLife + 1);
                 emitter.particles.clear();
                 emitter.particles.resize(emitter.poolSize);
                 emitter.lastUnusedParticle = 0;
             }
 
-            ImGui::Text("Particle Pool Size: %d", emitter.poolSize);
-            if(ImGui::DragFloat("Sleep Time", &emitter.sleepTime, 0.1f, -1.f, FLT_MAX, "%.2f"))
-            {
+            emitter.disX        = emitterDistance.x;
+            emitter.disY        = emitterDistance.y;
+            emitter.offset      = emitterOffset;
+            emitter.startSize   = emitterSize.x;
+            emitter.endSize     = emitterSize.y;
+            emitter.angleRange  = emitterAngleRange;
+            emitter.startSpeed  = emitterSpeed.x;
+            emitter.endSpeed    = emitterSpeed.y;
+            emitter.rotateSpeed = emitterRotateSpeed;
+
+            ImGui::PopItemWidth();
+            ImGui::Separator();
+        }
+        ImGui::Text("Particle Pool Size: %d", emitter.poolSize);
+        {
+            ImGui::PushItemWidth(250);
+            if (ImGui::DragFloat("Sleep Time", &emitter.sleepTime, 0.1f, -1.f, FLT_MAX, "%.2f")) {
                 emitter.active = true;
                 emitter.sleepTimer.restart();
             }
-            ImGui::PopItemWidth();
 
-            if(ImGui::DragFloat("Emitter Life", &emitter.life, 1.f, 0.f, 0.f, "%.1f"))
-            {
+            if (ImGui::DragFloat("Emitter Life", &emitter.life, 1.f, 0.f, 0.f, "%.1f")) {
                 emitter.lifeTimer.restart();
                 emitter.active = true;
             }
-            ImGui::Separator();
-            ImGui::Text("Random Control");
-            ImGui::PushItemWidth(75);
-            ImGui::DragFloat("##RandomControlx", &emitter.rotSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("##RandomControly", &emitter.rotSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::Text("Random Rotate Speed");
-
-            ImGui::DragFloat("##StartSpeedx", &emitter.startSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("##StartSpeedy", &emitter.startSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::Text("Random Start Speed");
-
-            ImGui::DragFloat("##endSpeedx", &emitter.endSpeedRand.x, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("##endSpeedy", &emitter.endSpeedRand.y, .1f, 0.f, 0.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::Text("Random End Speed");
-
-            ImGui::DragFloat("##emitVariancex", &emitter.emitVarianceRand.x, .1f, 0.f, 100.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("##emitVariancey", &emitter.emitVarianceRand.y, .1f, 0.f, 100.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::Text("Random Emit Variance");
-
-            ImGui::DragFloat("##startSizex", &emitter.startSizeRand.x, .1f, 0.f, 100.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("##startSizey", &emitter.startSizeRand.y, .1f, 0.f, 100.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::Text("Random Start Size");
-
-            ImGui::DragFloat("##endSizex", &emitter.endSizeRand.x, .1f, 0.f, 100.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::DragFloat("##endSizey", &emitter.endSizeRand.y, .1f, 0.f, 100.f, "%.1f");
-            ImGui::SameLine();
-            ImGui::Text("Random End Size");
-
             ImGui::PopItemWidth();
 
-            ImGui::Checkbox("Vortex Sensitive", &emitter.vortexSensitive);
+            ImGui::Separator();
+        }
+        ImGui::Text("Random Control");
+        {
 
+            ImGui::PushItemWidth(250);
+            ImGui::DragFloat2("Rotate Speed", glm::value_ptr(emitter.rotSpeedRand), .1f, 0.f, 0.f, "%.1f");
+            ImGui::DragFloat2("Start Speed", glm::value_ptr(emitter.startSpeedRand), .1f, 0.f, 0.f, "%.1f");
+            ImGui::DragFloat2("End Speed", glm::value_ptr(emitter.endSpeedRand), .1f, 0.f, 0.f, "%.1f");
+            ImGui::DragFloat2("Emit Variance", glm::value_ptr(emitter.emitVarianceRand), .1f, 0.f, 100.f, "%.1f");
+            ImGui::DragFloat2("Start Size", glm::value_ptr(emitter.startSizeRand), .1f, 0.f, 100.f, "%.1f");
+            ImGui::DragFloat2("End Size", glm::value_ptr(emitter.endSizeRand), .1f, 0.f, 100.f, "%.1f");
+
+            ImGui::PopItemWidth();
+            ImGui::Separator();
+        }
+
+        ImGui::Checkbox("Vortex Sensitive", &emitter.vortexSensitive);
+        {
             if(emitter.vortexSensitive) {
 
                 ImGui::RadioButton("Static Vortex", &emitter.vortexType, 0); ImGui::SameLine();
@@ -441,18 +416,10 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 
                         ImGui::PushID(id++);
 
-                        ImGui::PushItemWidth(100);
-
-
-                        ImGui::DragFloat("Vortex DistanceX", &vortex.pos.x, 0.1f, 0.f, 0.f, "%.1f");
-                        ImGui::SameLine();
-                        ImGui::DragFloat("Vortex DistanceY", &vortex.pos.y, 0.1, 0.f, 0.f, "%.1f");
-
-                        ImGui::DragFloat("Vortex TurbulenceX", &vortex.turbulence.x, 0.1f, 0.f, 0.f, "%.1f");
-                        ImGui::SameLine();
-                        ImGui::DragFloat("Vortex TurbulenceY", &vortex.turbulence.y, 0.1f, 0.f, 0.f, "%.1f");
-
-                        ImGui::DragFloat("Vortex Size", &vortex.currentSize, 0.1f, 0.f, 0.f, "%.2f");
+                        ImGui::PushItemWidth(250);
+                        ImGui::DragFloat2("Distance", glm::value_ptr(vortex.pos), 0.1f, 0.f, 0.f, "%.1f");
+                        ImGui::DragFloat2("Turbulence", glm::value_ptr(vortex.turbulence), 0.1f, 0.f, 0.f, "%.1f");
+                        ImGui::DragFloat("Size", &vortex.currentSize, 0.1f, 0.f, 0.f, "%.2f");
 
                         ImGui::Checkbox("Draw vortex", &vortex.draw);
 
@@ -478,32 +445,34 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     // Dynamic vortex
                 else {
 
+                    glm::vec2 emitterVortexPosition(emitter.vortexPos);
+                    glm::vec2 emitterVortexDistance(emitter.vortexDisX, emitter.vortexDisY);
+                    glm::vec2 emitterVortexAngle(emitter.vortexAngleRange);
+                    glm::vec2 emitterVortexSpeed(emitter.vortexStartSpeed, emitter.vortexEndSpeed);
+                    glm::vec2 emitterVortexTurbulence(emitter.vortexTurbulence);
+                    glm::vec2 emitterVortexSize(emitter.vortexStartSize, emitter.vortexEndSize);
+
+                    ImGui::PushItemWidth(250);
+                    ImGui::DragFloat2("Offset", glm::value_ptr(emitterVortexPosition), 0.1f, 0.f, 0.f, "%.2f");
+                    ImGui::DragFloat2("Distance", glm::value_ptr(emitterVortexDistance), .1f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat2("Angle", glm::value_ptr(emitterVortexAngle), .5f, 0.f, 360.f, "%.2f");
+                    ImGui::DragFloat2("Speed", glm::value_ptr(emitterVortexSpeed), 1.f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat2("Turbulence", glm::value_ptr(emitterVortexTurbulence), .1f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat2("Size", glm::value_ptr(emitterVortexSize), .05f, 0.f, 0.f, "%.2f");
+                    ImGui::PopItemWidth();
+
+                    emitter.vortexPos        = emitterVortexPosition;
+                    emitter.vortexDisX       = emitterVortexDistance.x;
+                    emitter.vortexDisY       = emitterVortexDistance.y;
+                    emitter.vortexAngleRange = emitterVortexAngle;
+                    emitter.vortexStartSpeed = emitterVortexSpeed.x;
+                    emitter.vortexEndSpeed   = emitterVortexSpeed.y;
+                    emitter.vortexTurbulence = emitterVortexTurbulence;
+                    emitter.vortexStartSize  = emitterVortexSize.x;
+                    emitter.vortexEndSize    = emitterVortexSize.y;
+
+
                     ImGui::PushItemWidth(100);
-
-                    ImGui::DragFloat("Vortex Offset##X", &emitter.vortexPos.x, 0.1f, 0.f, 0.f, "%.2f");
-                    ImGui::SameLine();
-                    ImGui::DragFloat("Vortex Offset##Y", &emitter.vortexPos.y, 0.1f, 0.f, 0.f, "%.2f");
-
-                    ImGui::DragFloat("Vortex DistanceX", &emitter.vortexDisX, .1f, 0.f, 0.f, "%.1f");
-                    ImGui::SameLine();
-                    ImGui::DragFloat("Vortex DistanceY", &emitter.vortexDisY, .1f, 0.f, 0.f, "%.1f");
-
-                    ImGui::DragFloat("Vortex AngleX", &emitter.vortexAngleRange.x, 0.5f, 0.f, 360.f, "%.2f");
-                    ImGui::SameLine();
-                    ImGui::DragFloat("Vortex AngleY", &emitter.vortexAngleRange.y, 0.5f, 0.f, 360.f, "%.2f");
-
-                    ImGui::DragFloat("Vortex Start Speed", &emitter.vortexStartSpeed, 1.f, 0.f, 0.f, "%.1f");
-                    ImGui::SameLine();
-                    ImGui::DragFloat("Vortex End Speed", &emitter.vortexEndSpeed, 1.f, 0.f, 0.f, "%.1f");
-
-                    ImGui::DragFloat("Vortex TurbulenceX", &emitter.vortexTurbulence.x, 0.1f, 0.f, 0.f, "%.1f");
-                    ImGui::SameLine();
-                    ImGui::DragFloat("Vortex TurbulenceY", &emitter.vortexTurbulence.y, 0.1f, 0.f, 0.f, "%.1f");
-
-                    ImGui::DragFloat("Vortex Start Size", &emitter.vortexStartSize, 0.05f, 0.f, 0.f, "%.2f");
-                    ImGui::SameLine();
-                    ImGui::DragFloat("Vortex End Size", &emitter.vortexEndSize, 0.05f, 0.f, 0.f, "%.2f");
-
                     const ImU32 emitMin = 0, emitMax = 50, vortexLife = 1;
                     if(ImGui::DragScalar("Vortex Particle Life (frame)", ImGuiDataType_U32, &emitter.vortexMaxParticleLife, 1.f, &vortexLife, 0, "%d"))
                     {
@@ -515,7 +484,6 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     ImGui::DragScalar("Emit Per Sec", ImGuiDataType_U32, &emitter.vortexEmitNumber, 1.f, &emitMin, 0, "%d");
                     ImGui::Text("Particle Pool Size: %d", emitter.vortexPoolSize);
                     ImGui::Checkbox("Draw Vortex", &emitter.drawVortex);
-
                     ImGui::PopItemWidth();
 
                     if(ImGui::DragFloat("Vortex Sleep Time", &emitter.vortexSleepTime, 0.5f, -1.f, FLT_MAX, "%.1f"))
@@ -592,25 +560,24 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         int bodyTypeNowSelect = static_cast<int>(rigid.BodyTypeState);
         float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
         float forceVector[2] = {rigid.force.x, rigid.force.y};
-        float attachPointX = rigid.attachPoint.x;
-        float attachPointY = rigid.attachPoint.y;
+        glm::vec2 attachPoint = rigid.attachPoint;
 
         ImGui::Text("Physics Parameter");
         {
             // can control the physics parameter
+            ImGui::PushItemWidth(250);
             ImGui::InputFloat("Mass", &rigid.mass, 1.0f, 5.0f, "%.2f");
             ImGui::InputFloat("Friction", &rigid.friction, 0.1f, 0.2f, "%.2f");
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
             ImGui::DragFloat2("Force", forceVector, 1.0f);
+            ImGui::PopItemWidth();
 
             // can't control the physics parameter
             auto transPoint = trans.translate;
             auto transWH = trans.scale;
-            ImGui::PushItemWidth(100);
-            ImGui::Text("Attach Point (x, y)");
-            ImGui::DragFloat("x", &attachPointX, 0.1, -transWH.x/2.0f, transWH.x/2.0f);
-            ImGui::SameLine();
-            ImGui::DragFloat("y", &attachPointY, 0.1, -transWH.y/2.0f, transWH.y/2.0f);
+            ImGui::PushItemWidth(250);
+            ImGui::Text("Attach Point");
+            ImGui::DragFloat2("(x, y)", glm::value_ptr(attachPoint), .1f, -transWH.x/2.f, transWH.x/2.f);
             ImGui::PopItemWidth();
             ImGui::Checkbox("Show Attach Point", &rigid.showAttachPoint);
             ImGui::Checkbox("Keeping Force", &rigid.keepingForce);
@@ -626,13 +593,14 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             rigid.velocity.y = velocityVector[1];
             rigid.force.x = forceVector[0];
             rigid.force.y = forceVector[1];
-            rigid.attachPoint.x = attachPointX;
-            rigid.attachPoint.y = attachPointY;
+            rigid.attachPoint.x = attachPoint.x;
+            rigid.attachPoint.y = attachPoint.y;
 
         }
 
         ImGui::Checkbox("Restrict Rotation", &rigid.RestrictRotation);
         ImGui::Separator();
+        ImGui::PushItemWidth(250);
         if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
         {
             if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
@@ -646,6 +614,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
                 rigid.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
             }
         }
+        ImGui::PopItemWidth();
     }
     EndDrawEditComponent();
     if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
@@ -665,9 +634,10 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
         float translate[2] = {collider.x, collider.y};
         float scale[2] = {collider.w, collider.h};
 
-
+        ImGui::PushItemWidth(250);
         ImGui::DragFloat2("(x, y)", translate, 0.5f);
         ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
+        ImGui::PopItemWidth();
         // Update the collider value
         collider.x = translate[0];
         collider.y = translate[1];
@@ -727,6 +697,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
         float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
 
+        ImGui::PushItemWidth(250);
         //RigidBody1 OptionLists
         if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
         {
@@ -761,14 +732,15 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
         jit.anchor.x = jitAnchor[0];
         jit.anchor.y = jitAnchor[1];
+        ImGui::PopItemWidth();
         ImGui::Separator();
 
-        ImGui::Text("r1: (%.f, %.f)", jit.r1.x, jit.r1.y);
-        ImGui::Text("r2: (%.f, %.f)", jit.r2.x, jit.r2.y);
-        ImGui::Text("P: (%.f, %.f)", jit.P.x, jit.P.y);
+        ImGui::Text("r1:   (%.f, %.f)", jit.r1.x, jit.r1.y);
+        ImGui::Text("r2:   (%.f, %.f)", jit.r2.x, jit.r2.y);
+        ImGui::Text("P:    (%.f, %.f)", jit.P.x, jit.P.y);
         ImGui::Text("bias: (%.f, %.f)", jit.bias.x, jit.bias.y);
         ImGui::Text("biasFactor: %.f", jit.biasFactor);
-        ImGui::Text("softness: %.f", jit.softness);
+        ImGui::Text("softness:   %.f", jit.softness);
     }
     EndDrawEditComponent();
     if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
@@ -783,10 +755,18 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
     BeginDrawEditComponent(GroupComponent);
     {
         DrawRightClickMenu(GroupComponent, false);
+        showGroupEntity(m_targetEntity);
 
-        auto &registry = m_targetEntity.m_scene->m_registry;
-        auto &gc = m_targetEntity.getComponent<GroupComponent>();
+    }
+    EndDrawEditComponent();
 
+}
+
+void ComponentEditPanel::showGroupEntity(Entity targetEntity)
+{
+    if( targetEntity.hasComponent<GroupComponent>() )
+    {
+        auto &gc = targetEntity.getComponent<GroupComponent>();
         for(const auto &id : gc)
         {
             Entity ent = m_currentScene->getEntityByUUID(id);
@@ -796,7 +776,6 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
 
             auto groupPos = sgc.getGroupPosition();
             auto relativePos = sgc.getRelativePosition();
-
             if(ImGui::TreeNode(tag.tag.c_str()))
             {
                 ImGui::Text("GroupPosition:    x: %2.2f, y: %2.2f", groupPos.x, groupPos.y );
@@ -806,14 +785,12 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
                 ImGui::Text("Offset:           x: %2.2f, y: %2.2f", sgc.getOffset().x, sgc.getOffset().y);
                 ImGui::Text("GroupRotate:  %10.2f", sgc.getGroupRotate());
                 ImGui::Text("OriginRotate: %10.2f", sgc.getOriginRotate());
+                showGroupEntity(ent);
                 ImGui::TreePop();
             }
-
         }
 
     }
-    EndDrawEditComponent();
-
 }
 
 template <>
@@ -877,7 +854,8 @@ void ComponentEditPanel::onImGuiRender()
     }
     m_componentSelectionPanel.setTarget(m_targetEntity);
 
-    ImGui::BeginChild("EntityComponentEdit");
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
+    ImGui::BeginChild("EntityComponentEdit", ImVec2(0,0), false, window_flags);
     {
         // TODO: Make this into dispatcher
         // TODO: Make these into moveable panels;

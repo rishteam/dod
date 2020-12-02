@@ -771,8 +771,8 @@ void EditorLayer::onShortcutActionUpdate()
             for(auto &ent : m_copyList)
             {
                 m_sceneHierarchyPanel->addTarget(ent);
-                m_sceneHierarchyPanel->duplicateTargetEntities();
             }
+            m_sceneHierarchyPanel->duplicateTargetEntities();
             m_copyList.clear();
             m_sceneAction.getAction("Paste")->setEnabled(false);
             m_statusBarPanel->sendMessage("Paste copy Entity");

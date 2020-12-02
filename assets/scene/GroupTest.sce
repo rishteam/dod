@@ -3,687 +3,4297 @@
         "ptr_wrapper": {
             "id": 2147483649,
             "data": {
-                "value0": 12,
+                "value0": 63,
                 "value1": 0,
                 "value2": {
                     "Tag": "Entity 0",
                     "Id": {
-                        "uuid": "36d666da-f00c-4b05-bbc5-96f7c427ac66"
+                        "uuid": "8b3308c4-b269-4755-ba6c-d25cc85fc226"
                     }
                 },
                 "value3": 1,
                 "value4": {
-                    "Tag": "Group",
+                    "Tag": "Entity 0 (1)",
                     "Id": {
-                        "uuid": "67d3f286-014e-4cba-b6a2-91c1b07e69f5"
+                        "uuid": "0039a2ec-6aa1-4e85-b1f5-e49067a83d60"
                     }
                 },
                 "value5": 2,
                 "value6": {
-                    "Tag": "Group (1)",
+                    "Tag": "Group",
                     "Id": {
-                        "uuid": "38c596ef-7ca8-4741-86ce-5cc1b53021b6"
+                        "uuid": "7cc56f13-3eb2-4884-bb3a-4136c7334df5"
                     }
                 },
                 "value7": 3,
                 "value8": {
-                    "Tag": "Group (2)",
+                    "Tag": "Group (1)",
                     "Id": {
-                        "uuid": "d36f7a73-1db0-4579-8eb9-a5293fef6ce3"
+                        "uuid": "8a26a148-ba1b-4b10-96ed-d242fb636e29"
                     }
                 },
                 "value9": 4,
                 "value10": {
-                    "Tag": "Group (3)",
+                    "Tag": "Entity 0 (2)",
                     "Id": {
-                        "uuid": "9c0e5574-1962-4642-b204-fd1d7594c711"
+                        "uuid": "ddfd57d9-5ee4-418e-9f45-ca7067682206"
                     }
                 },
                 "value11": 5,
                 "value12": {
-                    "Tag": "Group (4)",
+                    "Tag": "Entity 0 (3)",
                     "Id": {
-                        "uuid": "8a771d31-d57c-4a3e-8d4b-2817c72753f0"
+                        "uuid": "2a325218-92d1-4c80-bd0e-8ed8ecc30685"
                     }
                 },
                 "value13": 6,
                 "value14": {
-                    "Tag": "Group (5)",
+                    "Tag": "Group (2)",
                     "Id": {
-                        "uuid": "d0273e75-0faa-4684-8e28-0eb856f14dcb"
+                        "uuid": "8c20e39a-7d42-4bee-9f4b-aa249e1d3cc8"
                     }
                 },
                 "value15": 7,
                 "value16": {
-                    "Tag": "Group (6)",
+                    "Tag": "Group (3)",
                     "Id": {
-                        "uuid": "95ef3761-75af-4497-a523-5e25f4a20c36"
+                        "uuid": "d1643560-9c11-437f-90c2-95498315c922"
                     }
                 },
                 "value17": 8,
                 "value18": {
-                    "Tag": "Group (7)",
+                    "Tag": "Group (4)",
                     "Id": {
-                        "uuid": "601f95de-fe2a-4009-b4c4-374b459bb4ba"
+                        "uuid": "d62a5194-1005-4e74-8b8e-3c378ddf30ee"
                     }
                 },
                 "value19": 9,
                 "value20": {
-                    "Tag": "Group (8)",
+                    "Tag": "Entity 0 (4)",
                     "Id": {
-                        "uuid": "bc7dac48-647f-46e4-83b1-2172446ed83b"
+                        "uuid": "b58e47c0-4b43-4782-804a-5b4a7e1612e5"
                     }
                 },
                 "value21": 10,
                 "value22": {
-                    "Tag": "Group (9)",
+                    "Tag": "Entity 0 (5)",
                     "Id": {
-                        "uuid": "b40399a5-684a-4162-8b55-a6a057a8c409"
+                        "uuid": "e611b347-1a0b-42af-b8ac-3226b855ee86"
                     }
                 },
                 "value23": 11,
                 "value24": {
-                    "Tag": "Group (10)",
+                    "Tag": "Group (5)",
                     "Id": {
-                        "uuid": "e90e1047-8664-46f3-b991-a534f0048066"
+                        "uuid": "ca58c8d2-0a6c-4d57-a707-b97526dab20a"
                     }
                 },
                 "value25": 12,
-                "value26": 0,
-                "value27": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
-                    },
-                    "rotate": 0.0
+                "value26": {
+                    "Tag": "Entity 0 (6)",
+                    "Id": {
+                        "uuid": "3666ddb2-94c9-4c80-b8c4-8b3aa6f73b6f"
+                    }
                 },
-                "value28": 1,
-                "value29": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value27": 13,
+                "value28": {
+                    "Tag": "Entity 0 (7)",
+                    "Id": {
+                        "uuid": "1563d6db-7b80-47d8-a3e1-b9675d180219"
+                    }
                 },
-                "value30": 2,
-                "value31": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value29": 14,
+                "value30": {
+                    "Tag": "Group (6)",
+                    "Id": {
+                        "uuid": "b90d9bcd-9300-4d54-a2e2-a4b5e342095d"
+                    }
                 },
-                "value32": 3,
-                "value33": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value31": 15,
+                "value32": {
+                    "Tag": "Group",
+                    "Id": {
+                        "uuid": "32d57471-b90b-4e66-aaf0-17ea4310fb4f"
+                    }
                 },
-                "value34": 4,
-                "value35": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value33": 16,
+                "value34": {
+                    "Tag": "Group (1)",
+                    "Id": {
+                        "uuid": "86bb91bf-c4c1-49b4-9fcf-0f94c3434745"
+                    }
                 },
-                "value36": 5,
-                "value37": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value35": 17,
+                "value36": {
+                    "Tag": "Group (2)",
+                    "Id": {
+                        "uuid": "29c4a8ab-fec7-4f66-8eb7-f0cb3107c03d"
+                    }
                 },
-                "value38": 6,
-                "value39": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value37": 18,
+                "value38": {
+                    "Tag": "Entity 0",
+                    "Id": {
+                        "uuid": "6a991155-a6c4-473d-9922-039f8f8985c9"
+                    }
                 },
-                "value40": 7,
-                "value41": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value39": 19,
+                "value40": {
+                    "Tag": "Entity 0 (1)",
+                    "Id": {
+                        "uuid": "a415bbee-5d46-451c-aacf-682817fa1e3b"
+                    }
                 },
-                "value42": 8,
-                "value43": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value41": 20,
+                "value42": {
+                    "Tag": "Group (3)",
+                    "Id": {
+                        "uuid": "50ff2853-60fb-46ab-a6e4-2393b56c6e09"
+                    }
                 },
-                "value44": 9,
-                "value45": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value43": 21,
+                "value44": {
+                    "Tag": "Entity 0 (2)",
+                    "Id": {
+                        "uuid": "2fb34842-0163-4e9b-a483-64bf7932f03b"
+                    }
                 },
-                "value46": 10,
-                "value47": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value45": 22,
+                "value46": {
+                    "Tag": "Entity 0 (3)",
+                    "Id": {
+                        "uuid": "e0031803-392c-4599-a9a4-edbb285a544b"
+                    }
                 },
-                "value48": 11,
-                "value49": {
-                    "translate": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotate": 0.0
+                "value47": 23,
+                "value48": {
+                    "Tag": "Group (4)",
+                    "Id": {
+                        "uuid": "5d9bf11d-5a30-496b-9cc7-8325d980a0a4"
+                    }
                 },
-                "value50": 0,
-                "value51": 0,
-                "value52": 0,
-                "value53": 0,
-                "value54": 0,
-                "value55": 0,
-                "value56": 0,
-                "value57": 11,
-                "value58": 1,
-                "value59": {
-                    "children": [
-                        {
-                            "uuid": "36d666da-f00c-4b05-bbc5-96f7c427ac66"
-                        }
-                    ]
+                "value49": 24,
+                "value50": {
+                    "Tag": "Group (5)",
+                    "Id": {
+                        "uuid": "980d772b-b0c9-4107-a8ec-0b89ea8da603"
+                    }
                 },
-                "value60": 2,
-                "value61": {
-                    "children": [
-                        {
-                            "uuid": "67d3f286-014e-4cba-b6a2-91c1b07e69f5"
-                        }
-                    ]
+                "value51": 25,
+                "value52": {
+                    "Tag": "Entity 0 (4)",
+                    "Id": {
+                        "uuid": "a814c427-7aab-42e9-8529-0754abbfbfe2"
+                    }
                 },
-                "value62": 3,
-                "value63": {
-                    "children": [
-                        {
-                            "uuid": "38c596ef-7ca8-4741-86ce-5cc1b53021b6"
-                        }
-                    ]
+                "value53": 26,
+                "value54": {
+                    "Tag": "Entity 0 (5)",
+                    "Id": {
+                        "uuid": "a933ab5e-2b7f-4a8f-9350-c71e46e13216"
+                    }
                 },
-                "value64": 4,
-                "value65": {
-                    "children": [
-                        {
-                            "uuid": "d36f7a73-1db0-4579-8eb9-a5293fef6ce3"
-                        }
-                    ]
+                "value55": 27,
+                "value56": {
+                    "Tag": "Group (6)",
+                    "Id": {
+                        "uuid": "47bbebd6-973f-483f-9be3-e9a487147e62"
+                    }
                 },
-                "value66": 5,
-                "value67": {
-                    "children": [
-                        {
-                            "uuid": "9c0e5574-1962-4642-b204-fd1d7594c711"
-                        }
-                    ]
+                "value57": 28,
+                "value58": {
+                    "Tag": "Entity 0 (6)",
+                    "Id": {
+                        "uuid": "b251b30b-19f6-4892-a7a9-5c0903a6cb4a"
+                    }
                 },
-                "value68": 6,
-                "value69": {
-                    "children": [
-                        {
-                            "uuid": "8a771d31-d57c-4a3e-8d4b-2817c72753f0"
-                        }
-                    ]
+                "value59": 29,
+                "value60": {
+                    "Tag": "Entity 0 (7)",
+                    "Id": {
+                        "uuid": "ca2e9f92-5194-45b8-9991-bb26dcddce53"
+                    }
                 },
-                "value70": 7,
-                "value71": {
-                    "children": [
-                        {
-                            "uuid": "d0273e75-0faa-4684-8e28-0eb856f14dcb"
-                        }
-                    ]
+                "value61": 30,
+                "value62": {
+                    "Tag": "Group (7)",
+                    "Id": {
+                        "uuid": "ff016716-fec2-489b-85ae-f44161b40e55"
+                    }
                 },
-                "value72": 8,
-                "value73": {
-                    "children": [
-                        {
-                            "uuid": "95ef3761-75af-4497-a523-5e25f4a20c36"
-                        }
-                    ]
+                "value63": 31,
+                "value64": {
+                    "Tag": "Group",
+                    "Id": {
+                        "uuid": "7a620f86-f111-40ab-a8cd-d564fa641d40"
+                    }
                 },
-                "value74": 9,
-                "value75": {
-                    "children": [
-                        {
-                            "uuid": "601f95de-fe2a-4009-b4c4-374b459bb4ba"
-                        }
-                    ]
+                "value65": 32,
+                "value66": {
+                    "Tag": "Group (1)",
+                    "Id": {
+                        "uuid": "08f9bf9d-e93d-4da4-9b7e-9b3a0ba061f9"
+                    }
                 },
-                "value76": 10,
-                "value77": {
-                    "children": [
-                        {
-                            "uuid": "bc7dac48-647f-46e4-83b1-2172446ed83b"
-                        }
-                    ]
+                "value67": 33,
+                "value68": {
+                    "Tag": "Group (2)",
+                    "Id": {
+                        "uuid": "8524ecc8-aa77-40a1-8868-93718abebcd5"
+                    }
                 },
-                "value78": 11,
-                "value79": {
-                    "children": [
-                        {
-                            "uuid": "b40399a5-684a-4162-8b55-a6a057a8c409"
-                        }
-                    ]
+                "value69": 34,
+                "value70": {
+                    "Tag": "Group (3)",
+                    "Id": {
+                        "uuid": "c5a794ab-1136-448b-8874-d0b7fcb52d89"
+                    }
                 },
-                "value80": 11,
-                "value81": 0,
+                "value71": 35,
+                "value72": {
+                    "Tag": "Entity 0",
+                    "Id": {
+                        "uuid": "de825b23-c641-44ed-8af4-8c6afad551bd"
+                    }
+                },
+                "value73": 36,
+                "value74": {
+                    "Tag": "Entity 0 (1)",
+                    "Id": {
+                        "uuid": "906efc4b-7466-4d0b-be62-7a6100d57240"
+                    }
+                },
+                "value75": 37,
+                "value76": {
+                    "Tag": "Group (4)",
+                    "Id": {
+                        "uuid": "c78fdd26-b5ed-414a-956f-aa68e3331195"
+                    }
+                },
+                "value77": 38,
+                "value78": {
+                    "Tag": "Entity 0 (2)",
+                    "Id": {
+                        "uuid": "d533d5f7-9058-400d-b8e0-d04d671ef8d3"
+                    }
+                },
+                "value79": 39,
+                "value80": {
+                    "Tag": "Entity 0 (3)",
+                    "Id": {
+                        "uuid": "326bbc6c-6d1a-447d-bd2e-8c70e634099b"
+                    }
+                },
+                "value81": 40,
                 "value82": {
-                    "groupID": {
-                        "uuid": "67d3f286-014e-4cba-b6a2-91c1b07e69f5"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Group (5)",
+                    "Id": {
+                        "uuid": "eacf25ef-74b1-491d-acc0-b9b11e2e4aca"
                     }
                 },
-                "value83": 1,
+                "value83": 41,
                 "value84": {
-                    "groupID": {
-                        "uuid": "38c596ef-7ca8-4741-86ce-5cc1b53021b6"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Group (6)",
+                    "Id": {
+                        "uuid": "8ed1b9ac-473b-44c7-9822-e601ec8bdd87"
                     }
                 },
-                "value85": 2,
+                "value85": 42,
                 "value86": {
-                    "groupID": {
-                        "uuid": "d36f7a73-1db0-4579-8eb9-a5293fef6ce3"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Entity 0 (4)",
+                    "Id": {
+                        "uuid": "1de1d2f7-9088-44e8-8e34-799df63c45ec"
                     }
                 },
-                "value87": 3,
+                "value87": 43,
                 "value88": {
-                    "groupID": {
-                        "uuid": "9c0e5574-1962-4642-b204-fd1d7594c711"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Entity 0 (5)",
+                    "Id": {
+                        "uuid": "b0a65e51-f12e-4493-bde8-2745774505e1"
                     }
                 },
-                "value89": 4,
+                "value89": 44,
                 "value90": {
-                    "groupID": {
-                        "uuid": "8a771d31-d57c-4a3e-8d4b-2817c72753f0"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Group (7)",
+                    "Id": {
+                        "uuid": "2aab53c8-d673-4411-b29a-03f8aa744109"
                     }
                 },
-                "value91": 5,
+                "value91": 45,
                 "value92": {
-                    "groupID": {
-                        "uuid": "d0273e75-0faa-4684-8e28-0eb856f14dcb"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Entity 0 (6)",
+                    "Id": {
+                        "uuid": "1dadafae-9eb8-4f21-ba69-68ee8031c1ec"
                     }
                 },
-                "value93": 6,
+                "value93": 46,
                 "value94": {
-                    "groupID": {
-                        "uuid": "95ef3761-75af-4497-a523-5e25f4a20c36"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Entity 0 (7)",
+                    "Id": {
+                        "uuid": "b97b28ba-68a9-4fab-b28c-86e91e2ffd42"
                     }
                 },
-                "value95": 7,
+                "value95": 47,
                 "value96": {
-                    "groupID": {
-                        "uuid": "601f95de-fe2a-4009-b4c4-374b459bb4ba"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Group (8)",
+                    "Id": {
+                        "uuid": "f43f62eb-3bda-4e35-b7ee-40413ad1826e"
                     }
                 },
-                "value97": 8,
+                "value97": 48,
                 "value98": {
-                    "groupID": {
-                        "uuid": "bc7dac48-647f-46e4-83b1-2172446ed83b"
-                    },
-                    "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "originScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
+                    "Tag": "Group (9)",
+                    "Id": {
+                        "uuid": "585d8c1e-e6ee-4f07-a440-e4cf87ab999e"
                     }
                 },
-                "value99": 9,
+                "value99": 49,
                 "value100": {
+                    "Tag": "Group (10)",
+                    "Id": {
+                        "uuid": "cbaf17d8-6ca9-46c7-9ea6-6150ba4ca1fd"
+                    }
+                },
+                "value101": 50,
+                "value102": {
+                    "Tag": "Entity 0 (8)",
+                    "Id": {
+                        "uuid": "ba78bd8a-06ee-4092-b654-3a5b1d751548"
+                    }
+                },
+                "value103": 51,
+                "value104": {
+                    "Tag": "Entity 0 (9)",
+                    "Id": {
+                        "uuid": "7a238411-ef31-4ff3-ba37-273f8a165b94"
+                    }
+                },
+                "value105": 52,
+                "value106": {
+                    "Tag": "Group (11)",
+                    "Id": {
+                        "uuid": "99c15ad9-86a3-4499-b72d-172211516ec6"
+                    }
+                },
+                "value107": 53,
+                "value108": {
+                    "Tag": "Entity 0 (10)",
+                    "Id": {
+                        "uuid": "94989a1e-2406-4eca-9dbd-426021102fbf"
+                    }
+                },
+                "value109": 54,
+                "value110": {
+                    "Tag": "Entity 0 (11)",
+                    "Id": {
+                        "uuid": "e96fd107-8fa8-4a8a-a9f7-72aa67d508b8"
+                    }
+                },
+                "value111": 55,
+                "value112": {
+                    "Tag": "Group (12)",
+                    "Id": {
+                        "uuid": "c9dfeaed-d29d-4a3e-8b07-316d08098b0a"
+                    }
+                },
+                "value113": 56,
+                "value114": {
+                    "Tag": "Group (13)",
+                    "Id": {
+                        "uuid": "2c803bdd-62a4-4c03-89f6-f64a96b58533"
+                    }
+                },
+                "value115": 57,
+                "value116": {
+                    "Tag": "Entity 0 (12)",
+                    "Id": {
+                        "uuid": "b0556b29-3d66-4051-963b-056a6e5fb3b2"
+                    }
+                },
+                "value117": 58,
+                "value118": {
+                    "Tag": "Entity 0 (13)",
+                    "Id": {
+                        "uuid": "e14ea4cd-b3a4-417f-ba87-d0de0856954f"
+                    }
+                },
+                "value119": 59,
+                "value120": {
+                    "Tag": "Group (14)",
+                    "Id": {
+                        "uuid": "0c49e6d5-4a54-4a84-921c-7c2840eac968"
+                    }
+                },
+                "value121": 60,
+                "value122": {
+                    "Tag": "Entity 0 (14)",
+                    "Id": {
+                        "uuid": "1c289385-f118-4391-b2c8-d9061c753b43"
+                    }
+                },
+                "value123": 61,
+                "value124": {
+                    "Tag": "Entity 0 (15)",
+                    "Id": {
+                        "uuid": "341f93cc-96bd-46a6-b72d-3617172ce63e"
+                    }
+                },
+                "value125": 62,
+                "value126": {
+                    "Tag": "Group (15)",
+                    "Id": {
+                        "uuid": "a3006f71-9266-4861-aba5-8f61b54284b6"
+                    }
+                },
+                "value127": 63,
+                "value128": 0,
+                "value129": {
+                    "translate": {
+                        "x": -31.915538787841798,
+                        "y": -10.284963607788086,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -250.89935302734376
+                },
+                "value130": 1,
+                "value131": {
+                    "translate": {
+                        "x": -30.593307495117189,
+                        "y": -11.042980194091797,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -250.89935302734376
+                },
+                "value132": 2,
+                "value133": {
+                    "translate": {
+                        "x": -31.25442123413086,
+                        "y": -10.663971900939942,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.5944042205810549,
+                        "y": 2.030191421508789,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value134": 3,
+                "value135": {
+                    "translate": {
+                        "x": -34.09809494018555,
+                        "y": -9.216920852661133,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.5943984985351564,
+                        "y": 2.030193328857422,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value136": 4,
+                "value137": {
+                    "translate": {
+                        "x": -33.436981201171878,
+                        "y": -9.595931053161621,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -250.89935302734376
+                },
+                "value138": 5,
+                "value139": {
+                    "translate": {
+                        "x": -34.75920867919922,
+                        "y": -8.837911605834961,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -250.89935302734376
+                },
+                "value140": 6,
+                "value141": {
+                    "translate": {
+                        "x": -32.67625427246094,
+                        "y": -9.940445899963379,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 5.438076019287109,
+                        "y": 3.477243423461914,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value142": 7,
+                "value143": {
+                    "translate": {
+                        "x": -35.20491027832031,
+                        "y": -15.8710298538208,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 3.5634613037109377,
+                        "y": 5.367010116577148,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value144": 8,
+                "value145": {
+                    "translate": {
+                        "x": -34.446632385253909,
+                        "y": -14.467413902282715,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.046905517578125,
+                        "y": 2.5597782135009767,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value146": 9,
+                "value147": {
+                    "translate": {
+                        "x": -34.05147933959961,
+                        "y": -13.81582260131836,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -162.30865478515626
+                },
+                "value148": 10,
+                "value149": {
+                    "translate": {
+                        "x": -34.8417854309082,
+                        "y": -15.119004249572754,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -162.30865478515626
+                },
+                "value150": 11,
+                "value151": {
+                    "translate": {
+                        "x": -35.96318054199219,
+                        "y": -17.274641036987306,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.0469207763671877,
+                        "y": 2.5597877502441408,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value152": 12,
+                "value153": {
+                    "translate": {
+                        "x": -36.358341217041019,
+                        "y": -17.926237106323243,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -162.30865478515626
+                },
+                "value154": 13,
+                "value155": {
+                    "translate": {
+                        "x": -35.56801986694336,
+                        "y": -16.623044967651368,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -162.30865478515626
+                },
+                "value156": 14,
+                "value157": {
+                    "translate": {
+                        "x": -33.471927642822269,
+                        "y": -13.378179550170899,
+                        "z": -3.0
+                    },
+                    "scale": {
+                        "x": 7.029426574707031,
+                        "y": 10.352710723876954,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value158": 15,
+                "value159": {
+                    "translate": {
+                        "x": -24.12937355041504,
+                        "y": -4.410135269165039,
+                        "z": -3.0
+                    },
+                    "scale": {
+                        "x": 8.13351821899414,
+                        "y": 7.139650344848633,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value160": 16,
+                "value161": {
+                    "translate": {
+                        "x": -20.94757080078125,
+                        "y": -3.89265775680542,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 1.7699146270751954,
+                        "y": 6.1046953201293949,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value162": 17,
+                "value163": {
+                    "translate": {
+                        "x": -20.798566818237306,
+                        "y": -5.481023788452148,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 1.4719085693359376,
+                        "y": 2.9279632568359377,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value164": 18,
+                "value165": {
+                    "translate": {
+                        "x": -20.76527214050293,
+                        "y": -6.24234676361084,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value166": 19,
+                "value167": {
+                    "translate": {
+                        "x": -20.83186149597168,
+                        "y": -4.719700813293457,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value168": 20,
+                "value169": {
+                    "translate": {
+                        "x": -21.096574783325197,
+                        "y": -2.3042945861816408,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.927968978881836,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value170": 21,
+                "value171": {
+                    "translate": {
+                        "x": -21.129867553710939,
+                        "y": -1.542968988418579,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value172": 22,
+                "value173": {
+                    "translate": {
+                        "x": -21.063282012939454,
+                        "y": -3.065620183944702,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value174": 23,
+                "value175": {
+                    "translate": {
+                        "x": -27.31117820739746,
+                        "y": -4.927614688873291,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 1.7699089050292969,
+                        "y": 6.104691505432129,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value176": 24,
+                "value177": {
+                    "translate": {
+                        "x": -27.460180282592775,
+                        "y": -3.3392527103424074,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.9279675483703615,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value178": 25,
+                "value179": {
+                    "translate": {
+                        "x": -27.42688751220703,
+                        "y": -4.1005778312683109,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value180": 26,
+                "value181": {
+                    "translate": {
+                        "x": -27.493473052978517,
+                        "y": -2.577927827835083,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value182": 27,
+                "value183": {
+                    "translate": {
+                        "x": -27.162174224853517,
+                        "y": -6.515977382659912,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 1.4719009399414063,
+                        "y": 2.9279661178588869,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value184": 28,
+                "value185": {
+                    "translate": {
+                        "x": -27.128881454467775,
+                        "y": -7.277301788330078,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value186": 29,
+                "value187": {
+                    "translate": {
+                        "x": -27.195466995239259,
+                        "y": -5.754652976989746,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -308.5700988769531
+                },
+                "value188": 30,
+                "value189": {
+                    "translate": {
+                        "x": -28.524627685546876,
+                        "y": -9.69742202758789,
+                        "z": -4.0
+                    },
+                    "scale": {
+                        "x": 16.924026489257814,
+                        "y": 17.71422576904297,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value190": 31,
+                "value191": {
+                    "translate": {
+                        "x": -4.7348527908325199,
+                        "y": 10.340082168579102,
+                        "z": -4.0
+                    },
+                    "scale": {
+                        "x": 27.97041893005371,
+                        "y": 21.624858856201173,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value192": 32,
+                "value193": {
+                    "translate": {
+                        "x": -12.674995422363282,
+                        "y": 4.745325088500977,
+                        "z": -3.0
+                    },
+                    "scale": {
+                        "x": 12.090133666992188,
+                        "y": 10.435346603393555,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value194": 33,
+                "value195": {
+                    "translate": {
+                        "x": -15.718957901000977,
+                        "y": 7.240667819976807,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 6.002208709716797,
+                        "y": 5.4446611404418949,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value196": 34,
+                "value197": {
+                    "translate": {
+                        "x": -17.355924606323243,
+                        "y": 5.485794544219971,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.7282752990722658,
+                        "y": 1.9349145889282227,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value198": 35,
+                "value199": {
+                    "translate": {
+                        "x": -18.053421020507814,
+                        "y": 5.7866106033325199,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -64.4773941040039
+                },
+                "value200": 36,
+                "value201": {
+                    "translate": {
+                        "x": -16.65473747253418,
+                        "y": 5.181288719177246,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -204.6448974609375
+                },
+                "value202": 37,
+                "value203": {
+                    "translate": {
+                        "x": -14.169379234313965,
+                        "y": 9.121055603027344,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.9030513763427736,
+                        "y": 1.6838855743408204,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value204": 38,
+                "value205": {
+                    "translate": {
+                        "x": -13.420231819152832,
+                        "y": 8.981491088867188,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -231.62991333007813
+                },
+                "value206": 39,
+                "value207": {
+                    "translate": {
+                        "x": -14.918526649475098,
+                        "y": 9.2606201171875,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -231.62991333007813
+                },
+                "value208": 40,
+                "value209": {
+                    "translate": {
+                        "x": -8.982389450073243,
+                        "y": 3.011820077896118,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 4.704922676086426,
+                        "y": 6.9683356285095219,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value210": 41,
+                "value211": {
+                    "translate": {
+                        "x": -7.477396488189697,
+                        "y": 0.9772982597351074,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 1.6949377059936524,
+                        "y": 2.8992919921875,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value212": 42,
+                "value213": {
+                    "translate": {
+                        "x": -7.6231842041015629,
+                        "y": 0.22933369874954225,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -322.1021728515625
+                },
+                "value214": 43,
+                "value215": {
+                    "translate": {
+                        "x": -7.33160924911499,
+                        "y": 1.7252627611160279,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -322.1021728515625
+                },
+                "value216": 44,
+                "value217": {
+                    "translate": {
+                        "x": -9.931854248046875,
+                        "y": 5.574409484863281,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.80599308013916,
+                        "y": 1.843156337738037,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value218": 45,
+                "value219": {
+                    "translate": {
+                        "x": -9.182645797729493,
+                        "y": 5.842199802398682,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -22.60744285583496
+                },
+                "value220": 46,
+                "value221": {
+                    "translate": {
+                        "x": -10.62824821472168,
+                        "y": 5.359434127807617,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -222.83712768554688
+                },
+                "value222": 47,
+                "value223": {
+                    "translate": {
+                        "x": 0.9928336143493652,
+                        "y": 16.224586486816408,
+                        "z": -3.0
+                    },
+                    "scale": {
+                        "x": 16.515045166015626,
+                        "y": 9.855850219726563,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value224": 48,
+                "value225": {
+                    "translate": {
+                        "x": -3.044785976409912,
+                        "y": 17.74997329711914,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 8.439805030822754,
+                        "y": 6.805076599121094,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value226": 49,
+                "value227": {
+                    "translate": {
+                        "x": -0.8897884488105774,
+                        "y": 19.710491180419923,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 4.129809856414795,
+                        "y": 2.8840408325195314,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value228": 50,
+                "value229": {
+                    "translate": {
+                        "x": 0.4686925411224365,
+                        "y": 20.446086883544923,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -222.4817352294922
+                },
+                "value230": 51,
+                "value231": {
+                    "translate": {
+                        "x": -2.248269557952881,
+                        "y": 18.974895477294923,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -222.4817352294922
+                },
+                "value232": 52,
+                "value233": {
+                    "translate": {
+                        "x": -5.483695030212402,
+                        "y": 15.768762588500977,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 3.5619869232177736,
+                        "y": 2.842656135559082,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value234": 53,
+                "value235": {
+                    "translate": {
+                        "x": -6.55826473236084,
+                        "y": 15.053857803344727,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -222.4817352294922
+                },
+                "value236": 54,
+                "value237": {
+                    "translate": {
+                        "x": -4.409125328063965,
+                        "y": 16.483665466308595,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -222.4817352294922
+                },
+                "value238": 55,
+                "value239": {
+                    "translate": {
+                        "x": 6.0315937995910648,
+                        "y": 14.39000129699707,
+                        "z": -2.0
+                    },
+                    "scale": {
+                        "x": 6.43752384185791,
+                        "y": 6.186680793762207,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value240": 56,
+                "value241": {
+                    "translate": {
+                        "x": 4.060235023498535,
+                        "y": 12.264135360717774,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.4948060512542726,
+                        "y": 1.9349498748779297,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value242": 57,
+                "value243": {
+                    "translate": {
+                        "x": 4.7205305099487309,
+                        "y": 12.644502639770508,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -191.1291046142578
+                },
+                "value244": 58,
+                "value245": {
+                    "translate": {
+                        "x": 3.39993953704834,
+                        "y": 11.883768081665039,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "rotate": -191.1291046142578
+                },
+                "value246": 59,
+                "value247": {
+                    "translate": {
+                        "x": 8.002944946289063,
+                        "y": 16.515825271606447,
+                        "z": -1.0
+                    },
+                    "scale": {
+                        "x": 2.494821548461914,
+                        "y": 1.9350318908691407,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value248": 60,
+                "value249": {
+                    "translate": {
+                        "x": 8.663248062133789,
+                        "y": 16.8962345123291,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -191.1291046142578
+                },
+                "value250": 61,
+                "value251": {
+                    "translate": {
+                        "x": 7.342641353607178,
+                        "y": 16.13541603088379,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "rotate": -191.1291046142578
+                },
+                "value252": 62,
+                "value253": {
+                    "translate": {
+                        "x": -13.868142127990723,
+                        "y": 1.2989883422851563,
+                        "z": -5.0
+                    },
+                    "scale": {
+                        "x": 46.23699951171875,
+                        "y": 39.70704650878906,
+                        "z": 0.0
+                    },
+                    "rotate": 0.0
+                },
+                "value254": 63,
+                "value255": 0,
+                "value256": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value257": 1,
+                "value258": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value259": 2,
+                "value260": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value261": 3,
+                "value262": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value263": 4,
+                "value264": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value265": 5,
+                "value266": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value267": 6,
+                "value268": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value269": 7,
+                "value270": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value271": 8,
+                "value272": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value273": 9,
+                "value274": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value275": 10,
+                "value276": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value277": 11,
+                "value278": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value279": 12,
+                "value280": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value281": 13,
+                "value282": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value283": 14,
+                "value284": {
+                    "Color": {
+                        "x": 0.5,
+                        "y": 1.0,
+                        "z": 0.9117646217346191,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483653,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value285": 15,
+                "value286": {
+                    "Color": {
+                        "x": 0.5,
+                        "y": 1.0,
+                        "z": 0.9117646217346191,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 5
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value287": 16,
+                "value288": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value289": 17,
+                "value290": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value291": 18,
+                "value292": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value293": 19,
+                "value294": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value295": 20,
+                "value296": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value297": 21,
+                "value298": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value299": 22,
+                "value300": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value301": 23,
+                "value302": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value303": 24,
+                "value304": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value305": 25,
+                "value306": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value307": 26,
+                "value308": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value309": 27,
+                "value310": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value311": 28,
+                "value312": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value313": 29,
+                "value314": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value315": 30,
+                "value316": {
+                    "Color": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483654,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value317": 31,
+                "value318": {
+                    "Color": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 6
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value319": 32,
+                "value320": {
+                    "Color": {
+                        "x": 0.5,
+                        "y": 1.0,
+                        "z": 0.9117646217346191,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 5
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value321": 33,
+                "value322": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value323": 34,
+                "value324": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value325": 35,
+                "value326": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value327": 36,
+                "value328": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value329": 37,
+                "value330": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value331": 38,
+                "value332": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value333": 39,
+                "value334": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value335": 40,
+                "value336": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value337": 41,
+                "value338": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value339": 42,
+                "value340": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value341": 43,
+                "value342": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value343": 44,
+                "value344": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value345": 45,
+                "value346": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value347": 46,
+                "value348": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value349": 47,
+                "value350": {
+                    "Color": {
+                        "x": 0.5,
+                        "y": 1.0,
+                        "z": 0.9117646217346191,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 5
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value351": 48,
+                "value352": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value353": 49,
+                "value354": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value355": 50,
+                "value356": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value357": 51,
+                "value358": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value359": 52,
+                "value360": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value361": 53,
+                "value362": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value363": 54,
+                "value364": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value365": 55,
+                "value366": {
+                    "Color": {
+                        "x": 0.5808823108673096,
+                        "y": 1.0,
+                        "z": 0.47058820724487307,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value367": 56,
+                "value368": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value369": 57,
+                "value370": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value371": 58,
+                "value372": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value373": 59,
+                "value374": {
+                    "Color": {
+                        "x": 0.9607843160629273,
+                        "y": 0.9474679231643677,
+                        "z": 0.5133602619171143,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value375": 60,
+                "value376": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value377": 61,
+                "value378": {
+                    "Color": {
+                        "x": 0.9754902124404907,
+                        "y": 0.5212178230285645,
+                        "z": 0.5212178230285645,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value379": 62,
+                "value380": {
+                    "Color": {
+                        "x": 1.0,
+                        "y": 0.5098038911819458,
+                        "z": 0.9855824708938599,
+                        "w": 1.0
+                    },
+                    "Texture": {
+                        "ptr_wrapper": {
+                            "id": 2147483655,
+                            "data": {
+                                "path": "assets/texture/1.png",
+                                "width": 712,
+                                "height": 820,
+                                "flip": false,
+                                "option": {
+                                    "minFilter": 2,
+                                    "magFilter": 2,
+                                    "wrapS": 0,
+                                    "wrapT": 0
+                                }
+                            }
+                        }
+                    },
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value381": 0,
+                "value382": 0,
+                "value383": 0,
+                "value384": 0,
+                "value385": 0,
+                "value386": 0,
+                "value387": 31,
+                "value388": 2,
+                "value389": {
+                    "children": [
+                        {
+                            "uuid": "0039a2ec-6aa1-4e85-b1f5-e49067a83d60"
+                        },
+                        {
+                            "uuid": "8b3308c4-b269-4755-ba6c-d25cc85fc226"
+                        }
+                    ]
+                },
+                "value390": 3,
+                "value391": {
+                    "children": [
+                        {
+                            "uuid": "2a325218-92d1-4c80-bd0e-8ed8ecc30685"
+                        },
+                        {
+                            "uuid": "ddfd57d9-5ee4-418e-9f45-ca7067682206"
+                        }
+                    ]
+                },
+                "value392": 6,
+                "value393": {
+                    "children": [
+                        {
+                            "uuid": "7cc56f13-3eb2-4884-bb3a-4136c7334df5"
+                        },
+                        {
+                            "uuid": "8a26a148-ba1b-4b10-96ed-d242fb636e29"
+                        }
+                    ]
+                },
+                "value394": 8,
+                "value395": {
+                    "children": [
+                        {
+                            "uuid": "b58e47c0-4b43-4782-804a-5b4a7e1612e5"
+                        },
+                        {
+                            "uuid": "e611b347-1a0b-42af-b8ac-3226b855ee86"
+                        }
+                    ]
+                },
+                "value396": 7,
+                "value397": {
+                    "children": [
+                        {
+                            "uuid": "ca58c8d2-0a6c-4d57-a707-b97526dab20a"
+                        },
+                        {
+                            "uuid": "d62a5194-1005-4e74-8b8e-3c378ddf30ee"
+                        }
+                    ]
+                },
+                "value398": 11,
+                "value399": {
+                    "children": [
+                        {
+                            "uuid": "1563d6db-7b80-47d8-a3e1-b9675d180219"
+                        },
+                        {
+                            "uuid": "3666ddb2-94c9-4c80-b8c4-8b3aa6f73b6f"
+                        }
+                    ]
+                },
+                "value400": 14,
+                "value401": {
+                    "children": [
+                        {
+                            "uuid": "8c20e39a-7d42-4bee-9f4b-aa249e1d3cc8"
+                        },
+                        {
+                            "uuid": "d1643560-9c11-437f-90c2-95498315c922"
+                        }
+                    ]
+                },
+                "value402": 17,
+                "value403": {
+                    "children": [
+                        {
+                            "uuid": "6a991155-a6c4-473d-9922-039f8f8985c9"
+                        },
+                        {
+                            "uuid": "a415bbee-5d46-451c-aacf-682817fa1e3b"
+                        }
+                    ]
+                },
+                "value404": 16,
+                "value405": {
+                    "children": [
+                        {
+                            "uuid": "29c4a8ab-fec7-4f66-8eb7-f0cb3107c03d"
+                        },
+                        {
+                            "uuid": "50ff2853-60fb-46ab-a6e4-2393b56c6e09"
+                        }
+                    ]
+                },
+                "value406": 20,
+                "value407": {
+                    "children": [
+                        {
+                            "uuid": "2fb34842-0163-4e9b-a483-64bf7932f03b"
+                        },
+                        {
+                            "uuid": "e0031803-392c-4599-a9a4-edbb285a544b"
+                        }
+                    ]
+                },
+                "value408": 15,
+                "value409": {
+                    "children": [
+                        {
+                            "uuid": "5d9bf11d-5a30-496b-9cc7-8325d980a0a4"
+                        },
+                        {
+                            "uuid": "86bb91bf-c4c1-49b4-9fcf-0f94c3434745"
+                        }
+                    ]
+                },
+                "value410": 24,
+                "value411": {
+                    "children": [
+                        {
+                            "uuid": "a814c427-7aab-42e9-8529-0754abbfbfe2"
+                        },
+                        {
+                            "uuid": "a933ab5e-2b7f-4a8f-9350-c71e46e13216"
+                        }
+                    ]
+                },
+                "value412": 23,
+                "value413": {
+                    "children": [
+                        {
+                            "uuid": "47bbebd6-973f-483f-9be3-e9a487147e62"
+                        },
+                        {
+                            "uuid": "980d772b-b0c9-4107-a8ec-0b89ea8da603"
+                        }
+                    ]
+                },
+                "value414": 27,
+                "value415": {
+                    "children": [
+                        {
+                            "uuid": "b251b30b-19f6-4892-a7a9-5c0903a6cb4a"
+                        },
+                        {
+                            "uuid": "ca2e9f92-5194-45b8-9991-bb26dcddce53"
+                        }
+                    ]
+                },
+                "value416": 30,
+                "value417": {
+                    "children": [
+                        {
+                            "uuid": "32d57471-b90b-4e66-aaf0-17ea4310fb4f"
+                        },
+                        {
+                            "uuid": "b90d9bcd-9300-4d54-a2e2-a4b5e342095d"
+                        }
+                    ]
+                },
+                "value418": 34,
+                "value419": {
+                    "children": [
+                        {
+                            "uuid": "906efc4b-7466-4d0b-be62-7a6100d57240"
+                        },
+                        {
+                            "uuid": "de825b23-c641-44ed-8af4-8c6afad551bd"
+                        }
+                    ]
+                },
+                "value420": 33,
+                "value421": {
+                    "children": [
+                        {
+                            "uuid": "c5a794ab-1136-448b-8874-d0b7fcb52d89"
+                        },
+                        {
+                            "uuid": "c78fdd26-b5ed-414a-956f-aa68e3331195"
+                        }
+                    ]
+                },
+                "value422": 37,
+                "value423": {
+                    "children": [
+                        {
+                            "uuid": "326bbc6c-6d1a-447d-bd2e-8c70e634099b"
+                        },
+                        {
+                            "uuid": "d533d5f7-9058-400d-b8e0-d04d671ef8d3"
+                        }
+                    ]
+                },
+                "value424": 32,
+                "value425": {
+                    "children": [
+                        {
+                            "uuid": "8524ecc8-aa77-40a1-8868-93718abebcd5"
+                        },
+                        {
+                            "uuid": "eacf25ef-74b1-491d-acc0-b9b11e2e4aca"
+                        }
+                    ]
+                },
+                "value426": 41,
+                "value427": {
+                    "children": [
+                        {
+                            "uuid": "1de1d2f7-9088-44e8-8e34-799df63c45ec"
+                        },
+                        {
+                            "uuid": "b0a65e51-f12e-4493-bde8-2745774505e1"
+                        }
+                    ]
+                },
+                "value428": 40,
+                "value429": {
+                    "children": [
+                        {
+                            "uuid": "2aab53c8-d673-4411-b29a-03f8aa744109"
+                        },
+                        {
+                            "uuid": "8ed1b9ac-473b-44c7-9822-e601ec8bdd87"
+                        }
+                    ]
+                },
+                "value430": 44,
+                "value431": {
+                    "children": [
+                        {
+                            "uuid": "1dadafae-9eb8-4f21-ba69-68ee8031c1ec"
+                        },
+                        {
+                            "uuid": "b97b28ba-68a9-4fab-b28c-86e91e2ffd42"
+                        }
+                    ]
+                },
+                "value432": 31,
+                "value433": {
+                    "children": [
+                        {
+                            "uuid": "08f9bf9d-e93d-4da4-9b7e-9b3a0ba061f9"
+                        },
+                        {
+                            "uuid": "f43f62eb-3bda-4e35-b7ee-40413ad1826e"
+                        }
+                    ]
+                },
+                "value434": 49,
+                "value435": {
+                    "children": [
+                        {
+                            "uuid": "7a238411-ef31-4ff3-ba37-273f8a165b94"
+                        },
+                        {
+                            "uuid": "ba78bd8a-06ee-4092-b654-3a5b1d751548"
+                        }
+                    ]
+                },
+                "value436": 48,
+                "value437": {
+                    "children": [
+                        {
+                            "uuid": "99c15ad9-86a3-4499-b72d-172211516ec6"
+                        },
+                        {
+                            "uuid": "cbaf17d8-6ca9-46c7-9ea6-6150ba4ca1fd"
+                        }
+                    ]
+                },
+                "value438": 52,
+                "value439": {
+                    "children": [
+                        {
+                            "uuid": "94989a1e-2406-4eca-9dbd-426021102fbf"
+                        },
+                        {
+                            "uuid": "e96fd107-8fa8-4a8a-a9f7-72aa67d508b8"
+                        }
+                    ]
+                },
+                "value440": 47,
+                "value441": {
+                    "children": [
+                        {
+                            "uuid": "585d8c1e-e6ee-4f07-a440-e4cf87ab999e"
+                        },
+                        {
+                            "uuid": "c9dfeaed-d29d-4a3e-8b07-316d08098b0a"
+                        }
+                    ]
+                },
+                "value442": 56,
+                "value443": {
+                    "children": [
+                        {
+                            "uuid": "b0556b29-3d66-4051-963b-056a6e5fb3b2"
+                        },
+                        {
+                            "uuid": "e14ea4cd-b3a4-417f-ba87-d0de0856954f"
+                        }
+                    ]
+                },
+                "value444": 55,
+                "value445": {
+                    "children": [
+                        {
+                            "uuid": "0c49e6d5-4a54-4a84-921c-7c2840eac968"
+                        },
+                        {
+                            "uuid": "2c803bdd-62a4-4c03-89f6-f64a96b58533"
+                        }
+                    ]
+                },
+                "value446": 59,
+                "value447": {
+                    "children": [
+                        {
+                            "uuid": "1c289385-f118-4391-b2c8-d9061c753b43"
+                        },
+                        {
+                            "uuid": "341f93cc-96bd-46a6-b72d-3617172ce63e"
+                        }
+                    ]
+                },
+                "value448": 62,
+                "value449": {
+                    "children": [
+                        {
+                            "uuid": "7a620f86-f111-40ab-a8cd-d564fa641d40"
+                        },
+                        {
+                            "uuid": "ff016716-fec2-489b-85ae-f44161b40e55"
+                        }
+                    ]
+                },
+                "value450": 62,
+                "value451": 1,
+                "value452": {
                     "groupID": {
-                        "uuid": "b40399a5-684a-4162-8b55-a6a057a8c409"
+                        "uuid": "7cc56f13-3eb2-4884-bb3a-4136c7334df5"
                     },
                     "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "x": 0.6611137390136719,
+                        "y": -0.37900829315185549,
+                        "z": 1.0
                     },
                     "originScale": {
                         "x": 1.0,
                         "y": 1.0,
                         "z": NaN
                     },
-                    "originRotate": 0.0,
+                    "originRotate": -250.89935302734376,
                     "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "x": -31.25442123413086,
+                        "y": -10.663971900939942,
+                        "z": -1.0
                     },
                     "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
+                        "x": 2.5944042205810549,
+                        "y": 2.030191421508789,
                         "z": 0.0
                     },
                     "groupRotate": 0.0,
@@ -694,38 +4304,2078 @@
                         "z": NaN
                     }
                 },
-                "value101": 10,
-                "value102": {
+                "value453": 0,
+                "value454": {
                     "groupID": {
-                        "uuid": "e90e1047-8664-46f3-b991-a534f0048066"
+                        "uuid": "7cc56f13-3eb2-4884-bb3a-4136c7334df5"
                     },
                     "relativePosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "x": -0.6611175537109375,
+                        "y": 0.37900829315185549,
+                        "z": 1.0
                     },
                     "originScale": {
                         "x": 1.0,
                         "y": 1.0,
-                        "z": 0.0
+                        "z": NaN
                     },
-                    "originRotate": 0.0,
+                    "originRotate": -250.89935302734376,
                     "groupPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "x": -31.25442123413086,
+                        "y": -10.663971900939942,
+                        "z": -1.0
                     },
                     "groupScale": {
-                        "x": 1.0,
-                        "y": 1.0,
+                        "x": 2.5944042205810549,
+                        "y": 2.030191421508789,
                         "z": 0.0
                     },
                     "groupRotate": 0.0,
                     "preRotate": 0.0,
                     "offset": {
-                        "x": 0.0,
-                        "y": 0.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value455": 4,
+                "value456": {
+                    "groupID": {
+                        "uuid": "8a26a148-ba1b-4b10-96ed-d242fb636e29"
+                    },
+                    "relativePosition": {
+                        "x": 0.6611137390136719,
+                        "y": -0.3790102005004883,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -250.89935302734376,
+                    "groupPosition": {
+                        "x": -34.09809494018555,
+                        "y": -9.216920852661133,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.5943984985351564,
+                        "y": 2.030193328857422,
                         "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value457": 5,
+                "value458": {
+                    "groupID": {
+                        "uuid": "8a26a148-ba1b-4b10-96ed-d242fb636e29"
+                    },
+                    "relativePosition": {
+                        "x": -0.6611137390136719,
+                        "y": 0.3790092468261719,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -250.89935302734376,
+                    "groupPosition": {
+                        "x": -34.09809494018555,
+                        "y": -9.216920852661133,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.5943984985351564,
+                        "y": 2.030193328857422,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value459": 2,
+                "value460": {
+                    "groupID": {
+                        "uuid": "8c20e39a-7d42-4bee-9f4b-aa249e1d3cc8"
+                    },
+                    "relativePosition": {
+                        "x": 1.4218330383300782,
+                        "y": -0.7235260009765625,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.5944042205810549,
+                        "y": 2.030191421508789,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -32.67625427246094,
+                        "y": -9.940445899963379,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 5.438076019287109,
+                        "y": 3.477243423461914,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value461": 3,
+                "value462": {
+                    "groupID": {
+                        "uuid": "8c20e39a-7d42-4bee-9f4b-aa249e1d3cc8"
+                    },
+                    "relativePosition": {
+                        "x": -1.4218406677246094,
+                        "y": 0.7235250473022461,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.5943984985351564,
+                        "y": 2.030193328857422,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -32.67625427246094,
+                        "y": -9.940445899963379,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 5.438076019287109,
+                        "y": 3.477243423461914,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value463": 9,
+                "value464": {
+                    "groupID": {
+                        "uuid": "d62a5194-1005-4e74-8b8e-3c378ddf30ee"
+                    },
+                    "relativePosition": {
+                        "x": 0.3951530456542969,
+                        "y": 0.6515913009643555,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -162.30865478515626,
+                    "groupPosition": {
+                        "x": -34.446632385253909,
+                        "y": -14.467413902282715,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.046905517578125,
+                        "y": 2.5597782135009767,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value465": 10,
+                "value466": {
+                    "groupID": {
+                        "uuid": "d62a5194-1005-4e74-8b8e-3c378ddf30ee"
+                    },
+                    "relativePosition": {
+                        "x": -0.3951530456542969,
+                        "y": -0.6515903472900391,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -162.30865478515626,
+                    "groupPosition": {
+                        "x": -34.446632385253909,
+                        "y": -14.467413902282715,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.046905517578125,
+                        "y": 2.5597782135009767,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value467": 8,
+                "value468": {
+                    "groupID": {
+                        "uuid": "d1643560-9c11-437f-90c2-95498315c922"
+                    },
+                    "relativePosition": {
+                        "x": 0.7582778930664063,
+                        "y": 1.403615951538086,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.046905517578125,
+                        "y": 2.5597782135009767,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -35.20491027832031,
+                        "y": -15.8710298538208,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 3.5634613037109377,
+                        "y": 5.367010116577148,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value469": 12,
+                "value470": {
+                    "groupID": {
+                        "uuid": "ca58c8d2-0a6c-4d57-a707-b97526dab20a"
+                    },
+                    "relativePosition": {
+                        "x": -0.3951606750488281,
+                        "y": -0.6515960693359375,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -162.30865478515626,
+                    "groupPosition": {
+                        "x": -35.96318054199219,
+                        "y": -17.274641036987306,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.0469207763671877,
+                        "y": 2.5597877502441408,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value471": 13,
+                "value472": {
+                    "groupID": {
+                        "uuid": "ca58c8d2-0a6c-4d57-a707-b97526dab20a"
+                    },
+                    "relativePosition": {
+                        "x": 0.3951606750488281,
+                        "y": 0.6515960693359375,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -162.30865478515626,
+                    "groupPosition": {
+                        "x": -35.96318054199219,
+                        "y": -17.274641036987306,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.0469207763671877,
+                        "y": 2.5597877502441408,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value473": 11,
+                "value474": {
+                    "groupID": {
+                        "uuid": "d1643560-9c11-437f-90c2-95498315c922"
+                    },
+                    "relativePosition": {
+                        "x": -0.758270263671875,
+                        "y": -1.403611183166504,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.0469207763671877,
+                        "y": 2.5597877502441408,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -35.20491027832031,
+                        "y": -15.8710298538208,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 3.5634613037109377,
+                        "y": 5.367010116577148,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value475": 6,
+                "value476": {
+                    "groupID": {
+                        "uuid": "b90d9bcd-9300-4d54-a2e2-a4b5e342095d"
+                    },
+                    "relativePosition": {
+                        "x": 0.7956733703613281,
+                        "y": 3.4377336502075197,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 5.438076019287109,
+                        "y": 3.477243423461914,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -33.471927642822269,
+                        "y": -13.378179550170899,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 7.029426574707031,
+                        "y": 10.352710723876954,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value477": 7,
+                "value478": {
+                    "groupID": {
+                        "uuid": "b90d9bcd-9300-4d54-a2e2-a4b5e342095d"
+                    },
+                    "relativePosition": {
+                        "x": -1.7329826354980469,
+                        "y": -2.4928503036499025,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 3.5634613037109377,
+                        "y": 5.367010116577148,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -33.471927642822269,
+                        "y": -13.378179550170899,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 7.029426574707031,
+                        "y": 10.352710723876954,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value479": 18,
+                "value480": {
+                    "groupID": {
+                        "uuid": "29c4a8ab-fec7-4f66-8eb7-f0cb3107c03d"
+                    },
+                    "relativePosition": {
+                        "x": 0.033294677734375,
+                        "y": -0.7613229751586914,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -20.798566818237306,
+                        "y": -5.481023788452148,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719085693359376,
+                        "y": 2.9279632568359377,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value481": 19,
+                "value482": {
+                    "groupID": {
+                        "uuid": "29c4a8ab-fec7-4f66-8eb7-f0cb3107c03d"
+                    },
+                    "relativePosition": {
+                        "x": -0.033294677734375,
+                        "y": 0.7613229751586914,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -20.798566818237306,
+                        "y": -5.481023788452148,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719085693359376,
+                        "y": 2.9279632568359377,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value483": 17,
+                "value484": {
+                    "groupID": {
+                        "uuid": "86bb91bf-c4c1-49b4-9fcf-0f94c3434745"
+                    },
+                    "relativePosition": {
+                        "x": 0.1490039825439453,
+                        "y": -1.5883660316467286,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.4719085693359376,
+                        "y": 2.9279632568359377,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -20.94757080078125,
+                        "y": -3.89265775680542,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 1.7699146270751954,
+                        "y": 6.1046953201293949,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value485": 21,
+                "value486": {
+                    "groupID": {
+                        "uuid": "50ff2853-60fb-46ab-a6e4-2393b56c6e09"
+                    },
+                    "relativePosition": {
+                        "x": -0.03329277038574219,
+                        "y": 0.7613255977630615,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -21.096574783325197,
+                        "y": -2.3042945861816408,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.927968978881836,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value487": 22,
+                "value488": {
+                    "groupID": {
+                        "uuid": "50ff2853-60fb-46ab-a6e4-2393b56c6e09"
+                    },
+                    "relativePosition": {
+                        "x": 0.03329277038574219,
+                        "y": -0.7613255977630615,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -21.096574783325197,
+                        "y": -2.3042945861816408,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.927968978881836,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value489": 20,
+                "value490": {
+                    "groupID": {
+                        "uuid": "86bb91bf-c4c1-49b4-9fcf-0f94c3434745"
+                    },
+                    "relativePosition": {
+                        "x": -0.1490039825439453,
+                        "y": 1.5883631706237794,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.927968978881836,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -20.94757080078125,
+                        "y": -3.89265775680542,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 1.7699146270751954,
+                        "y": 6.1046953201293949,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value491": 16,
+                "value492": {
+                    "groupID": {
+                        "uuid": "32d57471-b90b-4e66-aaf0-17ea4310fb4f"
+                    },
+                    "relativePosition": {
+                        "x": 3.181802749633789,
+                        "y": 0.5174775123596191,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.7699146270751954,
+                        "y": 6.1046953201293949,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -24.12937355041504,
+                        "y": -4.410135269165039,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 8.13351821899414,
+                        "y": 7.139650344848633,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value493": 25,
+                "value494": {
+                    "groupID": {
+                        "uuid": "980d772b-b0c9-4107-a8ec-0b89ea8da603"
+                    },
+                    "relativePosition": {
+                        "x": 0.03329277038574219,
+                        "y": -0.7613251209259033,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -27.460180282592775,
+                        "y": -3.3392527103424074,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.9279675483703615,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value495": 26,
+                "value496": {
+                    "groupID": {
+                        "uuid": "980d772b-b0c9-4107-a8ec-0b89ea8da603"
+                    },
+                    "relativePosition": {
+                        "x": -0.03329277038574219,
+                        "y": 0.7613248825073242,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -27.460180282592775,
+                        "y": -3.3392527103424074,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.9279675483703615,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value497": 24,
+                "value498": {
+                    "groupID": {
+                        "uuid": "5d9bf11d-5a30-496b-9cc7-8325d980a0a4"
+                    },
+                    "relativePosition": {
+                        "x": -0.1490020751953125,
+                        "y": 1.5883619785308838,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.4719047546386719,
+                        "y": 2.9279675483703615,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -27.31117820739746,
+                        "y": -4.927614688873291,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 1.7699089050292969,
+                        "y": 6.104691505432129,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value499": 28,
+                "value500": {
+                    "groupID": {
+                        "uuid": "47bbebd6-973f-483f-9be3-e9a487147e62"
+                    },
+                    "relativePosition": {
+                        "x": 0.03329277038574219,
+                        "y": -0.761324405670166,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -27.162174224853517,
+                        "y": -6.515977382659912,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719009399414063,
+                        "y": 2.9279661178588869,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value501": 29,
+                "value502": {
+                    "groupID": {
+                        "uuid": "47bbebd6-973f-483f-9be3-e9a487147e62"
+                    },
+                    "relativePosition": {
+                        "x": -0.03329277038574219,
+                        "y": 0.761324405670166,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -308.5700988769531,
+                    "groupPosition": {
+                        "x": -27.162174224853517,
+                        "y": -6.515977382659912,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.4719009399414063,
+                        "y": 2.9279661178588869,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value503": 27,
+                "value504": {
+                    "groupID": {
+                        "uuid": "5d9bf11d-5a30-496b-9cc7-8325d980a0a4"
+                    },
+                    "relativePosition": {
+                        "x": 0.1490039825439453,
+                        "y": -1.588362693786621,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.4719009399414063,
+                        "y": 2.9279661178588869,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -27.31117820739746,
+                        "y": -4.927614688873291,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 1.7699089050292969,
+                        "y": 6.104691505432129,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value505": 23,
+                "value506": {
+                    "groupID": {
+                        "uuid": "32d57471-b90b-4e66-aaf0-17ea4310fb4f"
+                    },
+                    "relativePosition": {
+                        "x": -3.181804656982422,
+                        "y": -0.517479419708252,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.7699089050292969,
+                        "y": 6.104691505432129,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -24.12937355041504,
+                        "y": -4.410135269165039,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 8.13351821899414,
+                        "y": 7.139650344848633,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value507": 15,
+                "value508": {
+                    "groupID": {
+                        "uuid": "ff016716-fec2-489b-85ae-f44161b40e55"
+                    },
+                    "relativePosition": {
+                        "x": 4.395254135131836,
+                        "y": 5.287286758422852,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 8.13351821899414,
+                        "y": 7.139650344848633,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -28.524627685546876,
+                        "y": -9.69742202758789,
+                        "z": -4.0
+                    },
+                    "groupScale": {
+                        "x": 16.924026489257814,
+                        "y": 17.71422576904297,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value509": 14,
+                "value510": {
+                    "groupID": {
+                        "uuid": "ff016716-fec2-489b-85ae-f44161b40e55"
+                    },
+                    "relativePosition": {
+                        "x": -4.947299957275391,
+                        "y": -3.680757522583008,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 7.029426574707031,
+                        "y": 10.352710723876954,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -28.524627685546876,
+                        "y": -9.69742202758789,
+                        "z": -4.0
+                    },
+                    "groupScale": {
+                        "x": 16.924026489257814,
+                        "y": 17.71422576904297,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value511": 35,
+                "value512": {
+                    "groupID": {
+                        "uuid": "c5a794ab-1136-448b-8874-d0b7fcb52d89"
+                    },
+                    "relativePosition": {
+                        "x": -0.6974964141845703,
+                        "y": 0.30081605911254885,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -64.4773941040039,
+                    "groupPosition": {
+                        "x": -17.355924606323243,
+                        "y": 5.485794544219971,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.7282752990722658,
+                        "y": 1.9349145889282227,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value513": 36,
+                "value514": {
+                    "groupID": {
+                        "uuid": "c5a794ab-1136-448b-8874-d0b7fcb52d89"
+                    },
+                    "relativePosition": {
+                        "x": 0.7011871337890625,
+                        "y": -0.3045058250427246,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -204.6448974609375,
+                    "groupPosition": {
+                        "x": -17.355924606323243,
+                        "y": 5.485794544219971,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.7282752990722658,
+                        "y": 1.9349145889282227,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value515": 34,
+                "value516": {
+                    "groupID": {
+                        "uuid": "8524ecc8-aa77-40a1-8868-93718abebcd5"
+                    },
+                    "relativePosition": {
+                        "x": -1.6369667053222657,
+                        "y": -1.754873275756836,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.7282752990722658,
+                        "y": 1.9349145889282227,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -15.718957901000977,
+                        "y": 7.240667819976807,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 6.002208709716797,
+                        "y": 5.4446611404418949,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value517": 38,
+                "value518": {
+                    "groupID": {
+                        "uuid": "c78fdd26-b5ed-414a-956f-aa68e3331195"
+                    },
+                    "relativePosition": {
+                        "x": 0.7491474151611328,
+                        "y": -0.13956451416015626,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -231.62991333007813,
+                    "groupPosition": {
+                        "x": -14.169379234313965,
+                        "y": 9.121055603027344,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.9030513763427736,
+                        "y": 1.6838855743408204,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value519": 39,
+                "value520": {
+                    "groupID": {
+                        "uuid": "c78fdd26-b5ed-414a-956f-aa68e3331195"
+                    },
+                    "relativePosition": {
+                        "x": -0.7491474151611328,
+                        "y": 0.13956451416015626,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -231.62991333007813,
+                    "groupPosition": {
+                        "x": -14.169379234313965,
+                        "y": 9.121055603027344,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.9030513763427736,
+                        "y": 1.6838855743408204,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value521": 37,
+                "value522": {
+                    "groupID": {
+                        "uuid": "8524ecc8-aa77-40a1-8868-93718abebcd5"
+                    },
+                    "relativePosition": {
+                        "x": 1.5495786666870118,
+                        "y": 1.880387783050537,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.9030513763427736,
+                        "y": 1.6838855743408204,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -15.718957901000977,
+                        "y": 7.240667819976807,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 6.002208709716797,
+                        "y": 5.4446611404418949,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value523": 33,
+                "value524": {
+                    "groupID": {
+                        "uuid": "08f9bf9d-e93d-4da4-9b7e-9b3a0ba061f9"
+                    },
+                    "relativePosition": {
+                        "x": -3.0439624786376955,
+                        "y": 2.49534273147583,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 6.002208709716797,
+                        "y": 5.4446611404418949,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -12.674995422363282,
+                        "y": 4.745325088500977,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 12.090133666992188,
+                        "y": 10.435346603393555,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value525": 42,
+                "value526": {
+                    "groupID": {
+                        "uuid": "8ed1b9ac-473b-44c7-9822-e601ec8bdd87"
+                    },
+                    "relativePosition": {
+                        "x": -0.14578771591186524,
+                        "y": -0.7479645609855652,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -322.1021728515625,
+                    "groupPosition": {
+                        "x": -7.477396488189697,
+                        "y": 0.9772982597351074,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.6949377059936524,
+                        "y": 2.8992919921875,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value527": 43,
+                "value528": {
+                    "groupID": {
+                        "uuid": "8ed1b9ac-473b-44c7-9822-e601ec8bdd87"
+                    },
+                    "relativePosition": {
+                        "x": 0.14578723907470704,
+                        "y": 0.7479645013809204,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -322.1021728515625,
+                    "groupPosition": {
+                        "x": -7.477396488189697,
+                        "y": 0.9772982597351074,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 1.6949377059936524,
+                        "y": 2.8992919921875,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value529": 41,
+                "value530": {
+                    "groupID": {
+                        "uuid": "eacf25ef-74b1-491d-acc0-b9b11e2e4aca"
+                    },
+                    "relativePosition": {
+                        "x": 1.504992961883545,
+                        "y": -2.0345218181610109,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.6949377059936524,
+                        "y": 2.8992919921875,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -8.982389450073243,
+                        "y": 3.011820077896118,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 4.704922676086426,
+                        "y": 6.9683356285095219,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value531": 45,
+                "value532": {
+                    "groupID": {
+                        "uuid": "2aab53c8-d673-4411-b29a-03f8aa744109"
+                    },
+                    "relativePosition": {
+                        "x": 0.7492084503173828,
+                        "y": 0.2677903175354004,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -22.60744285583496,
+                    "groupPosition": {
+                        "x": -9.931854248046875,
+                        "y": 5.574409484863281,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.80599308013916,
+                        "y": 1.843156337738037,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value533": 46,
+                "value534": {
+                    "groupID": {
+                        "uuid": "2aab53c8-d673-4411-b29a-03f8aa744109"
+                    },
+                    "relativePosition": {
+                        "x": -0.6963939666748047,
+                        "y": -0.21497535705566407,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -222.83712768554688,
+                    "groupPosition": {
+                        "x": -9.931854248046875,
+                        "y": 5.574409484863281,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.80599308013916,
+                        "y": 1.843156337738037,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value535": 44,
+                "value536": {
+                    "groupID": {
+                        "uuid": "eacf25ef-74b1-491d-acc0-b9b11e2e4aca"
+                    },
+                    "relativePosition": {
+                        "x": -0.9494647979736328,
+                        "y": 2.562589406967163,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.80599308013916,
+                        "y": 1.843156337738037,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -8.982389450073243,
+                        "y": 3.011820077896118,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 4.704922676086426,
+                        "y": 6.9683356285095219,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value537": 40,
+                "value538": {
+                    "groupID": {
+                        "uuid": "08f9bf9d-e93d-4da4-9b7e-9b3a0ba061f9"
+                    },
+                    "relativePosition": {
+                        "x": 3.692605972290039,
+                        "y": -1.7335050106048585,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 4.704922676086426,
+                        "y": 6.9683356285095219,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -12.674995422363282,
+                        "y": 4.745325088500977,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 12.090133666992188,
+                        "y": 10.435346603393555,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value539": 32,
+                "value540": {
+                    "groupID": {
+                        "uuid": "7a620f86-f111-40ab-a8cd-d564fa641d40"
+                    },
+                    "relativePosition": {
+                        "x": -7.940142631530762,
+                        "y": -5.594757080078125,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 12.090133666992188,
+                        "y": 10.435346603393555,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -4.7348527908325199,
+                        "y": 10.340082168579102,
+                        "z": -4.0
+                    },
+                    "groupScale": {
+                        "x": 27.97041893005371,
+                        "y": 21.624858856201173,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value541": 50,
+                "value542": {
+                    "groupID": {
+                        "uuid": "cbaf17d8-6ca9-46c7-9ea6-6150ba4ca1fd"
+                    },
+                    "relativePosition": {
+                        "x": 1.3584809303283692,
+                        "y": 0.735595703125,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -222.4817352294922,
+                    "groupPosition": {
+                        "x": -0.8897884488105774,
+                        "y": 19.710491180419923,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 4.129809856414795,
+                        "y": 2.8840408325195314,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value543": 51,
+                "value544": {
+                    "groupID": {
+                        "uuid": "cbaf17d8-6ca9-46c7-9ea6-6150ba4ca1fd"
+                    },
+                    "relativePosition": {
+                        "x": -1.3584811687469483,
+                        "y": -0.735595703125,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -222.4817352294922,
+                    "groupPosition": {
+                        "x": -0.8897884488105774,
+                        "y": 19.710491180419923,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 4.129809856414795,
+                        "y": 2.8840408325195314,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value545": 49,
+                "value546": {
+                    "groupID": {
+                        "uuid": "585d8c1e-e6ee-4f07-a440-e4cf87ab999e"
+                    },
+                    "relativePosition": {
+                        "x": 2.1549975872039797,
+                        "y": 1.9605178833007813,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 4.129809856414795,
+                        "y": 2.8840408325195314,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -3.044785976409912,
+                        "y": 17.74997329711914,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 8.439805030822754,
+                        "y": 6.805076599121094,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value547": 53,
+                "value548": {
+                    "groupID": {
+                        "uuid": "99c15ad9-86a3-4499-b72d-172211516ec6"
+                    },
+                    "relativePosition": {
+                        "x": -1.0745697021484376,
+                        "y": -0.71490478515625,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -222.4817352294922,
+                    "groupPosition": {
+                        "x": -5.483695030212402,
+                        "y": 15.768762588500977,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 3.5619869232177736,
+                        "y": 2.842656135559082,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value549": 54,
+                "value550": {
+                    "groupID": {
+                        "uuid": "99c15ad9-86a3-4499-b72d-172211516ec6"
+                    },
+                    "relativePosition": {
+                        "x": 1.0745697021484376,
+                        "y": 0.7149028778076172,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -222.4817352294922,
+                    "groupPosition": {
+                        "x": -5.483695030212402,
+                        "y": 15.768762588500977,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 3.5619869232177736,
+                        "y": 2.842656135559082,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value551": 52,
+                "value552": {
+                    "groupID": {
+                        "uuid": "585d8c1e-e6ee-4f07-a440-e4cf87ab999e"
+                    },
+                    "relativePosition": {
+                        "x": -2.4389090538024904,
+                        "y": -1.981210708618164,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 3.5619869232177736,
+                        "y": 2.842656135559082,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -3.044785976409912,
+                        "y": 17.74997329711914,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 8.439805030822754,
+                        "y": 6.805076599121094,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value553": 48,
+                "value554": {
+                    "groupID": {
+                        "uuid": "f43f62eb-3bda-4e35-b7ee-40413ad1826e"
+                    },
+                    "relativePosition": {
+                        "x": -4.037619590759277,
+                        "y": 1.5253868103027344,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 8.439805030822754,
+                        "y": 6.805076599121094,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": 0.9928336143493652,
+                        "y": 16.224586486816408,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 16.515045166015626,
+                        "y": 9.855850219726563,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value555": 57,
+                "value556": {
+                    "groupID": {
+                        "uuid": "2c803bdd-62a4-4c03-89f6-f64a96b58533"
+                    },
+                    "relativePosition": {
+                        "x": 0.6602954864501953,
+                        "y": 0.3803672790527344,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -191.1291046142578,
+                    "groupPosition": {
+                        "x": 4.060235023498535,
+                        "y": 12.264135360717774,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.4948060512542726,
+                        "y": 1.9349498748779297,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value557": 58,
+                "value558": {
+                    "groupID": {
+                        "uuid": "2c803bdd-62a4-4c03-89f6-f64a96b58533"
+                    },
+                    "relativePosition": {
+                        "x": -0.6602954864501953,
+                        "y": -0.3803672790527344,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999998807907105,
+                        "y": 1.0,
+                        "z": NaN
+                    },
+                    "originRotate": -191.1291046142578,
+                    "groupPosition": {
+                        "x": 4.060235023498535,
+                        "y": 12.264135360717774,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.4948060512542726,
+                        "y": 1.9349498748779297,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value559": 56,
+                "value560": {
+                    "groupID": {
+                        "uuid": "c9dfeaed-d29d-4a3e-8b07-316d08098b0a"
+                    },
+                    "relativePosition": {
+                        "x": -1.9713587760925294,
+                        "y": -2.125865936279297,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.4948060512542726,
+                        "y": 1.9349498748779297,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": 6.0315937995910648,
+                        "y": 14.39000129699707,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 6.43752384185791,
+                        "y": 6.186680793762207,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value561": 60,
+                "value562": {
+                    "groupID": {
+                        "uuid": "0c49e6d5-4a54-4a84-921c-7c2840eac968"
+                    },
+                    "relativePosition": {
+                        "x": 0.6603031158447266,
+                        "y": 0.38040924072265627,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -191.1291046142578,
+                    "groupPosition": {
+                        "x": 8.002944946289063,
+                        "y": 16.515825271606447,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.494821548461914,
+                        "y": 1.9350318908691407,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value563": 61,
+                "value564": {
+                    "groupID": {
+                        "uuid": "0c49e6d5-4a54-4a84-921c-7c2840eac968"
+                    },
+                    "relativePosition": {
+                        "x": -0.6603035926818848,
+                        "y": -0.38040924072265627,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 0.9999993443489075,
+                        "y": 1.000000238418579,
+                        "z": NaN
+                    },
+                    "originRotate": -191.1291046142578,
+                    "groupPosition": {
+                        "x": 8.002944946289063,
+                        "y": 16.515825271606447,
+                        "z": -1.0
+                    },
+                    "groupScale": {
+                        "x": 2.494821548461914,
+                        "y": 1.9350318908691407,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value565": 59,
+                "value566": {
+                    "groupID": {
+                        "uuid": "c9dfeaed-d29d-4a3e-8b07-316d08098b0a"
+                    },
+                    "relativePosition": {
+                        "x": 1.971351146697998,
+                        "y": 2.125823974609375,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 2.494821548461914,
+                        "y": 1.9350318908691407,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": 6.0315937995910648,
+                        "y": 14.39000129699707,
+                        "z": -2.0
+                    },
+                    "groupScale": {
+                        "x": 6.43752384185791,
+                        "y": 6.186680793762207,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value567": 55,
+                "value568": {
+                    "groupID": {
+                        "uuid": "f43f62eb-3bda-4e35-b7ee-40413ad1826e"
+                    },
+                    "relativePosition": {
+                        "x": 5.038760185241699,
+                        "y": -1.834585189819336,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 6.43752384185791,
+                        "y": 6.186680793762207,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": 0.9928336143493652,
+                        "y": 16.224586486816408,
+                        "z": -3.0
+                    },
+                    "groupScale": {
+                        "x": 16.515045166015626,
+                        "y": 9.855850219726563,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value569": 47,
+                "value570": {
+                    "groupID": {
+                        "uuid": "7a620f86-f111-40ab-a8cd-d564fa641d40"
+                    },
+                    "relativePosition": {
+                        "x": 5.727686405181885,
+                        "y": 5.884504318237305,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 16.515045166015626,
+                        "y": 9.855850219726563,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -4.7348527908325199,
+                        "y": 10.340082168579102,
+                        "z": -4.0
+                    },
+                    "groupScale": {
+                        "x": 27.97041893005371,
+                        "y": 21.624858856201173,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value571": 31,
+                "value572": {
+                    "groupID": {
+                        "uuid": "a3006f71-9266-4861-aba5-8f61b54284b6"
+                    },
+                    "relativePosition": {
+                        "x": 9.133289337158204,
+                        "y": 9.041093826293946,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 27.97041893005371,
+                        "y": 21.624858856201173,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -13.868142127990723,
+                        "y": 1.2989883422851563,
+                        "z": -5.0
+                    },
+                    "groupScale": {
+                        "x": 46.23699951171875,
+                        "y": 39.70704650878906,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
+                    }
+                },
+                "value573": 30,
+                "value574": {
+                    "groupID": {
+                        "uuid": "a3006f71-9266-4861-aba5-8f61b54284b6"
+                    },
+                    "relativePosition": {
+                        "x": -14.656485557556153,
+                        "y": -10.996410369873047,
+                        "z": 1.0
+                    },
+                    "originScale": {
+                        "x": 16.924026489257814,
+                        "y": 17.71422576904297,
+                        "z": 0.0
+                    },
+                    "originRotate": 0.0,
+                    "groupPosition": {
+                        "x": -13.868142127990723,
+                        "y": 1.2989883422851563,
+                        "z": -5.0
+                    },
+                    "groupScale": {
+                        "x": 46.23699951171875,
+                        "y": 39.70704650878906,
+                        "z": 0.0
+                    },
+                    "groupRotate": 0.0,
+                    "preRotate": 0.0,
+                    "offset": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": NaN
                     }
                 }
             }

@@ -60,109 +60,16 @@ void SceneHierarchyPanel::onImGuiRender()
         m_isPreFocus = isSelected();
 
         m_entityOrder.clear();
+        m_clickEntity.clear();
         for(auto e : m_showEntity)
         {
             drawEntityNode(e);
         }
-
-        // Reset selected when click empty space in the window
-        if(isSelected() &&
-           /*ImGui::IsWindowFocused() &&*/ ImGui::IsWindowHovered() &&
-           ImGui::IsAnyItemActive())
-        {
-            resetSelected();
-        }
-
-        // Right click menu
-        if (ImGui::BeginPopupContextWindow())
-        {
-            if(!isSelected())
-            {
-                if (ImGui::MenuItem("Create Entity"))
-                {
-                    createEntityToTarget();
-                }
-            }
-            if(isSelected())
-            {
-                auto entSet = getSelectedEntities();
-                bool isAllGroupEntity = true;
-                bool isAllSubGroupEntity = true;
-                for(auto &ent : entSet)
-                {
-                    if(!ent.hasComponent<GroupComponent>())
-                        isAllGroupEntity = false;
-                    if(!ent.hasComponent<SubGroupComponent>())
-                        isAllSubGroupEntity = false;
-                }
-
-                if (ImGui::MenuItem("Delete Entity"))
-                {
-                    deleteTargetEntities();
-                }
-                if (ImGui::MenuItem("Duplicate Entity"))
-                {
-                    duplicateTargetEntities();
-                }
-                if (ImGui::MenuItem("Group Entity"))
-                {
-                    groupTargetEntities();
-                }
-                if ( isAllGroupEntity )
-                {
-                    if (ImGui::MenuItem("Remove Group"))
-                    {
-                        removeGroupEntity();
-                    }
-                }
-                if ( isAllSubGroupEntity )
-                {
-                    if (ImGui::MenuItem("Move out Group"))
-                    {
-                        moveOutGroupEntity();
-                    }
-                }
-                if (ImGui::BeginMenu("Move into Group"))
-                {
-                    for(auto &id : m_groupEntityUUID)
-                    {
-                        Entity groupEntity = m_currentScene->getEntityByUUID(id);
-                        bool isLegal = true;
-                        for(auto &ent : entSet)
-                        {
-                            // check is entity already under this group
-                            if(isCircleGroup(ent, groupEntity)) {
-                                isLegal = false;
-                            }
-                            if(ent.hasComponent<SubGroupComponent>())
-                            {
-                                auto &sgc = ent.getComponent<SubGroupComponent>();
-                                if(sgc.getGroupEntityID() == groupEntity.getUUID())
-                                    isLegal = false;
-                            }
-                        }
-
-                        if( !isSelected(groupEntity) && isLegal )
-                        {
-                            if( ImGui::MenuItem(groupEntity.getName().c_str()) )
-                            {
-                                moveIntoGroupEntity(groupEntity);
-                            }
-                        }
-                    }
-                    ImGui::EndMenu();
-                }
-
-                if (ImGui::MenuItem("Hide Entity"))
-                {
-                }
-            }
-
-            ImGui::EndPopup();
-        }
+        updateClickAction();
     }
     ImGui::EndChild();
     ImGui::End();
+
 }
 
 void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
@@ -193,29 +100,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
     if( ImGui::IsItemClicked() ||
        (ImGui::IsItemFocused()&&ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))))
     {
-        // If not pressed then clear
-        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift)
-        {
-            resetTarget();
-            m_isPreFocus = false;
-        }
-        addTarget(entity);
-
-        // Multi selection
-        if(isSelected() && ImGui::GetIO().KeyShift)
-        {
-            bool isPassSelect = false;
-            bool isPassClick  = false;
-            for(auto ent : m_entityOrder)
-            {
-                if( isSelected(ent) && ent != entity )
-                    isPassSelect = true;
-                if( ent == entity )
-                    isPassClick = true;
-                if((isPassSelect^isPassClick))
-                    addTarget(ent);
-            };
-        }
+        m_clickEntity.insert(entity);
     }
 
     if(opened)
@@ -479,6 +364,134 @@ bool SceneHierarchyPanel::isCircleGroup(Entity groupEntity, Entity targetEntity)
             isCircle = true;
     }
     return isCircle;
+}
+
+void SceneHierarchyPanel::updateClickAction()
+{
+
+    for(auto entity : m_clickEntity)
+    {
+        // If not pressed then clear
+        if(!ImGui::GetIO().KeyCtrl && !ImGui::GetIO().KeyShift)
+        {
+            resetTarget();
+            m_isPreFocus = false;
+        }
+        addTarget(entity);
+
+        // Multi selection
+        if(isSelected() && ImGui::GetIO().KeyShift)
+        {
+            bool isPassSelect = false;
+            bool isPassClick  = false;
+            for(auto ent : m_entityOrder)
+            {
+                if( isSelected(ent) && ent != entity )
+                    isPassSelect = true;
+                if( ent == entity )
+                    isPassClick = true;
+                if((isPassSelect^isPassClick))
+                    addTarget(ent);
+            };
+        }
+    }
+
+    // Reset selected when click empty space in the window
+    if(isSelected() &&
+       /*ImGui::IsWindowFocused() &&*/ ImGui::IsWindowHovered() &&
+       ImGui::IsAnyItemActive())
+    {
+        resetSelected();
+    }
+
+    // Right click menu
+    if (ImGui::BeginPopupContextWindow())
+    {
+        if(!isSelected())
+        {
+            if (ImGui::MenuItem("Create Entity"))
+            {
+                createEntityToTarget();
+            }
+        }
+        if(isSelected())
+        {
+            auto entSet = getSelectedEntities();
+            bool isAllGroupEntity = true;
+            bool isAllSubGroupEntity = true;
+            for(auto &ent : entSet)
+            {
+                if(!ent.hasComponent<GroupComponent>())
+                    isAllGroupEntity = false;
+                if(!ent.hasComponent<SubGroupComponent>())
+                    isAllSubGroupEntity = false;
+            }
+
+            if (ImGui::MenuItem("Delete Entity"))
+            {
+                deleteTargetEntities();
+            }
+            if (ImGui::MenuItem("Duplicate Entity"))
+            {
+                duplicateTargetEntities();
+            }
+            if (ImGui::MenuItem("Group Entity"))
+            {
+                groupTargetEntities();
+            }
+            if ( isAllGroupEntity )
+            {
+                if (ImGui::MenuItem("Remove Group"))
+                {
+                    removeGroupEntity();
+                }
+            }
+            if ( isAllSubGroupEntity )
+            {
+                if (ImGui::MenuItem("Move out Group"))
+                {
+                    moveOutGroupEntity();
+                }
+            }
+            if (ImGui::BeginMenu("Move into Group"))
+            {
+                for(auto &id : m_groupEntityUUID)
+                {
+                    Entity groupEntity = m_currentScene->getEntityByUUID(id);
+                    bool isLegal = true;
+                    for(auto &ent : entSet)
+                    {
+                        // check is entity already under this group
+                        if(isCircleGroup(ent, groupEntity)) {
+                            isLegal = false;
+                        }
+                        if(ent.hasComponent<SubGroupComponent>())
+                        {
+                            auto &sgc = ent.getComponent<SubGroupComponent>();
+                            if(sgc.getGroupEntityID() == groupEntity.getUUID())
+                                isLegal = false;
+                        }
+                    }
+
+                    if( !isSelected(groupEntity) && isLegal )
+                    {
+                        if( ImGui::MenuItem(groupEntity.getName().c_str()) )
+                        {
+                            moveIntoGroupEntity(groupEntity);
+                        }
+                    }
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::MenuItem("Hide Entity"))
+            {
+            }
+        }
+
+        ImGui::EndPopup();
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////
