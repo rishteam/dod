@@ -111,9 +111,7 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
                 ImGui::PushItemWidth(100);
                 if (ImGui::Button("Load Texture"))
                 {
-                    std::string cur = FileSystem::GetCurrentDirectory();
-                    cur += "\\assets";
-
+                    std::string cur = FileSystem::GetCurrentDirectory() + "\\assets\\texture";
                     if (FileDialog::SelectSingleFile(nullptr, cur.c_str(), tPath))
                     {
                         tPath = FileSystem::RelativePath(tPath);

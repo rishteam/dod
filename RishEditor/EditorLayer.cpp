@@ -167,10 +167,7 @@ void EditorLayer::onUpdate(Time dt)
     auto sceneFramebufferSpec = m_sceneFramebuffer->getSpecification();
     auto sceneFramebufferSize = glm::vec2{sceneFramebufferSpec.width, sceneFramebufferSpec.height};
     if(m_gameViewportPanelSize != sceneFramebufferSize &&
-        m_gameViewportPanelSize.x > 0.f && m_gameViewportPanelSize.y > 0.f /*&&
-        // TODO: Super HACK
-        m_gameViewportPanelSize.x != std::numeric_limits<float>::infinity() &&
-        m_gameViewportPanelSize.y != std::numeric_limits<float>::infinity()*/)
+        m_gameViewportPanelSize.x > 0.f && m_gameViewportPanelSize.y > 0.f)
     {
         m_sceneFramebuffer->resize((uint32_t) m_gameViewportPanelSize.x , (uint32_t) m_gameViewportPanelSize.y);
         m_sceneLightFramebuffer->resize((uint32_t) m_gameViewportPanelSize.x , (uint32_t) m_gameViewportPanelSize.y);
@@ -469,6 +466,8 @@ void EditorLayer::onImGuiMainMenuRender()
 
         if(ImGui::BeginMenu("File"))
         {
+            static auto fileDefaultPath = FileSystem::GetCurrentDirectory() + "\\assets\\scene";
+
             if(ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
                 m_scenePath = "";
@@ -481,7 +480,7 @@ void EditorLayer::onImGuiMainMenuRender()
                 // Open File
                 std::string path, content;
                 if(FileDialog::SelectSingleFile("sce",
-                    (FileSystem::GetCurrentDirectory() + "\\assets").c_str(),
+                    fileDefaultPath.c_str(),
                     path))
                 {
                     m_scenePath = path;
@@ -500,7 +499,7 @@ void EditorLayer::onImGuiMainMenuRender()
             if (ImGui::MenuItem("Save Scene as", "Ctrl-Shift+S"))
             {
                 std::string path;
-                if(FileDialog::SelectSaveFile("sce", nullptr, path))
+                if(FileDialog::SelectSaveFile("sce", fileDefaultPath.c_str(), path))
                 {
                     if(!String::endswith(path, ".sce"))
                         path += ".sce";

@@ -134,7 +134,7 @@ struct SpriteRenderComponent
 
     void loadFromSetting()
     {
-        if(useTexture && !m_texture)
+        if(useTexture)
         {
             m_texture = Texture2D::LoadTextureVFS(texturePath);
         }
