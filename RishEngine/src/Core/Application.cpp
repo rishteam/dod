@@ -79,6 +79,7 @@ void Application::run()
         // Update time
         float now = clk.getElapsedTime().asSeconds();
         Time dt = now - m_prevFrameTime;
+        m_dt = dt;
         m_prevFrameTime = now;
         lag += dt;
 

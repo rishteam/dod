@@ -3,47 +3,30 @@
 #include <Rish/Scene/SystemManager.h>
 #include <Rish/Animation/Component.h>
 
-template<typename T>
-void saveToFile(const std::string &name, T& obj, const std::string &path)
-{
-    std::ofstream of(path);
-    cereal::JSONOutputArchive outputArchive(of);
-    outputArchive(cereal::make_nvp(name, obj));
-}
-
-template<typename T>
-void loadFromFile(const std::string &name, T& obj, const std::string &path)
-{
-    std::stringstream oos(FileSystem::ReadTextFile(path));
-    cereal::JSONInputArchive inputArchive(oos);
-    inputArchive(cereal::make_nvp(name, obj));
-}
-
 ExampleSandboxLayer::ExampleSandboxLayer()
-    : Layer("ExampleSandboxLayer")//,
-//      m_cameraController(Application::Get().getWindow().getAspectRatio(), false, true)
+    : Layer("ExampleSandboxLayer"),
+      m_cameraController(Application::Get().getWindow().getAspectRatio(), false, true)
 {
-    RL_TRACE("Current path is {}", rl::FileSystem::GetCurrentDirectoryPath());
     VFS::Mount("shader", "Sandbox/assets");
     VFS::Mount("texture", "Sandbox/assets");
     VFS::Mount("animation", "assets/animation");
 
     m_testTexture = Texture2D::LoadTextureVFS("/texture/RTS_Crate.png");
 
-    m_scene = MakeRef<Scene>();
-    SystemManager::Init(m_scene);
-
-    m_scene->m_debugScene = true;
-    m_scene->m_debugCamera = true;
-
-    auto ent = m_scene->createEntity("Camera");
-    auto &cam = ent.addComponent<CameraComponent>();
-    cam.primary = true;
-    cam.camera.setAspect(16.f / 9.f);
-    cam.camera.setOrthographic(5.f, -1.f, 1.f);
-
-    ent = m_scene->createEntity("test");
-    auto &ani = ent.addComponent<Animation2DComponent>();
+//    m_scene = MakeRef<Scene>();
+//    SystemManager::Init(m_scene);
+//
+//    m_scene->m_debugScene = true;
+//    m_scene->m_debugCamera = true;
+//
+//    auto ent = m_scene->createEntity("Camera");
+//    auto &cam = ent.addComponent<CameraComponent>();
+//    cam.primary = true;
+//    cam.camera.setAspect(16.f / 9.f);
+//    cam.camera.setOrthographic(5.f, -1.f, 1.f);
+//
+//    ent = m_scene->createEntity("test");
+//    auto &ani = ent.addComponent<Animation2DComponent>();
 
 //    Texture2DOption opt;
 //    opt.minFilter = opt.magFilter = Texture2DFilter::TexNearest;
@@ -54,12 +37,15 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 //    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover2.png", false, opt));
 //    ani.textureList.push_back(Texture2D::LoadTextureVFS("/animation/reimu-hover3.png", false, opt));
 
-    loadFromFile("test", ani, "assets/test.rani");
+//    loadFromFile("test", ani, "assets/test.rani");
 
 //    ent = m_scene->createEntity("aaaa");
 //    auto &sprite = ent.addComponent<SpriteRenderComponent>();
 //    sprite.m_texture = m_testTexture;
 //    sprite.init = false;
+
+    m_frameTime.reserve(dataSetSize);
+    m_fps.reserve(dataSetSize);
 }
 
 ExampleSandboxLayer::~ExampleSandboxLayer()
@@ -71,45 +57,89 @@ void ExampleSandboxLayer::onAttach()
 {
     ImGui::LoadIniSettingsFromDisk("assets/layout/ExampleSandboxLayer.ini");
 
-    m_scene->onRuntimeInit();
-    m_scene->onScenePlay();
+    m_cameraController.setZoom(200);
+
+    for(int i = 0; i < spriteNumber; i++)
+        m_boxList.push_back(TestBox{glm::vec2{Math::RandomFloat(-100.f, 100.f), Math::RandomFloat(-100.f, 100.f)},
+            glm::vec2{Math::RandomFloat(0.1f, 5.f), Math::RandomFloat(0.1f, 5.f)}});
+
+//    m_scene->onRuntimeInit();
+//    m_scene->onScenePlay();
 }
 
 void ExampleSandboxLayer::onDetach()
 {
     ImGui::SaveIniSettingsToDisk("assets/layout/ExampleSandboxLayer.ini");
-    m_scene->onSceneStop();
+
+    std::ofstream of("data.txt", std::ofstream::out | std::ofstream::app);
+
+    of << spriteNumber << ' ';
+
+    float fps = 0.f;
+    for(auto i : m_fps)
+        fps += i;
+    fps /= m_fps.size();
+    of << fps << ' ';
+
+    float frameTime = 0.f;
+    for(auto i : m_frameTime)
+        frameTime += i;
+    frameTime /= m_frameTime.size();
+    of << frameTime << '\n';
+
+//    m_scene->onSceneStop();
 }
 
 void ExampleSandboxLayer::onUpdate(rl::Time dt)
 {
-//    m_cameraController.onUpdate(dt);
+    m_cameraController.onUpdate(dt);
 
     Renderer2D::ResetStats();
 
-    RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-    RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+    {
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
 
-    m_scene->onUpdate(dt);
-    m_scene->onRender();
+        Renderer2D::BeginScene(m_cameraController.getCamera(), false);
+        for(auto &i : m_boxList)
+            Renderer2D::DrawQuad(i.position, i.size, m_testTexture);
+        Renderer2D::EndScene();
+    }
+
+    if(clk.getElapsedTime() >= 1.f)
+    {
+        m_frameTime.push_back(Application::Get().getFrameTime());
+        m_fps.push_back(Application::Get().getFps());
+        clk.restart();
+    }
+
+    if(m_fps.size() >= dataSetSize)
+    {
+        Application::Get().close();
+    }
+
+//    m_scene->onUpdate(dt);
+//    m_scene->onRender();
 }
 
 void ExampleSandboxLayer::onImGuiRender()
 {
     auto stat = Renderer2D::GetStats();
     ImGui::Begin("Renderer");
+    ImGui::Text("fps = %d, frame time = %f", Application::Get().getFps(), Application::Get().getFrameTime());
+    ImGui::Separator();
     ImGui::Text("Quad = %d", stat.QuadCount);
     ImGui::Text("Draw = %d", stat.DrawCount);
     ImGui::End();
 
     Renderer2D::OnImGuiRender();
 
-    m_scene->onImGuiRender();
+//    m_scene->onImGuiRender();
 }
 
 void ExampleSandboxLayer::onEvent(rl::Event &event)
 {
-//    m_cameraController.onEvent(event);
+    m_cameraController.onEvent(event);
     EventDispatcher dispatcher(event);
     dispatcher.dispatch<KeyPressedEvent>(RL_BIND_EVENT_FUNC(ExampleSandboxLayer::onKeyPressEvent));
 }
@@ -118,8 +148,8 @@ bool ExampleSandboxLayer::onKeyPressEvent(KeyPressedEvent &event)
 {
     if(event.keyCode == Keyboard::Tilde)
     {
-        m_scene->m_debugScene ^= true;
-        m_scene->m_debugCamera ^= true;
+//        m_scene->m_debugScene ^= true;
+//        m_scene->m_debugCamera ^= true;
     }
     return false;
 }

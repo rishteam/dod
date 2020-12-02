@@ -5,6 +5,15 @@
 
 using namespace rl;
 
+struct TestBox
+{
+    TestBox(const glm::vec2 &pos, const glm::vec2 &siz)
+        : position(pos), size(siz)
+    {}
+    glm::vec2 position;
+    glm::vec2 size;
+};
+
 class ExampleSandboxLayer : public rl::Layer
 {
 public:
@@ -20,6 +29,14 @@ public:
 private:
     bool onKeyPressEvent(KeyPressedEvent &event);
     //
+    std::vector<TestBox> m_boxList;
+    OrthographicCameraController m_cameraController;
     Ref<Texture2D> m_testTexture;
     Ref<Scene> m_scene;
+    //
+    Clock clk;
+    std::vector<float> m_frameTime;
+    std::vector<float> m_fps;
+    int dataSetSize = 100;
+    int spriteNumber = 100000;
 };
