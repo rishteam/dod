@@ -103,6 +103,37 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
         m_clickEntity.insert(entity);
     }
 
+    if(ImGui::BeginDragDropSource())
+    {
+        auto payload = entity.getUUID().to_c_str();
+        ImGui::SetDragDropPayload("EntityMove", payload, strlen(payload) * sizeof(char));
+        ImGui::Text("%s",payload);
+        ImGui::Text("%s",entity.getName().c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    if(ImGui::BeginDragDropTarget())
+    {
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityMove"))
+        {
+            std::cout << payload->Data << std::endl;
+            UUID id((const char*)payload->Data);
+            printf("%s\n",id.to_c_str());
+            Entity sourceEntity = m_currentScene->getEntityByUUID(id);
+            if( !isCircleGroup(sourceEntity, entity) )
+            {
+                resetTarget();
+                addTarget(sourceEntity);
+                moveIntoGroupEntity(entity);
+            }
+            else
+            {
+                RL_CORE_WARN("%s can not move into %s", sourceEntity.getName(), entity.getName());
+            }
+        }
+    }
+
+
     if(opened)
     {
         // Has sub entity?

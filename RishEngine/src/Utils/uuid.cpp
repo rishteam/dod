@@ -39,6 +39,16 @@ UUID::UUID()
 
 }
 
+UUID::UUID(const std::string &str)
+{
+    m_UUID = str;
+}
+
+UUID::UUID(const char *s)
+    : m_UUID(s)
+{
+}
+
 } // end of namespace rl
 
 namespace std {
