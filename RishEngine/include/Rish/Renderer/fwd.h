@@ -11,4 +11,6 @@ class VertexArray;
 class VertexBuffer;
 class IndexBuffer;
 
+class Framebuffer;
+
 }

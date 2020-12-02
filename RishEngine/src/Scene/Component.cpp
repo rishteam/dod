@@ -3,6 +3,9 @@
 
 namespace rl {
 
+// TODO: Move me
+std::set<UUID> LightComponent::ENTITY_NO_RAY_CAST;
+
 void GroupComponent::addEntityUUID(const UUID &id)
 {
     childEntity.insert(id);

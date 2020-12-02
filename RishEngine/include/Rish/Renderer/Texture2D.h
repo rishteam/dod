@@ -113,8 +113,8 @@ private:
     void createTexture();
     void setOptions(const Texture2DOption &option);
 
-    void setSize(uint32_t width, uint32_t height);
     void setTexture(const void * imagePtr);
+    void setSize(uint32_t width, uint32_t height);
 
     /// Path to the image file
 	std::string m_path{};

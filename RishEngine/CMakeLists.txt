@@ -89,6 +89,7 @@ add_library(RishEngine
     src/ImGui/ImGui.cpp
     src/ImGui/MenuAction.cpp
     src/ImGui/AttributeWidget.cpp
+    src/ImGui/ImGuiWindow.cpp
 
     src/Utils/uuid.cpp
     src/Utils/String.cpp
@@ -106,6 +107,7 @@ add_library(RishEngine
 
     # Effect
     src/Effect/Particle/ParticleSystem.cpp
+    src/Effect/Light/LightSystem.cpp
 
     # Box
     src/Collider/Box.cpp
@@ -137,13 +139,13 @@ add_library(RishEngine
 
     # Scene
     src/Scene/Scene.cpp
+    src/Scene/Component.cpp
     src/Scene/Entity.cpp
     src/Scene/ComponentManager.cpp
     src/Scene/SceneCamera.cpp
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
     src/Scene/System/NativeScriptSystem.cpp
-    src/Scene/Component.cpp
     src/Scene/SystemManager.cpp
 
     # Math
@@ -158,7 +160,7 @@ add_library(RishEngine
     src/Animation/Animation.cpp
 
     ${RL_SCRIPT_FILES}
-        src/ImGui/ImGuiWindow.cpp)
+)
 
 # alias
 add_library(Rish::Engine ALIAS RishEngine)

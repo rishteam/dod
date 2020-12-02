@@ -86,7 +86,10 @@ private:
     // Scene
     //////////////////////////////////////////
 	Ref<Framebuffer> m_editorFramebuffer;
+	Ref<Framebuffer> m_editorLightFramebuffer;
+
     //
+    Ref<Framebuffer> m_sceneLightFramebuffer;
 	Ref<Framebuffer> m_sceneFramebuffer;
     Ref<Scene> m_currentScene;        ///< Current Scene
     Ref<Scene> m_editorScene;         ///< Editor Scene
@@ -94,7 +97,8 @@ private:
 	//
 	std::string m_scenePath;
 	bool m_sceneLoaded = false;
-    glm::vec2 m_sceneViewportPanelSize {0.f, 0.f};
+    glm::vec2 m_sceneViewportPanelSize {1280.f, 720.f};
+    glm::vec2 m_gameViewportPanelSize {1280.f, 720.f};
 
     //////////////////////////////////////////
     // Editor Panels

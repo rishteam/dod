@@ -19,6 +19,7 @@
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
 #include <Rish/Animation/Animation2DSystem.h>
+#include <Rish/Effect/Light/LightSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
@@ -189,6 +190,8 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<Joint2DComponent>(ent, src);
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
     CopyComponentToEntityIfExists<Animation2DComponent>(ent, src);
+    CopyComponentToEntityIfExists<LightComponent>(ent, src);
+    CopyComponentToEntityIfExists<AmbientLightComponent>(ent, src);
 
     return ent;
 }
@@ -233,6 +236,14 @@ void Scene::onRender()
     if(!findPrimaryCamera())
         return;
 
+    // TODO: Let systems to decide how many draw calls i.e. move the BeginScene and EndScene inside onRender()
+//    // Draw Light
+//    {
+//
+//        LightSystem::onRender();
+//
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//    }
     // Draw SpriteRenderComponent
     {
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
@@ -296,7 +307,9 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<BoxCollider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Animation2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
-    
+    CopyComponent<LightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<AmbientLightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+
     // Copy other states
     target->m_nameManager = m_nameManager;
 }

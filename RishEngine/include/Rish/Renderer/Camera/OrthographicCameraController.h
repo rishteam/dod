@@ -64,6 +64,7 @@ public:
     void setPosition(const glm::vec2 &p)              { m_position = glm::vec3(p, 0.f); invalidate(); /*m_camera.setPosition(m_position);*/ }
     float getZoom() const                             { return m_zoom; }
     void setZoom(float z)                             { m_zoom = z; invalidate(); }
+    float getAspect() const                           { return m_aspect; }
     //
     void move(const glm::vec2 &p)                     { m_position += glm::vec3(p, 0.f); }
 

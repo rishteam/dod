@@ -51,7 +51,6 @@ namespace glm
 
 	template<class Archive> void serialize(Archive& archive, glm::quat& q) { archive(q.x, q.y, q.z, q.w); }
 	template<class Archive> void serialize(Archive& archive, glm::dquat& q) { archive(q.x, q.y, q.z, q.w); }
-
 }
 
 namespace rl {
@@ -828,6 +827,91 @@ struct ParticleComponent
         ar(cereal::make_nvp("vortexEndSizeRand", vortexEndSizeRand));
         ar(cereal::make_nvp("vortexTurbulence", vortexTurbulence));
     }
+};
+
+struct AmbientLightComponent
+{
+    glm::vec4 colorMask = {1, 1, 1, 0.5};
+
+private:
+    friend class cereal::access;
+    template<typename Achrive>
+    void serialize(Achrive &ar)
+    {
+        ar(CEREAL_NVP(colorMask));
+    }
+};
+
+struct LightComponent
+{
+//    glm::vec3 lightPos; // Use Transform's Pos;
+    glm::vec3 viewPortPos;
+    bool customViewPos = false;
+    glm::vec2 viewPortSize = {10, 10};
+    glm::vec4 color = {1, 1, 1, 1};
+    float radius = 100;
+    float strength = 100;
+    float shadowScale = 10;
+    glm::vec4 shadowColor{0, 0, 0, 1};
+    bool penetrateRadius = false;
+
+    static std::set<UUID> ENTITY_NO_RAY_CAST;
+
+private:
+    friend class cereal::access;
+
+    template<typename Achrive>
+    void load(Achrive &ar)
+    {
+        ar( CEREAL_NVP(viewPortPos),
+            CEREAL_NVP(customViewPos),
+            CEREAL_NVP(viewPortSize),
+            CEREAL_NVP(color),
+            CEREAL_NVP(radius),
+            CEREAL_NVP(strength),
+            CEREAL_NVP(shadowScale),
+            CEREAL_NVP(shadowColor),
+            CEREAL_NVP(ENTITY_NO_RAY_CAST),
+            CEREAL_NVP(penetrateRadius)
+        );
+
+        if (ENTITY_NO_RAY_CAST.find(UUID("Trash")) != ENTITY_NO_RAY_CAST.end())
+        {
+            ENTITY_NO_RAY_CAST.erase(UUID("Trash"));
+        }
+    }
+    template<typename Achrive>
+    void save(Achrive &ar) const
+    {
+        ENTITY_NO_RAY_CAST.insert(UUID("Trash"));
+        ar( CEREAL_NVP(viewPortPos),
+            CEREAL_NVP(customViewPos),
+            CEREAL_NVP(viewPortSize),
+            CEREAL_NVP(color),
+            CEREAL_NVP(radius),
+            CEREAL_NVP(strength),
+            CEREAL_NVP(shadowScale),
+            CEREAL_NVP(shadowColor),
+            CEREAL_NVP(ENTITY_NO_RAY_CAST),
+            CEREAL_NVP(penetrateRadius)
+        );
+    }
+
+
+//    template<typename Achrive>
+//    void serialize(Achrive &ar)
+//    {
+//        ar( CEREAL_NVP(viewPortPos),
+//            CEREAL_NVP(customViewPos),
+//            CEREAL_NVP(viewPortSize),
+//            CEREAL_NVP(color),
+//            CEREAL_NVP(radius),
+//            CEREAL_NVP(strength),
+//            CEREAL_NVP(shadowScale),
+//            CEREAL_NVP(shadowColor),
+//            CEREAL_NVP(ENTITY_NO_RAY_CAST)
+//        );
+//    }
 };
 
 } // end of rl

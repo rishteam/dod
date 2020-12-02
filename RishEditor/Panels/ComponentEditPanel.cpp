@@ -14,6 +14,8 @@
     if (ImGui::CollapsingHeader(#c, ImGuiTreeNodeFlags_DefaultOpen)) \
     {                                                                \
 
+// TODO: Expand macro for delete action
+
 #define EndDrawEditComponent() }
 
 #define DrawRightClickMenu(c, disable)              \
@@ -174,6 +176,7 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
         }
     }
     EndDrawEditComponent();
+    //
     if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
     {
         m_targetEntity.removeComponent<SpriteRenderComponent>();
@@ -223,6 +226,7 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
         }
     }
     EndDrawEditComponent();
+    //
     if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
     {
         m_targetEntity.removeComponent<CameraComponent>();
@@ -324,7 +328,9 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                 emitter.dataPath = file[currentEmitData].getPath();
                 emitter.loadEmitData();
             }
-            ImGui::InputText("Emit Data Path", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::SameLine();
+            ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
 
             ImGui::ColorEdit4("Start Color", glm::value_ptr(emitter.startColor));
             ImGui::ColorEdit4("End Color", glm::value_ptr(emitter.endColor));
@@ -549,6 +555,143 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 }
 
 template<>
+void ComponentEditPanel::drawEditComponentWidget<AmbientLightComponent>()
+{
+    BeginDrawEditComponent(AmbientLightComponent);
+    {
+        DrawRightClickMenu(AmbientLightComponent, false);
+
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        auto &light     = m_targetEntity.getComponent<AmbientLightComponent>();
+
+        ImGui::ColorEdit4("Ambient Color Mask", glm::value_ptr(light.colorMask));
+
+        ImGui::DragFloat3("Mask Position", glm::value_ptr(transform.translate));
+        ImGui::DragFloat3("Mask Size", glm::value_ptr(transform.scale));
+    }
+
+    EndDrawEditComponent();
+}
+
+template<>
+void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
+{
+    BeginDrawEditComponent(LightComponent);
+    {
+        DrawRightClickMenu(LightComponent, false);
+
+        auto &transform = m_targetEntity.getComponent<TransformComponent>();
+        auto &light     = m_targetEntity.getComponent<LightComponent>();
+
+        ImGui::ColorEdit4("Light Color", glm::value_ptr(light.color), ImGuiColorEditFlags_Float);
+
+        ImGui::DragFloat3("Light Position", glm::value_ptr(transform.translate), 0.01);
+        ImGui::Checkbox("Custom View Port Position", &light.customViewPos);
+        if(light.customViewPos)
+        {
+            ImGui::DragFloat3("View Port Position", glm::value_ptr(light.viewPortPos), 0.01);
+        }
+        else
+        {
+            light.viewPortPos = transform.translate;
+        }
+        ImGui::DragFloat2("View Port Size", glm::value_ptr(light.viewPortSize), 0.01);
+
+        ImGui::Checkbox("PenetrateRadius", &light.penetrateRadius);
+        if(!light.penetrateRadius)
+        {
+            ImGui::DragFloat("Light Radius", &light.radius, 1);
+        }
+        ImGui::DragFloat("Light Strength", &light.strength, 1);
+        ImGui::DragFloat("Shadow Scale", &light.shadowScale, 0.01);
+
+        // Building Option List
+        auto &registry = m_targetEntity.m_scene->m_registry;
+        auto rigidView = registry.view<RigidBody2DComponent>();
+
+        static std::set<std::tuple<bool, UUID, std::string>> RayCastList;
+        static std::set<std::tuple<bool, UUID, std::string>> NoRayCastList;
+        static std::set<std::tuple<bool, UUID, std::string>> DeleteList;
+
+        for(auto ent : rigidView)
+        {
+            Entity entity{ent, m_targetEntity.m_scene};
+            auto &RigidBodyID = entity.getComponent<TagComponent>().id;
+            auto &RigidBodyName = entity.getComponent<TagComponent>().tag;
+            auto &RigidBody = entity.getComponent<RigidBody2DComponent>();
+
+            std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
+
+            if(light.ENTITY_NO_RAY_CAST.find(RigidBodyID) != light.ENTITY_NO_RAY_CAST.end())
+            {
+                NoRayCastList.insert(make_tuple(false, RigidBodyID, options_single));
+            }
+
+            else
+            {
+                RayCastList.insert(make_tuple(false, RigidBodyID, options_single));
+            }
+        }
+
+
+        std::set<UUID>::iterator it;
+        if(ImGui::ListBoxHeader("Entity Has Ray Cast", rigidView.size(), 4))
+        {
+            for(auto item : RayCastList)
+            {
+                auto tmp = item;
+                if(ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                {
+                    light.ENTITY_NO_RAY_CAST.insert(std::get<1>(item));
+                    NoRayCastList.insert(tmp);
+                    DeleteList.insert(item);
+                }
+            }
+            ImGui::ListBoxFooter();
+        }
+
+        for(auto dele : DeleteList)
+        {
+            auto it = RayCastList.find(dele);
+            if(it != RayCastList.end())
+            {
+                RayCastList.erase(it);
+            }
+        }
+
+        DeleteList.clear();
+
+        if(ImGui::ListBoxHeader("Entity Does Not Has Ray Cast", rigidView.size(), 4))
+        {
+            for(auto item : NoRayCastList)
+            {
+                auto tmp = item;
+                if(ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                {
+                    light.ENTITY_NO_RAY_CAST.erase(std::get<1>(item));
+                    RayCastList.insert(tmp);
+                    DeleteList.insert(item);
+                }
+            }
+            ImGui::ListBoxFooter();
+        }
+//
+        for(auto dele : DeleteList)
+        {
+            if(NoRayCastList.empty()) break;
+            auto it = NoRayCastList.find(dele);
+            if(it != RayCastList.end())
+            {
+                NoRayCastList.erase(it);
+            }
+        }
+
+        DeleteList.clear();
+    }
+    EndDrawEditComponent();
+}
+
+template<>
 void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
 {
     BeginDrawEditComponent(RigidBody2DComponent);
@@ -617,6 +760,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         ImGui::PopItemWidth();
     }
     EndDrawEditComponent();
+    //
     if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
     {
         m_targetEntity.removeComponent<RigidBody2DComponent>();
@@ -663,6 +807,7 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
 
     }
     EndDrawEditComponent();
+    //
     if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
     {
         m_targetEntity.removeComponent<BoxCollider2DComponent>();
@@ -862,13 +1007,15 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<TagComponent>();
         drawEditComponentWidget<TransformComponent>();
         drawEditComponentWidget<SpriteRenderComponent>();
+        drawEditComponentWidget<Animation2DComponent>();
         drawEditComponentWidget<CameraComponent>();
         drawEditComponentWidget<NativeScriptComponent>();
         drawEditComponentWidget<ParticleComponent>();
         drawEditComponentWidget<RigidBody2DComponent>();
         drawEditComponentWidget<BoxCollider2DComponent>();
         drawEditComponentWidget<Joint2DComponent>();
-        drawEditComponentWidget<Animation2DComponent>();
+        drawEditComponentWidget<LightComponent>();
+        drawEditComponentWidget<AmbientLightComponent>();
 
         // for debug
 //        drawEditComponentWidget<GroupComponent>();

@@ -196,7 +196,9 @@ public:
                 Joint2DComponent,
                 GroupComponent,
                 SubGroupComponent,
-                Animation2DComponent
+                Animation2DComponent,
+                LightComponent,
+                AmbientLightComponent
             >(ar);
 	}
 
@@ -216,7 +218,9 @@ public:
                 Joint2DComponent,
                 GroupComponent,
                 SubGroupComponent,
-                Animation2DComponent
+                Animation2DComponent,
+                LightComponent,
+                AmbientLightComponent
             >(ar);
 	}
 };

@@ -17,6 +17,7 @@
 
 // Systems
 #include <Rish/Effect/Particle/ParticleSystem.h>
+#include <Rish/Effect/Light/LightSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
@@ -82,7 +83,7 @@ EditorLayer::EditorLayer()
 
     // Start auto save thread
     // TODO: Make RishEngine handle thread management
-//    m_autoSaveRun = true;
+    m_autoSaveRun = true;
 //    std::thread autoSaveThread(&EditorLayer::autoSave, this);
 //    autoSaveThread.detach();
 
@@ -107,6 +108,8 @@ void EditorLayer::onAttach()
 	fbspec.height = 720;
     m_editorFramebuffer = Framebuffer::Create(fbspec);
     m_sceneFramebuffer = Framebuffer::Create(fbspec);
+    m_editorLightFramebuffer = Framebuffer::Create(fbspec);
+    m_sceneLightFramebuffer = Framebuffer::Create(fbspec);
 
     // Attach all panels
     for(auto &panel : m_panelList)
@@ -153,23 +156,47 @@ void EditorLayer::onUpdate(Time dt)
     auto framebufferSpec = m_editorFramebuffer->getSpecification();
     auto framebufferSize = glm::vec2{framebufferSpec.width, framebufferSpec.height};
     if (m_sceneViewportPanelSize != framebufferSize &&
-        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f) {
-        m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x,
-                                    (uint32_t) m_sceneViewportPanelSize.y);
+        m_sceneViewportPanelSize.x > 0.f && m_sceneViewportPanelSize.y > 0.f)
+    {
+        m_editorLightFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x, (uint32_t) m_sceneViewportPanelSize.y);
+        m_editorFramebuffer->resize((uint32_t) m_sceneViewportPanelSize.x, (uint32_t) m_sceneViewportPanelSize.y);
         cameraController->onResize(m_sceneViewportPanelSize.x, m_sceneViewportPanelSize.y);
     }
+
+    // Resize the scene framebuffer
+    auto sceneFramebufferSpec = m_sceneFramebuffer->getSpecification();
+    auto sceneFramebufferSize = glm::vec2{sceneFramebufferSpec.width, sceneFramebufferSpec.height};
+    if(m_gameViewportPanelSize != sceneFramebufferSize &&
+        m_gameViewportPanelSize.x > 0.f && m_gameViewportPanelSize.y > 0.f /*&&
+        // TODO: Super HACK
+        m_gameViewportPanelSize.x != std::numeric_limits<float>::infinity() &&
+        m_gameViewportPanelSize.y != std::numeric_limits<float>::infinity()*/)
+    {
+        m_sceneFramebuffer->resize((uint32_t) m_gameViewportPanelSize.x , (uint32_t) m_gameViewportPanelSize.y);
+        m_sceneLightFramebuffer->resize((uint32_t) m_gameViewportPanelSize.x , (uint32_t) m_gameViewportPanelSize.y);
+    }
+
 
     // TODO: Rendering Queue
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Editor
     /////////////////////////////////////////////////////////////////////////////////////////////
     Renderer2D::ResetStats();
+
     m_editorFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
         RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
         //
+
         m_editController->onUpdate(dt);
+
+        // Light System
+        {
+            Renderer2D::BeginScene(cameraController->getCamera(), false);
+            LightSystem::onEditorRender();
+            Renderer2D::EndScene();
+        }
 
         // Particle System
         {
@@ -180,6 +207,7 @@ void EditorLayer::onUpdate(Time dt)
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
                                         RenderCommand::BlendFactor::OneMinusSrcAlpha);
         }
+
         // Animation2D
         {
             Renderer2D::BeginScene(cameraController->getCamera(), true);
@@ -192,6 +220,21 @@ void EditorLayer::onUpdate(Time dt)
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Scene
     /////////////////////////////////////////////////////////////////////////////////////////////
+
+    // TODO : Check if there is a need for resizing m_sceneFramebuffer
+    m_sceneLightFramebuffer->bind();
+    {
+        // Draw Light
+        {
+            RenderCommand::SetClearColor(glm::vec4(0, 0, 0, 1));
+            RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer | RenderCommand::ClearBufferTarget::StencilBuffer);
+            LightSystem::onViewportResize(m_gameViewportPanelSize);
+            LightSystem::onRender();
+            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+        }
+    }
+    m_sceneLightFramebuffer->unbind();
+
     m_sceneFramebuffer->bind();
     {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
@@ -199,6 +242,13 @@ void EditorLayer::onUpdate(Time dt)
         //
         m_currentScene->onUpdate(dt);
         m_currentScene->onRender();
+    }
+    m_sceneFramebuffer->unbind();
+
+    m_sceneFramebuffer->bind();
+    {
+        if(LightSystem::haveLight())
+            Renderer2D::CombineFramebuffer(m_sceneFramebuffer, m_sceneLightFramebuffer);
     }
     m_sceneFramebuffer->unbind();
 }
@@ -259,13 +309,14 @@ void EditorLayer::onImGuiRender()
         // Get current window attributes
         ImVec2 size = ImGui::GetContentRegionAvail();
         float fullH = size.y;
-        size.y = size.x * 1.f / m_currentScene->getMainCamera().getAspect();
+        size.y = size.x * 1.f / (m_currentScene->getMainCamera().getAspect() ? m_currentScene->getMainCamera().getAspect() : 1);
         float dummyH = (fullH - size.y) / 2.f;
 
         // Respond the resize to the current scene
         m_currentScene->onViewportResize((uint32_t)size.x, (uint32_t)size.y);
 
         ImVec2 windowCenter = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2{size.x / 2.f, fullH / 2.f};
+        m_gameViewportPanelSize = glm::vec2{size.x, size.y};
         // Set *in editor* mouse pos for Input module
         auto pos = ImGui::GetMousePosRelatedToWindowNormalizeCenter();
         pos.y = pos.y / (size.y / fullH);
@@ -298,6 +349,7 @@ void EditorLayer::onImGuiRender()
 
 	m_currentScene->onImGuiRender();
 
+    // TODO: wtf
     m_statusBarPanel->onImGuiRender();
 
     ImGui::Begin("Entity Manager");
@@ -580,6 +632,7 @@ void EditorLayer::switchCurrentScene(const Ref<Scene> &scene)
 
     // Register the scene to systems
     SystemManager::Init(m_currentScene);
+    LightSystem::RegisterScene(m_currentScene);
 
     // Reset Editor Panel target
     m_editController->resetTarget();

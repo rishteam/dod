@@ -94,6 +94,11 @@ uint32_t Shader::getLocationByName(const std::string &name) const
 	return location;
 }
 
+void Shader::setBool(const std::string &name, int value)
+{
+    glUniform1i(getLocationByName(name), value);
+}
+
 void Shader::setInt(const std::string &name, int value)
 {
 	glUniform1i(getLocationByName(name), value);
