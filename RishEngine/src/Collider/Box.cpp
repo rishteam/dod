@@ -1,6 +1,4 @@
 #include <Rish/Collider/Box.h>
-#include <Rish/Collider/Circle.h>
-#include <Rish/Collider/Polygon.h>
 
 namespace rl {
 
@@ -10,7 +8,7 @@ Box::Box(float x_, float y_, float w_, float h_, float angle_)
     position.y = y_;
     w = w_;
     h = h_;
-
+    m_vertexCount = 4;
 
     m_vertices[0] = Vec2(w / 2.0, -h / 2.0);
     m_vertices[1] = Vec2(w / 2.0, h / 2.0);
@@ -29,6 +27,7 @@ Box::Box(float x_, float y_, float w_, float h_, float angle_)
         // Calculate normal with 2D cross product between vector and scalar
         m_normals[i1] = Vec2( face.y, -face.x );
         m_normals[i1].Normalize( );
+//        RL_CORE_INFO("{} {} {}", i1, m_normals[i1].x, m_normals[i1].y);
     }
 
     angle = angle_;

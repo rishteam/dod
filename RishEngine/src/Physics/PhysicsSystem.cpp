@@ -54,6 +54,7 @@ void PhysicsSystem::OnUpdate(float dt)
                 float offset_x = phy->position.x - (transform.translate.x + collider->position.x);
                 float offset_y = phy->position.y - (transform.translate.y + collider->position.y);
 
+
                 transform.translate.x += offset_x;
                 transform.translate.y += offset_y;
                 transform.rotate = glm::degrees(phy->angle);
@@ -140,9 +141,6 @@ void PhysicsSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
             }
         }
     }
-
-
-
 }
 
 void PhysicsSystem::OnScenePlay()
@@ -237,32 +235,30 @@ void PhysicsSystem::OnImGuiRender()
 //        }
 //    }
 //    ImGui::End();
-
-
-    ImGui::Begin("Joint");
-    ImGui::Text("Joint Counter: %d", mapJointObj.size());
-    for(auto && [uuid, body] : mapJointObj)
-    {
-        if(ImGui::TreeNode(uuid.to_string().c_str()))
-        {
-            ImGui::Text("%s \n", uuid.to_string().c_str());
-            ImGui::Separator();
-        }
-    }
-    ImGui::End();
-
-
-    ImGui::Begin("JointState");
-    ImGui::Text("JointState Counter: %d", stateJointObject.size());
-    for(auto && [uuid, body] : stateJointObject)
-    {
-        if(ImGui::TreeNode(uuid.to_string().c_str()))
-        {
-            ImGui::Text("%s %d\n", uuid.to_string().c_str(), body);
-            ImGui::Separator();
-        }
-    }
-    ImGui::End();
+//    ImGui::Begin("Joint");
+//    ImGui::Text("Joint Counter: %d", mapJointObj.size());
+//    for(auto && [uuid, body] : mapJointObj)
+//    {
+//        if(ImGui::TreeNode(uuid.to_string().c_str()))
+//        {
+//            ImGui::Text("%s \n", uuid.to_string().c_str());
+//            ImGui::Separator();
+//        }
+//    }
+//    ImGui::End();
+//
+//
+//    ImGui::Begin("JointState");
+//    ImGui::Text("JointState Counter: %d", stateJointObject.size());
+//    for(auto && [uuid, body] : stateJointObject)
+//    {
+//        if(ImGui::TreeNode(uuid.to_string().c_str()))
+//        {
+//            ImGui::Text("%s %d\n", uuid.to_string().c_str(), body);
+//            ImGui::Separator();
+//        }
+//    }
+//    ImGui::End();
 }
 
 void PhysicsSystem::PhysicsWorldUpdate(float dt)
@@ -312,10 +308,12 @@ void PhysicsSystem::InitPhysicsObject(entt::registry &registry, Scene::SceneStat
             physicsObj->setBox(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), transform.rotate);
             mapPhysicsObj[UUID] = physicsObj;
             statePhysicsObject.push_back(std::make_pair(UUID, true));
+
             // Add Force on Point
             auto attx = transform.translate.x + rigidbody2D.attachPoint.x;
             auto atty = transform.translate.y + rigidbody2D.attachPoint.y;
             physicsObj->AddForce(rigidbody2D.force, Vec2(attx, atty));
+
             // Default no collider
             physicsObj->isCollider = false;
             physicsWorld.Add(physicsObj);
@@ -344,7 +342,7 @@ void PhysicsSystem::InitPhysicsObject(entt::registry &registry, Scene::SceneStat
                 case Collider2DComponent::Type::Circle:
                 {
                     auto circle = MakeRef<Circle>(collider2D.x, collider2D.y, collider2D.radius, glm::radians(transform.rotate));
-                    circle->type = Shape::Type::Box;
+                    circle->type = Shape::Type::Circle;
                     mapColliderObj[UUID] = circle;
                     break;
                 }
@@ -395,7 +393,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
     auto &statePhysicsObject = s_Scene->StatePhysicsObj;
     auto &stateColliderObject = s_Scene->StateColliderObj;
     auto &stateJointObject = s_Scene->StateJointObj;
-
 
     // Initial all state, it will be false, suppose all object is not exist
     for(auto &statephy : statePhysicsObject)
@@ -455,20 +452,37 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                 case Shape::Type::Box:
                 {
                     phy->setBox(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), Vec2(collider->w, collider->h), glm::radians(transform.rotate) );
+                    phy->shape = phy->box;
+                    // https://stackoverflow.com/questions/12321949/explicitly-deleting-a-shared-ptr
+//                    delete phy->circle.get();
+//                    delete phy->polygon.get();
+                    phy->shape->type = Shape::Type::Box;
+                    phy->RigidShapeType = RigidBody2D::Type::Box;
                     break;
                 }
                 case Shape::Type::Circle:
                 {
                     phy->setCircle(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->radius, glm::radians(transform.rotate));
+                    phy->shape = phy->circle;
+//                    delete phy->box.get();
+//                    delete phy->polygon.get();
+                    phy->shape->type = Shape::Type::Circle;
+                    phy->RigidShapeType = RigidBody2D::Type::Circle;
                     break;
                 }
                 case Shape::Type::Polygon:
                 {
                     phy->setPolygon(collider->pt, Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
+                    phy->shape = phy->polygon;
+//                    delete phy->box.get();
+//                    delete phy->circle.get();
+                    phy->shape->type = Shape::Type::Polygon;
+                    phy->RigidShapeType = RigidBody2D::Type::Polygon;
                     break;
                 }
             }
         }
+
         // Only RigidBody2D
         else if (mapPhysicsObj.count(UUID))
         {
@@ -507,7 +521,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                 state.second = true;
             }
         }
-
 
         if (mapColliderObj.count(UUID))
         {
@@ -557,7 +570,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
     }
 
     // Remove PhysicsWorld Object
-
     // RigidBody2D Component
     for(auto &state: statePhysicsObject)
     {

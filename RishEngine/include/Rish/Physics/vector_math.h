@@ -201,9 +201,12 @@ private:
 
 
 std::pair<float, float> getMinMax(Vec2 &axis, std::deque<Vec2> corner);
-int randomint(int min, int max);
-float DistSqr( Vec2& a, Vec2& b );
-
+static int randomint(int min, int max);
+static float DistSqr( Vec2& a, Vec2& b)
+{
+    Vec2 c = a - b;
+    return c.dot(c);
+}
 
 class Mat22 {
 public:

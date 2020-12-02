@@ -1,8 +1,10 @@
+#pragma once
 #include <Rish/Collider/Shape.h>
 #include <Rish/Collider/Box.h>
 #include <Rish/Collider/Circle.h>
 #include <Rish/Collider/Polygon.h>
 #include <Rish/Physics/Arbiter.h>
+#include <Rish/Physics/vector_math.h>
 
 namespace rl {
 
@@ -298,14 +300,6 @@ static bool Box2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
 
     FindIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
 
-    //        y
-    //        ^  ->n       ^
-    //      +---c ------posPlane--
-    //  x < | i |\
-          //      +---+ c-----negPlane--
-    //             \       v
-    //              r
-    //
     //  r : reference face
     //  i : incident poly
     //  c : clipped point
@@ -856,13 +850,13 @@ static bool Polygon2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
 extern CollisionCallback Dispatch[3][3] =
 {
         {
-                Circle2Circle, Circle2Box, Circle2Polygon
+                Box2Box, Box2Circle, Box2Polygon
         },
         {
-                Box2Circle, Box2Box, Box2Polygon
+                Circle2Box, Circle2Circle, Circle2Polygon
         },
         {
-                Polygon2Circle, Polygon2Box, Polygon2Polygon
+                Polygon2Box, Polygon2Circle, Polygon2Polygon
         },
 };
 

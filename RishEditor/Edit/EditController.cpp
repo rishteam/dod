@@ -127,11 +127,35 @@ void EditController::onUpdate(Time dt)
         for (auto entity : view2)
         {
             Entity ent{entity, scene.get()};
-            auto &boxc = ent.getComponent<Collider2DComponent>();
+            auto &collider = ent.getComponent<Collider2DComponent>();
             auto &transform = ent.getComponent<TransformComponent>();
-            //TODO: rotate Quad for collider
-            Renderer2D::DrawRotatedRect({transform.translate.x + boxc.x, transform.translate.y + boxc.y},
-                                        {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+            // TODO: rotate Quad for collider
+            switch(collider.type)
+            {
+                case Collider2DComponent::Type::Box:
+                {
+                        Renderer2D::DrawRotatedRect(
+                                {transform.translate.x + collider.x, transform.translate.y + collider.y},
+                                {collider.w, collider.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+                        break;
+                }
+                case Collider2DComponent::Type::Circle:
+                {
+                    Renderer2D::DrawCircleLine({transform.translate.x + collider.x, transform.translate.y + collider.y}, collider.radius, {1.0f, 1.0f, 0.0f, 1.0f});
+//                    Renderer2D::DrawRotatedRect(
+//                            {transform.translate.x + collider.x, transform.translate.y + collider.y},
+//                            {collider.w, collider.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+                    break;
+                }
+                case Collider2DComponent::Type::Polygon:
+                {
+                    // TODO: Draw Polygon
+//                    Renderer2D::DrawRotatedRect(
+//                            {transform.translate.x + collider.x, transform.translate.y + collider.y},
+//                            {collider.w, collider.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+                    break;
+                }
+            }
         }
 
 

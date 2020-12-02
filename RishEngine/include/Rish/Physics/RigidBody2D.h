@@ -17,8 +17,8 @@ class RL_API RigidBody2D
 {
 public:
     enum class Type{
-        Circle,
         Box,
+        Circle,
         Polygon
     } RigidShapeType;
 

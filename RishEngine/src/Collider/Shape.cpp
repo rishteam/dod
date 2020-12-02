@@ -1,5 +1,4 @@
 #include <Rish/Collider/Shape.h>
-#include <Rish/Collider/Collision.h>
 
 namespace rl {
 

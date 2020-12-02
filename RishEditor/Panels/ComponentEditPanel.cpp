@@ -568,7 +568,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::SameLine();
             ImGui::DragFloat("y", &attachPointY, 0.1, -transWH.y/2.0f, transWH.y/2.0f);
             ImGui::PopItemWidth();
-            ImGui::Checkbox("Showing Force", &rigid.showAttachPoint);
+            ImGui::Checkbox("Showing AttachPoint", &rigid.showAttachPoint);
             ImGui::Checkbox("Keeping Force", &rigid.keepingForce);
             ImGui::SameLine();
             if (rigid.keepingForce)
@@ -578,8 +578,8 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             ImGui::Checkbox("Restrict Rotation", &rigid.RestrictRotation);
             ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
             ImGui::Text("Torque: %.2f", rigid.torque);
-            // Update Value of physics
 
+            // Update Value of physics
             rigid.velocity.x = velocityVector[0];
             rigid.velocity.y = velocityVector[1];
             rigid.force.x = forceVector[0];
@@ -592,15 +592,20 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         ImGui::Separator();
         if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
         {
-            if(static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect) == RigidBody2DComponent::BodyType::Static)
+            rigid.BodyTypeState = static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect);
+        }
+
+        switch(static_cast<RigidBody2DComponent::BodyType>(rigid.BodyTypeState))
+        {
+            case RigidBody2DComponent::BodyType::Static:
             {
                 rigid.mass = MAX_float;
-                rigid.BodyTypeState = RigidBody2DComponent::BodyType::Static;
+                break;
             }
-            else
+            case RigidBody2DComponent::BodyType::Dynamic:
             {
                 rigid.mass = 10.0f;
-                rigid.BodyTypeState = RigidBody2DComponent::BodyType::Dynamic;
+                break;
             }
         }
     }
@@ -616,51 +621,62 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
         auto &collider = m_targetEntity.getComponent<Collider2DComponent>();
         auto &trans = m_targetEntity.getComponent<TransformComponent>();
         int ColliderShape = static_cast<int>(collider.type);
+//        RL_CORE_INFO("%d", ColliderShape);
         static const char *CollideShapeString[3] = {"Box", "Circle", "Polygon"};
         float translate[2] = {collider.x, collider.y};
         float scale[2] = {collider.w, collider.h};
 
+        ImGui::DragFloat2("(x, y)", translate, 0.5f);
+        if(collider.type == Collider2DComponent::Type::Box)
+        {
+            ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
+        }
+        ImGui::Checkbox("Follow Transform", &collider.FollowTransform);
+
+        // Follow Transform Value
+        if (collider.FollowTransform) {
+            collider.x = 0.0f;
+            collider.y = 0.0f;
+            collider.w = trans.scale.x;
+            collider.h = trans.scale.y;
+        }
+            // Update the collider value
+        else {
+            collider.x = translate[0];
+            collider.y = translate[1];
+            collider.w = scale[0];
+            collider.h = scale[1];
+        }
+
         if(ImGui::Combo("Shape", &ColliderShape, CollideShapeString, 3))
         {
             collider.type = static_cast<Collider2DComponent::Type>(ColliderShape);
-            ImGui::DragFloat2("(x, y)", translate, 0.5f);
-            ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
-            ImGui::Checkbox("Follow Transform", &collider.FollowTransform);
+        }
 
-            // Follow Transform Value
-            if (collider.FollowTransform) {
-                collider.x = 0.0f;
-                collider.y = 0.0f;
-                collider.w = trans.scale.x;
-                collider.h = trans.scale.y;
-            }
-                // Update the collider value
-            else {
-                collider.x = translate[0];
-                collider.y = translate[1];
-                collider.w = scale[0];
-                collider.h = scale[1];
-            }
-
-            switch(collider.type)
+        switch(static_cast<Collider2DComponent::Type>(collider.type))
+        {
+            case Collider2DComponent::Type::Circle:
             {
-                case Collider2DComponent::Type::Circle:
+                ImGui::DragFloat("drag float", &collider.radius, 1.0f);
+                break;
+            }
+            case Collider2DComponent::Type::Polygon:
+            {
+                ImGui::InputInt("input int", &collider.pointSize);
+                if(collider.pointSize < 3 || collider.pointSize > 63)
                 {
-                    ImGui::DragFloat("drag float", &collider.radius, 1.0f);
-                    break;
+                    collider.pointSize = 3;
                 }
-                case Collider2DComponent::Type::Polygon:
+                for(int i = 0; i < collider.pointSize; i++)
                 {
-                    ImGui::InputInt("input int", &collider.pointSize);
-                    for(int i = 0; i < collider.pointSize; i++)
-                    {
-                        ImGui::Text("Point %d:", i);
-                        ImGui::DragFloat("x",&collider.pt[i].x,1.0f);
-                        ImGui::SameLine();
-                        ImGui::DragFloat("y",&collider.pt[i].y,1.0f);
-                    }
-                    break;
+                    ImGui::Text("Point %d:", i);
+                    ImGui::PushItemWidth(100);
+                    ImGui::DragFloat("x",&collider.pt[i].x,1.0f);
+                    ImGui::SameLine();
+                    ImGui::DragFloat("y",&collider.pt[i].y,1.0f);
+                    ImGui::PopItemWidth();
                 }
+                break;
             }
         }
 

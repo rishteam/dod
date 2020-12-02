@@ -1,7 +1,7 @@
 #pragma once
 #include <Rish/Physics/vector_math.h>
 
-#define MaxVertexCount 64
+#define MaxVertexCount 70
 
 namespace rl {
 
@@ -14,12 +14,10 @@ class Shape
 public:
     enum class Type
     {
-        Circle,
         Box,
+        Circle,
         Polygon
     } type;
-
-    Shape();
 
     /// 找向量的最遠點
     virtual Vec2 GetSupport(const Vec2 dir);
@@ -47,6 +45,5 @@ public:
     Mat22 u;
     Vec2 m_vertices[MaxVertexCount];
     Vec2 m_normals[MaxVertexCount];
-//    Arbiter arb;
 };
 }

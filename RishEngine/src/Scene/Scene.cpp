@@ -133,7 +133,6 @@ void Scene::onUpdate(Time dt)
         SpriteRenderSystem::onRender();
         Renderer2D::EndScene();
     }
-
     // Draw Particle system
     {
         RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::One);

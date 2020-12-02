@@ -1,8 +1,9 @@
 #pragma once
-
+#include <Rish/Collider/Shape.h>
 #include <Rish/Physics/RigidBody2D.h>
-#include <Rish/Physics/PhysicsWorld.h>
 #include <Rish/Physics/vector_math.h>
+#include <Rish/Physics/PhysicsWorld.h>
+
 
 //被撞的body2, 撞人的body1
 namespace rl {

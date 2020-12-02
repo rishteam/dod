@@ -79,16 +79,16 @@ struct Collider2DComponent
 {
     enum class Type
     {
-        Circle,
         Box,
+        Circle,
         Polygon
-    } type;
+    } type = Type::Box;
     float x = 0.0f;
     float y = 0.0f;
     float w = 1.0f;
     float h = 1.0f;
     float radius = 1.0f;
-    int pointSize = 0;
+    int pointSize = 3;
     Vec2 pt[64];
     std::vector<UUID> whoCollide;
     bool FollowTransform = false;
