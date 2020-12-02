@@ -3,7 +3,7 @@
         "ptr_wrapper": {
             "id": 2147483649,
             "data": {
-                "value0": 11,
+                "value0": 13,
                 "value1": 0,
                 "value2": {
                     "Tag": "Player",
@@ -53,11 +53,11 @@
                         "uuid": "b49f0dfa-5147-4f11-8a22-22b399788c6b"
                     }
                 },
-                "value15": 3145746,
+                "value15": 10,
                 "value16": {
-                    "Tag": "Ground (3)",
+                    "Tag": "GroundB1",
                     "Id": {
-                        "uuid": "f89e9220-5272-47b9-8171-e13c157ca44d"
+                        "uuid": "f92dee0c-dadb-441f-8c89-8cb590c502b4"
                     }
                 },
                 "value17": 14,
@@ -74,19 +74,33 @@
                         "uuid": "e42f1d5c-f8e7-4b5c-af0b-1c5325d02f10"
                     }
                 },
-                "value21": 10,
+                "value21": 4194322,
                 "value22": {
-                    "Tag": "GroundB1",
+                    "Tag": "Ground (1)",
                     "Id": {
-                        "uuid": "f92dee0c-dadb-441f-8c89-8cb590c502b4"
+                        "uuid": "4c1c8064-0517-44ca-9bcc-f7e47c0eaae9"
                     }
                 },
-                "value23": 11,
-                "value24": 0,
-                "value25": {
+                "value23": 17,
+                "value24": {
+                    "Tag": "ambient",
+                    "Id": {
+                        "uuid": "b1ba0b53-7f90-458d-8b9a-81bb534bfaf5"
+                    }
+                },
+                "value25": 15,
+                "value26": {
+                    "Tag": "light",
+                    "Id": {
+                        "uuid": "5151242c-8d0c-4012-afd2-ac8276ced1f7"
+                    }
+                },
+                "value27": 13,
+                "value28": 0,
+                "value29": {
                     "translate": {
-                        "x": 0.44414013624191286,
-                        "y": 1.441189169883728,
+                        "x": -1.6445541381835938,
+                        "y": -0.04576921463012695,
                         "z": -1.0
                     },
                     "scale": {
@@ -96,50 +110,50 @@
                     },
                     "rotate": 0.0
                 },
-                "value26": 1,
-                "value27": {
+                "value30": 1,
+                "value31": {
                     "translate": {
-                        "x": 3.468397617340088,
+                        "x": 10.629988670349121,
                         "y": -1.1680338382720948,
                         "z": 5.0
                     },
                     "scale": {
-                        "x": 12.427576065063477,
+                        "x": 26.75075912475586,
                         "y": 1.0,
                         "z": 1.0
                     },
                     "rotate": 0.0
                 },
-                "value28": 3,
-                "value29": {
-                    "translate": {
-                        "x": -1.8245763778686524,
-                        "y": -0.1881316900253296,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "rotate": 0.0
-                },
-                "value30": 1048580,
-                "value31": {
-                    "translate": {
-                        "x": 2.881086826324463,
-                        "y": -0.008329227566719056,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "rotate": 0.0
-                },
-                "value32": 11,
+                "value32": 3,
                 "value33": {
+                    "translate": {
+                        "x": 9.37368392944336,
+                        "y": -0.10639607906341553,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "rotate": 0.0
+                },
+                "value34": 1048580,
+                "value35": {
+                    "translate": {
+                        "x": 11.627172470092774,
+                        "y": -0.09006577730178833,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "rotate": 0.0
+                },
+                "value36": 11,
+                "value37": {
                     "translate": {
                         "x": -15.415482521057129,
                         "y": -10.070779800415039,
@@ -152,8 +166,8 @@
                     },
                     "rotate": 90.0
                 },
-                "value34": 12,
-                "value35": {
+                "value38": 12,
+                "value39": {
                     "translate": {
                         "x": -19.58538818359375,
                         "y": 3.8046531677246095,
@@ -166,50 +180,8 @@
                     },
                     "rotate": -28.100000381469728
                 },
-                "value36": 3145746,
-                "value37": {
-                    "translate": {
-                        "x": 15.89891242980957,
-                        "y": -1.1680338382720948,
-                        "z": 5.0
-                    },
-                    "scale": {
-                        "x": 12.427576065063477,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "rotate": 0.0
-                },
-                "value38": 14,
-                "value39": {
-                    "translate": {
-                        "x": -1.905991554260254,
-                        "y": -10.070779800415039,
-                        "z": 5.0
-                    },
-                    "scale": {
-                        "x": 12.427576065063477,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "rotate": 90.0
-                },
-                "value40": 10,
+                "value40": 16,
                 "value41": {
-                    "translate": {
-                        "x": -8.64245891571045,
-                        "y": -15.789331436157227,
-                        "z": 5.0
-                    },
-                    "scale": {
-                        "x": 12.427576065063477,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "rotate": 0.0
-                },
-                "value42": 16,
-                "value43": {
                     "translate": {
                         "x": 0.0,
                         "y": 0.0,
@@ -222,23 +194,93 @@
                     },
                     "rotate": 0.0
                 },
-                "value44": 2,
-                "value45": {
+                "value42": 14,
+                "value43": {
                     "translate": {
-                        "x": 2.096428394317627,
-                        "y": 0.536328911781311,
-                        "z": 0.38999998569488528
+                        "x": -1.905991554260254,
+                        "y": -10.070779800415039,
+                        "z": 5.0
                     },
                     "scale": {
-                        "x": 74.66666412353516,
-                        "y": 42.0,
+                        "x": 12.427576065063477,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "rotate": 90.0
+                },
+                "value44": 10,
+                "value45": {
+                    "translate": {
+                        "x": -8.64245891571045,
+                        "y": -15.789331436157227,
+                        "z": 5.0
+                    },
+                    "scale": {
+                        "x": 12.427576065063477,
+                        "y": 1.0,
                         "z": 1.0
                     },
                     "rotate": 0.0
                 },
-                "value46": 10,
-                "value47": 0,
-                "value48": {
+                "value46": 4194322,
+                "value47": {
+                    "translate": {
+                        "x": 10.629988670349121,
+                        "y": -1.1680338382720948,
+                        "z": 5.0
+                    },
+                    "scale": {
+                        "x": 26.75075912475586,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "rotate": 0.0
+                },
+                "value48": 15,
+                "value49": {
+                    "translate": {
+                        "x": 10.657098770141602,
+                        "y": 2.718842029571533,
+                        "z": -3.7899999618530275
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0,
+                        "z": 1.0
+                    },
+                    "rotate": 0.0
+                },
+                "value50": 17,
+                "value51": {
+                    "translate": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 100.0,
+                        "y": 100.0,
+                        "z": 1.0
+                    },
+                    "rotate": 0.0
+                },
+                "value52": 2,
+                "value53": {
+                    "translate": {
+                        "x": 1.9329524040222169,
+                        "y": 0.127632737159729,
+                        "z": 0.38999998569488528
+                    },
+                    "scale": {
+                        "x": 8.88888931274414,
+                        "y": 5.0,
+                        "z": 1.0
+                    },
+                    "rotate": 0.0
+                },
+                "value54": 11,
+                "value55": 0,
+                "value56": {
                     "Color": {
                         "x": 1.0,
                         "y": 1.0,
@@ -273,8 +315,8 @@
                     },
                     "tiling": 1.0
                 },
-                "value49": 1,
-                "value50": {
+                "value57": 1,
+                "value58": {
                     "Color": {
                         "x": 1.0,
                         "y": 0.9999899864196777,
@@ -309,151 +351,7 @@
                     },
                     "tiling": 1.0
                 },
-                "value51": 3,
-                "value52": {
-                    "Color": {
-                        "x": 1.0,
-                        "y": 0.9999899864196777,
-                        "z": 0.9999899864196777,
-                        "w": 1.0
-                    },
-                    "Texture": "assets\\texture\\RTS_Crate.png",
-                    "UseTexture": true,
-                    "UseAsSubTexture": false,
-                    "setting": {
-                        "type": 0,
-                        "leftUpper": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "size": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "pos": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "cellSize": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteGridSize": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "tiling": 1.0
-                },
-                "value53": 1048580,
-                "value54": {
-                    "Color": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0,
-                        "w": 1.0
-                    },
-                    "Texture": "assets\\texture\\RTS_Crate.png",
-                    "UseTexture": true,
-                    "UseAsSubTexture": false,
-                    "setting": {
-                        "type": 0,
-                        "leftUpper": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "size": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "pos": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "cellSize": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteGridSize": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "tiling": 1.0
-                },
-                "value55": 11,
-                "value56": {
-                    "Color": {
-                        "x": 0.5588235259056091,
-                        "y": 0.5588179230690002,
-                        "z": 0.5588179230690002,
-                        "w": 1.0
-                    },
-                    "Texture": "assets/texture/1.png",
-                    "UseTexture": false,
-                    "UseAsSubTexture": false,
-                    "setting": {
-                        "type": 0,
-                        "leftUpper": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "size": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "pos": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "cellSize": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteGridSize": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "tiling": 1.0
-                },
-                "value57": 12,
-                "value58": {
-                    "Color": {
-                        "x": 0.5588235259056091,
-                        "y": 0.5588179230690002,
-                        "z": 0.5588179230690002,
-                        "w": 1.0
-                    },
-                    "Texture": "assets/texture/1.png",
-                    "UseTexture": false,
-                    "UseAsSubTexture": false,
-                    "setting": {
-                        "type": 0,
-                        "leftUpper": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "size": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "pos": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "cellSize": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteGridSize": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "tiling": 1.0
-                },
-                "value59": 3145746,
+                "value59": 3,
                 "value60": {
                     "Color": {
                         "x": 1.0,
@@ -461,7 +359,7 @@
                         "z": 0.9999899864196777,
                         "w": 1.0
                     },
-                    "Texture": "assets\\texture\\dev_128_gr_032x.jpg",
+                    "Texture": "assets\\texture\\RTS_Crate.png",
                     "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
@@ -489,16 +387,16 @@
                     },
                     "tiling": 1.0
                 },
-                "value61": 14,
+                "value61": 1048580,
                 "value62": {
                     "Color": {
-                        "x": 0.5588235259056091,
-                        "y": 0.5588179230690002,
-                        "z": 0.5588179230690002,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0,
                         "w": 1.0
                     },
-                    "Texture": "assets/texture/1.png",
-                    "UseTexture": false,
+                    "Texture": "assets\\texture\\RTS_Crate.png",
+                    "UseTexture": true,
                     "UseAsSubTexture": false,
                     "setting": {
                         "type": 0,
@@ -525,7 +423,7 @@
                     },
                     "tiling": 1.0
                 },
-                "value63": 10,
+                "value63": 11,
                 "value64": {
                     "Color": {
                         "x": 0.5588235259056091,
@@ -561,8 +459,44 @@
                     },
                     "tiling": 1.0
                 },
-                "value65": 16,
+                "value65": 12,
                 "value66": {
+                    "Color": {
+                        "x": 0.5588235259056091,
+                        "y": 0.5588179230690002,
+                        "z": 0.5588179230690002,
+                        "w": 1.0
+                    },
+                    "Texture": "assets/texture/1.png",
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value67": 16,
+                "value68": {
                     "Color": {
                         "x": 0.32549020648002627,
                         "y": 0.38823530077934267,
@@ -597,21 +531,165 @@
                     },
                     "tiling": 1.0
                 },
-                "value67": 1,
-                "value68": 2,
-                "value69": {
+                "value69": 14,
+                "value70": {
+                    "Color": {
+                        "x": 0.5588235259056091,
+                        "y": 0.5588179230690002,
+                        "z": 0.5588179230690002,
+                        "w": 1.0
+                    },
+                    "Texture": "assets/texture/1.png",
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value71": 10,
+                "value72": {
+                    "Color": {
+                        "x": 0.5588235259056091,
+                        "y": 0.5588179230690002,
+                        "z": 0.5588179230690002,
+                        "w": 1.0
+                    },
+                    "Texture": "assets/texture/1.png",
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value73": 4194322,
+                "value74": {
+                    "Color": {
+                        "x": 1.0,
+                        "y": 0.9999899864196777,
+                        "z": 0.9999899864196777,
+                        "w": 1.0
+                    },
+                    "Texture": "assets\\texture\\dev_128_gr_032x.jpg",
+                    "UseTexture": true,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value75": 15,
+                "value76": {
+                    "Color": {
+                        "x": 0.17857146263122559,
+                        "y": 1.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "Texture": "assets/texture/1.png",
+                    "UseTexture": false,
+                    "UseAsSubTexture": false,
+                    "setting": {
+                        "type": 0,
+                        "leftUpper": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "cellSize": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteGridSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "tiling": 1.0
+                },
+                "value77": 1,
+                "value78": 2,
+                "value79": {
                     "camera": {
                         "value0": {
                             "projection": {
                                 "col0": {
-                                    "x": 0.02678571455180645,
+                                    "x": 0.22499999403953553,
                                     "y": 0.0,
                                     "z": 0.0,
                                     "w": 0.0
                                 },
                                 "col1": {
                                     "x": 0.0,
-                                    "y": 0.0476190485060215,
+                                    "y": 0.4000000059604645,
                                     "z": 0.0,
                                     "w": 0.0
                                 },
@@ -629,7 +707,7 @@
                                 }
                             }
                         },
-                        "orthoSize": 42.0,
+                        "orthoSize": 5.0,
                         "orthoNear": -1000.0,
                         "orthoFar": 1000.0,
                         "aspect": 1.7777777910232545
@@ -637,10 +715,10 @@
                     "lockAspect": true,
                     "primary": true
                 },
-                "value70": 0,
-                "value71": 2,
-                "value72": 0,
-                "value73": {
+                "value80": 0,
+                "value81": 2,
+                "value82": 0,
+                "value83": {
                     "instance": {
                         "polymorphic_id": 2147483649,
                         "polymorphic_name": "rl::PlayerController",
@@ -656,8 +734,8 @@
                     "script_name": "rl::PlayerController",
                     "valid": false
                 },
-                "value74": 2,
-                "value75": {
+                "value84": 2,
+                "value85": {
                     "instance": {
                         "polymorphic_id": 2147483650,
                         "polymorphic_name": "rl::Cinemachine2D",
@@ -677,123 +755,8 @@
                     "script_name": "rl::Cinemachine2D",
                     "valid": false
                 },
-                "value76": 9,
-                "value77": 1,
-                "value78": {
-                    "angularVelocity": 0.0,
-                    "angle": 0.0,
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "friction": 0.20000000298023225,
-                    "mass": 3.4028234663852887e38,
-                    "force": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "torque": 0.0,
-                    "keepingForce": false,
-                    "attachPoint": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "showAttachPoint": false,
-                    "RestrictRotation": false
-                },
-                "value79": 0,
-                "value80": {
-                    "angularVelocity": 0.0,
-                    "angle": 0.0,
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "friction": 0.20000000298023225,
-                    "mass": 10.0,
-                    "force": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "torque": 0.0,
-                    "keepingForce": false,
-                    "attachPoint": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "showAttachPoint": false,
-                    "RestrictRotation": false
-                },
-                "value81": 3,
-                "value82": {
-                    "angularVelocity": 0.0,
-                    "angle": 0.0,
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "friction": 0.20000000298023225,
-                    "mass": 10.0,
-                    "force": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "torque": 0.0,
-                    "keepingForce": false,
-                    "attachPoint": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "showAttachPoint": false,
-                    "RestrictRotation": false
-                },
-                "value83": 1048580,
-                "value84": {
-                    "angularVelocity": 0.0,
-                    "angle": 0.0,
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "friction": 0.20000000298023225,
-                    "mass": 5.0,
-                    "force": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "torque": 0.0,
-                    "keepingForce": false,
-                    "attachPoint": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "showAttachPoint": false,
-                    "RestrictRotation": false
-                },
-                "value85": 11,
-                "value86": {
-                    "angularVelocity": 0.0,
-                    "angle": 0.0,
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "friction": 0.20000000298023225,
-                    "mass": 3.4028234663852887e38,
-                    "force": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "torque": 0.0,
-                    "keepingForce": false,
-                    "attachPoint": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "showAttachPoint": false,
-                    "RestrictRotation": false
-                },
-                "value87": 12,
+                "value86": 9,
+                "value87": 1,
                 "value88": {
                     "angularVelocity": 0.0,
                     "angle": 0.0,
@@ -816,7 +779,7 @@
                     "showAttachPoint": false,
                     "RestrictRotation": false
                 },
-                "value89": 3145746,
+                "value89": 0,
                 "value90": {
                     "angularVelocity": 0.0,
                     "angle": 0.0,
@@ -825,7 +788,7 @@
                         "y": 0.0
                     },
                     "friction": 0.20000000298023225,
-                    "mass": 3.4028234663852887e38,
+                    "mass": 10.0,
                     "force": {
                         "x": 0.0,
                         "y": 0.0
@@ -839,7 +802,7 @@
                     "showAttachPoint": false,
                     "RestrictRotation": false
                 },
-                "value91": 14,
+                "value91": 3,
                 "value92": {
                     "angularVelocity": 0.0,
                     "angle": 0.0,
@@ -848,7 +811,7 @@
                         "y": 0.0
                     },
                     "friction": 0.20000000298023225,
-                    "mass": 3.4028234663852887e38,
+                    "mass": 10.0,
                     "force": {
                         "x": 0.0,
                         "y": 0.0
@@ -862,8 +825,31 @@
                     "showAttachPoint": false,
                     "RestrictRotation": false
                 },
-                "value93": 10,
+                "value93": 1048580,
                 "value94": {
+                    "angularVelocity": 0.0,
+                    "angle": 0.0,
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "friction": 0.20000000298023225,
+                    "mass": 5.0,
+                    "force": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "torque": 0.0,
+                    "keepingForce": false,
+                    "attachPoint": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
+                },
+                "value95": 11,
+                "value96": {
                     "angularVelocity": 0.0,
                     "angle": 0.0,
                     "velocity": {
@@ -885,77 +871,169 @@
                     "showAttachPoint": false,
                     "RestrictRotation": false
                 },
-                "value95": 9,
-                "value96": 0,
-                "value97": {
+                "value97": 12,
+                "value98": {
+                    "angularVelocity": 0.0,
+                    "angle": 0.0,
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "friction": 0.20000000298023225,
+                    "mass": 3.4028234663852887e38,
+                    "force": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "torque": 0.0,
+                    "keepingForce": false,
+                    "attachPoint": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
+                },
+                "value99": 10,
+                "value100": {
+                    "angularVelocity": 0.0,
+                    "angle": 0.0,
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "friction": 0.20000000298023225,
+                    "mass": 3.4028234663852887e38,
+                    "force": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "torque": 0.0,
+                    "keepingForce": false,
+                    "attachPoint": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
+                },
+                "value101": 14,
+                "value102": {
+                    "angularVelocity": 0.0,
+                    "angle": 0.0,
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "friction": 0.20000000298023225,
+                    "mass": 3.4028234663852887e38,
+                    "force": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "torque": 0.0,
+                    "keepingForce": false,
+                    "attachPoint": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
+                },
+                "value103": 4194322,
+                "value104": {
+                    "angularVelocity": 0.0,
+                    "angle": 0.0,
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "friction": 0.20000000298023225,
+                    "mass": 3.4028234663852887e38,
+                    "force": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "torque": 0.0,
+                    "keepingForce": false,
+                    "attachPoint": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "showAttachPoint": false,
+                    "RestrictRotation": false
+                },
+                "value105": 9,
+                "value106": 0,
+                "value107": {
                     "x": 0.0,
                     "y": -0.15000000596046449,
                     "w": 0.5,
                     "h": 0.5
                 },
-                "value98": 1,
-                "value99": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "w": 12.428000450134278,
-                    "h": 1.0
-                },
-                "value100": 3,
-                "value101": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "w": 1.0,
-                    "h": 1.0
-                },
-                "value102": 1048580,
-                "value103": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "w": 1.0,
-                    "h": 1.0
-                },
-                "value104": 11,
-                "value105": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "w": 12.428000450134278,
-                    "h": 1.0
-                },
-                "value106": 12,
-                "value107": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "w": 12.428000450134278,
-                    "h": 1.0
-                },
-                "value108": 3145746,
+                "value108": 1,
                 "value109": {
                     "x": 0.0,
                     "y": 0.0,
-                    "w": 12.428000450134278,
+                    "w": 26.750999450683595,
                     "h": 1.0
                 },
-                "value110": 14,
+                "value110": 3,
                 "value111": {
                     "x": 0.0,
                     "y": 0.0,
-                    "w": 12.428000450134278,
+                    "w": 1.0,
                     "h": 1.0
                 },
-                "value112": 10,
+                "value112": 1048580,
                 "value113": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "w": 1.0,
+                    "h": 1.0
+                },
+                "value114": 11,
+                "value115": {
                     "x": 0.0,
                     "y": 0.0,
                     "w": 12.428000450134278,
                     "h": 1.0
                 },
-                "value114": 0,
-                "value115": 1,
-                "value116": 0,
+                "value116": 12,
                 "value117": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "w": 12.428000450134278,
+                    "h": 1.0
+                },
+                "value118": 10,
+                "value119": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "w": 12.428000450134278,
+                    "h": 1.0
+                },
+                "value120": 14,
+                "value121": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "w": 12.428000450134278,
+                    "h": 1.0
+                },
+                "value122": 4194322,
+                "value123": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "w": 26.750999450683595,
+                    "h": 1.0
+                },
+                "value124": 0,
+                "value125": 2,
+                "value126": 0,
+                "value127": {
                     "viewPortPos": {
-                        "x": 0.44414013624191286,
-                        "y": 1.441189169883728,
+                        "x": -1.6445541381835938,
+                        "y": -0.04576921463012695,
                         "z": -1.0
                     },
                     "customViewPos": false,
@@ -965,12 +1043,12 @@
                     },
                     "color": {
                         "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0,
+                        "y": 0.9999899864196777,
+                        "z": 0.9999899864196777,
                         "w": 1.0
                     },
-                    "radius": 100.0,
-                    "strength": 100.0,
+                    "radius": 5.0,
+                    "strength": 8.0,
                     "shadowScale": 10.0,
                     "shadowColor": {
                         "x": 0.0,
@@ -985,9 +1063,56 @@
                         {
                             "uuid": "Trash"
                         }
-                    ]
+                    ],
+                    "penetrateRadius": true
                 },
-                "value118": 0
+                "value128": 15,
+                "value129": {
+                    "viewPortPos": {
+                        "x": 10.657098770141602,
+                        "y": 2.718842029571533,
+                        "z": -3.7899999618530275
+                    },
+                    "customViewPos": false,
+                    "viewPortSize": {
+                        "x": 100.0,
+                        "y": 100.0
+                    },
+                    "color": {
+                        "x": 0.08823537826538086,
+                        "y": 1.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "radius": 28.0,
+                    "strength": 19.0,
+                    "shadowScale": 10.0,
+                    "shadowColor": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "ENTITY_NO_RAY_CAST": [
+                        {
+                            "uuid": "46f33447-86e7-41ca-9a6e-8e3b3e24d745"
+                        },
+                        {
+                            "uuid": "Trash"
+                        }
+                    ],
+                    "penetrateRadius": false
+                },
+                "value130": 1,
+                "value131": 17,
+                "value132": {
+                    "colorMask": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0,
+                        "w": 1.0
+                    }
+                }
             }
         }
     }

@@ -1462,6 +1462,12 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
 
         lightVB = VertexBuffer::Create(12);
 
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_QuadPosition"},
+        };
+        lightVB->setLayout(layout);
+        lightVA->setVertexBuffer(lightVB);
+
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         Ref<IndexBuffer> lightIB = IndexBuffer::Create(pattern, 6);
         lightVA->setIndexBuffer(lightIB);
@@ -1478,11 +1484,6 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
     };
 
     lightVB->setData(posi, sizeof(posi));
-    BufferLayout layout = {
-            {ShaderDataType::Float3, "a_QuadPosition"},
-    };
-    lightVB->setLayout(layout);
-    lightVA->setVertexBuffer(lightVB);
 
     lightShader->bind();
     lightShader->setFloat4("v_Color", color);
@@ -1497,6 +1498,7 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
     lightVA->bind();
     RenderCommand::DrawElement(DrawTriangles, lightVA, 6, false);
     lightVA->unbind();
+    lightShader->unbind();
 }
 
 void Renderer2D::DrawQuadNonBatch(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4 &color)
@@ -1516,6 +1518,12 @@ void Renderer2D::DrawQuadNonBatch(const glm::vec3 &p0, const glm::vec3 &p1, cons
         quadVB = VertexBuffer::Create(12);
         quadShader = Shader::LoadShaderVFS("/shader/quadTextureNonBatch.vs", "/shader/quadTextureNonBatch.fs");
 
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_Position"},
+        };
+        quadVB->setLayout(layout);
+        quadVA->setVertexBuffer(quadVB);
+
         uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
         Ref<IndexBuffer> quadIB = IndexBuffer::Create(pattern, 6);
         quadVA->setIndexBuffer(quadIB);
@@ -1524,19 +1532,12 @@ void Renderer2D::DrawQuadNonBatch(const glm::vec3 &p0, const glm::vec3 &p1, cons
     }
 
     float quadVertices[] = {
-
-            p0.x, p0.y, p0.z,
-            p1.x, p1.y, p1.z,
-            p2.x, p2.y, p2.z,
-            p3.x, p3.y, p3.z
+        p0.x, p0.y, p0.z,
+        p1.x, p1.y, p1.z,
+        p2.x, p2.y, p2.z,
+        p3.x, p3.y, p3.z
     };
-
     quadVB->setData(quadVertices, sizeof(quadVertices));
-    BufferLayout layout = {
-            {ShaderDataType::Float3, "a_Position"},
-    };
-    quadVB->setLayout(layout);
-    quadVA->setVertexBuffer(quadVB);
 
     quadShader->bind();
     quadShader->setMat4("u_ViewProjection", s_data->m_viewProjMatrix);
@@ -1545,6 +1546,8 @@ void Renderer2D::DrawQuadNonBatch(const glm::vec3 &p0, const glm::vec3 &p1, cons
     quadVA->bind();
     RenderCommand::DrawElement(DrawTriangles, quadVA, 6, false);
     quadVA->unbind();
+
+    quadShader->unbind();
 }
 
 void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,

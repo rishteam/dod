@@ -19,7 +19,7 @@ void main()
     float distance = length(light - ndc.xy);
 
 //    float attenuation = 1.0 / (1 + v_Linear * distance + v_Quadratic * (distance * distance));
-    if(penetrateRadius)
+    if(!penetrateRadius)
         if(distance > v_Radius) discard;
 
     float attenuation = 1 / (1 + distance * 1/v_Strength);

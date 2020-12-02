@@ -83,13 +83,6 @@ private:
 	Ref<Framebuffer> m_editorFramebuffer;
 	Ref<Framebuffer> m_editorLightFramebuffer;
 
-	////////////////////////////////////
-	// TODO : For testing
-	Ref<Framebuffer> m_testFramebuffer;
-    Ref<Texture2D> m_lightTexture;
-    Ref<Texture2D> m_editorTexture;
-	////////////////////////////////////
-
     //
     Ref<Framebuffer> m_sceneLightFramebuffer;
 	Ref<Framebuffer> m_sceneFramebuffer;

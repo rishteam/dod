@@ -20,7 +20,6 @@ void LightSystem::OnUpdate(float dt)
 void LightSystem::onRender()
 {
     auto &registry = s_Scene->m_registry;
-    auto state     = s_Scene->getSceneState();
 
     auto &mainCamera = s_Scene->m_mainCamera;
     auto &mainCameraTransform = s_Scene->m_mainCameraTransform;
@@ -143,39 +142,20 @@ void LightSystem::onRender()
                                         RenderCommand::StencilOpFactor::Keep);
             RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
             RenderCommand::SetColorMask(true, true, true, true);
+            if(!light.customViewPos) light.viewPortPos = transform.translate;
             Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
-                                       light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
+                                       light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color, light.penetrateRadius);
             RenderCommand::Clear(RenderCommand::ClearBufferTarget::StencilBuffer);
             RenderCommand::SetBlendMode(false);
         }
         RenderCommand::SetBlendMode(true);
         Renderer2D::EndScene();
     }
-
-//    {
-//        Renderer2D::BeginScene(mainCamera, mainCameraTransform);
-//        RenderCommand::SetBlendMode(true);
-//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
-//        RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
-//        RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
-//                                    RenderCommand::StencilOpFactor::Keep);
-//        RenderCommand::SetColorMask(true, true, true, true);
-//        for(auto entity : view)
-//        {
-//            auto &transform = registry.get<TransformComponent>(entity);
-//            auto &light = registry.get<LightComponent>(entity);
-//
-//            Renderer2D::DrawPointLight(transform.translate, light.radius, light.strength, light.viewPortPos,
-//                                       light.viewPortSize, s_viewport, mainCamera.getOrthoSize(), mainCamera.getAspect(),light.color);
-//        }
-//        Renderer2D::EndScene();
-//    }
 }
 
 void LightSystem::onEditorRender()
 {
     auto &registry = s_Scene->m_registry;
-    auto state     = s_Scene->getSceneState();
 
     auto &mainCamera = s_Scene->m_mainCamera;
     auto &mainCameraTransform = s_Scene->m_mainCameraTransform;

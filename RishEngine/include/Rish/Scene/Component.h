@@ -756,6 +756,7 @@ struct LightComponent
     float strength = 100;
     float shadowScale = 10;
     glm::vec4 shadowColor{0, 0, 0, 1};
+    bool penetrateRadius = false;
 
     static std::set<UUID> ENTITY_NO_RAY_CAST;
 
@@ -773,7 +774,8 @@ private:
             CEREAL_NVP(strength),
             CEREAL_NVP(shadowScale),
             CEREAL_NVP(shadowColor),
-            CEREAL_NVP(ENTITY_NO_RAY_CAST)
+            CEREAL_NVP(ENTITY_NO_RAY_CAST),
+            CEREAL_NVP(penetrateRadius)
         );
 
         if (ENTITY_NO_RAY_CAST.find(UUID("Trash")) != ENTITY_NO_RAY_CAST.end())
@@ -793,7 +795,8 @@ private:
             CEREAL_NVP(strength),
             CEREAL_NVP(shadowScale),
             CEREAL_NVP(shadowColor),
-            CEREAL_NVP(ENTITY_NO_RAY_CAST)
+            CEREAL_NVP(ENTITY_NO_RAY_CAST),
+            CEREAL_NVP(penetrateRadius)
         );
     }
 

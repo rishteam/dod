@@ -100,13 +100,6 @@ void EditorLayer::onAttach()
     m_editorLightFramebuffer = Framebuffer::Create(fbspec);
     m_sceneLightFramebuffer = Framebuffer::Create(fbspec);
 
-    ////////////////////////
-    // TODO : For testing
-    m_testFramebuffer = Framebuffer::Create(fbspec);
-    m_lightTexture = MakeRef<Texture2D>(fbspec.width, fbspec.height);
-    m_editorTexture = MakeRef<Texture2D>(fbspec.width, fbspec.height);
-    ///////////////////////
-
     // Attach all panels
     for(auto &panel : m_panelList)
         panel->onAttach(m_currentScene);
@@ -131,7 +124,6 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
-
 }
 
 void EditorLayer::onDetach()
@@ -185,9 +177,6 @@ void EditorLayer::onUpdate(Time dt)
     // Editor
     /////////////////////////////////////////////////////////////////////////////////////////////
     Renderer2D::ResetStats();
-
-
-    // TODO : ADD Light FrameBuffer
 
     m_editorFramebuffer->bind();
     {
