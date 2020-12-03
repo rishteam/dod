@@ -46,12 +46,13 @@ enum ImActionKey
     ImActionKey_KeyPadEnter  = Keyboard::Enter,
     ImActionKey_A            = Keyboard::A,          // for text edit CTRL+A: select all
     ImActionKey_C            = Keyboard::C,          // for text edit CTRL+C: copy
-    ImActionKey_G            = Keyboard::G,
+    ImActionKey_G            = Keyboard::G,          // for text edit CTRL+G: group
+    ImActionKey_N            = Keyboard::N,          // for text edit CTRL+N: new
     ImActionKey_V            = Keyboard::V,          // for text edit CTRL+V: paste
     ImActionKey_X            = Keyboard::X,          // for text edit CTRL+X: cut
     ImActionKey_Y            = Keyboard::Y,          // for text edit CTRL+Y: redo
     ImActionKey_Z            = Keyboard::Z,          // for text edit CTRL+Z: undo
-    ImActionKey_COUNT
+    ImActionKey_COUNT        = Keyboard::KeyCount
 };
 
 class IMGUI_API ImAction

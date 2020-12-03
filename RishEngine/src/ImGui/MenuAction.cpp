@@ -8,7 +8,7 @@ static const int ImActionKeyModeFlags_Mask = ImCtrl | ImShift | ImAlt | ImSuper;
 
 static std::string KeyName(int key)
 {
-    static const char* key_names[ImGuiKey_COUNT] =
+    static const char* key_names[ImActionKey_COUNT] =
     {
         "Tab",
         "LeftArrow",
@@ -28,13 +28,15 @@ static std::string KeyName(int key)
         "KeyPadEnter",
         "A",
         "C",
+        "G",
+        "N",
         "V",
         "X",
         "Y",
         "Z"
     };
     const auto& key_maps = ImGui::GetIO().KeyMap;
-    for (int i = 0; i < ImGuiKey_COUNT; ++i)
+    for (int i = 0; i < ImActionKey_COUNT; ++i)
         if (key == key_maps[i])
             return key_names[i];
 

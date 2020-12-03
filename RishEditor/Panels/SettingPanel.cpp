@@ -40,15 +40,15 @@ void SettingPanel::onImGuiRender()
                     ImGui::Separator();
 
                     // TODO: let it can actually switch it
-                    ImGui::Text("New Scene");
-                    ImGui::NextColumn();
-                    ImGui::Text("Ctrl+N");
-                    ImGui::NextColumn();
-
-                    ImGui::Text("Open Scene");
-                    ImGui::NextColumn();
-                    ImGui::Text("Ctrl+O");
-                    ImGui::NextColumn();
+//                    ImGui::Text("New Scene");
+//                    ImGui::NextColumn();
+//                    ImGui::Text("Ctrl+N");
+//                    ImGui::NextColumn();
+//
+//                    ImGui::Text("Open Scene");
+//                    ImGui::NextColumn();
+//                    ImGui::Text("Ctrl+O");
+//                    ImGui::NextColumn();
 
                     ImGui::Text("Save Scene");
                     ImGui::NextColumn();
@@ -62,18 +62,27 @@ void SettingPanel::onImGuiRender()
 
                     ImGui::Text("Select All");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut->getAction("Select All")->ShortcutName());
+                    ImGui::Text("Ctrl+A");
                     ImGui::NextColumn();
 
+                    ImGui::Text("Creat Entity");
+                    ImGui::NextColumn();
+                    ImGui::Text("Ctrl+N");
+                    ImGui::NextColumn();
 
                     ImGui::Text("Paste");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut->getAction("Paste")->ShortcutName());
+                    ImGui::Text("Ctrl+V");
                     ImGui::NextColumn();
 
                     ImGui::Text("Delete");
                     ImGui::NextColumn();
-                    ImGui::Text(m_shortCut->getAction("Delete")->ShortcutName());
+                    ImGui::Text("Delete");
+                    ImGui::NextColumn();
+
+                    ImGui::Text("Group Entity");
+                    ImGui::NextColumn();
+                    ImGui::Text("Ctrl+G");
                     ImGui::NextColumn();
 
                     ImGui::Columns(1);

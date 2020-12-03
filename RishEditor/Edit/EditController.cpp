@@ -9,6 +9,7 @@
 #include <Rish/ImGui/ImGui.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
+#include <RishEngine.h>
 
 #include "EditController.h"
 
@@ -56,13 +57,6 @@ void EditController::onUpdate(Time dt)
 
     auto scene = getContext();
 
-    // Draw grid
-    {
-        Renderer2D::BeginScene(m_cameraController->getCamera(), false);
-        m_editorGrid.onUpdate(m_showGrid);
-        Renderer2D::EndScene();
-    }
-
     // Draw sprites
     {
         Renderer2D::BeginScene(m_cameraController->getCamera(), true);
@@ -101,15 +95,29 @@ void EditController::onUpdate(Time dt)
                                         {boxc.w, boxc.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
         }
 
+        Renderer2D::EndScene();
+    }
+
+    // Draw grid
+    {
+        Renderer2D::BeginScene(m_cameraController->getCamera(), false);
+        m_editorGrid.onUpdate(m_showGrid);
+        Renderer2D::EndScene();
+    }
+
+    // Draw gizmo
+    {
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::Zero);
+        Renderer2D::BeginScene(m_cameraController->getCamera(), false);
         arrangeSelectedEntity();
         auto entSet = getTargets();
 
-        // Draw the gizmo
         m_gizmo.setSelectedEntity(entSet);
         m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
         m_gizmo.onUpdate();
-
         Renderer2D::EndScene();
+        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
+                                    RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
 }
 
