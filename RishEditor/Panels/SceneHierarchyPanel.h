@@ -37,6 +37,12 @@ private:
 
     std::set <Entity> m_clickEntity;
     void updateClickAction();
+    bool isUseDragDrop = false;
+    Entity m_DragEntity, m_DropEntity;
+    void updateDragDropAction();
+
+    // cause serialize failed
+    void removeGroupIfEmpty();
 
     std::set <Entity> m_showEntity;
     std::vector <Entity> m_entityOrder;

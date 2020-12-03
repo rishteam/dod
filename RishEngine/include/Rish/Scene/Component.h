@@ -262,6 +262,7 @@ struct GroupComponent
     iterator end()   { return childEntity.end();   }
     const_iterator begin() const { return childEntity.begin(); }
     const_iterator end() const   { return childEntity.end();   }
+    bool isEmpty() { return childEntity.empty(); }
 private:
     std::set<UUID> childEntity;
     //

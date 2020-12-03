@@ -782,6 +782,7 @@ void EditorLayer::initShortCut()
     m_sceneAction.createAction("Cancel", ImActionKey_Escape);
     //
     m_sceneAction.createAction("Group", ImCtrl | ImActionKey_G);
+    m_sceneAction.createAction("New", ImCtrl | ImActionKey_N);
 }
 
 void EditorLayer::onShortcutActionUpdate()
@@ -846,6 +847,11 @@ void EditorLayer::onShortcutActionUpdate()
         {
             m_sceneHierarchyPanel->resetTarget();
             m_statusBarPanel->sendMessage("Cancel Select Entity");
+        }
+
+        if(m_sceneAction.getAction("New")->IsShortcutPressed())
+        {
+            m_sceneHierarchyPanel->createEntityToTarget();
         }
     }
 

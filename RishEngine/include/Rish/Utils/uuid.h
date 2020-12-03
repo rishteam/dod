@@ -20,8 +20,10 @@ std::string generate_uuid_v4();
 class UUID
 {
 public:
+
     UUID();
-    UUID(const std::string& str); // For Garbage
+    UUID(const std::string &str);
+    UUID(const char* s);
 
     operator std::string () { return m_UUID; }
     operator const std::string () { return m_UUID; }
