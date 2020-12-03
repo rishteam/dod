@@ -107,7 +107,7 @@ void EditController::onUpdate(Time dt)
 
     // Draw gizmo
     {
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::Zero);
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::Zero);
         Renderer2D::BeginScene(m_cameraController->getCamera(), false);
         arrangeSelectedEntity();
         auto entSet = getTargets();
@@ -116,8 +116,7 @@ void EditController::onUpdate(Time dt)
         m_gizmo.setClickSize(glm::vec2(m_editorGrid.getOffset()/10));
         m_gizmo.onUpdate();
         Renderer2D::EndScene();
-        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha,
-                                    RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
     }
 }
 
