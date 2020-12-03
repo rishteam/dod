@@ -63,6 +63,7 @@ void LightSystem::onRender()
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
                                         RenderCommand::StencilOpFactor::Replace);
 
+            auto lightBounding = BoundingBox2D::CalculateBoundingBox2D(light.viewPortPos, light.viewPortSize, 0);
             // Ray-Casting for all rigidEntity
             for (auto rigidEntity : rigidView)
             {
@@ -72,6 +73,8 @@ void LightSystem::onRender()
                 auto &rigidID  = rigidTag.id;
 
                 if(light.ENTITY_NO_RAY_CAST.find(rigidID) != light.ENTITY_NO_RAY_CAST.end()) continue;
+
+                auto entityBounding = BoundingBox2D::CalculateBoundingBox2D(rigidTransform.translate, rigidTransform.scale, rigidTransform.rotate);
 
                 auto rotate = [&](glm::vec3 center, glm::vec3 pt, float angle) -> glm::vec3
                 {
@@ -104,21 +107,8 @@ void LightSystem::onRender()
                 point = rotate(rigidTransform.translate, point, rigidTransform.rotate);
                 vertices.push_back(point);
 
-                auto inRange = [&](std::vector<glm::vec3> vertices) -> bool
-                {
-                    for (int i = 0; i < vertices.size(); i++) {
-                        if (((light.viewPortPos.x - light.viewPortSize.x) <= vertices[i].x &&
-                             vertices[i].x <= (light.viewPortPos.x + light.viewPortSize.x)) &&
-                            ((light.viewPortPos.y - light.viewPortSize.y) <= vertices[i].y &&
-                             vertices[i].y <= (light.viewPortPos.y + light.viewPortSize.y))) {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
-
                 // Ray-Casting
-                if (inRange(vertices))
+                if (Math::AABB2DQuad(lightBounding.getPositionVec3(), lightBounding.getScaleVec3(), entityBounding.getPositionVec3(), entityBounding.getScaleVec3()))
                 {
                     for (int i = 0; i < vertices.size(); i++) {
                         glm::vec3 currentVertex = vertices[i];
@@ -177,7 +167,7 @@ void LightSystem::onEditorRender()
         {
             auto &transform = registry.get<TransformComponent>(entity);
             auto &light     = registry.get<LightComponent>(entity);
-            Renderer2D::DrawRect(transform.translate, light.viewPortSize*2.f, glm::vec4(1, 0, 1, 1));
+            Renderer2D::DrawRect(light.viewPortPos, light.viewPortSize, glm::vec4(1, 0, 1, 1));
 
         }
     }

@@ -1447,7 +1447,7 @@ void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float s
         s_data->isLightInit = false;
     }
 
-    glm::vec2 si = viewportScale;
+    glm::vec2 si = viewportScale/2.f;
     float posi[] = {
             viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z,
             viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z,

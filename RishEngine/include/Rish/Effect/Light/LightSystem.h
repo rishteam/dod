@@ -5,6 +5,8 @@
 #include <Rish/Scene/Component.h>
 #include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Renderer2D.h>
+#include <Rish/Math/AABB.h>
+#include <Rish/Math/BoundingBox.h>
 
 namespace rl {
 
