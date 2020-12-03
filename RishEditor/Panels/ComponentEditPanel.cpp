@@ -2,6 +2,8 @@
 
 //
 #include <Rish/Utils/FileDialog.h>
+#include <Rish/Utils/String.h>
+//
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 //
@@ -611,6 +613,8 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
         static std::set<std::tuple<bool, UUID, std::string>> NoRayCastList;
         static std::set<std::tuple<bool, UUID, std::string>> DeleteList;
 
+        RayCastList.clear();
+        NoRayCastList.clear();
         for(auto ent : rigidView)
         {
             Entity entity{ent, m_targetEntity.m_scene};
@@ -631,18 +635,24 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
             }
         }
 
+        ImGui::Separator();
 
         std::set<UUID>::iterator it;
+        static std::string rayCastFilterText;
+        ImGui::InputText("Filter##rayCast", &rayCastFilterText);
         if(ImGui::ListBoxHeader("Entity Has Ray Cast", rigidView.size(), 4))
         {
             for(auto item : RayCastList)
             {
                 auto tmp = item;
-                if(ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                if( rayCastFilterText.empty() || String::isSubStringIgnoreCase(std::get<2>(item), rayCastFilterText) )
                 {
-                    light.ENTITY_NO_RAY_CAST.insert(std::get<1>(item));
-                    NoRayCastList.insert(tmp);
-                    DeleteList.insert(item);
+                    if(ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                    {
+                        light.ENTITY_NO_RAY_CAST.insert(std::get<1>(item));
+                        NoRayCastList.insert(tmp);
+                        DeleteList.insert(item);
+                    }
                 }
             }
             ImGui::ListBoxFooter();
@@ -656,19 +666,25 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
                 RayCastList.erase(it);
             }
         }
-
         DeleteList.clear();
 
+        ImGui::Separator();
+
+        static std::string noRayCastFilterText;
+        ImGui::InputText("Filter##noRayCast", &noRayCastFilterText);
         if(ImGui::ListBoxHeader("Entity Does Not Has Ray Cast", rigidView.size(), 4))
         {
             for(auto item : NoRayCastList)
             {
                 auto tmp = item;
-                if(ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                if( noRayCastFilterText.empty() || String::isSubStringIgnoreCase(std::get<2>(item), noRayCastFilterText) )
                 {
-                    light.ENTITY_NO_RAY_CAST.erase(std::get<1>(item));
-                    RayCastList.insert(tmp);
-                    DeleteList.insert(item);
+                    if(ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                    {
+                        light.ENTITY_NO_RAY_CAST.erase(std::get<1>(item));
+                        RayCastList.insert(tmp);
+                        DeleteList.insert(item);
+                    }
                 }
             }
             ImGui::ListBoxFooter();
@@ -842,28 +858,38 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 
         ImGui::PushItemWidth(250);
         //RigidBody1 OptionLists
+        static std::string rigidBodyAFilterText;
+        ImGui::InputText("Filter##rigidBodyA", &rigidBodyAFilterText);
         if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
         {
             for (auto item : OptionsList)
             {
-                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                if( rigidBodyAFilterText.empty() || String::isSubStringIgnoreCase(std::get<2>(item), rigidBodyAFilterText) )
                 {
-                    std::get<0>(item) = true;
-                    jit.rigidBody1 = std::get<1>(item);
+                    if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                    {
+                        std::get<0>(item) = true;
+                        jit.rigidBody1 = std::get<1>(item);
+                    }
                 }
             }
             ImGui::ListBoxFooter();
         }
 
         //RigidBody2 OptionLists
+        static std::string rigidBodyBFilterText;
+        ImGui::InputText("Filter##rigidBodyB", &rigidBodyBFilterText);
         if(ImGui::ListBoxHeader("RigidBody2", view.size(), 4))
         {
             for (auto item : OptionsList2)
             {
-                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                if( rigidBodyBFilterText.empty() || String::isSubStringIgnoreCase(std::get<2>(item), rigidBodyBFilterText) )
                 {
-                    std::get<0>(item) = true;
-                    jit.rigidBody2 = std::get<1>(item);
+                    if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
+                    {
+                        std::get<0>(item) = true;
+                        jit.rigidBody2 = std::get<1>(item);
+                    }
                 }
             }
             ImGui::ListBoxFooter();
