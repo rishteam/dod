@@ -66,6 +66,8 @@ void SceneHierarchyPanel::onImGuiRender()
             drawEntityNode(e);
         }
         updateClickAction();
+        updateDragDropAction();
+        removeGroupIfEmpty();
     }
     ImGui::EndChild();
     ImGui::End();
@@ -103,6 +105,34 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
         m_clickEntity.insert(entity);
     }
 
+    if(ImGui::BeginDragDropSource())
+    {
+        auto payload = entity.getUUID().to_c_str();
+        ImGui::SetDragDropPayload("EntityMove", payload, strlen(payload) * sizeof(char));
+        ImGui::Text("%s",entity.getName().c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    if(ImGui::BeginDragDropTarget())
+    {
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityMove"))
+        {
+            UUID id((const char*)payload->Data);
+
+            if( m_currentScene->isValidUUID(id) )
+            {
+                isUseDragDrop = true;
+                m_DragEntity = m_currentScene->getEntityByUUID(id);
+                m_DropEntity = entity;
+            }
+            else
+            {
+                RL_CORE_ERROR("Get entity ID failed");
+            }
+
+        }
+    }
+
     if(opened)
     {
         // Has sub entity?
@@ -134,6 +164,7 @@ void SceneHierarchyPanel::drawEntityNode(Entity entity, bool isSub)
         }
         ImGui::TreePop();
     }
+
 }
 
 void SceneHierarchyPanel::createEntityToTarget()
@@ -146,7 +177,6 @@ void SceneHierarchyPanel::createEntityToTarget()
 
 void SceneHierarchyPanel::deleteTargetEntities()
 {
-
     m_delEntity.clear();
     auto entSet = getSelectedEntities();
 
@@ -329,6 +359,8 @@ void SceneHierarchyPanel::moveOutGroupEntity()
 void SceneHierarchyPanel::moveIntoGroupEntity(Entity groupEntity)
 {
     auto entSet = getSelectedEntities();
+    if(!groupEntity.hasComponent<GroupComponent>())
+        groupEntity.addComponent<GroupComponent>();
     auto &gc = groupEntity.getComponent<GroupComponent>();
     for(auto ent : entSet)
     {
@@ -346,21 +378,22 @@ void SceneHierarchyPanel::moveIntoGroupEntity(Entity groupEntity)
         }
         auto &sgc = ent.getComponent<SubGroupComponent>();
         sgc.setGroup(groupEntity.getUUID());
+        RL_INFO(ent.getName() + " is move into " + groupEntity.getName());
     }
 }
 
-bool SceneHierarchyPanel::isCircleGroup(Entity groupEntity, Entity targetEntity)
+bool SceneHierarchyPanel::isCircleGroup(Entity targetEntity, Entity groupEntity)
 {
     bool isCircle = false;
-    if(!groupEntity.hasComponent<GroupComponent>())
+    if(!targetEntity.hasComponent<GroupComponent>())
         return isCircle;
-    auto &gc = groupEntity.getComponent<GroupComponent>();
+    auto &gc = targetEntity.getComponent<GroupComponent>();
     for(auto &id : gc)
     {
         Entity ent = m_currentScene->getEntityByUUID(id);
         if( ent.hasComponent<GroupComponent>() )
-            isCircle = isCircleGroup(ent, targetEntity);
-        if( id == targetEntity.getUUID() )
+            isCircle |= isCircleGroup(ent, groupEntity);
+        if( id == groupEntity.getUUID() )
             isCircle = true;
     }
     return isCircle;
@@ -492,6 +525,44 @@ void SceneHierarchyPanel::updateClickAction()
         ImGui::EndPopup();
     }
 
+}
+
+void SceneHierarchyPanel::updateDragDropAction()
+{
+    if(!isUseDragDrop)
+        return;
+    isUseDragDrop = false;
+
+    if( !isCircleGroup(m_DragEntity, m_DropEntity) )
+    {
+        resetTarget();
+        addTarget(m_DragEntity);
+        if(m_DragEntity.hasComponent<SubGroupComponent>())
+        {
+            auto &sgc = m_DragEntity.getComponent<SubGroupComponent>();
+            if((sgc.getGroupEntityID() == m_DropEntity.getUUID()))
+            {
+                resetTarget();
+                RL_CORE_WARN(m_DragEntity.getName() + " is already at " + m_DropEntity.getName());
+            }
+        }
+        moveIntoGroupEntity(m_DropEntity);
+    }
+    else
+    {
+        RL_CORE_WARN(m_DragEntity.getName() + " can not move into " + m_DropEntity.getName());
+    }
+}
+
+void SceneHierarchyPanel::removeGroupIfEmpty()
+{
+    for(auto &id : m_groupEntityUUID)
+    {
+        Entity ent = m_currentScene->getEntityByUUID(id);
+        auto &gc = ent.getComponent<GroupComponent>();
+        if( gc.isEmpty() )
+            ent.removeComponent<GroupComponent>();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
