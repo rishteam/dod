@@ -18,8 +18,6 @@ struct RigidBody2DComponent
     };
     BodyType BodyTypeState;
 
-
-
     /// 角速度
     float angularVelocity = 0.0f;
     /// 角度
@@ -91,7 +89,7 @@ struct Collider2DComponent
     int pointSize = 3;
     Vec2 pt[64];
     std::vector<UUID> whoCollide;
-    bool FollowTransform = false;
+    bool FollowTransform = true;
     bool isCollision = false;
 
     Collider2DComponent();

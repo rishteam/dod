@@ -54,7 +54,6 @@ void PhysicsSystem::OnUpdate(float dt)
                 float offset_x = phy->position.x - (transform.translate.x + collider->position.x);
                 float offset_y = phy->position.y - (transform.translate.y + collider->position.y);
 
-
                 transform.translate.x += offset_x;
                 transform.translate.y += offset_y;
                 transform.rotate = glm::degrees(phy->angle);
@@ -166,6 +165,7 @@ void PhysicsSystem::OnSceneStop()
 void PhysicsSystem::OnImGuiRender()
 {
     // Physics World
+    auto &physicsWorld = s_Scene->physicsWorld;
     auto &mapJointObj = s_Scene->mapJointObj;
     auto &mapColliderObj = s_Scene->mapColliderObj;
     auto &mapPhysicsObj = s_Scene->mapPhysicsObj;
@@ -175,90 +175,20 @@ void PhysicsSystem::OnImGuiRender()
     auto &stateJointObject = s_Scene->StateJointObj;
 
     auto &registry = s_Scene->m_registry;
-//    ImGui::Begin("Restrict Velocity:");
-//    auto group = registry.view<TransformComponent, RigidBody2DComponent>();
-//    for (auto entity : group)
-//    {
-//        auto &UUID = registry.get<TagComponent>(entity).id;
-//        auto &rigid = registry.get<RigidBody2DComponent>(entity);
-//        ImGui::Text("UUID: %s", UUID.to_string().c_str());
-//        ImGui::Text("Restrict Velocity: %s", rigid.RestrictGravity ? "True" : "False");
-//    }
-//    ImGui::End();
-//
-//    ImGui::Begin("PhysicsWorld");
-//    ImGui::Text("PhysicsWorld Counter: %d", mapPhysicsObj.size());
-//    for(auto && [uuid, body] : mapPhysicsObj)
-//    {
-//        if(ImGui::TreeNode(uuid.to_string().c_str()))
-//        {
-//            ImGui::Text("uuid: %s", uuid.to_string().c_str());
-//            ImGui::Text("%.f %.f %.f %.f\n", body->position.x, body->position.y, body->wh.x, body->wh.y);
-//            ImGui::Separator();
-//        }
-//    }
-//    ImGui::End();
-//
-//    ImGui::Begin("PhysicsState");
-//    ImGui::Text("PhysicsState Counter: %d", statePhysicsObject.size());
-//    for(auto && [uuid, body] : statePhysicsObject)
-//    {
-//        if(ImGui::TreeNode(uuid.to_string().c_str()))
-//        {
-//            ImGui::Text("%s %d\n", uuid.to_string().c_str(), body);
-//            ImGui::Separator();
-//        }
-//    }
-//    ImGui::End();
 
-//    ImGui::Begin("Collider");
-//    ImGui::Text("Collider Counter: %d", mapColliderObj.size());
-//    for(auto && [uuid, box] : mapColliderObj)
-//    {
-//        if(ImGui::TreeNode(uuid.to_string().c_str()))
-//        {
-//            ImGui::Text("uuid: %s", uuid.to_string().c_str());
-//            ImGui::Text("%.f %.f %.f %.f\n", box->x, box->y, box->w, box->h);
-//            ImGui::TreePop();
-//        }
-//    }
-//    ImGui::End();
+    // Restrict Gravity
+    ImGui::Begin("Physics Debug");
+    ImGui::Checkbox("Restrict Gravity", &physicsWorld.restrictGravity);
 
-//    ImGui::Begin("ColliderState");
-//    ImGui::Text("ColliderState Counter: %d", stateBoxColliderObject.size());
-//    for(auto && [uuid, body] : stateBoxColliderObject)
-//    {
-//        if(ImGui::TreeNode(uuid.to_string().c_str()))
-//        {
-//            ImGui::Text("%s %d\n", uuid.to_string().c_str(), body);
-//            ImGui::Separator();
-//        }
-//    }
-//    ImGui::End();
-//    ImGui::Begin("Joint");
-//    ImGui::Text("Joint Counter: %d", mapJointObj.size());
-//    for(auto && [uuid, body] : mapJointObj)
-//    {
-//        if(ImGui::TreeNode(uuid.to_string().c_str()))
-//        {
-//            ImGui::Text("%s \n", uuid.to_string().c_str());
-//            ImGui::Separator();
-//        }
-//    }
-//    ImGui::End();
-//
-//
-//    ImGui::Begin("JointState");
-//    ImGui::Text("JointState Counter: %d", stateJointObject.size());
-//    for(auto && [uuid, body] : stateJointObject)
-//    {
-//        if(ImGui::TreeNode(uuid.to_string().c_str()))
-//        {
-//            ImGui::Text("%s %d\n", uuid.to_string().c_str(), body);
-//            ImGui::Separator();
-//        }
-//    }
-//    ImGui::End();
+    if(physicsWorld.restrictGravity)
+    {
+        physicsWorld.setGravity(Vec2(0.0f, 0.0f));
+    }
+    else
+    {
+        physicsWorld.setGravity(Vec2(0.0f, -9.8f));
+    }
+    ImGui::End();
 }
 
 void PhysicsSystem::PhysicsWorldUpdate(float dt)
@@ -454,28 +384,28 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                     phy->setBox(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), Vec2(collider->w, collider->h), glm::radians(transform.rotate) );
                     phy->shape = phy->box;
                     // https://stackoverflow.com/questions/12321949/explicitly-deleting-a-shared-ptr
-//                    delete phy->circle.get();
-//                    delete phy->polygon.get();
+                    delete phy->circle.get();
+                    delete phy->polygon.get();
                     phy->shape->type = Shape::Type::Box;
                     phy->RigidShapeType = RigidBody2D::Type::Box;
                     break;
                 }
                 case Shape::Type::Circle:
                 {
-                    phy->setCircle(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->radius, glm::radians(transform.rotate));
+                    phy->setCircle(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->radius/2.0f, glm::radians(transform.rotate));
                     phy->shape = phy->circle;
-//                    delete phy->box.get();
-//                    delete phy->polygon.get();
+                    delete phy->box.get();
+                    delete phy->polygon.get();
                     phy->shape->type = Shape::Type::Circle;
                     phy->RigidShapeType = RigidBody2D::Type::Circle;
                     break;
                 }
                 case Shape::Type::Polygon:
                 {
-                    phy->setPolygon(collider->pt, Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
+                    phy->setPolygon(collider->m_vertices,Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
                     phy->shape = phy->polygon;
-//                    delete phy->box.get();
-//                    delete phy->circle.get();
+                    delete phy->box.get();
+                    delete phy->circle.get();
                     phy->shape->type = Shape::Type::Polygon;
                     phy->RigidShapeType = RigidBody2D::Type::Polygon;
                     break;

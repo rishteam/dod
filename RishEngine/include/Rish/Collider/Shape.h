@@ -36,6 +36,7 @@ public:
     float w, h;
     float radius;
     float pointSize;
+    // All polygon point
     Vec2 pt[MaxVertexCount];
 
 
@@ -43,6 +44,7 @@ public:
     int m_vertexCount = 0;
     // Vertices(只有位移量的點), Normal(法向量), u(旋轉矩陣)
     Mat22 u;
+    // 計算完凸包之後的點
     Vec2 m_vertices[MaxVertexCount];
     Vec2 m_normals[MaxVertexCount];
 };

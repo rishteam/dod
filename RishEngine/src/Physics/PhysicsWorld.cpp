@@ -20,6 +20,11 @@ rl::PhysicsWorld::PhysicsWorld(Vec2 gravity_, float width_, float height_)
     height = height_;
 }
 
+void rl::PhysicsWorld::setGravity(Vec2 gravity_)
+{
+    gravity = gravity_;
+}
+
 void rl::PhysicsWorld::Clear()
 {
     //release space
@@ -111,7 +116,6 @@ void rl::PhysicsWorld::BoardPhase()
                 continue;
 
             // Add in Arbiter
-            // Here Implement
             if(!bodies[i]->isCollider || !bodies[j]->isCollider)
             {
                 continue;

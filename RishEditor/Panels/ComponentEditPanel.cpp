@@ -553,7 +553,6 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         ImGui::Text("Physics Parameter");
         {
             // can control the physics parameter
-
             ImGui::InputFloat("Mass", &rigid.mass, 1.0f, 5.0f, "%.2f");
             ImGui::InputFloat("Friction", &rigid.friction, 0.1f, 0.2f, "%.2f");
             ImGui::DragFloat2("Velocity", velocityVector, 1.0f);
@@ -586,7 +585,6 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
             rigid.force.y = forceVector[1];
             rigid.attachPoint.x = attachPointX;
             rigid.attachPoint.y = attachPointY;
-
         }
 
         ImGui::Separator();
@@ -594,7 +592,6 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         {
             rigid.BodyTypeState = static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect);
         }
-
         switch(static_cast<RigidBody2DComponent::BodyType>(rigid.BodyTypeState))
         {
             case RigidBody2DComponent::BodyType::Static:
@@ -620,17 +617,20 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
         DrawRightClickMenu(Collider2DComponent, false);
         auto &collider = m_targetEntity.getComponent<Collider2DComponent>();
         auto &trans = m_targetEntity.getComponent<TransformComponent>();
+        // Collider Type
         int ColliderShape = static_cast<int>(collider.type);
-//        RL_CORE_INFO("%d", ColliderShape);
         static const char *CollideShapeString[3] = {"Box", "Circle", "Polygon"};
+
+        // Collider Coordinate
         float translate[2] = {collider.x, collider.y};
         float scale[2] = {collider.w, collider.h};
-
         ImGui::DragFloat2("(x, y)", translate, 0.5f);
         if(collider.type == Collider2DComponent::Type::Box)
         {
             ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
         }
+
+        // FollowTransform
         ImGui::Checkbox("Follow Transform", &collider.FollowTransform);
 
         // Follow Transform Value
@@ -640,7 +640,7 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
             collider.w = trans.scale.x;
             collider.h = trans.scale.y;
         }
-            // Update the collider value
+        // Update the collider value
         else {
             collider.x = translate[0];
             collider.y = translate[1];
@@ -669,12 +669,14 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
                 }
                 for(int i = 0; i < collider.pointSize; i++)
                 {
+                    ImGui::PushID(i);
                     ImGui::Text("Point %d:", i);
                     ImGui::PushItemWidth(100);
                     ImGui::DragFloat("x",&collider.pt[i].x,1.0f);
                     ImGui::SameLine();
                     ImGui::DragFloat("y",&collider.pt[i].y,1.0f);
                     ImGui::PopItemWidth();
+                    ImGui::PopID();
                 }
                 break;
             }
@@ -702,8 +704,8 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 {
     BeginDrawEditComponent(Joint2DComponent);
     {
-        DrawRightClickMenu(Joint2DComponent, false);
         // Options List building
+        DrawRightClickMenu(Joint2DComponent, false);
         auto &scene = m_targetEntity.m_scene;
         auto &registry = m_targetEntity.m_scene->m_registry;
         auto view = registry.view<RigidBody2DComponent>();
@@ -718,6 +720,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             std::string options_single = RigidBodyName + "(" + RigidBodyID.to_string() + ")";
             OptionsList.push_back(make_tuple(false, RigidBodyID, options_single));
         }
+        // Sort List
         std::sort(OptionsList.begin(), OptionsList.end());
         // Copy to RigidBody2 OptionList
         std::vector<std::tuple<bool, UUID, std::string>> OptionsList2(OptionsList.size());
@@ -725,8 +728,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
 
         auto &jit = m_targetEntity.getComponent<Joint2DComponent>();
         float jitAnchor[2] = {jit.anchor.x, jit.anchor.y};
-
-        //RigidBody1 OptionLists
+        // RigidBody1 OptionLists
         if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
         {
             for (auto item : OptionsList)
@@ -740,7 +742,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             ImGui::ListBoxFooter();
         }
 
-        //RigidBody2 OptionLists
+        // RigidBody2 OptionLists
         if(ImGui::ListBoxHeader("RigidBody2", view.size(), 4))
         {
             for (auto item : OptionsList2)
@@ -754,12 +756,33 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             ImGui::ListBoxFooter();
         }
 
+        // Take RigidBody Entity
         auto RigidBody1 = scene->getEntityByUUID(jit.rigidBody1);
         auto RigidBody2 = scene->getEntityByUUID(jit.rigidBody2);
 
-        ImGui::Text("RigidBody1: [%s] (%s)", RigidBody1.getComponent<TagComponent>().tag.c_str(), jit.rigidBody1.to_c_str());
-        ImGui::Text("RigidBody2: [%s] (%s)", RigidBody2.getComponent<TagComponent>().tag.c_str(), jit.rigidBody2.to_c_str());
+        // Check RigidBody1 is exists
+        if (RigidBody1.m_scene != nullptr)
+        {
+            ImGui::Text("RigidBody1: [%s] (%s)", RigidBody1.getComponent<TagComponent>().tag.c_str(),
+                        jit.rigidBody1.to_c_str());
+        }
+        else
+        {
+            ImGui::Text("RigidBody1: NULL");
+        }
 
+        // Check RigidBody2 is not exists
+        if (RigidBody2.m_scene != nullptr)
+        {
+            ImGui::Text("RigidBody2: [%s] (%s)", RigidBody2.getComponent<TagComponent>().tag.c_str(),
+                        jit.rigidBody2.to_c_str());
+        }
+        else
+        {
+            ImGui::Text("RigidBody2: NULL");
+        }
+
+        // Anchor Setting
         static bool CustomAnchor = false;
         static int item_current = 0;
         // Bind Object Anchor
@@ -767,18 +790,34 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         if(CustomAnchor)
         {
             ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
-            const char* items[] = {RigidBody1.getComponent<TagComponent>().tag.c_str(), RigidBody2.getComponent<TagComponent>().tag.c_str()};
-            ImGui::Combo("RigidBody List", &item_current, items, IM_ARRAYSIZE(items));
-
-            if (item_current == 0)
+            if (RigidBody1.m_scene == nullptr)
             {
-                jit.anchor.x = RigidBody1.getComponent<TransformComponent>().translate.x;
-                jit.anchor.y = RigidBody1.getComponent<TransformComponent>().translate.y;
+                ImGui::Text("RigidBody1 is Empty.");
             }
-            else if(item_current == 1)
+            if(RigidBody2.m_scene == nullptr)
             {
-                jit.anchor.x = RigidBody2.getComponent<TransformComponent>().translate.x;
-                jit.anchor.y = RigidBody2.getComponent<TransformComponent>().translate.y;
+                ImGui::Text("RigidBody2 is Empty.");
+            }
+            else
+            {
+                const char *items[] = {RigidBody1.getComponent<TagComponent>().tag.c_str(),
+                                       RigidBody2.getComponent<TagComponent>().tag.c_str()};
+                ImGui::Combo("RigidBody List", &item_current, items, IM_ARRAYSIZE(items));
+                switch(item_current)
+                {
+                    case 0:
+                    {
+                        jit.anchor.x = RigidBody1.getComponent<TransformComponent>().translate.x;
+                        jit.anchor.y = RigidBody1.getComponent<TransformComponent>().translate.y;
+                        break;
+                    }
+                    case 1:
+                    {
+                        jit.anchor.x = RigidBody2.getComponent<TransformComponent>().translate.x;
+                        jit.anchor.y = RigidBody2.getComponent<TransformComponent>().translate.y;
+                        break;
+                    }
+                }
             }
         }
         // Custom the Anchor
@@ -789,6 +828,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
             jit.anchor.y = jitAnchor[1];
         }
         ImGui::Separator();
+        // Joint parameter
         ImGui::Text("r1: (%.f, %.f)", jit.r1.x, jit.r1.y);
         ImGui::Text("r2: (%.f, %.f)", jit.r2.x, jit.r2.y);
         ImGui::Text("P: (%.f, %.f)", jit.P.x, jit.P.y);
@@ -796,7 +836,6 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         ImGui::Text("biasFactor: %.f", jit.biasFactor);
         ImGui::Text("softness: %.f", jit.softness);
     }
-
     EndDrawEditComponent();
 }
 

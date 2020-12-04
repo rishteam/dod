@@ -255,7 +255,6 @@ bool Scene::findPrimaryCamera()
             isAnyCamera = true;
         }
     }
-
     return isAnyCamera;
 }
 

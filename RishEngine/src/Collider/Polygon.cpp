@@ -4,10 +4,11 @@
 
 namespace rl {
 
-Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
+Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
 {
     type = Shape::Type::Polygon;
-    int count = pointSize;
+    int count = pointSize_;
+
 
     // 找凸包
     // No hulls with less than 3 vertices (ensure actual polygon)
@@ -16,9 +17,9 @@ Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
 
     // Find the right most point on the hull
     int rightMost = 0;
-    float highestXCoord = pt[0].x;
+    float highestXCoord = pt_[0].x;
     for (int i = 1; i < count; ++i) {
-        float x = pt[i].x;
+        float x = pt_[i].x;
         if (x > highestXCoord) {
             highestXCoord = x;
             rightMost = i;
@@ -26,7 +27,7 @@ Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
 
             // If matching x then take farthest negative y
         else if (x == highestXCoord)
-            if (pt[i].y < pt[rightMost].y)
+            if (pt_[i].y < pt_[rightMost].y)
                 rightMost = i;
     }
 
@@ -53,8 +54,8 @@ Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
             // Record each counter clockwise third vertex and add
             // to the output hull
             // See : http://www.oocities.org/pcgpe/math2d.html
-            Vec2 e1 = pt[nextHullIndex] - pt[hull[outCount]];
-            Vec2 e2 = pt[i] - pt[hull[outCount]];
+            Vec2 e1 = pt_[nextHullIndex] - pt_[hull[outCount]];
+            Vec2 e2 = pt_[i] - pt_[hull[outCount]];
             float c = Cross(e1, e2);
             if (c < 0.0f)
                 nextHullIndex = i;
@@ -77,7 +78,7 @@ Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
 
     // Copy vertices into shape's vertices
     for (int i = 0; i < m_vertexCount; ++i)
-        m_vertices[i] = pt[hull[i]];
+        m_vertices[i] = pt_[hull[i]];
 
     // Compute face normals
     for (int i1 = 0; i1 < m_vertexCount; ++i1) {
@@ -92,7 +93,14 @@ Polygon::Polygon(Vec2 pt[], Vec2 pos, int pointSize , float angle_)
         m_normals[i1].Normalize();
     }
 
-    position = pos;
+
+    pointSize = pointSize_;
+    for(int i = 0; i < pointSize; i++)
+    {
+        pt[i] = pt_[i];
+    }
+
+    position = pos_;
     angle = angle_;
     setMatrix(angle);
 }

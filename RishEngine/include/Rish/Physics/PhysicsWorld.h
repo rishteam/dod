@@ -22,6 +22,8 @@ public:
 
     PhysicsWorld(Vec2 gravity_, float width_, float height_);
 
+    void setGravity(Vec2 gravity_);
+
     void Add(const Ref<RigidBody2D> &body);
 
     void AddJoints(const Ref<Joint> &joint);
@@ -46,6 +48,7 @@ public:
     static float width;
     static float height;
     static Vec2 m_center;
+    bool restrictGravity = false;
     int iterations = 10;
 
     std::vector<Ref<RigidBody2D>> bodies;
