@@ -34,9 +34,13 @@ private:
     Ref<Texture2D> m_testTexture;
     Ref<Scene> m_scene;
     //
+#ifdef TEST_FPS
     Clock clk;
     std::vector<float> m_frameTime;
     std::vector<float> m_fps;
     int dataSetSize = 100;
     int spriteNumber = 100000;
+#endif
+    //
+    Ref<Sound> m_testSound;
 };
