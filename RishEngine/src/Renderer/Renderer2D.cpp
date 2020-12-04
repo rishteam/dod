@@ -743,6 +743,7 @@ void Renderer2D::Init()
     // Light Renderer
     ////////////////////////////////////////////////////////////////
     {
+        // TODO: Remove the lighting batched version
         // Init light renderer
         s_data->lightRenderer.init();
 
@@ -751,6 +752,24 @@ void Renderer2D::Init()
         s_data->lightVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};
         s_data->lightVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};
         s_data->lightVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};
+
+        /////////////////////////////////////////////////////////////
+        // Non-Batched Version of Lighting
+        /////////////////////////////////////////////////////////////
+        s_data->lightVA = VertexArray::Create();
+        s_data->lightShader = Shader::LoadShaderVFS("/shader/pointLightNonBatch.vs", "/shader/pointLightNonBatch.fs");
+
+        s_data->lightVB = VertexBuffer::Create(12);
+
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_QuadPosition"},
+        };
+        s_data->lightVB->setLayout(layout);
+        s_data->lightVA->setVertexBuffer(s_data->lightVB);
+
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> lightIB = IndexBuffer::Create(pattern, 6);
+        s_data->lightVA->setIndexBuffer(lightIB);
     }
 }
 
@@ -1419,43 +1438,22 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
 //}
 
 void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
-                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color
-                                , const bool penetrateRadius)
+    const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize,
+    float zoom, float aspect, glm::vec4 color, const bool penetrateRadius)
 {
-
     auto &lightVA = s_data->lightVA;
     auto &lightShader = s_data->lightShader;
     auto &lightVB = s_data->lightVB;
 
-    if(s_data->isLightInit)
-    {
-        lightVA = VertexArray::Create();
-        lightShader = Shader::LoadShaderVFS("/shader/pointLightNonBatch.vs", "/shader/pointLightNonBatch.fs");
-
-        lightVB = VertexBuffer::Create(12);
-
-        BufferLayout layout = {
-            {ShaderDataType::Float3, "a_QuadPosition"},
-        };
-        lightVB->setLayout(layout);
-        lightVA->setVertexBuffer(lightVB);
-
-        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
-        Ref<IndexBuffer> lightIB = IndexBuffer::Create(pattern, 6);
-        lightVA->setIndexBuffer(lightIB);
-
-        s_data->isLightInit = false;
-    }
-
     glm::vec2 si = viewportScale;
-    float posi[] = {
-            viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z,
-            viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z,
-            viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z,
-            viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z
+    float vercies[] = {
+        viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z,
+        viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z,
+        viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z,
+        viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z
     };
 
-    lightVB->setData(posi, sizeof(posi));
+    lightVB->setData(vercies, sizeof(vercies));
 
     lightShader->bind();
     lightShader->setFloat4("v_Color", color);
@@ -1529,11 +1527,12 @@ void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPo
     s_data->renderStats.LineCount++;
 }
 
-void rl::Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb)
+void Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb)
 {
     auto &combineVA = s_data->combineVA;
     auto &combineShader = s_data->combineShader;
 
+    // TODO: Move to Renderer2D::Init()
     if(s_data->isCombineInit)
     {
         combineVA = VertexArray::Create();
@@ -1579,6 +1578,27 @@ void rl::Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb
         combineVA->unbind();
     }
     fa->unbind();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Convex
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Draw a Convex
+ * @details Draw a convex in clock-wise order.
+ * @param convex a array of glm::vec3
+ * @param size size of the array
+ * @param color color
+ */
+void Renderer2D::DrawConvex(const glm::vec3 convex[], size_t size, const glm::vec4 &color)
+{
+    RL_CORE_ASSERT(convex, "Data is nullptr");
+    //
+    for(int i = 1; i < size-1; i++)
+    {
+        DrawTriangle(convex[0], convex[i], convex[i+1], color);
+    }
 }
 
 } // namespace of rl
