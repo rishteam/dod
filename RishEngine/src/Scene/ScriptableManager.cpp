@@ -21,6 +21,7 @@ void ScriptableManager::Init()
     ScriptableManager::Register<MonsterController>();
     ScriptableManager::Register<BoxEventController>();
     ScriptableManager::Register<ObjectController>();
+    ScriptableManager::Register<Player>();
 }
 
 void ScriptableManager::Shutdown()

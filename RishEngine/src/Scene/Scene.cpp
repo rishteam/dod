@@ -31,8 +31,9 @@ namespace rl {
 
 int Scene::entityNumber = 0;
 
+// TODO : Test For No graviity
 Scene::Scene()
-    : physicsWorld(Vec2(0.0f, -9.8f))
+    : physicsWorld(Vec2(0.0f, 0.f))
 {
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
 
@@ -225,7 +226,8 @@ void Scene::onUpdate(Time dt)
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
-    ColliderSystem::OnUpdate(dt);
+    // [Hotfix]TODO : This Make Engine to slow, think a solution
+//    ColliderSystem::OnUpdate(dt);
     Animation2DSystem::OnUpdate(dt);
 }
 

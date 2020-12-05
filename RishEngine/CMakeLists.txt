@@ -62,7 +62,7 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/BoxEventController.cpp
     ../NativeScript/Rish/Script/MonsterController.cpp
     ../NativeScript/Rish/Script/ObjectController.cpp
-    ../NativeScript/Rish/Script/PlayerController_GameDemo.cpp
+    ../NativeScript/Rish/Script/Player.cpp
 )
 
 # Add executable

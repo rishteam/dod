@@ -9,6 +9,6 @@
 #include <Rish/Script/BoxEventController.h>
 #include <Rish/Script/MonsterController.h>
 #include <Rish/Script/ObjectController.h>
-#include <Rish/Script/PlayerController_GameDemo.h>
+#include <Rish/Script/Player.h>
 
 // TODO: Make a page explain how to add a new script and scene is not valid in constructor

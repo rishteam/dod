@@ -1,3 +1,4 @@
+#pragma once
 #include <Rish/Script/Common.h>
 #include <Rish/Physics/Component.h>
 #include <Rish/Script/Script.h>
@@ -9,26 +10,9 @@
 
 namespace rl {
 
-    class PlayerController_GameDemo : public ScriptableEntity
+    class Player : public ScriptableEntity
     {
     public:
-
-        enum class PlayerFace
-        {
-            Left,
-            Right
-        };
-
-        enum class PlayerAction
-        {
-            Stand = 0,
-            Ducking,
-            Jump
-        };
-
-        PlayerAction playerAction = PlayerAction::Stand;
-        PlayerFace playerFace = PlayerFace::Right;
-        PlayerState playerState = PlayerState::Small;
 
         void onCreate() override;
 
@@ -37,10 +21,6 @@ namespace rl {
         void onUpdate(Time dt) override;
 
         void onImGuiRender() override;
-
-        void detectObject();
-
-        void setSprite(SpriteRenderComponent &render, PlayerAction &playerAction, PlayerFace &playerFace);
 
         RL_SCRIPT_SERIALIZE()
         {
@@ -66,4 +46,4 @@ namespace rl {
 
 }
 
-RL_REGISTER_SCRIPT_TYPE(rl::PlayerController_GameDemo) // NOLINT
+RL_REGISTER_SCRIPT_TYPE(rl::Player) // NOLINT
