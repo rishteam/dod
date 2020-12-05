@@ -1153,6 +1153,16 @@ void Renderer2D::DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &s
 // Triangle Renderer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Renderer2D::DrawConvex(const glm::vec2 convex[], size_t size, const glm::vec4 &color)
+{
+    RL_CORE_ASSERT(convex, "Data is nullptr");
+    //
+    for(int i = 1; i < size-1; i++)
+    {
+        DrawTriangle(convex[0], convex[i], convex[i+1], color);
+    }
+}
+
 void Renderer2D::DrawTriangle(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec4 &color)
 {
     DrawTriangle(glm::vec3(p0, 0.f), glm::vec3(p1, 0.f), glm::vec3(p2, 0.f), color);

@@ -61,7 +61,7 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
                 nextHullIndex = i;
 
             // Cross product is zero then e vectors are on same line
-            // therefor want to record vertex farthest along that line
+            // therefore want to record vertex farthest along that line
             if (c == 0.0f && e2.LenSqr() > e1.LenSqr())
                 nextHullIndex = i;
         }
@@ -99,7 +99,6 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
     {
         pt[i] = pt_[i];
     }
-
     position = pos_;
     angle = angle_;
     setMatrix(angle);

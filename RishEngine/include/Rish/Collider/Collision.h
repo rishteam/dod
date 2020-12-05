@@ -525,15 +525,15 @@ static bool Polygon2Polygon(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
 static bool Circle2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
 {
     Ref<Box> box1 = std::dynamic_pointer_cast<Box>(b);
-    Ref<Circle> c = std::dynamic_pointer_cast<Circle>(a);
+    Ref<Circle> cir = std::dynamic_pointer_cast<Circle>(a);
 
     arb->contactCounter = 0;
     box1->setMatrix(box1->angle);
-    c->setMatrix(c->angle);
+    cir->setMatrix(cir->angle);
 
     // Transform circle center to Polygon model space
     // 找最小穿透軸
-    Vec2 center = c->position;
+    Vec2 center = cir->position;
     center = box1->u.Transpose() * (center - box1->position);
 
     // Find edge with minimum penetration
@@ -542,7 +542,7 @@ static bool Circle2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
     int faceNormal = 0;
     for (int i = 0; i < box1->m_vertexCount; ++i) {
         float s = Dot(box1->m_normals[i], center - box1->m_vertices[i]);
-        if (s > c->radius )
+        if (s > cir->radius )
             return false;
         if (s > separation) {
             separation = s;
@@ -560,21 +560,21 @@ static bool Circle2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
     if (separation < EPSILON) {
         arb->contactCounter = 1;
         arb->normal = -(box1->u * box1->m_normals[faceNormal]);
-        arb->contacts[0].position = arb->normal * c->radius  + c->position;
-        arb->penetration = c->radius;
+        arb->contacts[0].position = arb->normal * cir->radius + cir->position;
+        arb->penetration = cir->radius;
         return true;
     }
 
     // Determine which voronoi region of the edge center of circle lies within
     float dot1 = Dot(center - v1, v2 - v1);
     float dot2 = Dot(center - v2, v1 - v2);
-    arb->penetration = c->radius - separation;
+    arb->penetration = cir->radius - separation;
 
     // Closest to v1
     // 靠近v1
     if (dot1 <= 0.0f) {
         // 檢查是否分離
-        if (DistSqr(center, v1) > c->radius * c->radius)
+        if (DistSqr(center, v1) > cir->radius * cir->radius)
             return false;
 
         arb->contactCounter = 1;
@@ -588,7 +588,7 @@ static bool Circle2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
         // Closest to v2
         // 靠近v2
     else if (dot2 <= 0.0f) {
-        if (DistSqr(center, v2) > c->radius * c->radius)
+        if (DistSqr(center, v2) > cir->radius * cir->radius)
             return false;
 
         arb->contactCounter = 1;
@@ -603,11 +603,11 @@ static bool Circle2Box(Arbiter *arb, Ref<Shape> a, Ref<Shape> b)
         // 靠近面
     else {
         Vec2 n = box1->m_normals[faceNormal];
-        if (Dot(center - v1, n) > c->radius)
+        if (Dot(center - v1, n) > cir->radius)
             return false;
         n = box1->u * n;
         arb->normal = -n;
-        arb->contacts[0].position = arb->normal * c->radius + c->position;
+        arb->contacts[0].position = arb->normal * cir->radius + cir->position;
         arb->contactCounter = 1;
     }
     return true;

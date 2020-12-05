@@ -58,6 +58,7 @@ void PhysicsSystem::OnUpdate(float dt)
                 transform.translate.y += offset_y;
                 transform.rotate = glm::degrees(phy->angle);
 
+
                 rigidbody2D.angularVelocity = phy->angularVelocity;
                 rigidbody2D.angle = phy->angle;
                 rigidbody2D.velocity = phy->velocity;
@@ -178,16 +179,22 @@ void PhysicsSystem::OnImGuiRender()
 
     // Restrict Gravity
     ImGui::Begin("Physics Debug");
-    ImGui::Checkbox("Restrict Gravity", &physicsWorld.restrictGravity);
 
-    if(physicsWorld.restrictGravity)
+    for(auto mp : mapPhysicsObj)
     {
-        physicsWorld.setGravity(Vec2(0.0f, 0.0f));
+        ImGui::Text("%d",mp.second->shape->type);
     }
-    else
-    {
-        physicsWorld.setGravity(Vec2(0.0f, -9.8f));
-    }
+
+//    ImGui::Checkbox("Restrict Gravity", &physicsWorld.restrictGravity);
+
+//    if(physicsWorld.restrictGravity)
+//    {
+//        physicsWorld.setGravity(Vec2(0.0f, 0.0f));
+//    }
+//    else
+//    {
+//        physicsWorld.setGravity(Vec2(0.0f, -9.8f));
+//    }
     ImGui::End();
 }
 
@@ -338,6 +345,56 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
         statejit.second = false;
     }
 
+    // Update BoxCollider2D component data to engine
+    auto view2 = registry.view<TransformComponent, Collider2DComponent>();
+    for (auto entity : view2)
+    {
+        auto &UUID = registry.get<TagComponent>(entity).id;
+        auto &collider2D = registry.get<Collider2DComponent>(entity);
+
+        // Update state Record
+        for (auto &state : stateColliderObject)
+        {
+            if(state.first == UUID)
+            {
+                state.second = true;
+            }
+        }
+
+        if (mapColliderObj.count(UUID))
+        {
+            auto &collider = mapColliderObj[UUID];
+            switch(collider->type)
+            {
+                case Shape::Type::Box:
+                {
+                    collider->position.x = collider2D.x;
+                    collider->position.y = collider2D.y;
+                    collider->w = collider2D.w;
+                    collider->h = collider2D.h;
+                    break;
+                }
+                case Shape::Type::Circle:
+                {
+                    collider->position.x = collider2D.x;
+                    collider->position.y = collider2D.y;
+                    collider->radius = collider2D.radius;
+                    break;
+                }
+                case Shape::Type::Polygon:
+                {
+                    collider->position.x = collider2D.x;
+                    collider->position.y = collider2D.y;
+                    for(int i = 0; i < collider2D.pointSize; i++)
+                    {
+                        collider->pt[i] = collider2D.pt[i];
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     // Update RigidBody2D Component data to engine
     auto view = registry.view<TransformComponent, RigidBody2DComponent>();
     for (auto entity : view)
@@ -392,7 +449,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                 }
                 case Shape::Type::Circle:
                 {
-                    phy->setCircle(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->radius/2.0f, glm::radians(transform.rotate));
+                    phy->setCircle(Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->radius, glm::radians(transform.rotate));
                     phy->shape = phy->circle;
                     delete phy->box.get();
                     delete phy->polygon.get();
@@ -402,7 +459,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                 }
                 case Shape::Type::Polygon:
                 {
-                    phy->setPolygon(collider->m_vertices,Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
+                    phy->setPolygon(collider->pt,Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
                     phy->shape = phy->polygon;
                     delete phy->box.get();
                     delete phy->circle.get();
@@ -412,7 +469,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                 }
             }
         }
-
         // Only RigidBody2D
         else if (mapPhysicsObj.count(UUID))
         {
@@ -436,55 +492,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
         }
     }
 
-    // Update BoxCollider2D component data to engine
-    auto view2 = registry.view<TransformComponent, Collider2DComponent>();
-    for (auto entity : view2)
-    {
-        auto &UUID = registry.get<TagComponent>(entity).id;
-        auto &collider2D = registry.get<Collider2DComponent>(entity);
 
-        // Update state Record
-        for (auto &state : stateColliderObject)
-        {
-            if(state.first == UUID)
-            {
-                state.second = true;
-            }
-        }
-
-        if (mapColliderObj.count(UUID))
-        {
-            auto &collider = mapColliderObj[UUID];
-            switch(collider->type)
-            {
-                case Shape::Type::Box:
-                {
-                    collider->position.x = collider2D.x;
-                    collider->position.y = collider2D.y;
-                    collider->w = collider2D.w;
-                    collider->h = collider2D.h;
-                    break;
-                }
-                case Shape::Type::Circle:
-                {
-                    collider->position.x = collider2D.x;
-                    collider->position.y = collider2D.y;
-                    collider->radius = collider2D.radius;
-                    break;
-                }
-                case Shape::Type::Polygon:
-                {
-                    collider->position.x = collider2D.x;
-                    collider->position.y = collider2D.y;
-                    for(int i = 0; collider2D.pointSize; i++)
-                    {
-                        collider->pt[i] = collider2D.pt[i];
-                    }
-                    break;
-                }
-            }
-        }
-    }
 
     // Update Joint2D component data to engine
     auto view3 = registry.view<TransformComponent, Joint2DComponent>();
@@ -562,7 +570,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
         }
     }
 
-    // Collider2DComponent Component
+    // Collider2DComponent
     auto group2 = registry.view<TransformComponent, Collider2DComponent>();
     for(auto entity : group2)
     {
@@ -600,7 +608,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
         }
     }
 
-    // Joint2DComponent Component
+    // Joint2DComponent
     auto group3 = registry.view<TransformComponent, Joint2DComponent>();
     for(auto entity : group3)
     {

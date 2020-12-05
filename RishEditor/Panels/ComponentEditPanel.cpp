@@ -684,6 +684,7 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
 
         ImGui::Separator();
         // Collide Detection Message
+        // TODO: fixed collider
 //        ImGui::Text("isCollide: %s", collider.isCollision ? "True" : "False");
 //        ImGui::Text("Collide Object: ");
 //        if(collider.whoCollide.empty())
@@ -763,7 +764,8 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         // Check RigidBody1 is exists
         if (RigidBody1.m_scene != nullptr)
         {
-            ImGui::Text("RigidBody1: [%s] (%s)", RigidBody1.getComponent<TagComponent>().tag.c_str(),
+            ImGui::Text("RigidBody1: [%s] (%s)",
+                        RigidBody1.getComponent<TagComponent>().tag.c_str(),
                         jit.rigidBody1.to_c_str());
         }
         else
@@ -774,7 +776,8 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         // Check RigidBody2 is not exists
         if (RigidBody2.m_scene != nullptr)
         {
-            ImGui::Text("RigidBody2: [%s] (%s)", RigidBody2.getComponent<TagComponent>().tag.c_str(),
+            ImGui::Text("RigidBody2: [%s] (%s)",
+                        RigidBody2.getComponent<TagComponent>().tag.c_str(),
                         jit.rigidBody2.to_c_str());
         }
         else

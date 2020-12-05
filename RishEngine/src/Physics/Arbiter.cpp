@@ -18,7 +18,7 @@ void Arbiter::Solve()
     b1->shape->setMatrix(b1->angle);
     b2->shape->setMatrix(b2->angle);
     // dispatch function
-    Dispatch[(int)b1->RigidShapeType][(int)b2->RigidShapeType]( this, b1->shape, b2->shape);
+    bool tmp = Dispatch[(int)b1->RigidShapeType][(int)b2->RigidShapeType](this, b1->shape, b2->shape);
 }
 
 
@@ -180,5 +180,5 @@ void Arbiter::Update()
     }
 }
 
-
-} // end of namespace rl
+}
+// end of namespace rl

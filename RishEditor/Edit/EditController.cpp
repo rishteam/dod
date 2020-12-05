@@ -141,18 +141,19 @@ void EditController::onUpdate(Time dt)
                 }
                 case Collider2DComponent::Type::Circle:
                 {
-                    Renderer2D::DrawCircleLine({transform.translate.x + collider.x, transform.translate.y + collider.y}, collider.radius, {1.0f, 1.0f, 0.0f, 1.0f});
-//                    Renderer2D::DrawRotatedRect(
-//                            {transform.translate.x + collider.x, transform.translate.y + collider.y},
-//                            {collider.w, collider.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+                    Renderer2D::DrawCircleLine({transform.translate.x + collider.x, transform.translate.y + collider.y}, collider.radius * 2, {1.0f, 1.0f, 0.0f, 1.0f});
                     break;
                 }
                 case Collider2DComponent::Type::Polygon:
                 {
                     // TODO: Draw Polygon
-//                    Renderer2D::DrawRotatedRect(
-//                            {transform.translate.x + collider.x, transform.translate.y + collider.y},
-//                            {collider.w, collider.h}, {1.0f, 1.0f, 0.0f, 1.0f}, transform.rotate);
+                    glm::vec2 fucktmp[70];
+                    for(int i = 0; i < collider.pointSize; i++)
+                    {
+                        fucktmp[i].x = transform.translate.x + collider.x + collider.pt[i].x;
+                        fucktmp[i].y = transform.translate.y + collider.y + collider.pt[i].y;
+                    }
+                    Renderer2D::DrawConvex(fucktmp, collider.pointSize, {1.0f, 1.0f, 0.0f, 1.0f});
                     break;
                 }
             }

@@ -129,6 +129,9 @@ void RigidBody2D::IntegrateVelocities(float delta_t)
     auto tmp2 = delta_t * angularVelocity;
     angle += tmp2;
 
+    shape->position = position;
+    shape->angle = angle;
+
     if (!keepingForce)
     {
         this->force.Set(0.0f, 0.0f);
