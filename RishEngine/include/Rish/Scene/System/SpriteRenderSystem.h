@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Rish/rlpch.h>
-
 #include <Rish/Scene/Scene.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <entt/entt.hpp>

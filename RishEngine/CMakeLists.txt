@@ -160,8 +160,9 @@ add_library(RishEngine
     src/Scene/System/SpriteRenderSystem.cpp
 
     # Sound
-    src/Platform/SFMLSound.cpp
     src/Platform/SFMLListener.cpp
+    src/Sound/SoundSystem.cpp
+    src/Sound/Sound.cpp
 
     ${RL_SCRIPT_FILES}
 )

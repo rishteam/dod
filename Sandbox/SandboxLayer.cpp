@@ -3,6 +3,8 @@
 #include <Rish/Scene/SystemManager.h>
 #include <Rish/Animation/Component.h>
 
+#include <Rish/Utils/Serialize.h>
+
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("ExampleSandboxLayer"),
       m_cameraController(Application::Get().getWindow().getAspectRatio(), false, true)
@@ -14,6 +16,8 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     m_testTexture = Texture2D::LoadTextureVFS("/texture/RTS_Crate.png");
 
     m_testSound = Sound::LoadSoundVFS("/music/peko_mono.ogg");
+
+    saveToFile("test", m_testSound, "assets/test.sound");
 
 //    m_scene = MakeRef<Scene>();
 //    SystemManager::Init(m_scene);

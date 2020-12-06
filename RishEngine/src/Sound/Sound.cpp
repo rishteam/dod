@@ -1,13 +1,15 @@
 #include <Rish/rlpch.h>
+#include <Rish/Sound/Sound.h>
 
-#include <Rish/Platform/SFMLSound.h>
+#include <Rish/Core/VFS.h>
+#include <Rish/Core/Time.h>
 #include <Rish/Core/ResHolder.h>
 
 namespace rl {
 
 Ref<Sound> Sound::LoadSound(const std::string &path, const Sound3DSetting &setting)
 {
-    auto sound = MakeRef<SFMLSound>(path);
+    auto sound = MakeRef<Sound>(path);
     sound->set3DSetting(setting);
     return sound;
 }
@@ -16,76 +18,79 @@ Ref<Sound> Sound::LoadSoundVFS(const std::string &path, const Sound3DSetting &se
 {
     std::string pp;
     VFS::ResolvePhysicalPath(path, pp);
-    auto sound =  MakeRef<SFMLSound>(pp);
+    auto sound = MakeRef<Sound>(pp);
     sound->set3DSetting(setting);
     return sound;
 }
 
-SFMLSound::SFMLSound(const std::string &path)
+Sound::Sound()
 {
-    if(!ResHolder::Sound().exists(path))
-        ResHolder::Sound().load(path, path);
-    m_sound = &ResHolder::Sound().get(path);
 }
 
-void SFMLSound::play()
+Sound::Sound(const std::string &path)
+{
+    loadFromSoundFile(path);
+    m_path = path;
+}
+
+void Sound::play()
 {
     m_sound->play();
 }
 
-void SFMLSound::pause()
+void Sound::pause()
 {
     m_sound->pause();
 }
 
-void SFMLSound::stop()
+void Sound::stop()
 {
     m_sound->stop();
 }
 
-bool SFMLSound::isPlaying()
+bool Sound::isPlaying()
 {
     return m_sound->getStatus() == sf::Sound::Playing;
 }
 
-bool SFMLSound::isStopped()
+bool Sound::isStopped()
 {
     return m_sound->getStatus() == sf::Sound::Stopped;
 }
 
-bool SFMLSound::isPaused()
+bool Sound::isPaused()
 {
     return m_sound->getStatus() == sf::Sound::Paused;
 }
 
-void SFMLSound::setLoop(bool loop)
+void Sound::setLoop(bool loop)
 {
     m_sound->setLoop(loop);
 }
 
-bool SFMLSound::getLoop()
+bool Sound::getLoop()
 {
     return m_sound->getLoop();
 }
 
-void SFMLSound::setPlayingOffset(float offset)
+void Sound::setPlayingOffset(float offset)
 {
     m_sound->setPlayingOffset(sf::seconds(offset));
 }
 
-Time SFMLSound::getPlayingOffset()
+Time Sound::getPlayingOffset()
 {
     return Time{m_sound->getPlayingOffset().asSeconds()};
 }
 
-void SFMLSound::set3DSetting(const Sound3DSetting &setting)
+void Sound::set3DSetting(const Sound3DSetting &setting)
 {
     m_sound->setPosition(setting.position.x, setting.position.y, setting.position.z);
     m_sound->setMinDistance(setting.minDistance);
     m_sound->setAttenuation(setting.attenuation);
 }
 
-Sound3DSetting SFMLSound::get3DSetting()
+Sound3DSetting Sound::get3DSetting()
 {
     return Sound3DSetting();
 }
@@ -94,19 +99,26 @@ Sound3DSetting SFMLSound::get3DSetting()
  * Get the length of a sound
  * @return seconds
  */
-Time SFMLSound::getLength()
+Time Sound::getLength()
 {
     return Time{m_sound->getBuffer()->getDuration().asSeconds()};
 }
 
-void SFMLSound::setVolume(float volume)
+void Sound::setVolume(float volume)
 {
     m_sound->setVolume(100.f * volume);
 }
 
-float SFMLSound::getVolume()
+float Sound::getVolume()
 {
     return m_sound->getVolume() / 100.f;
+}
+
+void Sound::loadFromSoundFile(const std::string &path)
+{
+    if(!ResHolder::Sound().exists(path))
+        ResHolder::Sound().load(path, path);
+    m_sound = &ResHolder::Sound().get(path);
 }
 
 } // end of namespace rl

@@ -1,10 +1,8 @@
 #pragma once
 
-#include <Rish/rlpch.h>
+#include <Rish/Scene/Scene.h>
 
 namespace rl {
-
-class Scene;
 
 class SystemManager
 {
