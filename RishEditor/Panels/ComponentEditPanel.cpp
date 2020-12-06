@@ -22,6 +22,15 @@
     if(drawEditComponentRightClickMenu<c>(disable)) \
         return;
 
+#define UpdateShortcutAction(c) \
+    do {                                                                                       \
+        if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))) \
+        {                                                                                      \
+            m_targetEntity.removeComponent<c>();                                               \
+        }                                                                                      \
+    }                                                                                          \
+    while(0)
+
 namespace rl {
 
 template<>
@@ -179,6 +188,7 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
     {
         m_targetEntity.removeComponent<SpriteRenderComponent>();
     }
+    UpdateShortcutAction(SpriteRenderComponent);
 }
 
 template<>
@@ -225,10 +235,7 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
     }
     EndDrawEditComponent();
     //
-    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
-    {
-        m_targetEntity.removeComponent<CameraComponent>();
-    }
+    UpdateShortcutAction(CameraComponent);
 }
 
 template<>
@@ -265,10 +272,7 @@ void ComponentEditPanel::drawEditComponentWidget<NativeScriptComponent>()
             ImGui::Text("Fuck me plz");
     }
     EndDrawEditComponent();
-    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
-    {
-        m_targetEntity.removeComponent<NativeScriptComponent>();
-    }
+    UpdateShortcutAction(NativeScriptComponent);
 }
 
 template<>
@@ -546,10 +550,7 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
         }
     }
     EndDrawEditComponent();
-    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
-    {
-        m_targetEntity.removeComponent<ParticleComponent>();
-    }
+    UpdateShortcutAction(ParticleComponent);
 }
 
 template<>
@@ -567,8 +568,8 @@ void ComponentEditPanel::drawEditComponentWidget<AmbientLightComponent>()
         ImGui::DragFloat3("Mask Position", glm::value_ptr(transform.translate));
         ImGui::DragFloat3("Mask Size", glm::value_ptr(transform.scale));
     }
-
     EndDrawEditComponent();
+    UpdateShortcutAction(AmbientLightComponent);
 }
 
 template<>
@@ -687,6 +688,7 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
         DeleteList.clear();
     }
     EndDrawEditComponent();
+    UpdateShortcutAction(LightComponent);
 }
 
 template<>
@@ -759,10 +761,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
     }
     EndDrawEditComponent();
     //
-    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
-    {
-        m_targetEntity.removeComponent<RigidBody2DComponent>();
-    }
+    UpdateShortcutAction(RigidBody2DComponent);
 }
 
 template<>
@@ -806,10 +805,7 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
     }
     EndDrawEditComponent();
     //
-    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
-    {
-        m_targetEntity.removeComponent<BoxCollider2DComponent>();
-    }
+    UpdateShortcutAction(BoxCollider2DComponent);
 }
 
 template<>
@@ -890,6 +886,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
     {
         m_targetEntity.removeComponent<Joint2DComponent>();
     }
+    UpdateShortcutAction(Joint2DComponent);
 }
 
 template <>
@@ -902,7 +899,6 @@ void ComponentEditPanel::drawEditComponentWidget<GroupComponent>()
 
     }
     EndDrawEditComponent();
-
 }
 
 void ComponentEditPanel::showGroupEntity(Entity targetEntity)
@@ -975,6 +971,52 @@ void ComponentEditPanel::drawEditComponentWidget<Animation2DComponent>()
         }
     }
     EndDrawEditComponent();
+    UpdateShortcutAction(Animation2DComponent);
+}
+
+template<>
+void ComponentEditPanel::drawEditComponentWidget<SoundComponent>()
+{
+    BeginDrawEditComponent(SoundComponent);
+    {
+        DrawRightClickMenu(SoundComponent, false);
+        //
+        auto &sound = m_targetEntity.getComponent<SoundComponent>();
+        if(ImGui::Button("Load"))
+        {
+            static auto fileDefaultPath = FileSystem::GetCurrentDirectory() + "\\assets";
+            std::string path;
+            //
+            if(FileDialog::SelectSingleFile(nullptr, fileDefaultPath.c_str(), path))
+            {
+                sound.loadSound(path);
+            }
+        }
+
+        // Get path of the loaded sound
+        char *p = const_cast<char*>(sound.m_sound ? sound.m_sound->m_path.c_str() : "");
+        ImGui::InputText("Path", p, strlen(p), ImGuiInputTextFlags_ReadOnly);
+
+        auto &sp = sound.m_sound;
+        if(sp)
+        {
+            if (ImGui::Button("Play"))
+            {
+                sp->play();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop"))
+            {
+                sp->stop();
+            }
+            ImGui::Text("%.2f/%.2f", sp->getPlayingOffset().asSeconds(), sp->getLength().asSeconds());
+
+            ImGui::SliderFloat("Volume", &sound.m_volume, 0.f, 1.f);
+            sp->setVolume(sound.m_volume);
+        }
+    }
+    EndDrawEditComponent();
+    UpdateShortcutAction(SoundComponent);
 }
 
 void ComponentEditPanel::onAttach(const Ref<Scene> &scene)
@@ -1014,6 +1056,7 @@ void ComponentEditPanel::onImGuiRender()
         drawEditComponentWidget<Joint2DComponent>();
         drawEditComponentWidget<LightComponent>();
         drawEditComponentWidget<AmbientLightComponent>();
+        drawEditComponentWidget<SoundComponent>();
 
         // for debug
 //        drawEditComponentWidget<GroupComponent>();

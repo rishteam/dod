@@ -3,6 +3,8 @@
 #include "Rish/Core/Log.h"
 #include "Rish/Utils/FileDialog.h"
 
+// TODO: make default path can be relative and absolute
+
 namespace rl {
 
 bool FileDialog::SelectSingleFile(const char *filter, const char *defaultPath, std::string &outPath)

@@ -70,6 +70,8 @@ private:
     sf::Sound *m_sound = nullptr;
     Sound3DSetting m_setting;
 
+    friend class ComponentEditPanel;
+
     friend class cereal::access;
     template<class Archive>
     void save(Archive &ar) const

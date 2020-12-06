@@ -127,6 +127,11 @@ void EditorLayer::onAttach()
         openScene(m_editorSetting.path);
         m_scenePath = m_editorSetting.path;
     }
+
+    auto ent = m_currentScene->createEntity("test");
+    auto &sound = ent.addComponent<SoundComponent>();
+    sound.loadSound("assets/music/peko_mono.ogg");
+
 }
 
 void EditorLayer::onDetach()

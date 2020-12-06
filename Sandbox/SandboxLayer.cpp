@@ -1,9 +1,6 @@
 #include "SandboxLayer.h"
 
 #include <Rish/Scene/SystemManager.h>
-#include <Rish/Animation/Component.h>
-
-#include <Rish/Utils/Serialize.h>
 
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("ExampleSandboxLayer"),
@@ -16,8 +13,9 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     m_testTexture = Texture2D::LoadTextureVFS("/texture/RTS_Crate.png");
 
     m_testSound = Sound::LoadSoundVFS("/music/peko_mono.ogg");
+//    m_testSoundCompoennt.m_sound = m_testSound;
 
-    saveToFile("test", m_testSound, "assets/test.sound");
+//    saveToFile("m_testSoundCompoennt", m_testSoundCompoennt, "assets/test.sound");
 
 //    m_scene = MakeRef<Scene>();
 //    SystemManager::Init(m_scene);

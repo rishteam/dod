@@ -3,6 +3,8 @@
 #include <Rish/rlpch.h>
 #include <RishEngine.h>
 
+#include <Rish/Sound/Component.h>
+
 using namespace rl;
 
 struct TestBox
@@ -43,4 +45,5 @@ private:
 #endif
     //
     Ref<Sound> m_testSound;
+    SoundComponent m_testSoundCompoennt;
 };
