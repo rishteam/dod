@@ -101,12 +101,6 @@ void RigidBody2D::setPolygon(Vec2 pt[], Vec2 pos, int pointSize, float angle)
 
     c *= 1.0f / area;
 
-    // Translate vertices to centroid (make the centroid (0, 0)
-    // for the polygon in model space)
-    // Not really necessary, but I like doing this anyway
-    for(int i = 0; i < polygon->m_vertexCount; ++i)
-        polygon->m_vertices[i] -= c;
-
     float density = 1.0f;
     if (mass < FLT_MAX)
     {

@@ -122,7 +122,6 @@ void PhysicsSystem::OnUpdate(float dt)
 
 void PhysicsSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
 {
-
     // Clear not selected rigidBody restrict state
     auto group2 =  s_Scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
     for (auto entity : group2)
