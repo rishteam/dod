@@ -219,6 +219,16 @@ void EditorLayer::onUpdate(Time dt)
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     // TODO : Check if there is a need for resizing m_sceneFramebuffer
+    m_sceneFramebuffer->bind();
+    {
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
+        //
+        m_currentScene->onUpdate(dt);
+        m_currentScene->onRender();
+    }
+    m_sceneFramebuffer->unbind();
+
     m_sceneLightFramebuffer->bind();
     {
         // Draw Light
@@ -231,16 +241,6 @@ void EditorLayer::onUpdate(Time dt)
         }
     }
     m_sceneLightFramebuffer->unbind();
-
-    m_sceneFramebuffer->bind();
-    {
-        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-        RenderCommand::Clear(RenderCommand::ClearBufferTarget::ColorBuffer | RenderCommand::ClearBufferTarget::DepthBuffer);
-        //
-        m_currentScene->onUpdate(dt);
-        m_currentScene->onRender();
-    }
-    m_sceneFramebuffer->unbind();
 
     m_sceneFramebuffer->bind();
     {

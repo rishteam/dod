@@ -18,25 +18,31 @@ void Player::onUpdate(Time dt)
     auto &render = GetComponent<SpriteRenderComponent>();
 
     Vec2 &velocity = rigid.velocity;
+    velocity.x = 0.001;
+    velocity.y = 0.001;
     if (Input::IsKeyPressed(Keyboard::Left))
     {
-        if(velocity.x >= -walkSpeedLimit)
-            velocity.x -= walkAccel * dt.asSeconds();
+//        if(velocity.x >= -walkSpeedLimit)
+            trans.translate.x -= walkAccel * dt.asSeconds();
+//            velocity.x -= walkAccel * dt.asSeconds();
     }
     if (Input::IsKeyPressed(Keyboard::Right))
     {
-        if(velocity.x <= walkSpeedLimit)
-            velocity.x += walkAccel * dt.asSeconds();
+//        if(velocity.x <= walkSpeedLimit)
+            trans.translate.x += walkAccel * dt.asSeconds();
+//            velocity.x += walkAccel * dt.asSeconds();
     }
     if (Input::IsKeyPressed(Keyboard::Down))
     {
-        if(velocity.y >= -walkSpeedLimit)
-            velocity.y -= walkAccel * dt.asSeconds();
+//        if(velocity.y >= -walkSpeedLimit)
+            trans.translate.y -= walkAccel * dt.asSeconds();
+//            velocity.y -= walkAccel * dt.asSeconds();
     }
     if (Input::IsKeyPressed(Keyboard::Up))
     {
-        if(velocity.y <= walkSpeedLimit)
-            velocity.y += walkAccel * dt.asSeconds();
+//        if(velocity.y <= walkSpeedLimit)
+            trans.translate.y += walkAccel * dt.asSeconds();
+//            velocity.y += walkAccel * dt.asSeconds();
     }
 
     // TODO: Trigger with Object (ex: mushroom, star, monster...)
