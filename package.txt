@@ -10,3 +10,5 @@ mingw-w64-i686-glm
 mingw-w64-i686-doxygen
 mingw-w64-i686-cereal
 mingw-w64-i686-re2
+mingw-w64-i686-ccache
+
