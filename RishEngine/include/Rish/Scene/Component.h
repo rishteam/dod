@@ -156,18 +156,47 @@ private:
     }
 
 	friend class cereal::access;
+//	template<class Archive>
+//	void serialize(Archive &ar)
+//	{
+//		ar(
+//           cereal::make_nvp("Color", color),
+//		   cereal::make_nvp("Texture", m_texture),
+//		   cereal::make_nvp("UseTexture", useTexture),
+//		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+//		   cereal::make_nvp("setting", m_subSetting),
+//		   cereal::make_nvp("tiling", tiling)
+//		);
+//	}
+
 	template<class Archive>
-	void serialize(Archive &ar)
-	{
-		ar(
-           cereal::make_nvp("Color", color),
-		   cereal::make_nvp("Texture", m_texture),
-		   cereal::make_nvp("UseTexture", useTexture),
-		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
-		   cereal::make_nvp("setting", m_subSetting),
-		   cereal::make_nvp("tiling", tiling)
-		);
-	}
+	void load(Archive &ar)
+    {
+        ar(
+            cereal::make_nvp("Color", color),
+            cereal::make_nvp("Texture", m_texture),
+            cereal::make_nvp("UseTexture", useTexture),
+            cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+            cereal::make_nvp("setting", m_subSetting),
+            cereal::make_nvp("tiling", tiling)
+        );
+
+        init = false;
+        texturePath = m_texture->getPath();
+    }
+
+    template<class Archive>
+    void save(Archive &ar) const
+    {
+        ar(
+            cereal::make_nvp("Color", color),
+            cereal::make_nvp("Texture", m_texture),
+            cereal::make_nvp("UseTexture", useTexture),
+            cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+            cereal::make_nvp("setting", m_subSetting),
+            cereal::make_nvp("tiling", tiling)
+        );
+    }
 };
 
 /**
