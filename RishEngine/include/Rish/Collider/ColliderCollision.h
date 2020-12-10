@@ -512,7 +512,7 @@ static bool ColliderCircle2Box(Ref<Shape> a, Ref<Shape> b)
 
 static bool ColliderBox2Circle(Ref<Shape> a, Ref<Shape> b)
 {
-    ColliderCircle2Box(b, a);
+    return ColliderCircle2Box(b, a);
 }
 
 static bool ColliderCircle2Polygon(Ref<Shape> a, Ref<Shape> b)
@@ -579,7 +579,7 @@ static bool ColliderCircle2Polygon(Ref<Shape> a, Ref<Shape> b)
 
 static bool ColliderPolygon2Circle(Ref<Shape> a, Ref<Shape> b)
 {
-    ColliderCircle2Polygon(b, a);
+    return ColliderCircle2Polygon(b, a);
 }
 
 static bool ColliderBox2Polygon(Ref<Shape> a, Ref<Shape> b)
@@ -678,6 +678,6 @@ static bool ColliderBox2Polygon(Ref<Shape> a, Ref<Shape> b)
 
 static bool ColliderPolygon2Box(Ref<Shape> a, Ref<Shape> b)
 {
-    ColliderBox2Polygon(b, a);
+    return ColliderBox2Polygon(b, a);
 }
 }

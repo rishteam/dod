@@ -22,7 +22,7 @@ void ColliderSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
     {
         Ref <Shape> A;
         Ref <Shape> B;
-        // All Collider
+
         for(auto ent : selectedEntites)
         {
             if(ent.hasComponent<Collider2DComponent>())
@@ -36,26 +36,26 @@ void ColliderSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
                 // Update Check
                 switch (colliderA.type) {
                     case Collider2DComponent::Type::Box: {
-                        A = MakeRef<Box>(colliderA.x, colliderA.y, colliderA.w, colliderA.h,
+                        A = MakeRef<Box>(transA.translate.x + colliderA.x, transA.translate.y + colliderA.y, colliderA.w,  colliderA.h,
                                          glm::radians(transA.rotate));
                         A->type = Shape::Type::Box;
                         break;
                     }
                     case Collider2DComponent::Type::Circle: {
-                        A = MakeRef<Circle>(colliderA.x, colliderA.y, colliderA.radius,
+                        A = MakeRef<Circle>(transA.translate.x + colliderA.x, transA.translate.y + colliderA.y, colliderA.radius,
                                             glm::radians(transA.rotate));
                         A->type = Shape::Type::Circle;
                         break;
                     }
                     case Collider2DComponent::Type::Polygon: {
-                        A = MakeRef<Polygon>(colliderA.pt, Vec2(colliderA.x, colliderA.y),
+                        A = MakeRef<Polygon>(colliderA.pt, Vec2(transA.translate.x + colliderA.x, transA.translate.y + colliderA.y),
                                              colliderA.pointSize, glm::radians(transA.rotate));
                         A->type = Shape::Type::Polygon;
                         break;
                     }
                 }
 
-
+                // All Collider
                 auto view = s_Scene->m_registry.view<TransformComponent, Collider2DComponent>();
                 for(auto entity : view)
                 {
@@ -65,19 +65,19 @@ void ColliderSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
 
                     switch (colliderB.type) {
                         case Collider2DComponent::Type::Box: {
-                            B = MakeRef<Box>(colliderB.x, colliderB.y, colliderB.w, colliderB.h,
+                            B = MakeRef<Box>(transB.translate.x + colliderB.x, transB.translate.y + colliderB.y, colliderB.w, colliderB.h,
                                              glm::radians(transB.rotate));
                             B->type = Shape::Type::Box;
                             break;
                         }
                         case Collider2DComponent::Type::Circle: {
-                            B = MakeRef<Circle>(colliderB.x, colliderB.y, colliderB.radius,
+                            B = MakeRef<Circle>(transB.translate.x + colliderB.x, transB.translate.y + colliderB.y, colliderB.radius,
                                                 glm::radians(transB.rotate));
                             B->type = Shape::Type::Circle;
                             break;
                         }
                         case Collider2DComponent::Type::Polygon: {
-                            B = MakeRef<Polygon>(colliderB.pt, Vec2(colliderB.x, colliderB.y),
+                            B = MakeRef<Polygon>(colliderB.pt, Vec2(transB.translate.x + colliderB.x, transB.translate.y + colliderB.y),
                                                  colliderB.pointSize, glm::radians(transB.rotate));
                             B->type = Shape::Type::Polygon;
                             break;
