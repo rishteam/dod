@@ -3,7 +3,9 @@
 #include "SettingPanel.h"
 #include "EditorLayer.h"
 
-namespace  rl{
+namespace  rl {
+
+// TODO: Make the table row into class
 
 void SettingPanel::onImGuiRender()
 {
@@ -105,12 +107,16 @@ void SettingPanel::onImGuiRender()
                     ImGui::AlignTextToFramePadding();
                     ImGui::Text("Scene");
                     ImGui::AlignTextToFramePadding();
+                    ImGui::Text("Enable auto save");
                     ImGui::AlignTextToFramePadding();
                     ImGui::Text("Auto save (sec.)");
 
                     ImGui::NextColumn();
 
+                    // Open Scene when editor is open
                     ImGui::Checkbox("###OpenScene", &m_parent->m_editorSetting.isDefaultOpenScene);
+
+                    // Scene
                     ImGui::InputText("##Scene", &m_parent->m_editorSetting.path, ImGuiInputTextFlags_ReadOnly); ImGui::SameLine();
                     if(ImGui::Button("Set"))
                     {
@@ -126,6 +132,10 @@ void SettingPanel::onImGuiRender()
                         m_parent->m_editorSetting.path = m_parent->m_scenePath;
                     }
 
+                    // Enable auto save
+                    ImGui::Checkbox("##AutoSaveCheckbox", &m_parent->m_editorSetting.isAutoSaveEnable);
+
+                    // Auto save (sec.)
                     ImGui::InputFloat("##AutoSaveSecond", &m_parent->m_editorSetting.autoSaveSecond);
 
                     ImGui::Columns(1);

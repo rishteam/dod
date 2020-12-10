@@ -29,6 +29,7 @@ struct EditorSetting
     bool isDefaultOpenScene       = false;
     std::string path;
 
+    bool isAutoSaveEnable = true;
     float autoSaveSecond = 60.f;
 
     template<typename Archive>
@@ -37,6 +38,7 @@ struct EditorSetting
         ar(CEREAL_NVP(isDefaultOpenScene));
         ar(CEREAL_NVP(path));
         ar(CEREAL_NVP(saveSettingOnExit));
+        ar(CEREAL_NVP(isAutoSaveEnable));
         ar(CEREAL_NVP(autoSaveSecond));
     }
 };
