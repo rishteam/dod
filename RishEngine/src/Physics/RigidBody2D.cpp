@@ -22,10 +22,10 @@ RigidBody2D::RigidBody2D(RigidBody2D::Type type_)
 }
 
 
-void RigidBody2D::setBox(Vec2 pos, Vec2 wh, float angle)
+void RigidBody2D::setBox(Vec2 pos, Vec2 wh, float angle_)
 {
     RigidShapeType = Type::Box;
-    box = MakeRef<Box>(pos.x, pos.y, wh.x, wh.y, angle);
+    box = MakeRef<Box>(pos.x, pos.y, wh.x, wh.y, angle_);
     shape = box;
     position = pos;
 
@@ -43,10 +43,10 @@ void RigidBody2D::setBox(Vec2 pos, Vec2 wh, float angle)
     }
 }
 
-void RigidBody2D::setCircle(Vec2 pos, float radius_, float angle)
+void RigidBody2D::setCircle(Vec2 pos, float radius_, float angle_)
 {
     RigidShapeType = Type::Circle;
-    circle = MakeRef<Circle>(pos.x, pos.y, radius_, angle);
+    circle = MakeRef<Circle>(pos.x, pos.y, radius_, angle_);
     shape = circle;
     position = pos;
 
@@ -66,14 +66,18 @@ void RigidBody2D::setCircle(Vec2 pos, float radius_, float angle)
 }
 
 
-void RigidBody2D::setPolygon(Vec2 pt[], Vec2 pos, int pointSize, float angle)
+void RigidBody2D::setPolygon(Vec2 pt_[], Vec2 pos, int pointSize_, float angle_)
 {
     RigidShapeType = Type::Polygon;
-    polygon = MakeRef<Polygon>(pt, pos, pointSize, angle);
-    shape = polygon;
-    position = pos;
+    Vec2 tmp[MaxVertexCount];
+    for(int i = 0; i < pointSize_; i++)
+    {
+        tmp[i] = pt_[i];
+    }
 
-    // Calculate centroid and moment of Inertia
+    polygon = MakeRef<Polygon>(tmp, pos, pointSize_, angle_);
+
+    // Calculate centroid and moment  of Inertia
     Vec2 c( 0.0f, 0.0f );
     float area = 0.0f;
     I = 0;

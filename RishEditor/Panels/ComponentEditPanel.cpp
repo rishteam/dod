@@ -574,6 +574,7 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
                 ImGui::Text(": On");
             else
                 ImGui::Text(": Off");
+            ImGui::Checkbox("Restrict Gravity", &rigid.RestrictGravity);
             ImGui::Checkbox("Restrict Rotation", &rigid.RestrictRotation);
             ImGui::Text("AngularVelocity: %.2f", rigid.angularVelocity);
             ImGui::Text("Torque: %.2f", rigid.torque);

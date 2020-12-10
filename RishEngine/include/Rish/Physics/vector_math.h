@@ -22,6 +22,7 @@ const float EPSILON = 0.0001f;
 /** @brief float_max, float_min常數 */
 #define MAX_float std::numeric_limits<float>::max()
 #define MIN_float std::numeric_limits<float>::min()
+#define MaxVertexCount 70
 
 /**
  * @brief 補足sf::Vector2f無法做的計算，自行建立一個特化的Vector

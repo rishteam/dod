@@ -27,7 +27,6 @@ Box::Box(float x_, float y_, float w_, float h_, float angle_)
         // Calculate normal with 2D cross product between vector and scalar
         m_normals[i1] = Vec2( face.y, -face.x );
         m_normals[i1].Normalize( );
-//        RL_CORE_INFO("{} {} {}", i1, m_normals[i1].x, m_normals[i1].y);
     }
 
     angle = angle_;

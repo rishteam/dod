@@ -127,7 +127,12 @@ void PhysicsSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
     for (auto entity : group2)
     {
         auto &rigid =  s_Scene->m_registry.get<RigidBody2DComponent>(entity);
-        rigid.RestrictGravity = false;
+        rigid.engineRestrictGravity = false;
+        // Editor enforce restrict Gravity
+        if(rigid.RestrictGravity)
+        {
+            rigid.engineRestrictGravity = true;
+        }
     }
     // selected rigidBody will be restrict state
     if(ImGui::GetIO().MouseDown[0])
@@ -136,7 +141,7 @@ void PhysicsSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
         {
             if(ent.hasComponent<RigidBody2DComponent>())
             {
-                ent.getComponent<RigidBody2DComponent>().RestrictGravity = true;
+                ent.getComponent<RigidBody2DComponent>().engineRestrictGravity = true;
             }
         }
     }
@@ -184,16 +189,6 @@ void PhysicsSystem::OnImGuiRender()
         ImGui::Text("%d",mp.second->shape->type);
     }
 
-//    ImGui::Checkbox("Restrict Gravity", &physicsWorld.restrictGravity);
-
-//    if(physicsWorld.restrictGravity)
-//    {
-//        physicsWorld.setGravity(Vec2(0.0f, 0.0f));
-//    }
-//    else
-//    {
-//        physicsWorld.setGravity(Vec2(0.0f, -9.8f));
-//    }
     ImGui::End();
 }
 
@@ -429,7 +424,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
             phy->force = rigidbody2D.force;
             phy->attachPoint = rigidbody2D.attachPoint;
             phy->keepingForce = rigidbody2D.keepingForce;
-            phy->RestrictGravity = rigidbody2D.RestrictGravity;
+            phy->RestrictGravity = rigidbody2D.engineRestrictGravity;
             phy->isCollider = true;
 
             // Collider Case
@@ -458,7 +453,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
                 }
                 case Shape::Type::Polygon:
                 {
-                    phy->setPolygon(collider->pt,Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
+                    phy->setPolygon(collider->pt, Vec2(transform.translate.x + collider->position.x, transform.translate.y + collider->position.y), collider->pointSize, glm::radians(transform.rotate));
                     phy->shape = phy->polygon;
                     delete phy->box.get();
                     delete phy->circle.get();
@@ -486,7 +481,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
             phy->force = rigidbody2D.force;
             phy->attachPoint = rigidbody2D.attachPoint;
             phy->keepingForce = rigidbody2D.keepingForce;
-            phy->RestrictGravity = rigidbody2D.RestrictGravity;
+            phy->RestrictGravity = rigidbody2D.engineRestrictGravity;
             phy->isCollider = false;
         }
     }

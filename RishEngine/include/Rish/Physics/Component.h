@@ -42,8 +42,10 @@ struct RigidBody2DComponent
     float friction = 0.2f;
     /// 限制旋轉
     bool RestrictRotation = false;
-    /// 限制速度
+    /// 限制重力
     bool RestrictGravity = false;
+    /// 引擎內部限制重力
+    bool engineRestrictGravity = false;
 
 
     RigidBody2DComponent() = default;
@@ -56,6 +58,7 @@ private:
     void serialize(Archive &ar)
     {
         ar(
+            CEREAL_NVP(BodyTypeState),
             CEREAL_NVP(angularVelocity),
             CEREAL_NVP(angle),
             CEREAL_NVP(velocity),
@@ -67,7 +70,8 @@ private:
             CEREAL_NVP(keepingForce),
             CEREAL_NVP(attachPoint),
             CEREAL_NVP(showAttachPoint),
-            CEREAL_NVP(RestrictRotation)
+            CEREAL_NVP(RestrictRotation),
+            CEREAL_NVP(RestrictGravity)
             // TODO: add serializable parameter
         );
     }
@@ -87,7 +91,7 @@ struct Collider2DComponent
     float h = 1.0f;
     float radius = 1.0f;
     int pointSize = 3;
-    Vec2 pt[64];
+    Vec2 pt[MaxVertexCount];
     std::vector<UUID> whoCollide;
     bool FollowTransform = true;
     bool isCollision = false;
@@ -106,7 +110,9 @@ private:
             CEREAL_NVP(h),
             CEREAL_NVP(radius),
             CEREAL_NVP(pt),
-            CEREAL_NVP(type)
+            CEREAL_NVP(type),
+            CEREAL_NVP(pointSize),
+            CEREAL_NVP(FollowTransform)
             // TODO: add serializable parameter
         );
     }
@@ -115,7 +121,6 @@ private:
 
 struct Joint2DComponent
 {
-    // TODO: How to Clean Up
     UUID rigidBody1;
     UUID rigidBody2;
     Vec2 anchor = Vec2(0.0f, 0.0f);

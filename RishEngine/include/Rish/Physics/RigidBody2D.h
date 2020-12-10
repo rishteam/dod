@@ -26,9 +26,9 @@ public:
     ~RigidBody2D() = default;
 
 
-    void setBox(Vec2 pos, Vec2 wh, float angle);
-    void setCircle(Vec2 pos, float radius_, float angle);
-    void setPolygon(Vec2 pt[], Vec2 pos, int pointSize, float angle);
+    void setBox(Vec2 pos, Vec2 wh, float angle_);
+    void setCircle(Vec2 pos, float radius_, float angle_);
+    void setPolygon(Vec2 pt_[], Vec2 pos, int pointSize_, float angle_);
 
 
     void IntegrateVelocities(float delta_t);
@@ -61,6 +61,8 @@ public:
     float friction;
     /// 恢復係數
     float restitution = 0.2f;
+
+    int fuckme;
 
     /// 質量，質量倒數
     float mass, invMass;

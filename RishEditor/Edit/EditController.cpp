@@ -146,14 +146,20 @@ void EditController::onUpdate(Time dt)
                 }
                 case Collider2DComponent::Type::Polygon:
                 {
-                    // TODO: Draw Polygon
-                    glm::vec2 fucktmp[70];
+                    glm::vec2 tmp[70];
                     for(int i = 0; i < collider.pointSize; i++)
                     {
-                        fucktmp[i].x = transform.translate.x + collider.x + collider.pt[i].x;
-                        fucktmp[i].y = transform.translate.y + collider.y + collider.pt[i].y;
+                        tmp[i].x = transform.translate.x + collider.x + collider.pt[i].x;
+                        tmp[i].y = transform.translate.y + collider.y + collider.pt[i].y;
+
+                        float tmp_x = (tmp[i].x - transform.translate.x) * cos(glm::radians(transform.rotate)) - (tmp[i].y - transform.translate.y) * sin(glm::radians(transform.rotate)) + transform.translate.x;
+                        float tmp_y = (tmp[i].y - transform.translate.y) * cos(glm::radians(transform.rotate)) + (tmp[i].x - transform.translate.x) * sin(glm::radians(transform.rotate)) + transform.translate.y;
+
+                        tmp[i].x = tmp_x;
+                        tmp[i].y = tmp_y;
                     }
-                    Renderer2D::DrawConvex(fucktmp, collider.pointSize, {1.0f, 1.0f, 0.0f, 1.0f});
+
+                    Renderer2D::DrawConvex(tmp, collider.pointSize, {1.0f, 1.0f, 0.0f, 1.0f});
                     break;
                 }
             }

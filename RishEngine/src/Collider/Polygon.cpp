@@ -9,6 +9,12 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
     type = Shape::Type::Polygon;
     int count = pointSize_;
 
+    Vec2 tmp[MaxVertexCount];
+    for(int i = 0; i < pointSize_; i++)
+    {
+        tmp[i] = pt_[i];
+    }
+
 
     // 找凸包
     // No hulls with less than 3 vertices (ensure actual polygon)
@@ -17,9 +23,9 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
 
     // Find the right most point on the hull
     int rightMost = 0;
-    float highestXCoord = pt_[0].x;
+    float highestXCoord = tmp[0].x;
     for (int i = 1; i < count; ++i) {
-        float x = pt_[i].x;
+        float x = tmp[i].x;
         if (x > highestXCoord) {
             highestXCoord = x;
             rightMost = i;
@@ -27,7 +33,7 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
 
             // If matching x then take farthest negative y
         else if (x == highestXCoord)
-            if (pt_[i].y < pt_[rightMost].y)
+            if (tmp[i].y < tmp[rightMost].y)
                 rightMost = i;
     }
 
@@ -54,8 +60,8 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
             // Record each counter clockwise third vertex and add
             // to the output hull
             // See : http://www.oocities.org/pcgpe/math2d.html
-            Vec2 e1 = pt_[nextHullIndex] - pt_[hull[outCount]];
-            Vec2 e2 = pt_[i] - pt_[hull[outCount]];
+            Vec2 e1 = tmp[nextHullIndex] - tmp[hull[outCount]];
+            Vec2 e2 = tmp[i] - tmp[hull[outCount]];
             float c = Cross(e1, e2);
             if (c < 0.0f)
                 nextHullIndex = i;
@@ -78,7 +84,7 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
 
     // Copy vertices into shape's vertices
     for (int i = 0; i < m_vertexCount; ++i)
-        m_vertices[i] = pt_[hull[i]];
+        m_vertices[i] = tmp[hull[i]];
 
     // Compute face normals
     for (int i1 = 0; i1 < m_vertexCount; ++i1) {
@@ -94,14 +100,15 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
     }
 
 
-    pointSize = pointSize_;
+    this->pointSize = pointSize_;
     for(int i = 0; i < pointSize; i++)
     {
-        pt[i] = pt_[i];
+        this->pt[i] = tmp[i];
     }
-    position = pos_;
-    angle = angle_;
-    setMatrix(angle);
+    this->position = pos_;
+    this->angle = angle_;
+    this->setMatrix(angle);
+    this->m_vertexCount = count;
 }
 
 
