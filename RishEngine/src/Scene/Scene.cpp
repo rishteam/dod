@@ -120,7 +120,6 @@ void Scene::onUpdate(Time dt)
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
-    ColliderSystem::OnUpdate(dt);
 
     // Find a primary camera
     // TODO: implement multiple camera

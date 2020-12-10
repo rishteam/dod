@@ -23,10 +23,10 @@ public:
     /// 設定旋轉矩陣
     virtual void setMatrix(float radians);
 
-//    virtual bool isCollide(Shape &s) = 0;
-//    virtual bool isCollide(Box &b) = 0;
-//    virtual bool isCollide(Polygon &p) = 0;
-//    virtual bool isCollide(Circle &c) = 0;
+    virtual bool isCollide(Ref<Shape> s) = 0;
+    virtual bool isCollide(Ref<Box> b) = 0;
+    virtual bool isCollide(Ref<Polygon> p) = 0;
+    virtual bool isCollide(Ref<Circle> c) = 0;
 
     // TODO: move to derived class
     Vec2 position;

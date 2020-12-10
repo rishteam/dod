@@ -1,6 +1,6 @@
 #include <Rish/Collider/Polygon.h>
+#include <Rish/Collider/ColliderCollision.h>
 
-#define MaxPolyVertexCount 64
 
 namespace rl {
 
@@ -9,7 +9,7 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
     type = Shape::Type::Polygon;
     int count = pointSize_;
 
-    Vec2 tmp[MaxVertexCount];
+    Vec2 tmp[70];
     for(int i = 0; i < pointSize_; i++)
     {
         tmp[i] = pt_[i];
@@ -18,8 +18,8 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
 
     // 找凸包
     // No hulls with less than 3 vertices (ensure actual polygon)
-    assert(count > 2 && count <= MaxPolyVertexCount);
-    count = std::min((int) count, MaxPolyVertexCount);
+    assert(count > 2 && count <= 70);
+    count = std::min((int) count, 70);
 
     // Find the right most point on the hull
     int rightMost = 0;
@@ -37,7 +37,7 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
                 rightMost = i;
     }
 
-    int hull[MaxPolyVertexCount];
+    int hull[70];
     int outCount = 0;
     int indexHull = rightMost;
 
@@ -111,5 +111,19 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
     this->m_vertexCount = count;
 }
 
+bool Polygon::isCollide(Ref<Box> b)
+{
+    return ColliderPolygon2Box(static_cast<Ref <Shape>>(this), b);
+}
+
+bool Polygon::isCollide(Ref<Polygon> p)
+{
+    return ColliderPolygon2Polygon(static_cast<Ref <Shape>>(this), p);
+}
+
+bool Polygon::isCollide(Ref<Circle> c)
+{
+    return ColliderPolygon2Circle(static_cast<Ref <Shape>>(this), c);
+}
 
 }

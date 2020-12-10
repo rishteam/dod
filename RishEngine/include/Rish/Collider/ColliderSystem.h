@@ -15,8 +15,8 @@ class RL_API ColliderSystem
 {
 public:
     static void RegisterScene(const Ref <Scene> &scene);
-    //
-    static void OnUpdate(float dt);
+
+    static void OnEditorUpdate(std::set<Entity> &selectedEntites);
 
 private:
     static Ref<Scene> s_Scene;

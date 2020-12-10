@@ -129,7 +129,7 @@ void EditController::onUpdate(Time dt)
             Entity ent{entity, scene.get()};
             auto &collider = ent.getComponent<Collider2DComponent>();
             auto &transform = ent.getComponent<TransformComponent>();
-            // TODO: rotate Quad for collider
+
             switch(collider.type)
             {
                 case Collider2DComponent::Type::Box:
@@ -158,8 +158,7 @@ void EditController::onUpdate(Time dt)
                         tmp[i].x = tmp_x;
                         tmp[i].y = tmp_y;
                     }
-
-                    Renderer2D::DrawConvex(tmp, collider.pointSize, {1.0f, 1.0f, 0.0f, 1.0f});
+                    Renderer2D::DrawConvex(tmp, collider.pointSize, {1.0f, 1.0f, 0.0f, 0.3f});
                     break;
                 }
             }

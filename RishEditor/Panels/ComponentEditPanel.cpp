@@ -686,16 +686,16 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
         ImGui::Separator();
         // Collide Detection Message
         // TODO: fixed collider
-//        ImGui::Text("isCollide: %s", collider.isCollision ? "True" : "False");
-//        ImGui::Text("Collide Object: ");
-//        if(collider.whoCollide.empty())
-//        {
-//            ImGui::Text("None");
-//        }
-//        for(auto idx : collider.whoCollide)
-//        {
-//            ImGui::Text("%s", idx.to_string().c_str());
-//        }
+        ImGui::Text("isCollide: %s", collider.isCollision ? "True" : "False");
+        ImGui::Text("Collide Object: ");
+        if(collider.whoCollide.empty())
+        {
+            ImGui::Text("None");
+        }
+        for(auto idx : collider.whoCollide)
+        {
+            ImGui::Text("%s", idx.to_string().c_str());
+        }
     }
     EndDrawEditComponent();
 }

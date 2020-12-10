@@ -1,5 +1,4 @@
 #include <Rish/Scene/Entity.h>
-#include <Rish/Events/Event.h>
 #include <Rish/Physics/PhysicsSystem.h>
 
 #include <Rish/Collider/Box.h>
@@ -126,7 +125,7 @@ void PhysicsSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
     auto group2 =  s_Scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
     for (auto entity : group2)
     {
-        auto &rigid =  s_Scene->m_registry.get<RigidBody2DComponent>(entity);
+        auto &rigid = s_Scene->m_registry.get<RigidBody2DComponent>(entity);
         rigid.engineRestrictGravity = false;
         // Editor enforce restrict Gravity
         if(rigid.RestrictGravity)
@@ -169,27 +168,7 @@ void PhysicsSystem::OnSceneStop()
 
 void PhysicsSystem::OnImGuiRender()
 {
-    // Physics World
-    auto &physicsWorld = s_Scene->physicsWorld;
-    auto &mapJointObj = s_Scene->mapJointObj;
-    auto &mapColliderObj = s_Scene->mapColliderObj;
-    auto &mapPhysicsObj = s_Scene->mapPhysicsObj;
-    // State Record check it exists
-    auto &statePhysicsObject = s_Scene->StatePhysicsObj;
-    auto &stateColliderObject = s_Scene->StateColliderObj;
-    auto &stateJointObject = s_Scene->StateJointObj;
 
-    auto &registry = s_Scene->m_registry;
-
-    // Restrict Gravity
-    ImGui::Begin("Physics Debug");
-
-    for(auto mp : mapPhysicsObj)
-    {
-        ImGui::Text("%d",mp.second->shape->type);
-    }
-
-    ImGui::End();
 }
 
 void PhysicsSystem::PhysicsWorldUpdate(float dt)

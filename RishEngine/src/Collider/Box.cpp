@@ -1,4 +1,6 @@
 #include <Rish/Collider/Box.h>
+#include <Rish/Collider/ColliderCollision.h>
+
 
 namespace rl {
 
@@ -32,6 +34,23 @@ Box::Box(float x_, float y_, float w_, float h_, float angle_)
     angle = angle_;
     setMatrix(angle_);
 }
+
+bool Box::isCollide(Ref<Box> b)
+{
+    return ColliderBox2Box(static_cast<Ref <Shape>>(this), b);
+}
+
+bool Box::isCollide(Ref<Polygon> p)
+{
+    return ColliderBox2Polygon(static_cast<Ref <Shape>>(this), p);
+}
+
+bool Box::isCollide(Ref<Circle> c)
+{
+    return ColliderBox2Circle(static_cast<Ref <Shape>>(this), c);
+}
+
+
 
 
 }

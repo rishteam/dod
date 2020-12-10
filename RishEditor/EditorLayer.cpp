@@ -129,6 +129,7 @@ void EditorLayer::onUpdate(Time dt)
     }
 
     // Physics Restrict Velocity when chosen
+    ColliderSystem::OnEditorUpdate(m_editController->getSelectedEntities());
     PhysicsSystem::OnEditorUpdate(m_editController->getSelectedEntities());
 
     // TODO: Rendering Queue
