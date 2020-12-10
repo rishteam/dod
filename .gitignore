@@ -47,8 +47,7 @@ rl-*.json
 
 imgui.ini
 .DS_Store
-/cmake-build-debug/
-/cmake-build-release/
+/cmake-build*/
 .idea/.gitignore
 .idea/dod.iml
 .idea/misc.xml
