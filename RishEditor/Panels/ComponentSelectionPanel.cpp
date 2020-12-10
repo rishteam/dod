@@ -1,12 +1,7 @@
+#include <Rish/rlpch.h>
 #include "ComponentSelectionPanel.h"
-
 #include <Rish/Utils/String.h>
-
-#include <Rish/Scene/ComponentManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
-
-#include <Rish/ImGui/ImGui.h>
-#include <entt/entt.hpp>
 
 namespace rl {
 
@@ -55,6 +50,7 @@ void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
     ComponentManager::RegisterComponent<ParticleComponent>();
     ComponentManager::RegisterComponent<LightComponent>();
     ComponentManager::RegisterComponent<AmbientLightComponent>();
+    ComponentManager::RegisterComponent<SoundComponent>();
 }
 
 } // end of namespace rl

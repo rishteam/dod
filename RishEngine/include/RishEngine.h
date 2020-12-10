@@ -54,6 +54,8 @@
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
 
+#include <Rish/Sound/Sound.h>
+
 /**
  * @defgroup physics Physics Module
  * @brief Physics Module

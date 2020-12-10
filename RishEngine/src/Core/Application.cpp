@@ -30,10 +30,14 @@ Application::Application(const std::string &name, uint32_t width, uint32_t heigh
     m_window = Scope<Window>(Window::Create(name, width, height));
     m_window->setEventCallback(RL_BIND_EVENT_FUNC(Application::onEvent));
 
-    VFS::Mount("shader", "assets/shader");
-    VFS::Mount("fonts", "assets/fonts");
+    // Default Mount Paths
+    VFS::Mount("shader",  "assets/shader");
+    VFS::Mount("fonts",   "assets/fonts");
     VFS::Mount("texture", "assets/texture");
-    VFS::Mount("scene", "assets/scene");
+    VFS::Mount("scene",   "assets/scene");
+    VFS::Mount("se",      "assets/soundEffect");
+    VFS::Mount("music",   "assets/music");
+    VFS::Mount("editor",  "assets/editor");
 
     ScriptableManager::Register<EmptyScript>();
 

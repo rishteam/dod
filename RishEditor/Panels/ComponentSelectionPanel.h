@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-
 #include <Rish/Scene/ComponentManager.h>
 
 #include "Panels/Common/SceneTargetPanel.h"
@@ -23,5 +22,3 @@ public:
 };
 
 } // end of namespace rl
-
-

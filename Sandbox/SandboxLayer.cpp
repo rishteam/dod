@@ -1,7 +1,6 @@
 #include "SandboxLayer.h"
 
 #include <Rish/Scene/SystemManager.h>
-#include <Rish/Animation/Component.h>
 
 ExampleSandboxLayer::ExampleSandboxLayer()
     : Layer("ExampleSandboxLayer"),
@@ -12,6 +11,11 @@ ExampleSandboxLayer::ExampleSandboxLayer()
     VFS::Mount("animation", "assets/animation");
 
     m_testTexture = Texture2D::LoadTextureVFS("/texture/RTS_Crate.png");
+
+    m_testSound = Sound::LoadSoundVFS("/music/peko_mono.ogg");
+//    m_testSoundCompoennt.m_sound = m_testSound;
+
+//    saveToFile("m_testSoundCompoennt", m_testSoundCompoennt, "assets/test.sound");
 
 //    m_scene = MakeRef<Scene>();
 //    SystemManager::Init(m_scene);
@@ -44,8 +48,10 @@ ExampleSandboxLayer::ExampleSandboxLayer()
 //    sprite.m_texture = m_testTexture;
 //    sprite.init = false;
 
+#ifdef TEST_FPS
     m_frameTime.reserve(dataSetSize);
     m_fps.reserve(dataSetSize);
+#endif
 }
 
 ExampleSandboxLayer::~ExampleSandboxLayer()
@@ -59,9 +65,13 @@ void ExampleSandboxLayer::onAttach()
 
     m_cameraController.setZoom(200);
 
+#ifdef TEST_FPS
     for(int i = 0; i < spriteNumber; i++)
         m_boxList.push_back(TestBox{glm::vec2{Math::RandomFloat(-100.f, 100.f), Math::RandomFloat(-100.f, 100.f)},
             glm::vec2{Math::RandomFloat(0.1f, 5.f), Math::RandomFloat(0.1f, 5.f)}});
+#endif
+
+    m_testSound->play();
 
 //    m_scene->onRuntimeInit();
 //    m_scene->onScenePlay();
@@ -71,6 +81,7 @@ void ExampleSandboxLayer::onDetach()
 {
     ImGui::SaveIniSettingsToDisk("assets/layout/ExampleSandboxLayer.ini");
 
+#ifdef TEST_FPS
     std::ofstream of("data.txt", std::ofstream::out | std::ofstream::app);
 
     of << spriteNumber << ' ';
@@ -86,6 +97,7 @@ void ExampleSandboxLayer::onDetach()
         frameTime += i;
     frameTime /= m_frameTime.size();
     of << frameTime << '\n';
+#endif
 
 //    m_scene->onSceneStop();
 }
@@ -106,6 +118,7 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
         Renderer2D::EndScene();
     }
 
+#ifdef TEST_FPS
     if(clk.getElapsedTime() >= 1.f)
     {
         m_frameTime.push_back(Application::Get().getFrameTime());
@@ -117,6 +130,7 @@ void ExampleSandboxLayer::onUpdate(rl::Time dt)
     {
         Application::Get().close();
     }
+#endif
 
 //    m_scene->onUpdate(dt);
 //    m_scene->onRender();
@@ -133,6 +147,28 @@ void ExampleSandboxLayer::onImGuiRender()
     ImGui::End();
 
     Renderer2D::OnImGuiRender();
+
+    ImGui::Begin("Sound Test");
+    if(ImGui::Button("Play"))
+    {
+        m_testSound->play();
+    }
+    if(ImGui::Button("Pause"))
+    {
+        m_testSound->pause();
+    }
+    if(ImGui::Button("Stop"))
+    {
+        m_testSound->stop();
+    }
+    ImGui::Text("%.2f/%.2f s",
+        m_testSound->getPlayingOffset().asSeconds(), m_testSound->getLength().asSeconds());
+
+    float volume = m_testSound->getVolume();
+    ImGui::SliderFloat("Volume", &volume, 0, 1);
+    m_testSound->setVolume(volume);
+
+    ImGui::End();
 
 //    m_scene->onImGuiRender();
 }

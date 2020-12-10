@@ -1,3 +1,4 @@
+#include <Rish/rlpch.h>
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 
 namespace rl {

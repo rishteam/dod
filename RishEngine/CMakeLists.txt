@@ -74,7 +74,11 @@ add_library(RishEngine
     src/Platform/SFMLInput.cpp
     src/Platform/SFMLImage.cpp
 
+
     # Animation
+    src/Animation/Animation2DSystem.cpp
+    src/Animation/Component.cpp
+    src/Animation/Animation.cpp
 
     # utilities
     src/Core/ResManager.cpp
@@ -155,9 +159,10 @@ add_library(RishEngine
 
     src/Scene/System/SpriteRenderSystem.cpp
 
-    src/Animation/Animation2DSystem.cpp
-    src/Animation/Component.cpp
-    src/Animation/Animation.cpp
+    # Sound
+    src/Platform/SFMLListener.cpp
+    src/Sound/SoundSystem.cpp
+    src/Sound/Sound.cpp
 
     ${RL_SCRIPT_FILES}
 )

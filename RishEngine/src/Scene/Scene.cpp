@@ -192,6 +192,7 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<Animation2DComponent>(ent, src);
     CopyComponentToEntityIfExists<LightComponent>(ent, src);
     CopyComponentToEntityIfExists<AmbientLightComponent>(ent, src);
+    CopyComponentToEntityIfExists<SoundComponent>(ent, src);
 
     return ent;
 }
@@ -309,6 +310,7 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<Animation2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<LightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<AmbientLightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<SoundComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
 
     // Copy other states
     target->m_nameManager = m_nameManager;

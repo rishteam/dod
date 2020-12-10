@@ -1,9 +1,6 @@
 #pragma once
 
-#include <Rish/rlpch.h>
-
 #include <Rish/Scene/Entity.h>
-
 #include <entt/entt.hpp>
 
 namespace rl {
