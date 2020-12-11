@@ -558,6 +558,8 @@ void SceneHierarchyPanel::removeGroupIfEmpty()
 {
     for(auto &id : m_groupEntityUUID)
     {
+        if(!m_currentScene->isValidUUID(id))
+            continue;
         Entity ent = m_currentScene->getEntityByUUID(id);
         auto &gc = ent.getComponent<GroupComponent>();
         if( gc.isEmpty() )
