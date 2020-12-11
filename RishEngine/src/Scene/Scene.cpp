@@ -225,7 +225,7 @@ void Scene::onUpdate(Time dt)
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
-//    ColliderSystem::OnUpdate(dt);
+    ColliderSystem::OnUpdate(dt);
     Animation2DSystem::OnUpdate(dt);
 }
 

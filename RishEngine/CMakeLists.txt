@@ -63,6 +63,7 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/MonsterController.cpp
     ../NativeScript/Rish/Script/ObjectController.cpp
     ../NativeScript/Rish/Script/ParkourPlayerController.cpp
+    ../NativeScript/Rish/Script/ParkourCameraController.cpp
 )
 
 # Add executable

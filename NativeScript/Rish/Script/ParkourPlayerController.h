@@ -13,10 +13,18 @@ namespace rl {
 class ParkourPlayerController : public ScriptableEntity
 {
 public:
+
     void onCreate() override;
     void onDestroy() override;
     void onUpdate(Time dt) override;
     void onImGuiRender() override;
+
+    enum class PlayerAction
+    {
+        Stand,
+        Jump
+    };
+    PlayerAction playerAction = PlayerAction::Stand;
 
     RL_SCRIPT_SERIALIZE()
     {
