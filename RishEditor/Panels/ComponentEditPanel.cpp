@@ -654,6 +654,8 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
             collider.type = static_cast<Collider2DComponent::Type>(ColliderShape);
         }
 
+        //x′1=[(x1−x0)cosθ−(y1−y0)sinθ]+x0
+        //y′1=[(y1−y0)cosθ+(x1−x0)sinθ]+y0
         switch(static_cast<Collider2DComponent::Type>(collider.type))
         {
             case Collider2DComponent::Type::Circle:
@@ -664,9 +666,13 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
             case Collider2DComponent::Type::Polygon:
             {
                 ImGui::InputInt("input int", &collider.pointSize);
-                if(collider.pointSize < 3 || collider.pointSize > 63)
+                if(collider.pointSize < 3)
                 {
                     collider.pointSize = 3;
+                }
+                else if(collider.pointSize > 63)
+                {
+                    collider.pointSize = 63;
                 }
                 for(int i = 0; i < collider.pointSize; i++)
                 {
@@ -684,8 +690,8 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
         }
 
         ImGui::Separator();
+
         // Collide Detection Message
-        // TODO: fixed collider
         ImGui::Text("isCollide: %s", collider.isCollision ? "True" : "False");
         ImGui::Text("Collide Object: ");
         if(collider.whoCollide.empty())
@@ -699,7 +705,6 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
     }
     EndDrawEditComponent();
 }
-
 
 template<>
 void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()

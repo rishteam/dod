@@ -166,23 +166,3 @@ Vec2 rl::PhysicsWorld::ChangeToPhysicsWorld(const Vec2& ps)
     return pw;
 };
 
-Vec2 rl::PhysicsWorld::ConvertWorldToScreen(const Vec2& pw)
-{
-    float w = float(width);
-    float h = float(height);
-    float ratio = w / h;
-
-    Vec2 extents(ratio * 25.0f, 25.0f);
-
-    Vec2 lower = m_center - extents;
-    Vec2 upper = m_center + extents;
-
-    float u = (pw.x - lower.x) / (upper.x - lower.x);
-    float v = (pw.y - lower.y) / (upper.y - lower.y);
-
-    Vec2 ps;
-    ps.x = u * w;
-    ps.y = (1.0f - v) * h;
-    return ps;
-};
-

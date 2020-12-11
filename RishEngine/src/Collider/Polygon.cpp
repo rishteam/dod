@@ -18,7 +18,6 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
 
     // 找凸包
     // No hulls with less than 3 vertices (ensure actual polygon)
-    assert(count > 2 && count <= 70);
     count = std::min((int) count, 70);
 
     // Find the right most point on the hull
@@ -90,9 +89,6 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
     for (int i1 = 0; i1 < m_vertexCount; ++i1) {
         int i2 = i1 + 1 < m_vertexCount ? i1 + 1 : 0;
         Vec2 face = m_vertices[i2] - m_vertices[i1];
-
-        // Ensure no zero-length edges, because that's bad
-        assert(face.LenSqr() > 0.00001 * 0.00001);
 
         // Calculate normal with 2D cross product between vector and scalar
         m_normals[i1] = Vec2(face.y, -face.x);

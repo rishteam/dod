@@ -88,7 +88,6 @@ void ColliderSystem::OnEditorUpdate(std::set<Entity> &selectedEntites)
                     {
                         continue;
                     }
-
                     if (A->isCollide(B)) {
                         colliderA.whoCollide.push_back(UUID_B);
                         colliderA.isCollision = true;

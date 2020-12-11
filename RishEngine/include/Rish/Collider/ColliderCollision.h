@@ -3,7 +3,7 @@
 #include <Rish/Collider/Circle.h>
 #include <Rish/Collider/Polygon.h>
 
-
+// TODO: move logic to double dispatch
 namespace rl {
 
 static float FindAxisLeastPenetration(int *faceIdx, Ref<Box> A, Ref<Box> B)

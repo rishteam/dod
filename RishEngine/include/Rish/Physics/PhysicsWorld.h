@@ -34,11 +34,8 @@ public:
 
     void BoardPhase();
 
-    // TODO: Move these to the PhysicsLayer
-
     static Vec2 ChangeToPhysicsWorld(const Vec2 &ps);
 
-    static Vec2 ConvertWorldToScreen(const Vec2 &pw);
 
     Vec2 gravity;
     float timeStep = 0.0f;

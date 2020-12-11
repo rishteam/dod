@@ -175,16 +175,7 @@ public:
      * @retval float 旋轉過後的向量
      */
     void rotate(float angle);
-    //x′1=[(x1−x0)cosθ−(y1−y0)sinθ]+x0
-    //y′1=[(y1−y0)cosθ+(x1−x0)sinθ]+y0
-    /**
-     * @brief 旋轉
-     * @details 依照參考點旋轉該向量
-     * @param ref 參考點
-     * @param angle 旋轉角度(徑度)
-     * @retval float 旋轉過後的向量
-     */
-    void rotate_ref(float angle, Vec2 &ref);
+
 
     float x;
     float y;
@@ -200,9 +191,6 @@ private:
     }
 };
 
-
-std::pair<float, float> getMinMax(Vec2 &axis, std::deque<Vec2> corner);
-static int randomint(int min, int max);
 static float DistSqr( Vec2& a, Vec2& b)
 {
     Vec2 c = a - b;

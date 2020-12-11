@@ -30,7 +30,6 @@ public:
     void setCircle(Vec2 pos, float radius_, float angle_);
     void setPolygon(Vec2 pt_[], Vec2 pos, int pointSize_, float angle_);
 
-
     void IntegrateVelocities(float delta_t);
     void ComputeForce(float delta_t, Vec2 gravity);
     void AddForce(const Vec2& f, const Vec2 &attachPoint);
@@ -61,9 +60,6 @@ public:
     float friction;
     /// 恢復係數
     float restitution = 0.2f;
-
-    int fuckme;
-
     /// 質量，質量倒數
     float mass, invMass;
     /// 慣性矩，慣性矩倒數
