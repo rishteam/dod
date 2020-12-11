@@ -4,6 +4,7 @@ namespace rl {
 
 void Player::onCreate()
 {
+    clock.restart();
 }
 
 void Player::onDestroy()
@@ -16,6 +17,8 @@ void Player::onUpdate(Time dt)
     auto &trans = GetComponent<TransformComponent>();
     auto &rigid = GetComponent<RigidBody2DComponent>();
     auto &render = GetComponent<SpriteRenderComponent>();
+    auto &playerCollider = GetComponent<BoxCollider2DComponent>();
+    auto &light = GetComponent<LightComponent>();
 
     Vec2 &velocity = rigid.velocity;
     velocity.x = 0.001;
@@ -49,16 +52,52 @@ void Player::onUpdate(Time dt)
 //    detectObject();
 
     // Camera follows player
-    auto view = GetScene().m_registry.view<TransformComponent, CameraComponent>();
-    for(auto ent : view)
+    {
+        auto view = GetScene().m_registry.view<TransformComponent, CameraComponent>();
+        for(auto ent : view)
+        {
+            auto entity = GetEntityByHandle(ent);
+            auto &camera = entity.getComponent<CameraComponent>();
+            auto &transform = entity.getComponent<TransformComponent>();
+            if(camera.primary)
+            {
+                transform.translate.x = trans.translate.x;
+                transform.translate.y = trans.translate.y;
+            }
+        }
+    }
+
+
+    // Light/Hp decrease
+    {
+        if(clock.getElapsedTime() > 5.f)
+        {
+            light.strength -= 0.8;
+
+            clock.restart();
+
+            if(light.strength <= 0)
+            {
+                life = false;
+                light.strength = 0;
+            }
+        }
+    }
+
+    auto hpPack = GetScene().m_registry.view<TransformComponent, BoxCollider2DComponent>();
+
+    for(auto ent : hpPack)
     {
         auto entity = GetEntityByHandle(ent);
-        auto &camera = entity.getComponent<CameraComponent>();
-        auto &transform = entity.getComponent<TransformComponent>();
-        if(camera.primary)
+        auto &collider = entity.getComponent<BoxCollider2DComponent>();
+        auto &tag = entity.getComponent<TagComponent>();
+        if(std::find(playerCollider.whoCollide.begin(), playerCollider.whoCollide.end(), tag.id) != playerCollider.whoCollide.end())
         {
-            transform.translate.x = trans.translate.x;
-            transform.translate.y = trans.translate.y;
+            if(tag.tag.substr(0, 4) == "pack")
+            {
+                light.strength += 3;
+                GetScene().m_registry.destroy(entity);
+            }
         }
     }
 }
@@ -66,8 +105,6 @@ void Player::onUpdate(Time dt)
 void Player::onImGuiRender()
 {
     ImGui::DragFloat("Walk Accelerate", &walkAccel, 10.0f, 0.0f, 100.0f);
-    ImGui::DragFloat("Walk Speed Limit", &walkSpeedLimit, 10.0f, 0.0f, 100.0f);
-    ImGui::DragFloat("Jump Speed", &jumpSpeed, 10.0f, 0.0f, 100.0f);
 }
 
 }

@@ -795,6 +795,7 @@ void ComponentEditPanel::drawEditComponentWidget<BoxCollider2DComponent>()
         ImGui::PushItemWidth(250);
         ImGui::DragFloat2("(x, y)", translate, 0.5f);
         ImGui::DragFloat2("(w, h)", scale, 0.5f, 0.0f);
+        ImGui::Checkbox("Trigger", &collider.trigger);
         ImGui::PopItemWidth();
         // Update the collider value
         collider.x = translate[0];

@@ -77,6 +77,8 @@ struct BoxCollider2DComponent
     std::vector<UUID> whoCollide;
     bool isCollision = false;
 
+    bool trigger = false;
+
     BoxCollider2DComponent();
     BoxCollider2DComponent(float x, float y, float w, float h)
         : x(x), y(y), w(w), h(h)
@@ -84,6 +86,7 @@ struct BoxCollider2DComponent
     }
 private:
     friend class cereal::access;
+
     template<class Archive>
     void serialize(Archive &ar)
     {
@@ -91,7 +94,8 @@ private:
             CEREAL_NVP(x),
             CEREAL_NVP(y),
             CEREAL_NVP(w),
-            CEREAL_NVP(h)
+            CEREAL_NVP(h),
+            CEREAL_NVP(trigger)
         );
     }
 };

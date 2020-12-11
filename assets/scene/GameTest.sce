@@ -3420,8 +3420,6 @@
                             "id": 2147483696,
                             "data": {
                                 "walkAccel": 5.0,
-                                "walkSpeedLimit": 7.0,
-                                "jumpSpeed": 7.0
                             }
                         }
                     },

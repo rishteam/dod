@@ -25,8 +25,6 @@ namespace rl {
         RL_SCRIPT_SERIALIZE()
         {
             RL_SERIALIZE("walkAccel", walkAccel);
-            RL_SERIALIZE("walkSpeedLimit", walkSpeedLimit);
-            RL_SERIALIZE("jumpSpeed", jumpSpeed);
         }
     private:
 
@@ -42,6 +40,9 @@ namespace rl {
         int jumpLimitTimes = 1;
         int jumpTimesCounter = 0;
 
+        bool life = true;
+
+        Clock clock;
     };
 
 }

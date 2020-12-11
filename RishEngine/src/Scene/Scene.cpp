@@ -227,7 +227,7 @@ void Scene::onUpdate(Time dt)
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
     // [Hotfix]TODO : This Make Engine to slow, think a solution
-//    ColliderSystem::OnUpdate(dt);
+    ColliderSystem::OnUpdate(dt);
     Animation2DSystem::OnUpdate(dt);
 }
 

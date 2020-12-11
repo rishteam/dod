@@ -32,6 +32,7 @@ void ColliderSystem::OnUpdate(float dt)
     for (auto &box : view)
     {
         auto &boxCollider = s_Scene->m_registry.get<BoxCollider2DComponent>(box);
+        if(!boxCollider.trigger) continue;
         boxCollider.isCollision = false;
         boxCollider.whoCollide.clear();
     }
@@ -39,6 +40,9 @@ void ColliderSystem::OnUpdate(float dt)
     auto view2 = s_Scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
     for (auto &boxA : view2)
     {
+        auto &boxCollider = s_Scene->m_registry.get<BoxCollider2DComponent>(boxA);
+        if(!boxCollider.trigger) continue;
+
         for(auto &boxB : view2)
         {
             auto &UUID_A = s_Scene->m_registry.get<TagComponent>(boxA).id;
