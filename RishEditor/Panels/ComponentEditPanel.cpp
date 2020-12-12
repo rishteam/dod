@@ -209,7 +209,7 @@ void ComponentEditPanel::drawEditComponentWidget<CameraComponent>()
             ImGui::Combo("Aspect", &aspectNowSelect, aspectName, 2);
             camera.camera.setAspect(aspectList[aspectNowSelect][0] / aspectList[aspectNowSelect][1]);
             //
-            ImGui::DragFloat("Size", &size, 0.1f);
+            ImGui::DragFloat("Size##CameraComponent", &size, 0.1f);
             ImGui::DragFloat("Near Plane", &near, 0.1f);
             ImGui::DragFloat("Far Plane", &far, 0.1f);
             ImGui::PopItemWidth();

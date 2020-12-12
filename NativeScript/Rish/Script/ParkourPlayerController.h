@@ -31,10 +31,11 @@ public:
         RL_SERIALIZE("walkAccel", m_walkAccel);
         RL_SERIALIZE("walkSpeedLimit", m_walkSpeedLimit);
         RL_SERIALIZE("jumpSpeed", m_jumpSpeed);
+        RL_SERIALIZE("jumpLimit", m_jumpSpeedLimit);
     }
 
 private:
-    float m_stopSpeed = 0.3;
+    float m_stopSpeed = 0.01;
 
     // Walk Speed
     float m_walkAccel = 5.0f;
@@ -42,7 +43,8 @@ private:
 
     // Limit Jump Times
     bool  m_prevJump = false;
-    float m_jumpSpeed = 7.0f;
+    float m_jumpSpeed = 0.f;
+    float m_jumpSpeedLimit = 7.0f;
     int   m_jumpLimitTimes = 1;
     int   m_jumpTimesCounter = 0;
 

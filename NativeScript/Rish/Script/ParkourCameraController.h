@@ -27,10 +27,12 @@ public:
     RL_SCRIPT_SERIALIZE()
     {
         RL_SERIALIZE("FollowID", m_followEntityID);
+        RL_SERIALIZE("FrameSize", m_frameSize);
     }
 
 private:
     UUID m_followEntityID;
+    float m_frameSize;
 };
 
 }
