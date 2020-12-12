@@ -1,5 +1,7 @@
 #include <Rish/rlpch.h>
 //
+#include <Rish/Core/Time.h>
+//
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/Framebuffer.h>
 #include <Rish/Renderer/RendererCommand.h>
@@ -9,23 +11,28 @@
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
 #include <Rish/Scene/Utils.h>
+#include <Rish/Scene/SceneCamera.h>
 // Systems
 #include <Rish/Scene/System/SpriteRenderSystem.h>
 #include <Rish/Effect/Particle/ParticleSystem.h>
 #include <Rish/Collider/ColliderSystem.h>
 #include <Rish/Physics/PhysicsSystem.h>
 #include <Rish/Scene/System/NativeScriptSystem.h>
+#include <Rish/Animation/Animation2DSystem.h>
+#include <Rish/Effect/Light/LightSystem.h>
 //
 #include <Rish/Debug/DebugWindow.h>
 #include <Rish/Utils/uuid.h>
 //
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
+//
 
-namespace rl{
+namespace rl {
 
 int Scene::entityNumber = 0;
 
 Scene::Scene()
+    : physicsWorld(Vec2(0.0f, -9.8f))
 {
     m_registry.on_construct<ParticleComponent>().connect<entt::invoke<&ParticleComponent::init>>();
 
@@ -36,13 +43,45 @@ Scene::~Scene()
 {
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Scene::addEntityToMap(const UUID& id, Entity entity)
+{
+    m_UUIDToEntityMap[id] = MakeRef<Entity>(entity);
+}
+
+void Scene::removeEntityFromMap(const UUID& id)
+{
+    RL_CORE_ASSERT(m_UUIDToEntityMap.count(id), "UUID {} not in map", id.to_string());
+
+    m_UUIDToEntityMap.erase(id);
+}
+
+bool Scene::isEntityInMap(Entity entity)
+{
+    return m_UUIDToEntityMap.count(entity.getUUID());
+}
+
+bool Scene::isValidUUID(const UUID &id) const
+{
+    return m_UUIDToEntityMap.count(id);
+}
+
+///////////////////////////////////////////////
+
 Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 {
 	Entity entity = { m_registry.create(), this };
+	
+	// Add necessary components
 	entity.addComponent<TransformComponent>(pos);
 	auto &tagComponent = entity.addComponent<TagComponent>();
 	tagComponent.id = UUID();
 
+	// Store in the entity map
+    addEntityToMap(tagComponent.id, entity);
+
+	// Naming the new entity
     auto &tag = tagComponent.tag;
 	if(name.empty())
 	{
@@ -54,7 +93,8 @@ Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 	}
 	entityNumber++;
 
-    m_entNameToNumMap[tag]++;
+    tag = m_nameManager.getName(tag);
+    m_nameManager.incrementName(tag);
 
 	RL_CORE_TRACE("[Scene] Created entity {}", tag);
 	return entity;
@@ -63,10 +103,16 @@ Entity Scene::createEntity(const std::string& name, const glm::vec3 &pos)
 Entity Scene::createEntity(const UUID &id, const std::string &name)
 {
     Entity entity = {m_registry.create(), this};
+
+    // Add necessary components
     entity.addComponent<TransformComponent>();
     auto &tagComponent = entity.addComponent<TagComponent>();
     tagComponent.id = id;
 
+    // Store in the entity map
+    addEntityToMap(tagComponent.id, entity);
+
+    // Naming the new entity
     auto &tag = tagComponent.tag;
     if(name.empty())
         tag = fmt::format("Entity {}", entityNumber);
@@ -74,14 +120,56 @@ Entity Scene::createEntity(const UUID &id, const std::string &name)
         tag = name;
     entityNumber++;
 
-    m_entNameToNumMap[tag]++;
+    tag = m_nameManager.getName(tag);
+    m_nameManager.incrementName(tag);
 
     RL_CORE_TRACE("[Scene] Created entity {} by id {}", tag, id.to_string());
     return entity;
 }
 
+void Scene::EntityNameManager::incrementName(const std::string &name)
+{
+    std::string tmp{stripNumber(name)};
+    //
+    m_entNameToNumMap[tmp]++;
+}
+
+void Scene::EntityNameManager::decrementName(const std::string &name)
+{
+    std::string tmp{stripNumber(name)};
+    //
+    if(m_entNameToNumMap.count(tmp))
+        m_entNameToNumMap[tmp]--;
+}
+
+std::string Scene::EntityNameManager::getName(const std::string &name)
+{
+    std::string tmp{stripNumber(name)};
+    auto siz = m_entNameToNumMap[tmp];
+    //
+    if(siz)
+        return fmt::format("{} ({})", tmp, siz);
+    else
+        return tmp;
+}
+
+std::string Scene::EntityNameManager::stripNumber(const std::string &str)
+{
+    std::string tmp{str};
+    if(RE2::PartialMatch(tmp, R"(\(\d+\))"))
+    {
+        // Delete "(number)" part
+        RE2::Replace(&tmp, R"( \(\d+\))", "");
+    }
+    return tmp;
+}
+
 void Scene::destroyEntity(Entity entity)
 {
+    removeEntityFromMap(entity.getUUID());
+
+    m_nameManager.decrementName(entity.getName());
+
     NativeScriptSystem::OnDestroy(entity);
 
     m_registry.destroy(entity.getEntityID());
@@ -90,8 +178,8 @@ void Scene::destroyEntity(Entity entity)
 Entity Scene::duplicateEntity(Entity src)
 {
     auto &tag = src.getComponent<TagComponent>().tag;
-    m_entNameToNumMap[tag]++;
-    auto ent = createEntity(fmt::format("{} ({})", tag, m_entNameToNumMap[tag]));
+
+    auto ent = createEntity(m_nameManager.stripNumber(tag));
 
     CopyComponentToEntityIfExists<TransformComponent>(ent, src);
     CopyComponentToEntityIfExists<SpriteRenderComponent>(ent, src);
@@ -101,18 +189,36 @@ Entity Scene::duplicateEntity(Entity src)
     CopyComponentToEntityIfExists<Collider2DComponent>(ent, src);
     CopyComponentToEntityIfExists<Joint2DComponent>(ent, src);
     CopyComponentToEntityIfExists<ParticleComponent>(ent, src);
+    CopyComponentToEntityIfExists<Animation2DComponent>(ent, src);
+    CopyComponentToEntityIfExists<LightComponent>(ent, src);
+    CopyComponentToEntityIfExists<AmbientLightComponent>(ent, src);
+    CopyComponentToEntityIfExists<SoundComponent>(ent, src);
+
+    return ent;
 }
 
 void Scene::onRuntimeInit()
 {
     NativeScriptSystem::OnInit();
     SpriteRenderSystem::OnInit();
+
+    // Store entities into map
+    m_registry.each([&](auto ent) {
+        Entity entity{ent, this};
+        m_UUIDToEntityMap[entity.getUUID()] = MakeRef<Entity>(entity);
+    });
 }
 
 void Scene::onEditorInit()
 {
     NativeScriptSystem::OnInit();
     SpriteRenderSystem::OnInit();
+    
+    // Store entities into map
+    m_registry.each([&](auto ent) {
+        Entity entity{ent, this};
+        m_UUIDToEntityMap[entity.getUUID()] = MakeRef<Entity>(entity);
+    });
 }
 
 void Scene::onUpdate(Time dt)
@@ -120,16 +226,30 @@ void Scene::onUpdate(Time dt)
     NativeScriptSystem::OnUpdate(dt);
     ParticleSystem::onUpdate(dt);
     PhysicsSystem::OnUpdate(dt);
+    ColliderSystem::OnUpdate(dt);
+    Animation2DSystem::OnUpdate(dt);
+}
 
+void Scene::onRender()
+{
     // Find a primary camera
     // TODO: implement multiple camera
     if(!findPrimaryCamera())
         return;
 
+    // TODO: Let systems to decide how many draw calls i.e. move the BeginScene and EndScene inside onRender()
+//    // Draw Light
+//    {
+//
+//        LightSystem::onRender();
+//
+//        RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//    }
     // Draw SpriteRenderComponent
     {
         Renderer2D::BeginScene(m_mainCamera, m_mainCameraTransform, true);
         SpriteRenderSystem::onRender();
+        Animation2DSystem::OnRender();
         Renderer2D::EndScene();
     }
     // Draw Particle system
@@ -148,6 +268,7 @@ void Scene::onScenePlay()
 
     NativeScriptSystem::OnScenePlay();
     PhysicsSystem::OnScenePlay();
+    Animation2DSystem::OnScenePlay();
 }
 
 void Scene::onScenePause()
@@ -161,6 +282,7 @@ void Scene::onSceneStop()
 
     NativeScriptSystem::OnSceneStop();
     PhysicsSystem::OnSceneStop();
+    Animation2DSystem::OnSceneStop();
 }
 
 void Scene::copySceneTo(Ref<Scene> &target)
@@ -184,9 +306,13 @@ void Scene::copySceneTo(Ref<Scene> &target)
     CopyComponent<RigidBody2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Collider2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
     CopyComponent<Joint2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
-    
+    CopyComponent<Animation2DComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<LightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<AmbientLightComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+    CopyComponent<SoundComponent>(target->m_registry, m_registry, targetEnttMap, target.get(), this);
+
     // Copy other states
-    target->m_entNameToNumMap = m_entNameToNumMap;
+    target->m_nameManager = m_nameManager;
 }
 
 void Scene::onImGuiRender()
@@ -202,7 +328,10 @@ void Scene::onImGuiRender()
     }
 
     if(m_debugScene)
+    {
         DrawDebugSceneWindow(m_registry, this);
+    }
+
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)
@@ -219,18 +348,15 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     }
 }
 
-// TODO: Improve the performance
 Entity Scene::getEntityByUUID(UUID uuid)
 {
-    Entity target;
-    //
-    m_registry.view<TagComponent>().each([&](auto ent, auto &tag) {
-        Entity entity{ent, this};
-        if(tag.id == uuid)
-            target = entity;
-    });
-    //
-    return target;
+    if(!isValidUUID(uuid))
+    {
+        RL_CORE_ERROR("UUID {} is not in map", uuid.to_string());
+        return Entity{entt::null, this};
+    }
+    else
+        return *m_UUIDToEntityMap[uuid];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,6 +382,5 @@ bool Scene::findPrimaryCamera()
     }
     return isAnyCamera;
 }
-
 
 } // namespace rl

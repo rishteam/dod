@@ -1,4 +1,5 @@
 #include <Rish/Renderer/SubTexture2D.h>
+#include <Rish/Renderer/Texture2D.h>
 
 namespace rl {
 

@@ -5,7 +5,7 @@ namespace rl {
 ComponentManager::AddMapping ComponentManager::s_typeNameToAddFunction;
 ComponentManager::DelMapping ComponentManager::s_typeNameToDelFunction;
 
-void ComponentManager::addComponentByTypeName(Entity entity, const std::string& type)
+void ComponentManager::AddComponentByTypeName(Entity entity, const std::string& type)
 {
     if(!s_typeNameToAddFunction.count(type)) {
         RL_ERROR("Unable to add component {} to entity \"{}\"", type, entity.getComponent<TagComponent>().tag);
@@ -14,7 +14,7 @@ void ComponentManager::addComponentByTypeName(Entity entity, const std::string& 
     s_typeNameToAddFunction[type](entity);
 }
 
-void ComponentManager::delComponentByTypeName(Entity entity, const std::string& type)
+void ComponentManager::DelComponentByTypeName(Entity entity, const std::string& type)
 {
     if(!s_typeNameToDelFunction.count(type)) {
         RL_ERROR("Unable to add component {} to entity \"{}\"", type, entity.getComponent<TagComponent>().tag);

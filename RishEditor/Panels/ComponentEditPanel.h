@@ -6,13 +6,20 @@
 #include <Rish/Scene/Scene.h>
 #include <Rish/Scene/ComponentManager.h>
 
-#include "SceneTargetPanel.h"
+#include "Panels/Common/SceneTargetPanel.h"
 
 #include "ComponentSelectionPanel.h"
+#include "Panels/Animation/AnimationEditor.h"
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
+#include <Rish/Scene/ScriptableManager.h>
+#include <Rish/Animation/Component.h>
+
 
 namespace rl {
+
+// fwd
+class AnimationEditor;
 
 class RL_API ComponentEditPanel : public SceneTargetPanel
 {
@@ -31,6 +38,12 @@ public:
     bool drawEditComponentRightClickMenu(bool disableDelete=false)
     {
         bool res = false;
+        if( !disableDelete && (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+        {
+            m_targetEntity.removeComponent<T>();
+            res = true;
+        }
+
         if(ImGui::BeginPopupContextItem()) // Right-click menu
         {
             if(ImGui::MenuItem("Delete Component", nullptr, false, !disableDelete))
@@ -42,8 +55,12 @@ public:
         }
         return res;
     }
+
+    void updateGroupTransform(Entity targetEntity);
+    void showGroupEntity(Entity targetEntity);
 private:
-    ComponentSelectionPanel m_componentSelectionPanel;
+    ComponentSelectionPanel m_componentSelectionPanel; ///< Component selection
+    AnimationEditor m_animationEditor;                 ///< Editor for Animation2DCompoennt
 };
 
 } // end of namespace rl

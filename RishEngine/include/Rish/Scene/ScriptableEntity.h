@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Rish/Scene/Entity.h>
-#include <Rish/ImGui.h>
+#include <Rish/rlpch.h>
 
-#include <cereal/types/polymorphic.hpp>
+#include <Rish/Scene/Entity.h>
+#include <Rish/ImGui/ImGui.h>
 
 namespace rl {
 
@@ -133,7 +133,7 @@ private:
     template<typename Archive>      \
     void serialize(Archive &ar)     \
     {                               \
-        int mock;                   \
+        int mock{};                 \
         ar(CEREAL_NVP(mock));       \
     }
 

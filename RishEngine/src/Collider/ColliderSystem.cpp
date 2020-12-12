@@ -5,6 +5,13 @@
 #include <Rish/Collider/Circle.h>
 #include <Rish/Collider/Polygon.h>
 
+#include <Rish/Scene/Component.h>
+#include <Rish/Scene/Scene.h>
+//
+#include <Rish/Physics/PhysicsWorld.h>
+#include <Rish/Collider/Box.h>
+//
+#include <Rish/ImGui/ImGui.h>
 
 namespace rl {
 

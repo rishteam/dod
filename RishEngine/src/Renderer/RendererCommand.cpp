@@ -1,7 +1,9 @@
+#include <Rish/rlpch.h>
 #include <glad/glad.h>
 
-#include <Rish/Core/Core.h>
 #include <Rish/Renderer/RendererCommand.h>
+#include <Rish/Renderer/VertexArray.h>
+#include <Rish/Renderer/Buffer.h>
 
 void APIENTRY OpenGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -203,6 +205,64 @@ void RenderCommand::SetBlendFunc(BlendFactor src, BlendFactor dst)
     }
     //
     glBlendFunc(s, d);
+}
+
+void RenderCommand::SetStencilTest(bool state)
+{
+    if(state)
+        glEnable(GL_STENCIL_TEST);
+    else
+        glDisable(GL_STENCIL_TEST);
+}
+
+void RenderCommand::SetStencilFunc(StencilFuncFactor func, int ref, int mask)
+{
+    GLenum f {};
+
+    switch(func)
+    {
+        case StencilFuncFactor::Less:
+            f = GL_LESS;
+            break;
+        case StencilFuncFactor::Equal:
+            f = GL_EQUAL;
+            break;
+        case StencilFuncFactor::Always:
+            f = GL_ALWAYS;
+            break;
+    }
+
+    glStencilFunc(f, ref, mask);
+}
+
+void RenderCommand::SetStencilOp(StencilOpFactor sfail, StencilOpFactor dpfail, StencilOpFactor dppass)
+{
+    auto setStencilOp = [&](StencilOpFactor factor) -> GLenum
+    {
+        switch (factor)
+        {
+            case StencilOpFactor::Keep:
+                return GL_KEEP;
+                break;
+            case StencilOpFactor::Zero:
+                return GL_ZERO;
+                break;
+            case StencilOpFactor::Replace:
+                return GL_REPLACE;
+                break;
+        }
+    };
+
+    GLenum s    = setStencilOp(sfail);
+    GLenum dpf  = setStencilOp(dpfail);
+    GLenum dpp  = setStencilOp(dppass);
+
+    glStencilOp(s, dpf, dpp);
+}
+
+void RenderCommand::SetColorMask(bool r, bool g, bool b, bool a)
+{
+    glColorMask(r, g, b, a);
 }
 
 }

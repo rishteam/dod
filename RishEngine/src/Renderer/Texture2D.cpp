@@ -9,36 +9,29 @@
 
 namespace rl {
 
-Texture2D::Texture2D(uint32_t width, uint32_t height)
+Texture2DOption Texture2DOption::DefaultOption{};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Texture2D Constructors and Destructor
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* @brief  Constructor
+* @details only create a texture without initializing it
+*/
+Texture2D::Texture2D()
 {
     RL_PROFILE_FUNCTION();
-
     createTexture();
-    setSize(width, height);
-    m_path = "None";
-}
-
-Texture2D::Texture2D(const std::string &path, bool flip)
-{
-    RL_PROFILE_FUNCTION();
-
-	createTexture();
-
-	auto image = Image::LoadImage(path, flip);
-
-    setSize(image->getWidth(), image->getHeight());
-    setTexture(image->getPixelPtr());
-    m_path = path;
 }
 
 Texture2D::~Texture2D()
 {
     RL_PROFILE_FUNCTION();
-
 	glDeleteTextures(1, &m_textureID);
 }
 
-////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Texture2D::setData(void *data, uint32_t size)
 {
@@ -84,43 +77,132 @@ void Texture2D::unbind() const
 	glBindTextureUnit(0, 0);
 }
 
-////////////////////////////////////////////////////
-// static function for Texture2D
-
-Ref<Texture2D> Texture2D::LoadTexture(const std::string &path, bool flip)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// static functions for Texture2D
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ref<Texture2D> Texture2D::LoadTexture(const std::string &path, bool flip, Texture2DOption option)
 {
     RL_PROFILE_FUNCTION();
 
-    return MakeRef<Texture2D>(path, flip);
+    auto texture = MakeRef<Texture2D>();
+    // Load image
+    auto image = Image::LoadImage(path, flip);
+    texture->setSize(image->getWidth(), image->getHeight());
+    texture->setTexture(image->getPixelPtr());
+    texture->m_path = path;
+    texture->m_flip = flip;
+
+    texture->m_init = true;
+
+    return texture;
 }
 
-Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool flip)
+Ref<Texture2D> Texture2D::LoadTextureVFS(const std::string &virtualPath, bool flip, Texture2DOption option)
 {
     RL_PROFILE_FUNCTION();
 
+    auto texture = MakeRef<Texture2D>();
     std::string path;
     VFS::ResolvePhysicalPath(virtualPath, path);
-    return MakeRef<Texture2D>(path, flip);
+    // Load image
+    auto image = Image::LoadImage(path, flip);
+    texture->setSize(image->getWidth(), image->getHeight());
+    texture->setTexture(image->getPixelPtr());
+    texture->m_path = path;
+    texture->m_flip = flip;
+
+    texture->m_init = true;
+
+    return texture;
 }
 
-Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
+Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height, Texture2DOption option)
 {
-    return MakeRef<Texture2D>(width, height);
+    auto texture = MakeRef<Texture2D>();
+
+    texture->setSize(width, height);
+    texture->m_path = "None";
+    texture->m_init = true;
+
+    return texture;
 }
 
-////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private function of Texture2D
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief Create the underlying texture with specified parameters
+ * @param minFilter Method of texture filtering when minify
+ * @param magFilter Method of texture filtering when magnify
+ * @param wrapS Wrapping method of s-axis
+ * @param wrapT Wrapping method of t-axis
+ */
 void Texture2D::createTexture()
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
     RL_ASSERT(m_textureID != 0, "[Texture2D] Failed to create a texture");
+}
+
+/**
+ * @brief Set the Texture options
+ * @param option Texture option
+ */
+void Texture2D::setOptions(const Texture2DOption &option)
+{
+    auto calculateFilterParam = [](Texture2DFilter filter) {
+        if(filter & Texture2DFilter::TexNearest)
+        {
+            if(filter & Texture2DFilter::MipNearest)
+                return GL_NEAREST_MIPMAP_NEAREST;
+            else if(filter & Texture2DFilter::MipLinear)
+                return GL_NEAREST_MIPMAP_LINEAR;
+            else
+                return GL_NEAREST;
+        }
+        else if(filter & Texture2DFilter::TexLinear)
+        {
+            if(filter & Texture2DFilter::MipNearest)
+                return GL_LINEAR_MIPMAP_NEAREST;
+            else if(filter & Texture2DFilter::MipLinear)
+                return GL_LINEAR_MIPMAP_LINEAR;
+            else
+                return GL_LINEAR;
+        }
+        else
+        {
+            RL_CORE_ERROR("[Texture2D] No set any filter option. Rolled back to Texture2D::TexLinear");
+            return GL_LINEAR;
+        }
+    };
+    auto calculateWrapParam = [](Texture2DWrap wrap) {
+        if(wrap == Texture2DWrap::Repeat)
+            return GL_REPEAT;
+        else if(wrap == Texture2DWrap::MirrorRepeat)
+            return GL_MIRRORED_REPEAT;
+        else if(wrap == Texture2DWrap::ClampToEdge)
+            return GL_CLAMP_TO_EDGE;
+        else if(wrap == Texture2DWrap::ClampToBorder)
+            return GL_CLAMP_TO_BORDER;
+        else
+        {
+            RL_CORE_ERROR("[Texture2D] No set any wrapping option. Rolled back to Texture2D::Repeat");
+            return GL_REPEAT;
+        }
+    };
+    //
+    const Texture2DFilter &minFilter = option.minFilter;
+    const Texture2DFilter &magFilter = option.magFilter;
+    const Texture2DWrap &wrapS = option.wrapS;
+    const Texture2DWrap &wrapT = option.wrapT;
+    //
     glBindTexture(GL_TEXTURE_2D, m_textureID);
     //
-    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, calculateFilterParam(minFilter));
+    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, calculateFilterParam(magFilter));
     //
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, calculateWrapParam(wrapS));
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, calculateWrapParam(wrapT));
 }
 
 void Texture2D::setSize(uint32_t width, uint32_t height)

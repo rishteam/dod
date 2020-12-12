@@ -74,11 +74,11 @@ add_library(RishEngine
     src/Platform/SFMLInput.cpp
     src/Platform/SFMLImage.cpp
 
+
     # Animation
+    src/Animation/Animation2DSystem.cpp
+    src/Animation/Component.cpp
     src/Animation/Animation.cpp
-    src/Animation/Loader.cpp
-    # Animation Editor
-    src/Animation/Editor/Editor.cpp
 
     # utilities
     src/Core/ResManager.cpp
@@ -89,7 +89,11 @@ add_library(RishEngine
 
     src/Debug/DebugWindow.cpp
     src/Debug/ImGuiLogWindow.cpp
-    src/ImGui.cpp
+
+    src/ImGui/ImGui.cpp
+    src/ImGui/MenuAction.cpp
+    src/ImGui/AttributeWidget.cpp
+    src/ImGui/ImGuiWindow.cpp
 
     src/Utils/uuid.cpp
     src/Utils/String.cpp
@@ -107,6 +111,7 @@ add_library(RishEngine
 
     # Effect
     src/Effect/Particle/ParticleSystem.cpp
+    src/Effect/Light/LightSystem.cpp
 
     # Collider
     src/Collider/Box.cpp
@@ -141,18 +146,26 @@ add_library(RishEngine
 
     # Scene
     src/Scene/Scene.cpp
+    src/Scene/Component.cpp
     src/Scene/Entity.cpp
     src/Scene/ComponentManager.cpp
     src/Scene/SceneCamera.cpp
     src/Scene/ScriptableManager.cpp
     src/Scene/ScriptableEntity.cpp
     src/Scene/System/NativeScriptSystem.cpp
+    src/Scene/SystemManager.cpp
 
+    # Math
     src/Math/AABB.cpp
     src/Math/BoundingBox.cpp
     src/Math/Random.cpp
 
     src/Scene/System/SpriteRenderSystem.cpp
+
+    # Sound
+    src/Platform/SFMLListener.cpp
+    src/Sound/SoundSystem.cpp
+    src/Sound/Sound.cpp
 
     ${RL_SCRIPT_FILES}
 )
@@ -256,6 +269,12 @@ target_link_libraries(RishEngine
 find_package(cereal REQUIRED)
 target_link_libraries(RishEngine
     cereal
+)
+
+# Add re2
+find_package(re2 REQUIRED)
+target_link_libraries(RishEngine
+    re2::re2
 )
 
 target_link_libraries(RishEngine IconFontCpp::IconFontCpp)

@@ -27,8 +27,15 @@ void SceneCamera::setAspect(float aspect)
     recalculateProjection();
 }
 
+void SceneCamera::setOrthoSize(float size)
+{
+    m_orthoSize = size;
+    recalculateProjection();
+}
+
 void SceneCamera::recalculateProjection()
 {
+    // TODO: Figure the 0.5f out
     float orthoLeft = -m_orthoSize * m_aspect * 0.5f;
     float orthoRight = m_orthoSize * m_aspect * 0.5f;
     float orthoBottom = -m_orthoSize * 0.5f;

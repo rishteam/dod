@@ -32,9 +32,7 @@
  * @defgroup animation Animation Module
  * @brief Animation
  */
-#include <Rish/Animation/Animation.h>
-#include <Rish/Animation/Loader.h>
-#include <Rish/Animation/Editor/EditorApp.h>
+
 
 // Layer
 #include <Rish/Layer/Layer.h>
@@ -55,6 +53,8 @@
 #include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Camera/OrthographicCamera.h>
 #include <Rish/Renderer/Camera/OrthographicCameraController.h>
+
+#include <Rish/Sound/Sound.h>
 
 /**
  * @defgroup physics Physics Module
@@ -85,6 +85,7 @@
 #include <Rish/Scene/Component.h>
 #include <Rish/Scene/ScriptableEntity.h>
 #include <Rish/Scene/ScriptableManager.h>
+#include <Rish/Scene/SystemManager.h>
 
 // Debug
 #include <Rish/Debug/Instrumentor.h>

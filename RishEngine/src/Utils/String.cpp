@@ -23,7 +23,7 @@ std::string &replaceAll(std::string &str, const std::string &from, const std::st
     return str;
 }
 
-bool isSubString(std::string target, std::string filter)
+bool isSubStringIgnoreCase(std::string target, std::string filter)
 {
     if(filter.size() > target.size())
         return false;
@@ -38,6 +38,19 @@ bool isSubString(std::string target, std::string filter)
     }
     return false;
 }
+
+bool startswith(const std::string &str, const std::string &ext)
+{
+    size_t pos = str.find(ext);
+    return pos != std::string::npos && pos == 0;
+}
+
+bool endswith(const std::string &str, const std::string &ext)
+{
+    size_t pos = str.rfind(ext);
+    return pos != std::string::npos && pos + ext.size() == str.size();
+}
+
 
 }
 }

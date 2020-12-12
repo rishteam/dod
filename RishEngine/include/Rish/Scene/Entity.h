@@ -3,8 +3,6 @@
 #include <Rish/rlpch.h>
 #include <Rish/Scene/Scene.h>
 
-#include <entt/entt.hpp>
-
 namespace rl {
 
 /**

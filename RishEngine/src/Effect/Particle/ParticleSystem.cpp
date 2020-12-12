@@ -1,4 +1,8 @@
 #include <Rish/Effect/Particle/ParticleSystem.h>
+
+#include <Rish/Scene/Scene.h>
+#include <Rish/Scene/Component.h>
+#include <Rish/Renderer/RendererCommand.h>
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Math/Random.h>
 

@@ -1,10 +1,9 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-
 #include <Rish/Scene/ComponentManager.h>
 
-#include "SceneTargetPanel.h"
+#include "Panels/Common/SceneTargetPanel.h"
 
 namespace rl {
 
@@ -18,8 +17,8 @@ public:
     void onAttach(const Ref <Scene> &scene) override;
     void onImGuiRender() override;
 
+    bool m_open = false;
+
 };
 
 } // end of namespace rl
-
-

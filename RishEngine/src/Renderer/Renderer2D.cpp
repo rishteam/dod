@@ -6,11 +6,12 @@
 #include <Rish/Renderer/Renderer2D.h>
 #include <Rish/Renderer/VertexArray.h>
 #include <Rish/Renderer/Shader.h>
-
-#include <glm/gtc/matrix_transform.hpp>
+#include <Rish/Renderer/Framebuffer.h>
+#include <Rish/Renderer/Camera/Camera.h>
+#include <Rish/Renderer/Camera/OrthographicCamera.h>
 
 // TODO: For debug use, please clean
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 #include <Rish/Debug/DebugWindow.h>
 
 namespace rl {
@@ -39,7 +40,7 @@ struct QuadShape
 };
 
 const size_t MaxTextures = 32;
-const size_t MaxQuadCount = 100000;
+const size_t MaxQuadCount = 500000;
 const size_t MaxQuadVertexCount = MaxQuadCount * 4;
 const size_t MaxQuadIndexCount = MaxQuadCount * 6;
 
@@ -95,10 +96,35 @@ const size_t MaxTriangleVertexCount = MaxTriangleCount * 3;
 const size_t MaxTriangleIndexCount = MaxTriangleCount * 3;
 
 ////////////////////////////////////////////////////////////////
+// Light Renderer
+////////////////////////////////////////////////////////////////
 
+struct LightVertex
+{
+    glm::vec3 position;
+    glm::vec3 lightPos;
+    glm::vec4 color;
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+struct LightShape
+{
+    LightVertex p[4];
+
+    friend bool operator < (const LightShape &lhs, const LightShape &rhs)
+    {
+        return lhs.p[0].position.z < rhs.p[0].position.z;
+    }
+};
+
+const size_t MaxLightCount = 100000;
+const size_t MaxLightVertexCount = MaxLightCount * 3;
+const size_t MaxLightIndexCount  = MaxLightCount * 3;
+
+///////////////////////////////////////////////////////////////
 uint32_t debugQuadIndex = 0;
-uint32_t debugTextureIndex = 0;
-std::array<Ref<Texture2D>, MaxTextures> debugTextureSlots{};
 
 struct Renderer2DData
 {
@@ -122,10 +148,10 @@ struct Renderer2DData
 
         float getTextureIndex(const Ref<Texture2D> &texture)
         {
-            float textureIndex = 0.f;
+            float textureIndex = -1.f;
 
             // Search texture
-            auto it = std::find_if(textureSlots.begin(), textureSlots.end(), 
+            auto it = std::find_if(textureSlots.begin(), textureSlots.end(),
                 [&texture](auto tex){
                     return *texture == *tex;
                 });
@@ -136,7 +162,7 @@ struct Renderer2DData
             }
 
             // if not found then add it to the slot
-            if (textureIndex == 0.f)
+            if (textureIndex == -1.f)
             {
                 textureIndex = static_cast<float>(textureSlots.size());
                 textureSlots.push_back(texture);
@@ -209,13 +235,16 @@ struct Renderer2DData
                     quadIndices[i + j] = pattern[j] + offset;
                 offset += 4;
             }
+
             // Create the Index Buffer
             Ref<IndexBuffer> squareIB = IndexBuffer::Create(quadIndices, MaxQuadIndexCount);
             quadVertexArray->setIndexBuffer(squareIB);
-            delete[] quadIndices; // deltete cpu side
+            delete[] quadIndices; // delete cpu side
 
-            // texture shader
+            // Load quad texture shader
             quadTexShader = Shader::LoadShaderVFS("/shader/quadTexture.vs", "/shader/quadTexture.fs");
+
+            // Set up the texture slots
             int sampler[MaxTextures];
             for (int i = 0; i < MaxTextures; i++)
                 sampler[i] = i;
@@ -236,13 +265,11 @@ struct Renderer2DData
             // Add vertices of a quad to buffer
             for(int i = 0; i < 4; i++)
             {
-                QuadVertex tmp{};
-                tmp.position    = position[i];
-                tmp.color       = color;
-                tmp.texCoord    = texCoords[i];
-                tmp.texIndex    = texIndex;
-                tmp.texTiling   = texTiling;
-                submitQuad.p[i] = tmp;
+                submitQuad.p[i].position  = position[i];
+                submitQuad.p[i].color     = color;
+                submitQuad.p[i].texCoord  = texCoords[i];
+                submitQuad.p[i].texIndex  = texIndex;
+                submitQuad.p[i].texTiling = texTiling;
             }
             //
             quadIndexCount += 6;
@@ -255,12 +282,13 @@ struct Renderer2DData
                   const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
         {
             // Send accumulated VB
-            auto &quadList = quadShapeList;
             // Sort by z-axis
             if(DepthTest)
-                sort(quadList.begin(), quadList.end());
-            // set the VB
-            quadVertexArray->getVertexBuffer()->setData(&quadList[0].p[0], quadList.size() * sizeof(QuadShape));
+                sort(quadShapeList.begin(), quadShapeList.end());
+
+            // Set the VB
+            quadVertexArray->getVertexBuffer()->setData(&quadShapeList[0].p[0],
+                                                        quadShapeList.size() * sizeof(QuadShape));
 
             // Shader
             quadTexShader->bind();
@@ -500,21 +528,160 @@ struct Renderer2DData
     LineRenderer fgLineRenderer; ///< Foreground Line Renderer
 
     ////////////////////////////////////////////////////////////////
+    // Light Renderer
+    ////////////////////////////////////////////////////////////////
+
+    struct LightRenderer
+    {
+        void init()
+        {
+            lightVertexArray = VertexArray::Create();
+
+            Ref<VertexBuffer> lightVertexBuffer = VertexBuffer::Create(MaxLightCount * sizeof(LightVertex));
+            lightVertexBuffer->setLayout(BufferLayout{
+                {ShaderDataType::Float3, "a_QuadPosition"},
+                {ShaderDataType::Float3, "a_LightPosition"},
+                {ShaderDataType::Float4, "a_Color"},
+                {ShaderDataType::Float, "a_Constant"},
+                {ShaderDataType::Float, "a_Linear"},
+                {ShaderDataType::Float, "a_Quadratic"}
+            });
+
+            lightVertexArray->setVertexBuffer(lightVertexBuffer);
+
+            lightShapeList.reserve(MaxLightCount);
+            auto *lightIndices = new uint32_t[MaxLightIndexCount];
+            uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+            uint32_t offset = 0;
+            for (int i = 0; i < MaxLightIndexCount; i += 6)
+            {
+                for (int j = 0; j < 6; j++)
+                    lightIndices[i + j] = pattern[j] + offset;
+                offset += 4;
+            }
+
+            Ref<IndexBuffer> lightIndexBuffer = IndexBuffer::Create(lightIndices, MaxLightIndexCount);
+            lightVertexArray->setIndexBuffer(lightIndexBuffer);
+            delete[] lightIndices;
+
+            lightShader = Shader::LoadShaderVFS("/shader/pointLight.vs", "/shader/pointLight.fs");
+        }
+
+        void reset()
+        {
+            lightIndexCount = 0;
+            lightShapeList.clear();
+        }
+
+        void submit(const glm::vec4 position[4], const glm::vec3 lightPosition, const glm::vec4 color,
+                    const float constant, const float linear, const float quadratic,const glm::vec2 &screenSize, float zoom, float aspect)
+        {
+            viewportSize = screenSize;
+            this->zoom = zoom;
+            this->aspect = aspect;
+            //
+            LightShape submitLight{};
+            for(int i = 0 ; i < 4 ; i++)
+            {
+                LightVertex tmp{};
+                tmp.position = position[i];
+                tmp.lightPos = lightPosition;
+                tmp.color = color;
+                tmp.constant = constant;
+                tmp.linear = linear;
+                tmp.quadratic = quadratic;
+                submitLight.p[i] = tmp;
+            }
+
+            lightIndexCount += 6;
+
+            lightShapeList.push_back(submitLight);
+        }
+
+        void draw(bool DepthTest, bool IsEditorCamera,
+                  const OrthographicCamera &OrthoCamera, const glm::mat4 &ViewProjMatrix)
+        {
+            auto &lightList = lightShapeList;
+
+            if(DepthTest) std::sort(lightList.begin(), lightList.end());
+
+            lightVertexArray->getVertexBuffer()->setData(&lightList[0].p[0], lightList.size() * sizeof(LightShape));
+
+            lightShader->bind();
+            lightShader->setMat4("u_ViewProjection",
+             IsEditorCamera ?
+             OrthoCamera.getViewProjectionMatrix() :
+             ViewProjMatrix);
+
+            lightShader->setFloat("screenWidth", viewportSize.x);
+            lightShader->setFloat("screenHeight", viewportSize.y);
+            lightShader->setFloat2("zoom", {aspect*zoom, zoom});
+
+            lightVertexArray->bind();
+            RenderCommand::DrawElement(DrawTriangles, lightVertexArray, lightIndexCount, DepthTest);
+            lightVertexArray->unbind();
+        }
+
+        operator bool () const
+        {
+            return lightIndexCount > 0;
+        }
+
+        bool exceedDrawIndex()
+        {
+            return lightIndexCount >= MaxLightIndexCount;
+        }
+
+        Ref<VertexArray> lightVertexArray;     ///< Light renderer vertex array
+        Ref<Shader> lightShader;            ///< Light renderer shader
+        uint32_t lightIndexCount = 0;          ///< 現在有多少個 index
+        std::vector<LightShape> lightShapeList; ///< Light data
+        glm::vec2 viewportSize{};
+        float zoom;
+        float aspect;
+    };
+    LightRenderer lightRenderer;
+
+    glm::vec4 lightVertexPosition[4]{};
+
+    ////////////////////////////////////////////////////////////////
+    // Light (Not Batch Rendering)
+    ////////////////////////////////////////////////////////////////
+    Ref<VertexArray> lightVA = nullptr;
+    Ref<VertexBuffer> lightVB = nullptr;
+    Ref<Shader> lightShader = nullptr;
+    bool isLightInit = true;
+
+    ////////////////////////////////////////////////////////////////
+    // Quad (Not Batch Rendering)
+    ////////////////////////////////////////////////////////////////
+    Ref<VertexArray> quadVA = nullptr;
+    Ref<VertexBuffer> quadVB = nullptr;
+    Ref<Shader> quadShader = nullptr;
+    bool isQuadInit = true;
+
+    ////////////////////////////////////////////////////////////////
     // Common
     ////////////////////////////////////////////////////////////////
+    Ref<VertexArray> combineVA = nullptr;
+    Ref<Shader> combineShader = nullptr;
+    bool isCombineInit = true;
+
+    // TODO: Fuck me
     bool sceneState = false; ///< Is the scene now active (called BeginScene())
+    bool rendererState = false; ///< Is the scene now active (called BeginScene())
     bool depthTest = false;  ///< Is the scene enable depth test
     //
     OrthographicCamera orthoCamera;
     bool isEditorCamera = false; // TODO: this is dirty
     Camera camera = glm::mat4(1.f);
-    glm::mat4 m_viewProjMatrix;
+    glm::mat4 m_viewProjMatrix{};
+    glm::mat4 sceneCameraTrans{};
     //
     Renderer2D::Stats renderStats;
 };
 static Scope<Renderer2DData> s_data;
 
-// TODO: For debug use
 void Renderer2D::OnImGuiRender()
 {
     ImGui::Text("Quad     = %d", s_data->renderStats.QuadCount);
@@ -523,35 +690,9 @@ void Renderer2D::OnImGuiRender()
     ImGui::Text("Circle   = %d", s_data->renderStats.CircleCount);
     ImGui::Text("Triangle = %d", s_data->renderStats.TriangleCount);
     ImGui::Text("Draw     = %d", s_data->renderStats.DrawCount);
-
-    ImGui::Separator();
-
-    ImGui::Text("quadIndexCount = %d", debugQuadIndex);
-    debugQuadIndex = 0;
-    ImGui::Text("textureSlotAddIndex = %d", debugTextureIndex);
-
-    ImGui::Separator();
-
-    ImGui::Text("QuadVertex = %d, QuadShape = %d", sizeof(QuadVertex), sizeof(QuadShape));
-
-    ImGui::Separator();
-
-    if(ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        for(int i = 0; i > debugTextureIndex; i++)
-        {
-            ImGui::PushID(i);
-            if(debugTextureSlots[i])
-            {
-                DrawDebugTextureInfo(debugTextureSlots[i]);
-            }
-            else
-                ImGui::Text("None");
-            ImGui::PopID();
-        }
-        ImGui::TreePop();
-    }
 }
+
+///////////////////////////////////////////////////////////////////////////////////
 
 void Renderer2D::Init()
 {
@@ -597,6 +738,39 @@ void Renderer2D::Init()
         s_data->triVertexPosition[1] = {0.5f, -0.5f, 0.f, 1.f};  // lower right
         s_data->triVertexPosition[2] = {-0.5f, -0.5f, 0.f, 1.f}; // lower left
     }
+
+    ////////////////////////////////////////////////////////////////
+    // Light Renderer
+    ////////////////////////////////////////////////////////////////
+    {
+        // TODO: Remove the lighting batched version
+        // Init light renderer
+        s_data->lightRenderer.init();
+
+        // template for light vertex
+        s_data->lightVertexPosition[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
+        s_data->lightVertexPosition[1] = {0.5f, -0.5f, 0.0f, 1.0f};
+        s_data->lightVertexPosition[2] = {-0.5f, 0.5f, 0.0f, 1.0f};
+        s_data->lightVertexPosition[3] = {0.5f, 0.5f, 0.0f, 1.0f};
+
+        /////////////////////////////////////////////////////////////
+        // Non-Batched Version of Lighting
+        /////////////////////////////////////////////////////////////
+        s_data->lightVA = VertexArray::Create();
+        s_data->lightShader = Shader::LoadShaderVFS("/shader/pointLightNonBatch.vs", "/shader/pointLightNonBatch.fs");
+
+        s_data->lightVB = VertexBuffer::Create(12);
+
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_QuadPosition"},
+        };
+        s_data->lightVB->setLayout(layout);
+        s_data->lightVA->setVertexBuffer(s_data->lightVB);
+
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> lightIB = IndexBuffer::Create(pattern, 6);
+        s_data->lightVA->setIndexBuffer(lightIB);
+    }
 }
 
 void Renderer2D::Shutdown()
@@ -615,7 +789,7 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
     s_data->isEditorCamera = true;
     s_data->orthoCamera = camera;
     //
-    s_data->sceneState = true;
+    s_data->rendererState = true;
 
     // Quad
     {
@@ -631,6 +805,11 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera, bool depthTest)
     // Triangle
     {
         s_data->triangleRenderer.reset();
+    }
+
+    // Light
+    {
+        s_data->lightRenderer.reset();
     }
 }
 
@@ -643,9 +822,10 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
 
     s_data->isEditorCamera = false;
     s_data->camera = camera;
-    s_data->m_viewProjMatrix = camera.getProjection() * glm::inverse(transform); // TODO: not support rotate now
+    s_data->sceneCameraTrans = transform;
+    s_data->m_viewProjMatrix = camera.getProjection() * glm::inverse(s_data->sceneCameraTrans); // TODO: not support rotate now
     //
-    s_data->sceneState = true;
+    s_data->rendererState = true;
 
     // Quad
     {
@@ -661,6 +841,11 @@ void Renderer2D::BeginScene(const Camera &camera, const glm::mat4 &transform,
     // Triangle
     {
         s_data->triangleRenderer.reset();
+    }
+
+    // Light
+    {
+        s_data->lightRenderer.reset();
     }
 }
 
@@ -687,7 +872,6 @@ void Renderer2D::EndScene()
         s_data->quadRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
         // Reset
-        s_data->quadRenderer.reset();
         resetTexture = true;
         //
         s_data->renderStats.DrawCount++;
@@ -702,8 +886,15 @@ void Renderer2D::EndScene()
         s_data->triangleRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
 
         // Reset
-        s_data->quadRenderer.reset();
         resetTexture = true;
+        //
+        s_data->renderStats.DrawCount++;
+    }
+
+    // Light
+    if(s_data->lightRenderer)
+    {
+        s_data->lightRenderer.draw(s_data->depthTest, s_data->isEditorCamera, s_data->orthoCamera, s_data->m_viewProjMatrix);
         //
         s_data->renderStats.DrawCount++;
     }
@@ -716,8 +907,7 @@ void Renderer2D::EndScene()
         s_data->renderStats.DrawCount++;
     }
 
-    s_data->sceneState = false;
-
+    s_data->rendererState = false;
 
     if(resetTexture)
     {
@@ -770,7 +960,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -792,6 +982,47 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     };
 
     SubmitQuad(posi, color, texCoords, textureIndex, tiling);
+}
+
+void Renderer2D::DrawQuad(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4& color)
+{
+    DrawQuad(glm::vec3{p0, 0.0f}, glm::vec3{p1, 0.0f}, glm::vec3{p2, 0.0f}, glm::vec3{p3, 0.0f}, color);
+}
+
+void Renderer2D::DrawQuad(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec4& color)
+{
+    RL_PROFILE_RENDERER_FUNCTION();
+
+    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+
+    FlushStatesIfExceeds();
+
+    float textureIndex = s_data->textureManager.getTextureIndex(s_data->textureManager.whiteTexture);
+
+    glm::vec4 posi[4] = {
+        {p0, 1.f}, // bottom left
+        {p1, 1.f}, // bottom right
+        {p2, 1.f}, // top left
+        {p3, 1.f}  // top right
+    };
+    glm::vec2 texCoords[4] = {
+        { 0.0f, 0.0f },  // bottom left
+        { 1.0f, 0.0f },  // bottom right
+        { 0.0f, 1.0f },  // top left
+        { 1.0f, 1.0f }   // top right
+    };
+
+    SubmitQuad(posi, color, texCoords, textureIndex, 1.f);
+}
+
+void Renderer2D::DrawShadow(const glm::vec3 &lightPos, const glm::vec3 &p0, const glm::vec3 &p1, float n, const glm::vec4& color)
+{
+    float length = glm::distance(p0, lightPos);
+    glm::vec3 p2 = p0 + glm::vec3{p0 - lightPos} * n/length;
+    length = glm::distance(p1, lightPos);
+    glm::vec3 p3 = p1 + glm::vec3{p1 - lightPos} * n/length;
+
+    DrawQuadNonBatch(p0, p1, p2, p3, color);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotate)
@@ -827,7 +1058,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -866,7 +1097,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -899,7 +1130,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     FlushStatesIfExceeds();
 
@@ -931,7 +1162,7 @@ void Renderer2D::FlushStatesIfExceeds()
         if(s_data->isEditorCamera)
             BeginScene(s_data->orthoCamera, s_data->depthTest);
         else
-            BeginScene(s_data->camera, s_data->m_viewProjMatrix);
+            BeginScene(s_data->camera, s_data->sceneCameraTrans, s_data->depthTest);
     }
 }
 
@@ -951,7 +1182,7 @@ void Renderer2D::DrawBgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm:
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     if(s_data->bgLineRenderer.exceedDrawIndex())
     {
@@ -972,7 +1203,7 @@ void Renderer2D::DrawFgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm:
 {
     RL_PROFILE_RENDERER_FUNCTION();
 
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     if(s_data->fgLineRenderer.exceedDrawIndex())
     {
@@ -1171,7 +1402,7 @@ void Renderer2D::DrawTriangle(const glm::vec2 &p0, const glm::vec2 &p1, const gl
 void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec4 &color)
 {
     RL_PROFILE_RENDERER_FUNCTION();
-    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+    RL_CORE_ASSERT(s_data->rendererState, "Did you forget to call BeginScene()?");
 
     // Split draw call if it exceeds the limits
     if(s_data->triangleRenderer.exceedDrawIndex() || s_data->textureManager.isExceed())
@@ -1192,6 +1423,192 @@ void Renderer2D::DrawTriangle(const glm::vec3 &p0, const glm::vec3 &p1, const gl
     };
 
     s_data->triangleRenderer.submit(posi, color, texCoords, 0, 1.f);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Light Renderer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// TODO : Remove aspect and zoom
+//void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
+//                                const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize, float zoom, float aspect, glm::vec4 color)
+//{
+//    RL_CORE_ASSERT(s_data->sceneState, "Did you forget to call BeginScene()?");
+//
+//    glm::vec2 si = viewportScale;
+//    glm::vec4 posi[4] = {
+//            {viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
+//            {viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z, 1.f},
+//            {viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z, 1.f},
+//            {viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z, 1.f}
+//    };
+//
+//    // TODO : change radius and strength to linear and quadratic
+//    SubmitLight(posi, position, color, 1, 1/radius, 1/strength, screenSize, zoom, aspect);
+//}
+
+void Renderer2D::DrawPointLight(const glm::vec3 &position, float radius, float strength,
+    const glm::vec3 &viewportPos, const glm::vec2 &viewportScale, const glm::vec2 &screenSize,
+    float zoom, float aspect, glm::vec4 color, const bool penetrateRadius)
+{
+    auto &lightVA = s_data->lightVA;
+    auto &lightShader = s_data->lightShader;
+    auto &lightVB = s_data->lightVB;
+
+    glm::vec2 si = viewportScale;
+    float vercies[] = {
+        viewportPos.x - si.x, viewportPos.y - si.y, viewportPos.z,
+        viewportPos.x + si.x, viewportPos.y - si.y, viewportPos.z,
+        viewportPos.x - si.x, viewportPos.y + si.y, viewportPos.z,
+        viewportPos.x + si.x, viewportPos.y + si.y, viewportPos.z
+    };
+
+    lightVB->setData(vercies, sizeof(vercies));
+
+    lightShader->bind();
+    lightShader->setFloat4("v_Color", color);
+    lightShader->setFloat("v_Radius", radius);
+    lightShader->setFloat("v_Strength", strength);
+    lightShader->setMat4("u_ViewProjection", s_data->m_viewProjMatrix);
+    lightShader->setFloat2("zoom", {aspect*zoom, zoom});
+    lightShader->setFloat2("v_ViewPort", screenSize);
+    lightShader->setBool("penetrateRadius", penetrateRadius);
+    lightShader->setFloat3("a_LightPosition", position);
+
+    lightVA->bind();
+    RenderCommand::DrawElement(DrawTriangles, lightVA, 6, false);
+    lightVA->unbind();
+    lightShader->unbind();
+}
+
+void Renderer2D::DrawQuadNonBatch(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec2 &p3, const glm::vec4 &color)
+{
+    DrawQuadNonBatch(glm::vec3{p0, 0}, {p1, 0}, {p2, 0}, {p3, 0}, color);
+}
+
+void Renderer2D::DrawQuadNonBatch(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec4 &color)
+{
+    auto &quadVA = s_data->quadVA;
+    auto &quadVB = s_data->quadVB;
+    auto &quadShader = s_data->quadShader;
+
+    if(s_data->isQuadInit)
+    {
+        quadVA = VertexArray::Create();
+        quadVB = VertexBuffer::Create(12);
+        quadShader = Shader::LoadShaderVFS("/shader/quadTextureNonBatch.vs", "/shader/quadTextureNonBatch.fs");
+
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_Position"},
+        };
+        quadVB->setLayout(layout);
+        quadVA->setVertexBuffer(quadVB);
+
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> quadIB = IndexBuffer::Create(pattern, 6);
+        quadVA->setIndexBuffer(quadIB);
+
+        s_data->isQuadInit = false;
+    }
+
+    float quadVertices[] = {
+        p0.x, p0.y, p0.z,
+        p1.x, p1.y, p1.z,
+        p2.x, p2.y, p2.z,
+        p3.x, p3.y, p3.z
+    };
+    quadVB->setData(quadVertices, sizeof(quadVertices));
+
+    quadShader->bind();
+    quadShader->setMat4("u_ViewProjection", s_data->m_viewProjMatrix);
+    quadShader->setFloat4("v_Color", color);
+
+    quadVA->bind();
+    RenderCommand::DrawElement(DrawTriangles, quadVA, 6, false);
+    quadVA->unbind();
+
+    quadShader->unbind();
+}
+
+void Renderer2D::SubmitLight(const glm::vec4 *position, const glm::vec3 &lightPosition, const glm::vec4 &color, float constant,
+                             float linear, float quadratic, const glm::vec2 &screenSize, float zoom, float aspect)
+{
+    s_data->lightRenderer.submit(position, lightPosition, color, constant, linear, quadratic, screenSize, zoom, aspect);
+    s_data->renderStats.LineCount++;
+}
+
+void Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb)
+{
+    auto &combineVA = s_data->combineVA;
+    auto &combineShader = s_data->combineShader;
+
+    // TODO: Move to Renderer2D::Init()
+    if(s_data->isCombineInit)
+    {
+        combineVA = VertexArray::Create();
+        combineShader = Shader::LoadShaderVFS("/shader/combine.vs", "/shader/combine.fs");
+
+        float vertices[] = {
+            -1.f, 1.f, 0.0f,  0.f, 1.f,   // 左上角
+            -1.f, -1.f, 0.0f, 0.f, 0.f,   // 左下角
+            1.f, 1.f, 0.0f,   1.f, 1.f,   // 右上角
+            1.f, -1.f, 0.0f,  1.f, 0.f    // 右下角
+        };
+        Ref<VertexBuffer> combineVB = VertexBuffer::Create(vertices, sizeof(vertices));
+        combineVB->setLayout(BufferLayout{
+            {ShaderDataType::Float3, "a_Position"},
+            {ShaderDataType::Float2, "a_TexCoord"}
+        });
+        combineVA->setVertexBuffer(combineVB);
+        
+        // Create the Index Buffer
+        uint32_t pattern[] = {0, 1, 2, 2, 3, 1};
+        Ref<IndexBuffer> combineIB = IndexBuffer::Create(pattern, 6);
+        combineVA->setIndexBuffer(combineIB);
+        
+        combineShader->bind();
+        combineShader->setInt("u_Textures", 0);
+        combineShader->setInt("u_Textures2", 1);
+        
+        combineVA->unbind();
+        
+        s_data->isCombineInit = false;
+    }
+    
+    fa->bind();
+    {
+        combineVA->bind();
+        combineShader->bind();
+
+        // TOOD: Wrap into RenderCommand
+        glBindTextureUnit(0, fa->getColorAttachmentRendererID());
+        glBindTextureUnit(1, fb->getColorAttachmentRendererID());
+        RenderCommand::DrawElement(DrawTriangles, combineVA, 6, false);
+
+        combineVA->unbind();
+    }
+    fa->unbind();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Convex
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Draw a Convex
+ * @details Draw a convex in clock-wise order.
+ * @param convex a array of glm::vec3
+ * @param size size of the array
+ * @param color color
+ */
+void Renderer2D::DrawConvex(const glm::vec3 convex[], size_t size, const glm::vec4 &color)
+{
+    RL_CORE_ASSERT(convex, "Data is nullptr");
+    //
+    for(int i = 1; i < size-1; i++)
+    {
+        DrawTriangle(convex[0], convex[i], convex[i+1], color);
+    }
 }
 
 } // namespace of rl

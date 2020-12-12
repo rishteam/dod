@@ -54,6 +54,7 @@ void ScriptTestLayer::onDetach()
 void ScriptTestLayer::onUpdate(rl::Time dt)
 {
     m_scene->onUpdate(dt);
+    m_scene->onRender();
 }
 
 void ScriptTestLayer::onImGuiRender()

@@ -10,7 +10,6 @@ class Joint
 {
 public:
     Joint();
-
     ~Joint() = default;
 
     void SetAnchor(Vec2 &anchor);
@@ -18,7 +17,6 @@ public:
     void SetBodies(Ref <RigidBody2D> &b1_, Ref<RigidBody2D> &b2_);
 
     void PreStep(float inv_dt);
-
     void ApplyImpulse();
 
     Mat22 M;

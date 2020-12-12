@@ -15,46 +15,11 @@
 //
 #include <Rish/Utils/uuid.h>
 
-#include <cereal/cereal.hpp>
-#include <cereal/archives/json.hpp>
-
-namespace glm
-{
-	template <class Archive>
-	void serialize(Archive &archive, glm::vec2 &v) { archive(cereal::make_nvp("x", v.x), cereal::make_nvp("y", v.y)); }
-	template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(cereal::make_nvp("x" ,v.x), cereal::make_nvp("y" ,v.y), cereal::make_nvp("z" ,v.z)); }
-	template<class Archive> void serialize(Archive& archive, glm::vec4& v) 
-	{
-		 archive(cereal::make_nvp("x" ,v.x), 
-		 		 cereal::make_nvp("y" ,v.y), 
-		 		 cereal::make_nvp("z" ,v.z), 
-		 		 cereal::make_nvp("w" ,v.w)
-		); 
-	}
-	
-	template<class Archive> void serialize(Archive& archive, glm::ivec2& v) { archive(v.x, v.y); }
-	template<class Archive> void serialize(Archive& archive, glm::ivec3& v) { archive(v.x, v.y, v.z); }
-	template<class Archive> void serialize(Archive& archive, glm::ivec4& v) { archive(v.x, v.y, v.z, v.w); }
-	template<class Archive> void serialize(Archive& archive, glm::uvec2& v) { archive(v.x, v.y); }
-	template<class Archive> void serialize(Archive& archive, glm::uvec3& v) { archive(v.x, v.y, v.z); }
-	template<class Archive> void serialize(Archive& archive, glm::uvec4& v) { archive(v.x, v.y, v.z, v.w); }
-	template<class Archive> void serialize(Archive& archive, glm::dvec2& v) { archive(v.x, v.y); }
-	template<class Archive> void serialize(Archive& archive, glm::dvec3& v) { archive(v.x, v.y, v.z); }
-	template<class Archive> void serialize(Archive& archive, glm::dvec4& v) { archive(v.x, v.y, v.z, v.w); }
-
-	// glm matrices serialization
-	template<class Archive> void serialize(Archive& archive, glm::mat2& m) { archive(m[0], m[1]); }
-	template<class Archive> void serialize(Archive& archive, glm::dmat2& m) { archive(m[0], m[1]); }
-	template<class Archive> void serialize(Archive& archive, glm::mat3& m) { archive(m[0], m[1], m[2]); }
-	template<class Archive> void serialize(Archive &archive, glm::mat4 &m) { archive(cereal::make_nvp("col0", m[0]), cereal::make_nvp("col1", m[1]), cereal::make_nvp("col2", m[2]), cereal::make_nvp("col3", m[3])); }
-	template<class Archive> void serialize(Archive& archive, glm::dmat4& m) { archive(m[0], m[1], m[2], m[3]); }
-
-	template<class Archive> void serialize(Archive& archive, glm::quat& q) { archive(q.x, q.y, q.z, q.w); }
-	template<class Archive> void serialize(Archive& archive, glm::dquat& q) { archive(q.x, q.y, q.z, q.w); }
-
-}
+#include <Rish/Utils/Serialize.h>
 
 namespace rl {
+
+class Entity;
 
 /**
  * @defgroup components Components
@@ -191,18 +156,47 @@ private:
     }
 
 	friend class cereal::access;
+//	template<class Archive>
+//	void serialize(Archive &ar)
+//	{
+//		ar(
+//           cereal::make_nvp("Color", color),
+//		   cereal::make_nvp("Texture", m_texture),
+//		   cereal::make_nvp("UseTexture", useTexture),
+//		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+//		   cereal::make_nvp("setting", m_subSetting),
+//		   cereal::make_nvp("tiling", tiling)
+//		);
+//	}
+
 	template<class Archive>
-	void serialize(Archive &ar)
-	{
-		ar(
-           cereal::make_nvp("Color", color),
-		   cereal::make_nvp("Texture", texturePath),
-		   cereal::make_nvp("UseTexture", useTexture),
-		   cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
-		   cereal::make_nvp("setting", m_subSetting),
-		   cereal::make_nvp("tiling", tiling)
-		);
-	}
+	void load(Archive &ar)
+    {
+        ar(
+            cereal::make_nvp("Color", color),
+            cereal::make_nvp("Texture", m_texture),
+            cereal::make_nvp("UseTexture", useTexture),
+            cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+            cereal::make_nvp("setting", m_subSetting),
+            cereal::make_nvp("tiling", tiling)
+        );
+
+        init = false;
+        texturePath = m_texture->getPath();
+    }
+
+    template<class Archive>
+    void save(Archive &ar) const
+    {
+        ar(
+            cereal::make_nvp("Color", color),
+            cereal::make_nvp("Texture", m_texture),
+            cereal::make_nvp("UseTexture", useTexture),
+            cereal::make_nvp("UseAsSubTexture", useAsSubTexture),
+            cereal::make_nvp("setting", m_subSetting),
+            cereal::make_nvp("tiling", tiling)
+        );
+    }
 };
 
 /**
@@ -238,6 +232,102 @@ private:
         );
     }
 };
+
+/**
+ * @brief Group Component
+ * @details This is a special component for grouping entities
+ */
+struct GroupComponent
+{
+    void addEntityUUID(const UUID &id);
+    void delEntityUUID(const UUID &id);
+    void clear();
+
+    using difference_type   = ptrdiff_t;
+    using size_type         = size_t;
+    using value_type        = UUID;
+    using pointer           = UUID*;
+    using reference         = UUID&;
+    using iterator          = std::set<UUID>::iterator;
+    using const_iterator    = std::set<UUID>::const_iterator;
+
+    iterator begin() { return childEntity.begin(); }
+    iterator end()   { return childEntity.end();   }
+    const_iterator begin() const { return childEntity.begin(); }
+    const_iterator end() const   { return childEntity.end();   }
+    bool isEmpty() { return childEntity.empty(); }
+private:
+    std::set<UUID> childEntity;
+    //
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("children", childEntity));
+    }
+};
+
+/**
+ * @brief SubGroup Component
+ */
+struct SubGroupComponent
+{
+
+    void setGroup(const UUID &id)           { groupEntityID = id; }
+    void setGroupPosition(glm::vec3 pos)    { m_groupPosition = pos; }
+    void setRelativePosition(glm::vec3 pos) { m_relativePosition = pos; }
+    void setGroupScale(glm::vec3 scale)     { m_groupScale = scale; }
+    void setOriginScale(glm::vec3 scale)    { m_originScale = scale; }
+    void setGroupRotate(float angle)        { m_groupRotate = angle; }
+    void setOriginRotate(float angle)       { m_originRotate = angle; }
+    void setPreRotate(float angle)          { m_preRotate = angle; }
+    void setOffset(glm::vec3 offset)        { m_offset = offset; }
+
+    const UUID& getGroupEntityID() const        { return groupEntityID;}
+    const glm::vec3 getOffset() const           { return m_offset; }
+    const glm::vec3 getRelativePosition() const { return m_relativePosition; }
+    const glm::vec3 getGroupPosition() const    { return m_groupPosition; }
+    const glm::vec3 getGroupScale() const       { return m_groupScale; }
+    const glm::vec3 getOriginScale() const      { return m_originScale; }
+    const float getGroupRotate() const          { return m_groupRotate; }
+    const float getOriginRotate() const         { return m_originRotate; }
+    const float getPreRotate() const            { return m_preRotate; }
+
+    glm::vec3 calculateCurrentPosition();
+    glm::vec3 calculateCurrentScale();
+    float calculateCurrentRotate();
+
+private:
+    UUID groupEntityID{};
+
+    glm::vec3 m_relativePosition;
+    glm::vec3 m_originScale;
+    float m_originRotate;
+
+    glm::vec3 m_groupPosition;
+    glm::vec3 m_groupScale;
+    float m_groupRotate;
+    float m_preRotate;
+
+    glm::vec3 m_offset;
+
+    //
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive &ar)
+    {
+        ar(cereal::make_nvp("groupID", groupEntityID));
+        ar(cereal::make_nvp("relativePosition", m_relativePosition));
+        ar(cereal::make_nvp("originScale", m_originScale));
+        ar(cereal::make_nvp("originRotate", m_originRotate));
+        ar(cereal::make_nvp("groupPosition", m_groupPosition));
+        ar(cereal::make_nvp("groupScale", m_groupScale));
+        ar(cereal::make_nvp("groupRotate", m_groupRotate));
+        ar(cereal::make_nvp("preRotate", m_preRotate));
+        ar(cereal::make_nvp("offset", m_offset));
+    }
+};
+
 
 /**
  * @}
@@ -731,6 +821,91 @@ struct ParticleComponent
         ar(cereal::make_nvp("vortexEndSizeRand", vortexEndSizeRand));
         ar(cereal::make_nvp("vortexTurbulence", vortexTurbulence));
     }
+};
+
+struct AmbientLightComponent
+{
+    glm::vec4 colorMask = {1, 1, 1, 0.5};
+
+private:
+    friend class cereal::access;
+    template<typename Achrive>
+    void serialize(Achrive &ar)
+    {
+        ar(CEREAL_NVP(colorMask));
+    }
+};
+
+struct LightComponent
+{
+//    glm::vec3 lightPos; // Use Transform's Pos;
+    glm::vec3 viewPortPos;
+    bool customViewPos = false;
+    glm::vec2 viewPortSize = {10, 10};
+    glm::vec4 color = {1, 1, 1, 1};
+    float radius = 100;
+    float strength = 100;
+    float shadowScale = 10;
+    glm::vec4 shadowColor{0, 0, 0, 1};
+    bool penetrateRadius = false;
+
+    static std::set<UUID> ENTITY_NO_RAY_CAST;
+
+private:
+    friend class cereal::access;
+
+    template<typename Achrive>
+    void load(Achrive &ar)
+    {
+        ar( CEREAL_NVP(viewPortPos),
+            CEREAL_NVP(customViewPos),
+            CEREAL_NVP(viewPortSize),
+            CEREAL_NVP(color),
+            CEREAL_NVP(radius),
+            CEREAL_NVP(strength),
+            CEREAL_NVP(shadowScale),
+            CEREAL_NVP(shadowColor),
+            CEREAL_NVP(ENTITY_NO_RAY_CAST),
+            CEREAL_NVP(penetrateRadius)
+        );
+
+        if (ENTITY_NO_RAY_CAST.find(UUID("Trash")) != ENTITY_NO_RAY_CAST.end())
+        {
+            ENTITY_NO_RAY_CAST.erase(UUID("Trash"));
+        }
+    }
+    template<typename Achrive>
+    void save(Achrive &ar) const
+    {
+        ENTITY_NO_RAY_CAST.insert(UUID("Trash"));
+        ar( CEREAL_NVP(viewPortPos),
+            CEREAL_NVP(customViewPos),
+            CEREAL_NVP(viewPortSize),
+            CEREAL_NVP(color),
+            CEREAL_NVP(radius),
+            CEREAL_NVP(strength),
+            CEREAL_NVP(shadowScale),
+            CEREAL_NVP(shadowColor),
+            CEREAL_NVP(ENTITY_NO_RAY_CAST),
+            CEREAL_NVP(penetrateRadius)
+        );
+    }
+
+
+//    template<typename Achrive>
+//    void serialize(Achrive &ar)
+//    {
+//        ar( CEREAL_NVP(viewPortPos),
+//            CEREAL_NVP(customViewPos),
+//            CEREAL_NVP(viewPortSize),
+//            CEREAL_NVP(color),
+//            CEREAL_NVP(radius),
+//            CEREAL_NVP(strength),
+//            CEREAL_NVP(shadowScale),
+//            CEREAL_NVP(shadowColor),
+//            CEREAL_NVP(ENTITY_NO_RAY_CAST)
+//        );
+//    }
 };
 
 } // end of rl

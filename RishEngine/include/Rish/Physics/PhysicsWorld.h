@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Rish/rlpch.h>
 
 #include <Rish/Collider/Box.h>
@@ -13,19 +14,21 @@ class Arbiter;
 
 namespace rl {
 
+class RigidBody2D;
+class Box;
+class Joint;
+
 class RL_API PhysicsWorld
 {
 public:
     // TODO: object constructor
 
     PhysicsWorld(Vec2 gravity_);
-
     PhysicsWorld(Vec2 gravity_, float width_, float height_);
 
     void setGravity(Vec2 gravity_);
 
     void Add(const Ref<RigidBody2D> &body);
-
     void AddJoints(const Ref<Joint> &joint);
 
     void Clear();

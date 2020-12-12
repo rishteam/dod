@@ -1,11 +1,7 @@
 #pragma once
 
-#include <Rish/rlpch.h>
-
 #include <Rish/Scene/Entity.h>
-
 #include <entt/entt.hpp>
-#include <utility>
 
 namespace rl {
 
@@ -22,7 +18,7 @@ public:
 
 public:
     template<typename T>
-    static void registerComponent()
+    static void RegisterComponent()
     {
         // TODO: use std::string_view
         auto name = entt::type_info<T>::name();
@@ -38,7 +34,7 @@ public:
     }
 
     template<typename T>
-    static void registerComponent(AddComponentFunction addFunc, DelComponentFunction delFunc)
+    static void RegisterComponent(AddComponentFunction addFunc, DelComponentFunction delFunc)
     {
         // TODO: use std::string_view
         auto name = entt::type_info<T>::name();
@@ -47,8 +43,8 @@ public:
         s_typeNameToDelFunction[type_name] = std::move(delFunc);
     }
 
-    static void addComponentByTypeName(Entity entity, const std::string& type);
-    static void delComponentByTypeName(Entity entity, const std::string& type);
+    static void AddComponentByTypeName(Entity entity, const std::string& type);
+    static void DelComponentByTypeName(Entity entity, const std::string& type);
 
     using AddMapping=std::unordered_map<std::string, AddComponentFunction>;
     using DelMapping=std::unordered_map<std::string, DelComponentFunction>;

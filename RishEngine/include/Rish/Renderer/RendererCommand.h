@@ -1,10 +1,8 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Core/Core.h>
-#include <Rish/Renderer/VertexArray.h>
 
-#include <glm/glm.hpp>
+#include <Rish/Renderer/fwd.h>
 
 namespace rl {
 
@@ -92,6 +90,28 @@ public:
     };
 
     /**
+     * @brief Stencil function option
+     * @details <https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glStencilFunc.xhtml>
+     */
+    enum class StencilFuncFactor
+    {
+        Less,
+        Equal,
+        Always
+    };
+
+    /**
+     * @brief Stencil function option
+     * @details <https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glStencilOp.xhtml>
+     */
+    enum class StencilOpFactor
+    {
+        Keep,
+        Zero,
+        Replace
+    };
+
+    /**
      * @brief Turn on/off Blend
      * @param state 
      */
@@ -103,6 +123,15 @@ public:
      * @param dst Destination Factor
      */
     static void SetBlendFunc(BlendFactor src, BlendFactor dst);
+
+
+    static void SetStencilTest(bool state);
+
+    static void SetStencilFunc(StencilFuncFactor func, int ref, int mask);
+
+    static void SetStencilOp(StencilOpFactor sfail, StencilOpFactor dpfail, StencilOpFactor dppass);
+
+    static void SetColorMask(bool r, bool g, bool b, bool a);
 
     /**
      * @brief Clear Mode
@@ -133,6 +162,8 @@ public:
      * @param depthTest Enable/Disable depth test
      */
     static void DrawElement(DrawType drawType, const Ref <VertexArray> &vertexArray, uint32_t indexCount=0, bool depthTest=false);
+
+
 
     static void SetLineThickness(float t);
     static void SetLineSmooth(bool state);

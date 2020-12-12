@@ -1,10 +1,8 @@
 #include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <Rish/Core/Core.h>
+//
 #include <Rish/Core/FileSystem.h>
 #include <Rish/Core/VFS.h>
-
+//
 #include <Rish/Renderer/Shader.h>
 
 namespace rl {
@@ -94,6 +92,11 @@ uint32_t Shader::getLocationByName(const std::string &name) const
 	RL_CORE_ASSERT(program > 0, "The shader is invalid");
 	int location = glGetUniformLocation(program, name.c_str());
 	return location;
+}
+
+void Shader::setBool(const std::string &name, int value)
+{
+    glUniform1i(getLocationByName(name), value);
 }
 
 void Shader::setInt(const std::string &name, int value)

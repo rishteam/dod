@@ -4,13 +4,22 @@ namespace rl {
 
 void AboutPanel::onImGuiRender()
 {
-    if(!m_show) return;
 
     ImGuiIO &io = ImGui::GetIO();
     ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f),
                             ImGuiCond_Once, ImVec2(0.5f,0.5f));
-    if(ImGui::Begin("About", nullptr, ImGuiWindowFlags_NoResize))
+
+    if(m_show)
     {
+        if (!ImGui::IsPopupOpen("About"))
+            ImGui::OpenPopup("About");
+
+        m_show = false;
+    }
+    if (ImGui::BeginPopupModal("About",
+                               nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+
         ImGui::Image(m_icon->getTextureID(), ImVec2(128, 128),
                      ImVec2(0, 0), ImVec2(1, -1));
         ImGui::Text("RishEngine - A 2D Game Engine");
@@ -22,11 +31,13 @@ void AboutPanel::onImGuiRender()
         ImGui::Separator();
         ImGui::Text("https://github.com/rishteam/dod");
 
-        // TODO: beautify the button
-        if(ImGui::Button("Close"))
-            hidePanel();
-        ImGui::End();
+        if (ImGui::Button("Close")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
+
+
 }
 
 void AboutPanel::onAttach()

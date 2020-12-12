@@ -1,9 +1,6 @@
 #pragma once
 
 #include <Rish/rlpch.h>
-#include <Rish/Scene/Component.h>
-#include <Rish/Physics/PhysicsWorld.h>
-#include <Rish/Scene/Scene.h>
 
 
 #include <Rish/ImGui.h>

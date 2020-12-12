@@ -1,10 +1,17 @@
 #include <Rish/Physics/PhysicsWorld.h>
 
+#include <Rish/Physics/RigidBody2D.h>
+#include <Rish/Physics/Arbiter.h>
+#include <Rish/Physics/Joint.h>
+
+#include <Rish/Collider/Box.h>
+
 bool rl::PhysicsWorld::accumulateImpulses = true;
 bool rl::PhysicsWorld::warmStarting = true;
 bool rl::PhysicsWorld::positionCorrection = true;
 float rl::PhysicsWorld::width;
 float rl::PhysicsWorld::height;
+
 // world coordinate
 Vec2 rl::PhysicsWorld::m_center = Vec2(0, 0);
 

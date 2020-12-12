@@ -2,7 +2,7 @@
 
 #include <Rish/Renderer/Renderer2D.h>
 
-#include <Rish/ImGui.h>
+#include <Rish/ImGui/ImGui.h>
 
 namespace rl {
 

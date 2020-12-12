@@ -9,6 +9,8 @@
 //被撞的body2, 撞人的body1
 namespace rl {
 
+class RigidBody2D;
+
 struct Contact
 {
     Contact() = default;

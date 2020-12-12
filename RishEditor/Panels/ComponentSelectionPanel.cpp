@@ -1,12 +1,7 @@
+#include <Rish/rlpch.h>
 #include "ComponentSelectionPanel.h"
-
 #include <Rish/Utils/String.h>
-
-#include <Rish/Scene/ComponentManager.h>
 #include <Rish/Scene/ScriptableEntity.h>
-
-#include <Rish/ImGui.h>
-#include <entt/entt.hpp>
 
 namespace rl {
 
@@ -14,16 +9,25 @@ void ComponentSelectionPanel::onImGuiRender()
 {
     static std::string filterText;
     ImGui::InputText("##ComponentSelection", &filterText);
+    if( m_open )
+        ImGui::SetKeyboardFocusHere(0);
+    m_open = false;
 
     if(ImGui::ListBoxHeader("##Components"))
     {
         auto &mapping = ComponentManager::getAddMapping();
         for (auto &&[k, v] : mapping) {
-            if(filterText.empty() || String::isSubString(k, filterText))
+            if(filterText.empty() || String::isSubStringIgnoreCase(k, filterText))
             {
                 if (ImGui::Selectable(k.c_str() + 4))
                 {
-                    ComponentManager::addComponentByTypeName(getSelectedEntity(), k);
+                    ComponentManager::AddComponentByTypeName(getSelectedEntity(), k);
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
+                {
+                    printf("%s\n", k.c_str());
+                    ComponentManager::AddComponentByTypeName(getSelectedEntity(), k);
                     ImGui::CloseCurrentPopup();
                 }
             }
@@ -35,14 +39,18 @@ void ComponentSelectionPanel::onImGuiRender()
 void ComponentSelectionPanel::onAttach(const Ref<Scene> &scene)
 {
     SceneTargetPanel::onAttach(scene);
-    ComponentManager::registerComponent<TransformComponent>();
-    ComponentManager::registerComponent<SpriteRenderComponent>();
-    ComponentManager::registerComponent<CameraComponent>();
-    ComponentManager::registerComponent<NativeScriptComponent>();
-    ComponentManager::registerComponent<RigidBody2DComponent>();
-    ComponentManager::registerComponent<Collider2DComponent>();
-    ComponentManager::registerComponent<Joint2DComponent>();
-    ComponentManager::registerComponent<ParticleComponent>();
+    ComponentManager::RegisterComponent<TransformComponent>();
+    ComponentManager::RegisterComponent<SpriteRenderComponent>();
+    ComponentManager::RegisterComponent<Animation2DComponent>();
+    ComponentManager::RegisterComponent<CameraComponent>();
+    ComponentManager::RegisterComponent<NativeScriptComponent>();
+    ComponentManager::RegisterComponent<RigidBody2DComponent>();
+    ComponentManager::RegisterComponent<Collider2DComponent>();
+    ComponentManager::RegisterComponent<Joint2DComponent>();
+    ComponentManager::RegisterComponent<ParticleComponent>();
+    ComponentManager::RegisterComponent<LightComponent>();
+    ComponentManager::RegisterComponent<AmbientLightComponent>();
+    ComponentManager::RegisterComponent<SoundComponent>();
 }
 
 } // end of namespace rl
