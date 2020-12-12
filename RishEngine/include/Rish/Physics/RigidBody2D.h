@@ -26,7 +26,7 @@ public:
     ~RigidBody2D() = default;
 
 
-    void setBox(Vec2 pos, Vec2 wh, float angle_);
+    void setBox(Vec2 pos, Vec2 wh_, float angle_);
     void setCircle(Vec2 pos, float radius_, float angle_);
     void setPolygon(Vec2 pt_[], Vec2 pos, int pointSize_, float angle_);
 

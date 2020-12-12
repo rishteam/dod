@@ -6,6 +6,7 @@ namespace rl {
 
 Box::Box(float x_, float y_, float w_, float h_, float angle_)
 {
+    type = Shape::Type::Box;
     position.x = x_;
     position.y = y_;
     w = w_;
@@ -22,9 +23,6 @@ Box::Box(float x_, float y_, float w_, float h_, float angle_)
     {
         int i2 = i1 + 1 < m_vertexCount ? i1 + 1 : 0;
         Vec2 face = m_vertices[i2] - m_vertices[i1];
-
-        // Ensure no zero-length edges, because that's bad
-        assert( face.LenSqr( ) > EPSILON * EPSILON );
 
         // Calculate normal with 2D cross product between vector and scalar
         m_normals[i1] = Vec2( face.y, -face.x );

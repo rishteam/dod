@@ -15,7 +15,6 @@ Polygon::Polygon(Vec2 pt_[], Vec2 pos_, int pointSize_ , float angle_)
         tmp[i] = pt_[i];
     }
 
-
     // 找凸包
     // No hulls with less than 3 vertices (ensure actual polygon)
     count = std::min((int) count, 70);

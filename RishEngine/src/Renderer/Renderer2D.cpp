@@ -1384,15 +1384,6 @@ void Renderer2D::DrawBgRotatedRect(const glm::vec2 &position, const glm::vec2 &s
 // Triangle Renderer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Renderer2D::DrawConvex(const glm::vec2 convex[], size_t size, const glm::vec4 &color)
-{
-    RL_CORE_ASSERT(convex, "Data is nullptr");
-    //
-    for(int i = 1; i < size-1; i++)
-    {
-        DrawTriangle(convex[0], convex[i], convex[i+1], color);
-    }
-}
 
 void Renderer2D::DrawTriangle(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec2 &p2, const glm::vec4 &color)
 {
@@ -1601,7 +1592,7 @@ void Renderer2D::CombineFramebuffer(Ref<Framebuffer> fa, Ref<Framebuffer> fb)
  * @param size size of the array
  * @param color color
  */
-void Renderer2D::DrawConvex(const glm::vec3 convex[], size_t size, const glm::vec4 &color)
+void Renderer2D::DrawConvex(const glm::vec2 convex[], size_t size, const glm::vec4 &color)
 {
     RL_CORE_ASSERT(convex, "Data is nullptr");
     //

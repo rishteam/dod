@@ -73,7 +73,6 @@ void EditController::onUpdate(Time dt)
 
         // Draw the physics attachPoints
         auto view = scene->m_registry.view<TransformComponent, RigidBody2DComponent>();
-        for (auto entity : view) {
         for (auto entity : view)
         {
             Entity ent{entity, scene.get()};
@@ -121,7 +120,7 @@ void EditController::onUpdate(Time dt)
         }
 
         // Draw the box colliders
-        auto view2 = scene->m_registry.view<TransformComponent, BoxCollider2DComponent>();
+        auto view2 = scene->m_registry.view<TransformComponent, Collider2DComponent>();
         for (auto entity : view2)
         {
             Entity ent{entity, scene.get()};

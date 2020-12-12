@@ -308,29 +308,22 @@ void SceneHierarchyPanel::groupTargetEntities()
 void SceneHierarchyPanel::removeGroupEntity()
 {
     auto entSet = getSelectedEntities();
-    for (auto ent : entSet)
-    {
+    for (auto ent : entSet) {
         bool isSub = ent.hasComponent<SubGroupComponent>();
         Entity preGroupEntity;
-        if(isSub)
-        {
+        if (isSub) {
             preGroupEntity = m_currentScene->getEntityByUUID(ent.getComponent<SubGroupComponent>().getGroupEntityID());
             preGroupEntity.getComponent<GroupComponent>().delEntityUUID(ent.getUUID());
         }
 
-        if(ent.hasComponent<GroupComponent>())
-        {
+        if (ent.hasComponent<GroupComponent>()) {
             auto &gc = ent.getComponent<GroupComponent>();
-            for(auto &id : gc)
-            {
+            for (auto &id : gc) {
                 Entity SubEntity = m_currentScene->getEntityByUUID(id);
-                if(isSub)
-                {
+                if (isSub) {
                     preGroupEntity.getComponent<GroupComponent>().addEntityUUID(id);
                     SubEntity.getComponent<SubGroupComponent>().setGroup(preGroupEntity.getUUID());
-                }
-                else
-                {
+                } else {
                     SubEntity.removeComponent<SubGroupComponent>();
                 }
             }
@@ -338,6 +331,7 @@ void SceneHierarchyPanel::removeGroupEntity()
         ent.destroy();
     }
     resetSelected();
+}
 
 void SceneHierarchyPanel::moveOutGroupEntity()
 {

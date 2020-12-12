@@ -215,7 +215,7 @@ void PhysicsSystem::InitPhysicsObject(entt::registry &registry, Scene::SceneStat
         {
             // Default for box Collider
             auto physicsObj = MakeRef<RigidBody2D>(RigidBody2D::Type::Box);
-            physicsObj->setBox(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), transform.rotate);
+            physicsObj->setBox(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), glm::radians(transform.rotate));
             mapPhysicsObj[UUID] = physicsObj;
             statePhysicsObject.push_back(std::make_pair(UUID, true));
 
@@ -466,7 +466,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
     }
 
 
-
     // Update Joint2D component data to engine
     auto view3 = registry.view<TransformComponent, Joint2DComponent>();
     for (auto entity : view3)
@@ -518,7 +517,6 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
     stateJointObject.erase(it3, stateJointObject.end());
 
     // Add New Object in RunTime
-
     // RigidBody2D Component
     auto group = registry.view<TransformComponent, RigidBody2DComponent>();
     for(auto entity : group)
@@ -531,7 +529,7 @@ void PhysicsSystem::UpdateNewPhysicsObject(entt::registry& registry, Scene::Scen
         if(!mapPhysicsObj.count(UUID))
         {
             auto physicsObj = MakeRef<RigidBody2D>(RigidBody2D::Type::Box);
-            physicsObj->setBox(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), rigidbody2D.mass);
+            physicsObj->setBox(Vec2(transform.translate.x, transform.translate.y), Vec2(transform.scale.x, transform.scale.y), glm::radians(transform.rotate));
             physicsObj->shape = physicsObj->box;
             mapPhysicsObj[UUID] = physicsObj;
             statePhysicsObject.push_back(std::make_pair(UUID, true));

@@ -22,12 +22,14 @@ RigidBody2D::RigidBody2D(RigidBody2D::Type type_)
 }
 
 
-void RigidBody2D::setBox(Vec2 pos, Vec2 wh, float angle_)
+void RigidBody2D::setBox(Vec2 pos, Vec2 wh_, float angle_)
 {
     RigidShapeType = Type::Box;
-    box = MakeRef<Box>(pos.x, pos.y, wh.x, wh.y, angle_);
+    box = MakeRef<Box>(pos.x, pos.y, wh_.x, wh_.y, angle_);
     shape = box;
     position = pos;
+    angle = angle_;
+    wh = wh_;
 
     if (mass < FLT_MAX)
     {

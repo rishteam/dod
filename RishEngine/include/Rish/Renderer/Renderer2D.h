@@ -59,7 +59,7 @@ public:
     static void DrawTriangle(const glm::vec2& p0, const glm::vec2& p1, const glm::vec2& p2, const glm::vec4& color);
     static void DrawTriangle(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
 
-    static void DrawConvex(const glm::vec3 convex[], size_t size, const glm::vec4 &color);
+    static void DrawConvex(const glm::vec2 convex[], size_t size, const glm::vec4 &color);
 
     static void DrawBgLine(const glm::vec3 &p0, const glm::vec3 &p1, const glm::vec4 &color);
     static void DrawBgLine(const glm::vec2 &p0, const glm::vec2 &p1, const glm::vec4 &color);

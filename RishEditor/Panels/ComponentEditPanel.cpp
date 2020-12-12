@@ -719,7 +719,9 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
         int bodyTypeNowSelect = static_cast<int>(rigid.BodyTypeState);
         float velocityVector[2] = {rigid.velocity.x, rigid.velocity.y};
         float forceVector[2] = {rigid.force.x, rigid.force.y};
-        glm::vec2 attachPoint = rigid.attachPoint;
+        glm::vec2 attachPoint;
+        attachPoint.x = rigid.attachPoint.x;
+        attachPoint.y = rigid.attachPoint.y;
 
         ImGui::Text("Physics Parameter");
         {
@@ -762,20 +764,27 @@ void ComponentEditPanel::drawEditComponentWidget<RigidBody2DComponent>()
 
         ImGui::Separator();
         ImGui::PushItemWidth(250);
+        bool tmp = false;
         if(ImGui::Combo("BodyType", &bodyTypeNowSelect, BodyTypeString, 2))
         {
             rigid.BodyTypeState = static_cast<RigidBody2DComponent::BodyType>(bodyTypeNowSelect);
+            tmp = true;
         }
         switch(static_cast<RigidBody2DComponent::BodyType>(rigid.BodyTypeState))
         {
             case RigidBody2DComponent::BodyType::Static:
             {
                 rigid.mass = MAX_float;
+                rigid.velocity.x = 0.0f;
+                rigid.velocity.y = 0.0f;
                 break;
             }
             case RigidBody2DComponent::BodyType::Dynamic:
             {
-                rigid.mass = 10.0f;
+                if(tmp)
+                {
+                    rigid.mass = 10.0f;
+                }
                 break;
             }
         }
@@ -881,7 +890,7 @@ void ComponentEditPanel::drawEditComponentWidget<Collider2DComponent>()
     }
     EndDrawEditComponent();
     //
-    UpdateShortcutAction(BoxCollider2DComponent);
+    UpdateShortcutAction(Collider2DComponent);
 }
 
 template<>
@@ -918,13 +927,10 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         {
             for (auto item : OptionsList)
             {
-                if( rigidBodyAFilterText.empty() || String::isSubStringIgnoreCase(std::get<2>(item), rigidBodyAFilterText) )
+                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
                 {
-                    if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
-                    {
-                        std::get<0>(item) = true;
-                        jit.rigidBody1 = std::get<1>(item);
-                    }
+                    std::get<0>(item) = true;
+                    jit.rigidBody1 = std::get<1>(item);
                 }
             }
             ImGui::ListBoxFooter();
@@ -935,13 +941,10 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         {
             for (auto item : OptionsList2)
             {
-                if( rigidBodyBFilterText.empty() || String::isSubStringIgnoreCase(std::get<2>(item), rigidBodyBFilterText) )
+                if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
                 {
-                    if (ImGui::Selectable(std::get<2>(item).c_str(), std::get<0>(item)))
-                    {
-                        std::get<0>(item) = true;
-                        jit.rigidBody2 = std::get<1>(item);
-                    }
+                    std::get<0>(item) = true;
+                    jit.rigidBody2 = std::get<1>(item);
                 }
             }
             ImGui::ListBoxFooter();
@@ -952,7 +955,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         auto RigidBody2 = scene->getEntityByUUID(jit.rigidBody2);
 
         // Check RigidBody1 is exists
-        if (RigidBody1.m_scene != nullptr)
+        if (RigidBody1)
         {
             ImGui::Text("RigidBody1: [%s] (%s)",
                         RigidBody1.getComponent<TagComponent>().tag.c_str(),
@@ -964,7 +967,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         }
 
         // Check RigidBody2 is not exists
-        if (RigidBody2.m_scene != nullptr)
+        if (RigidBody2)
         {
             ImGui::Text("RigidBody2: [%s] (%s)",
                         RigidBody2.getComponent<TagComponent>().tag.c_str(),
@@ -983,11 +986,11 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         if(CustomAnchor)
         {
             ImGui::DragFloat2("Anchor", jitAnchor, 1.0f);
-            if (RigidBody1.m_scene == nullptr)
+            if (!RigidBody1)
             {
                 ImGui::Text("RigidBody1 is Empty.");
             }
-            if(RigidBody2.m_scene == nullptr)
+            if (!RigidBody2)
             {
                 ImGui::Text("RigidBody2 is Empty.");
             }
@@ -1027,14 +1030,9 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         ImGui::Text("P: (%.f, %.f)", jit.P.x, jit.P.y);
         ImGui::Text("bias: (%.f, %.f)", jit.bias.x, jit.bias.y);
         ImGui::Text("biasFactor: %.f", jit.biasFactor);
-        ImGui::Text("softness:   %.f", jit.softness);
+        ImGui::Text("softness: %.f", jit.softness);
     }
     EndDrawEditComponent();
-    if(ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
-    {
-        m_targetEntity.removeComponent<Joint2DComponent>();
-    }
-    UpdateShortcutAction(Joint2DComponent);
 }
 
 template <>
