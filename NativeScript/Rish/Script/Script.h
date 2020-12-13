@@ -11,5 +11,6 @@
 #include <Rish/Script/ObjectController.h>
 #include <Rish/Script/ParkourPlayerController.h>
 #include <Rish/Script/ParkourCameraController.h>
+#include <Rish/Script/ParkourObjMove.h>
 
 // TODO: Make a page explain how to add a new script and scene is not valid in constructor

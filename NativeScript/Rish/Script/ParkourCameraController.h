@@ -16,7 +16,6 @@ public:
 
     ParkourCameraController(){
         m_followEntityID = UUID("None");
-        RL_CORE_INFO("OnCreate");
     }
 
     void onCreate() override;

@@ -64,6 +64,7 @@ set(RL_SCRIPT_FILES
     ../NativeScript/Rish/Script/ObjectController.cpp
     ../NativeScript/Rish/Script/ParkourPlayerController.cpp
     ../NativeScript/Rish/Script/ParkourCameraController.cpp
+    ../NativeScript/Rish/Script/ParkourObjMove.cpp
 )
 
 # Add executable

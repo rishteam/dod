@@ -23,6 +23,7 @@ void ScriptableManager::Init()
     ScriptableManager::Register<ObjectController>();
     ScriptableManager::Register<ParkourPlayerController>();
     ScriptableManager::Register<ParkourCameraController>();
+    ScriptableManager::Register<ParkourObjMove>();
 }
 
 void ScriptableManager::Shutdown()
