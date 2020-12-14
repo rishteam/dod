@@ -30,14 +30,35 @@ void ParkourPlayerController::onUpdate(Time dt)
         m_jumpTimesCounter = 0;
     }
 
-    if ( Input::IsKeyPressed(Keyboard::Space) && !m_prevJump && m_jumpTimesCounter < m_jumpLimitTimes)
+    if ( rigid.velocity.y < m_stopSpeed &&
+         m_jumpSpeed > m_jumpSpeedLimit/2 &&
+         rigid.velocity.x < m_stopSpeed && Input::IsKeyPressed(Keyboard::Right) )
     {
+        playerAction = PlayerAction::Right;
+        m_jumpTimesCounter = 0;
+    }
+
+    if ( rigid.velocity.y < m_stopSpeed &&
+         m_jumpSpeed > m_jumpSpeedLimit/2 &&
+         rigid.velocity.x > -m_stopSpeed && Input::IsKeyPressed(Keyboard::Left) )
+    {
+        playerAction = PlayerAction::Left;
+        m_jumpTimesCounter = 0;
+    }
+
+    if ( (Input::IsKeyPressed(Keyboard::Space) || Input::IsKeyPressed(Keyboard::Up)) &&
+        !m_prevJump && m_jumpTimesCounter < m_jumpLimitTimes)
+    {
+        if(playerAction == PlayerAction::Left)
+            velocity.x = m_jumpSpeed/2;
+        if(playerAction == PlayerAction::Right)
+            velocity.x = -m_jumpSpeed/2;
         velocity.y = m_jumpSpeed ;
         m_jumpSpeed = 0.f;
         playerAction = PlayerAction::Jump;
         m_jumpTimesCounter++;
     }
-    m_prevJump = Input::IsKeyPressed(Keyboard::Space);
+    m_prevJump = Input::IsKeyPressed(Keyboard::Space) || Input::IsKeyPressed(Keyboard::Up);
 
     if( m_jumpSpeed < m_jumpSpeedLimit )
         m_jumpSpeed += m_jumpSpeedLimit * dt.asSeconds() * 2.f;
@@ -58,8 +79,7 @@ void ParkourPlayerController::onUpdate(Time dt)
         else
             velocity.x = m_walkSpeedLimit;
     }
-
-
+    
 }
 
 void ParkourPlayerController::onImGuiRender()

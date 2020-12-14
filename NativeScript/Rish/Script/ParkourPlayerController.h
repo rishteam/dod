@@ -22,6 +22,8 @@ public:
     enum class PlayerAction
     {
         Stand,
+        Right,
+        Left,
         Jump
     };
     PlayerAction playerAction = PlayerAction::Stand;

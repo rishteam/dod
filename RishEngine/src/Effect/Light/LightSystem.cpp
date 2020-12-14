@@ -138,6 +138,7 @@ void LightSystem::onRender()
 //             Draw Light
             RenderCommand::SetBlendMode(true);
             RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::SrcAlpha, RenderCommand::BlendFactor::OneMinusSrcAlpha);
+//            RenderCommand::SetBlendFunc(RenderCommand::BlendFactor::One, RenderCommand::BlendFactor::One);
             RenderCommand::SetStencilOp(RenderCommand::StencilOpFactor::Keep, RenderCommand::StencilOpFactor::Keep,
                                         RenderCommand::StencilOpFactor::Keep);
             RenderCommand::SetStencilFunc(RenderCommand::StencilFuncFactor::Equal, 0, 1);
