@@ -1847,9 +1847,9 @@
                 },
                 "value527": 263,
                 "value528": {
-                    "Tag": "HpBar",
+                    "Tag": "Snow",
                     "Id": {
-                        "uuid": "487da64f-87bf-4ba5-8311-20c9eb5f605b"
+                        "uuid": "bdbd7124-3ab7-447a-b968-942b76464009"
                     }
                 },
                 "value529": 264,
@@ -5115,17 +5115,17 @@
                     },
                     "rotate": 0.0
                 },
-                "value996": 263,
+                "value996": 90,
                 "value997": {
                     "translate": {
-                        "x": -48.07583236694336,
-                        "y": -47.40010070800781,
-                        "z": 100.0
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "scale": {
-                        "x": 5.0,
-                        "y": 1.0,
-                        "z": NaN
+                        "x": 100.0,
+                        "y": 100.0,
+                        "z": 1.0
                     },
                     "rotate": 0.0
                 },
@@ -5370,12 +5370,12 @@
                 "value1032": 1048827,
                 "value1033": {
                     "translate": {
-                        "x": -0.8973522186279297,
+                        "x": -0.40808868408203127,
                         "y": -0.0754690170288086,
                         "z": -2.0
                     },
                     "scale": {
-                        "x": 99.35696411132813,
+                        "x": 98.37843322753906,
                         "y": 97.36766052246094,
                         "z": 0.0
                     },
@@ -5389,8 +5389,8 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 8.88888931274414,
-                        "y": 5.0,
+                        "x": 14.222222328186036,
+                        "y": 8.0,
                         "z": 1.0
                     },
                     "rotate": 0.0
@@ -5535,7 +5535,7 @@
                     },
                     "rotate": 0.0
                 },
-                "value1056": 90,
+                "value1056": 263,
                 "value1057": {
                     "translate": {
                         "x": 0.0,
@@ -5543,13 +5543,13 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 100.0,
-                        "y": 100.0,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     },
                     "rotate": 0.0
                 },
-                "value1058": 234,
+                "value1058": 233,
                 "value1059": 1,
                 "value1060": {
                     "Color": {
@@ -5605,9 +5605,9 @@
                 "value1061": 3,
                 "value1062": {
                     "Color": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0,
+                        "x": 0.5997693538665772,
+                        "y": 0.7647058963775635,
+                        "z": 0.759854793548584,
                         "w": 1.0
                     },
                     "Texture": {
@@ -15038,73 +15038,21 @@
                     },
                     "tiling": 1.0
                 },
-                "value1525": 263,
-                "value1526": {
-                    "Color": {
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 0.0,
-                        "w": 1.0
-                    },
-                    "Texture": {
-                        "ptr_wrapper": {
-                            "id": 2147483664,
-                            "data": {
-                                "path": "assets/texture/1.png",
-                                "width": 712,
-                                "height": 820,
-                                "flip": false,
-                                "option": {
-                                    "minFilter": 2,
-                                    "magFilter": 2,
-                                    "wrapS": 0,
-                                    "wrapT": 0
-                                }
-                            }
-                        }
-                    },
-                    "UseTexture": false,
-                    "UseAsSubTexture": false,
-                    "setting": {
-                        "type": 0,
-                        "leftUpper": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "size": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "pos": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "cellSize": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteGridSize": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "tiling": 1.0
-                },
-                "value1527": 1,
-                "value1528": 0,
-                "value1529": {
+                "value1525": 1,
+                "value1526": 0,
+                "value1527": {
                     "camera": {
                         "value0": {
                             "projection": {
                                 "col0": {
-                                    "x": 0.22499999403953553,
+                                    "x": 0.140625,
                                     "y": 0.0,
                                     "z": 0.0,
                                     "w": 0.0
                                 },
                                 "col1": {
                                     "x": 0.0,
-                                    "y": 0.4000000059604645,
+                                    "y": 0.25,
                                     "z": 0.0,
                                     "w": 0.0
                                 },
@@ -15122,7 +15070,7 @@
                                 }
                             }
                         },
-                        "orthoSize": 5.0,
+                        "orthoSize": 8.0,
                         "orthoNear": -1000.0,
                         "orthoFar": 1000.0,
                         "aspect": 1.7777777910232545
@@ -15130,7 +15078,113 @@
                     "lockAspect": true,
                     "primary": true
                 },
-                "value1530": 0,
+                "value1528": 1,
+                "value1529": 263,
+                "value1530": {
+                    "dataPath": "assets/Effect/Particle\\Snow.json",
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "angleRange": {
+                        "x": 0.0,
+                        "y": 360.0
+                    },
+                    "startSpeed": 5.0,
+                    "endSpeed": 0.0,
+                    "startSize": 30.0,
+                    "endSize": 40.0,
+                    "rotateSpeed": 20.0,
+                    "emitNumber": 50,
+                    "emitVariance": 100,
+                    "maxParticleLife": 1000,
+                    "life": -1.0,
+                    "sleepTime": 2.0,
+                    "startColor": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0,
+                        "w": 1.0
+                    },
+                    "endColor": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0,
+                        "w": 0.0
+                    },
+                    "rotSpeedRand": {
+                        "x": -1.0,
+                        "y": 1.0
+                    },
+                    "startSpeedRand": {
+                        "x": -1.0,
+                        "y": 1.0
+                    },
+                    "endSpeedRand": {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    "emitVarianceRand": {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    "startSizeRand": {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    "endSizeRand": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "disX": 16.0,
+                    "disY": 16.0,
+                    "texturePath": "assets/texture/snow2.png",
+                    "vortexSensitive": false,
+                    "vortexType": 0,
+                    "vortexOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexAngleRange": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexStartSpeed": 0.0,
+                    "vortexEndSpeed": 0.0,
+                    "vortexStartSize": 0.0,
+                    "vortexEndSize": 0.0,
+                    "vortexEmitNumber": 0,
+                    "vortexMaxParticleLife": 0,
+                    "vortexTurbulence": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexSleepTime": 0.0,
+                    "vortexStartSpeedRand": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexEndSpeedRand": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexLifeRand": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexStartSizeRand": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexEndSizeRand": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "vortexTurbulence": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
                 "value1531": 1,
                 "value1532": 1,
                 "value1533": {
@@ -15138,7 +15192,7 @@
                         "polymorphic_id": 2147483649,
                         "polymorphic_name": "rl::Player",
                         "ptr_wrapper": {
-                            "id": 2147483665,
+                            "id": 2147483664,
                             "data": {
                                 "walkAccel": 10.0
                             }
@@ -22956,9 +23010,6 @@
                 "value2497": {
                     "children": [
                         {
-                            "uuid": "487da64f-87bf-4ba5-8311-20c9eb5f605b"
-                        },
-                        {
                             "uuid": "616ffbba-53da-4620-be31-73753a4847a3"
                         }
                     ]
@@ -23001,7 +23052,7 @@
                         }
                     ]
                 },
-                "value2500": 257,
+                "value2500": 256,
                 "value2501": 11,
                 "value2502": {
                     "groupID": {
@@ -31304,7 +31355,7 @@
                         "uuid": "7426bd8c-9b84-4bca-85af-5f84968322b9"
                     },
                     "relativePosition": {
-                        "x": 0.48926353454589846,
+                        "x": 0.0,
                         "y": 0.0,
                         "z": 1.0
                     },
@@ -31315,12 +31366,12 @@
                     },
                     "originRotate": 0.0,
                     "groupPosition": {
-                        "x": -0.8973522186279297,
+                        "x": -0.40808868408203127,
                         "y": -0.0754690170288086,
                         "z": -2.0
                     },
                     "groupScale": {
-                        "x": 99.35696411132813,
+                        "x": 98.37843322753906,
                         "y": 97.36766052246094,
                         "z": 0.0
                     },
@@ -31706,44 +31757,10 @@
                         "z": NaN
                     }
                 },
-                "value3013": 263,
-                "value3014": {
-                    "groupID": {
-                        "uuid": "7426bd8c-9b84-4bca-85af-5f84968322b9"
-                    },
-                    "relativePosition": {
-                        "x": -47.17848205566406,
-                        "y": -47.32463073730469,
-                        "z": 102.0
-                    },
-                    "originScale": {
-                        "x": 5.0,
-                        "y": 1.0,
-                        "z": NaN
-                    },
-                    "originRotate": 0.0,
-                    "groupPosition": {
-                        "x": -0.8973522186279297,
-                        "y": -0.0754690170288086,
-                        "z": -2.0
-                    },
-                    "groupScale": {
-                        "x": 99.35696411132813,
-                        "y": 97.36766052246094,
-                        "z": 0.0
-                    },
-                    "groupRotate": 0.0,
-                    "preRotate": 0.0,
-                    "offset": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": NaN
-                    }
-                },
-                "value3015": 0,
-                "value3016": 1,
-                "value3017": 1,
-                "value3018": {
+                "value3013": 0,
+                "value3014": 1,
+                "value3015": 1,
+                "value3016": {
                     "viewPortPos": {
                         "x": -48.38808822631836,
                         "y": -47.22275924682617,
@@ -31779,9 +31796,9 @@
                     ],
                     "penetrateRadius": true
                 },
-                "value3019": 1,
-                "value3020": 90,
-                "value3021": {
+                "value3017": 1,
+                "value3018": 90,
+                "value3019": {
                     "colorMask": {
                         "x": 1.0,
                         "y": 1.0,

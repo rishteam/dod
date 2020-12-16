@@ -100,6 +100,21 @@ void Player::onUpdate(Time dt)
             }
         }
     }
+
+    auto particle = GetScene().m_registry.view<TransformComponent, ParticleComponent>();
+
+    for(auto ent : particle)
+    {
+        auto entity = GetEntityByHandle(ent);
+        auto &tag = entity.getComponent<TagComponent>();
+        auto &snow = entity.getComponent<ParticleComponent>();
+        auto &snow_trans = entity.getComponent<TransformComponent>();
+
+        if(tag.tag == "Snow")
+        {
+            snow_trans.translate = trans.translate;
+        }
+    }
 }
 
 void Player::onImGuiRender()
