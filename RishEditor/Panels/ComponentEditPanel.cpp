@@ -307,14 +307,6 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
 
         ImGui::Text("EmitData");
         {
-
-            glm::vec2 emitterDistance(emitter.disX, emitter.disY);
-            glm::vec2 emitterOffset(emitter.offset);
-            glm::vec2 emitterSize(emitter.startSize, emitter.endSize);
-            glm::vec2 emitterAngleRange(emitter.angleRange);
-            glm::vec2 emitterSpeed(emitter.startSpeed, emitter.endSpeed);
-            float emitterRotateSpeed(emitter.rotateSpeed);
-
             std::vector<File> file;
             FileSystem::List("assets/Effect/Particle", file);
 
@@ -328,6 +320,13 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                 emitter.dataPath = file[currentEmitData].getPath();
                 emitter.loadEmitData();
             }
+
+            glm::vec2 emitterDistance(emitter.disX, emitter.disY);
+            glm::vec2 emitterOffset(emitter.offset);
+            glm::vec2 emitterSize(emitter.startSize, emitter.endSize);
+            glm::vec2 emitterAngleRange(emitter.angleRange);
+            glm::vec2 emitterSpeed(emitter.startSpeed, emitter.endSpeed);
+            float emitterRotateSpeed(emitter.rotateSpeed);
 
             ImGui::SameLine();
             ImGui::InputText("##EmitDataPath", &emitter.dataPath, ImGuiInputTextFlags_ReadOnly);
@@ -459,12 +458,12 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                     glm::vec2 emitterVortexSize(emitter.vortexStartSize, emitter.vortexEndSize);
 
                     ImGui::PushItemWidth(250);
-                    ImGui::DragFloat2("Offset", glm::value_ptr(emitterVortexPosition), 0.1f, 0.f, 0.f, "%.2f");
-                    ImGui::DragFloat2("Distance", glm::value_ptr(emitterVortexDistance), .1f, 0.f, 0.f, "%.1f");
-                    ImGui::DragFloat2("Angle", glm::value_ptr(emitterVortexAngle), .5f, 0.f, 360.f, "%.2f");
-                    ImGui::DragFloat2("Speed", glm::value_ptr(emitterVortexSpeed), 1.f, 0.f, 0.f, "%.1f");
-                    ImGui::DragFloat2("Turbulence", glm::value_ptr(emitterVortexTurbulence), .1f, 0.f, 0.f, "%.1f");
-                    ImGui::DragFloat2("Size", glm::value_ptr(emitterVortexSize), .05f, 0.f, 0.f, "%.2f");
+                    ImGui::DragFloat2("Offset##Vortex", glm::value_ptr(emitterVortexPosition), 0.1f, 0.f, 0.f, "%.2f");
+                    ImGui::DragFloat2("Distance##Vortex", glm::value_ptr(emitterVortexDistance), .1f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat2("Angle##Vortex", glm::value_ptr(emitterVortexAngle), .5f, 0.f, 360.f, "%.2f");
+                    ImGui::DragFloat2("Speed##Vortex", glm::value_ptr(emitterVortexSpeed), 1.f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat2("Turbulence##Vortex", glm::value_ptr(emitterVortexTurbulence), .1f, 0.f, 0.f, "%.1f");
+                    ImGui::DragFloat2("Size##Vortex", glm::value_ptr(emitterVortexSize), .05f, 0.f, 0.f, "%.2f");
                     ImGui::PopItemWidth();
 
                     emitter.vortexPos        = emitterVortexPosition;
@@ -488,7 +487,7 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
                         emitter.lastUnusedVortex = 0;
                     }
                     ImGui::DragScalar("Emit Per Sec", ImGuiDataType_U32, &emitter.vortexEmitNumber, 1.f, &emitMin, 0, "%d");
-                    ImGui::Text("Particle Pool Size: %d", emitter.vortexPoolSize);
+                    ImGui::Text("Vortex Pool Size: %d", emitter.vortexPoolSize);
                     ImGui::Checkbox("Draw Vortex", &emitter.drawVortex);
                     ImGui::PopItemWidth();
 
