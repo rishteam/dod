@@ -1,0 +1,10 @@
+<map id="rl::Renderer2DData" name="rl::Renderer2DData">
+<area shape="rect" id="node2" href="$structrl_1_1Renderer2DData_1_1LightRenderer.html" title="rl::Renderer2DData\l::LightRenderer" alt="" coords="17,5,151,47"/>
+<area shape="rect" id="node3" href="$structrl_1_1Renderer2DData_1_1TextureManager.html" title="rl::Renderer2DData\l::TextureManager" alt="" coords="17,71,151,112"/>
+<area shape="rect" id="node4" href="$structrl_1_1Renderer2DData_1_1TriangleRenderer.html" title="rl::Renderer2DData\l::TriangleRenderer" alt="" coords="17,136,151,177"/>
+<area shape="rect" id="node5" href="$structrl_1_1Renderer2DData_1_1QuadRenderer.html" title="Quad Renderer. " alt="" coords="17,201,151,243"/>
+<area shape="rect" id="node6" href="$classrl_1_1Camera.html" title="Camera class. " alt="" coords="43,267,125,294"/>
+<area shape="rect" id="node7" href="$structrl_1_1Renderer2D_1_1Stats.html" title="rl::Renderer2D::Stats" alt="" coords="11,318,157,345"/>
+<area shape="rect" id="node8" href="$classrl_1_1OrthographicCamera.html" title="Orthographic Camera For 2D scene. " alt="" coords="5,369,163,395"/>
+<area shape="rect" id="node9" href="$structrl_1_1Renderer2DData_1_1LineRenderer.html" title="Line Renderer. " alt="" coords="17,420,151,461"/>
+</map>
