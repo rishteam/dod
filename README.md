@@ -40,7 +40,7 @@ pacman -S - < package.txt
 
 ## Demo
 
-![](https://hackmd.io/_uploads/rJb_7onFWa.png)
+![My image](https://hackmd.io/_uploads/rJb_7onFWa.png)
 
 ![](https://hackmd.io/_uploads/rye_QihKb6.png)
 
