@@ -321,8 +321,12 @@ void EditorLayer::onImGuiRender()
         Input::OnMouseMove(pos.x, pos.y);
 
         // Draw the Game
-        uint32_t textureID = m_sceneFramebuffer->getColorAttachmentRendererID();
+        uint32_t uTextureID = m_sceneFramebuffer->getColorAttachmentRendererID();
         ImGui::Dummy({size.x, dummyH});
+        // TODO(Roy): refactor
+        ImTextureID textureID = nullptr;
+        GLuint glTextureHandle = uTextureID;
+        std::memcpy(&textureID, &glTextureHandle, sizeof(GLuint));
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
     ImGui::End();
@@ -338,7 +342,11 @@ void EditorLayer::onImGuiRender()
         auto size = ImGui::GetContentRegionAvail();
         m_sceneViewportPanelSize = glm::vec2{size.x, size.y};
         // show scene
-        uint32_t textureID = m_editorFramebuffer->getColorAttachmentRendererID();
+        uint32_t uTextureID = m_editorFramebuffer->getColorAttachmentRendererID();
+        // TODO(Roy): refactor
+        ImTextureID textureID = nullptr;
+        GLuint glTextureHandle = uTextureID;
+        std::memcpy(&textureID, &glTextureHandle, sizeof(GLuint));
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 	ImGui::End();

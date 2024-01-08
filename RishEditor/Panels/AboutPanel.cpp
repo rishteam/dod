@@ -20,8 +20,9 @@ void AboutPanel::onImGuiRender()
                                nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings))
     {
 
-        ImGui::Image(m_icon->getTextureID(), ImVec2(128, 128),
-                     ImVec2(0, 0), ImVec2(1, -1));
+        // TODO(Roy): Fix
+//        ImGui::Image(m_icon->getTextureID(), ImVec2(128, 128),
+//                     ImVec2(0, 0), ImVec2(1, -1));
         ImGui::Text("RishEngine - A 2D Game Engine");
         ImGui::Text("Members:");
         ImGui::BulletText("roy4801");

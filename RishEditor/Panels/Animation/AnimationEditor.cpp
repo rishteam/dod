@@ -5,6 +5,7 @@
 #include <Rish/Utils/FileDialog.h>
 #include <Rish/Utils/Serialize.h>
 #include <Rish/Utils/String.h>
+#include <glad/glad.h>
 
 namespace rl {
 
@@ -81,7 +82,12 @@ void AnimationEditor::onImGuiUpdate()
     if(curFrame)
     {
         ImVec2 size{(float) curFrame->getWidth(), (float) curFrame->getHeight()};
-        auto textureID = curFrame->getTextureID();
+
+//        auto textureID = curFrame->getTextureID();
+        // TODO(Roy): refactor
+        ImTextureID textureID = nullptr;
+        GLuint glTextureHandle = curFrame->getTextureID();
+        std::memcpy(&textureID, &glTextureHandle, sizeof(GLuint));
         ImGui::Image(textureID, size, {0, 0}, {1, -1});
     }
 

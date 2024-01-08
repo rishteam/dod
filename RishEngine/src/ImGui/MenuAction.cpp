@@ -185,6 +185,7 @@ bool ImAction::Toggle()
 
 bool ImAction::IsShortcutPressed(bool repeat)
 {
+    /*
     const ImGuiIO& io = ImGui::GetIO();
     //
     // Is Key pressed
@@ -209,7 +210,10 @@ bool ImAction::IsShortcutPressed(bool repeat)
     }
 
     impl->prevTriggered = impl->triggered;
-    return impl->triggered;
+    return impl->triggered;*/
+
+    // TODO(Roy): fix
+    return false;
 }
 
 void ImAction::Reset()

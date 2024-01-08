@@ -139,7 +139,12 @@ void ComponentEditPanel::drawEditComponentWidget<SpriteRenderComponent>()
                 if (render.m_texture)
                 {
                     ImGui::BeginChild("texture_viewer", ImVec2(ImGui::GetWindowWidth(), 64));
-                    ImGui::Image(render.m_texture->getTextureID(), ImVec2(64 * render.m_texture->getAspectRatio(), 64),
+
+                    // TODO(Roy): refactor
+                    ImTextureID textureID = nullptr;
+                    GLuint glTextureHandle = render.m_texture->getTextureID();
+                    std::memcpy(&textureID, &glTextureHandle, sizeof(GLuint));
+                    ImGui::Image(textureID, ImVec2(64 * render.m_texture->getAspectRatio(), 64),
                                  ImVec2(0, 0), ImVec2(1, -1));
                     ImGui::EndChild();
                 }
@@ -304,7 +309,13 @@ void ComponentEditPanel::drawEditComponentWidget<ParticleComponent>()
             ImGui::InputText("##texturePath", &emitter.texturePath, ImGuiInputTextFlags_ReadOnly);
             ImGui::PopItemWidth();
             if (emitter.texture)
-                ImGui::Image(emitter.texture->getTextureID(), ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
+            {
+                // TODO(Roy): refactor
+                ImTextureID textureID = nullptr;
+                GLuint glTextureHandle = emitter.texture->getTextureID();
+                std::memcpy(&textureID, &glTextureHandle, sizeof(GLuint));
+                ImGui::Image(textureID, ImVec2(64, 64), ImVec2(0, 0), ImVec2(1, -1));
+            }
             else
                 ImGui::Dummy(ImVec2(64, 64));
         }
@@ -641,7 +652,8 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
         std::set<UUID>::iterator it;
         static std::string rayCastFilterText;
         ImGui::InputText("Filter##rayCast", &rayCastFilterText);
-        if(ImGui::ListBoxHeader("Entity Has Ray Cast", rigidView.size(), 4))
+        // TODO(Roy): fix
+        /*if(ImGui::ListBoxHeader("Entity Has Ray Cast", rigidView.size(), 4))
         {
             for(auto item : RayCastList)
             {
@@ -657,7 +669,7 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
                 }
             }
             ImGui::ListBoxFooter();
-        }
+        }*/
 
         for(auto dele : DeleteList)
         {
@@ -673,7 +685,8 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
 
         static std::string noRayCastFilterText;
         ImGui::InputText("Filter##noRayCast", &noRayCastFilterText);
-        if(ImGui::ListBoxHeader("Entity Does Not Has Ray Cast", rigidView.size(), 4))
+        // TODO(Roy): fix
+        /*if(ImGui::ListBoxHeader("Entity Does Not Has Ray Cast", rigidView.size(), 4))
         {
             for(auto item : NoRayCastList)
             {
@@ -689,7 +702,7 @@ void ComponentEditPanel::drawEditComponentWidget<LightComponent>()
                 }
             }
             ImGui::ListBoxFooter();
-        }
+        }*/
 //
         for(auto dele : DeleteList)
         {
@@ -856,7 +869,8 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
         //RigidBody1 OptionLists
         static std::string rigidBodyAFilterText;
         ImGui::InputText("Filter##rigidBodyA", &rigidBodyAFilterText);
-        if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
+        // TODO(Roy): fix
+        /*if(ImGui::ListBoxHeader("RigidBody1", view.size(), 4))
         {
             for (auto item : OptionsList)
             {
@@ -870,12 +884,13 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
                 }
             }
             ImGui::ListBoxFooter();
-        }
+        }*/
 
         //RigidBody2 OptionLists
         static std::string rigidBodyBFilterText;
         ImGui::InputText("Filter##rigidBodyB", &rigidBodyBFilterText);
-        if(ImGui::ListBoxHeader("RigidBody2", view.size(), 4))
+        // TODO(Roy): fix
+        /*if(ImGui::ListBoxHeader("RigidBody2", view.size(), 4))
         {
             for (auto item : OptionsList2)
             {
@@ -889,7 +904,7 @@ void ComponentEditPanel::drawEditComponentWidget<Joint2DComponent>()
                 }
             }
             ImGui::ListBoxFooter();
-        }
+        }*/
 
         ImGui::Text("RigidBody1: %s", jit.rigidBody1.to_string().c_str());
         ImGui::Text("RigidBody2: %s", jit.rigidBody2.to_string().c_str());
@@ -992,7 +1007,11 @@ void ComponentEditPanel::drawEditComponentWidget<Animation2DComponent>()
         if(curFrame)
         {
             ImVec2 size{(float) curFrame->getWidth(), (float) curFrame->getHeight()};
-            auto textureID = curFrame->getTextureID();
+//            auto textureID = curFrame->getTextureID();
+            // TODO(Roy): refactor
+            ImTextureID textureID = nullptr;
+            GLuint glTextureHandle = curFrame->getTextureID();
+            std::memcpy(&textureID, &glTextureHandle, sizeof(GLuint));
             ImGui::Image(textureID, size, {0, 0}, {1, -1});
         }
     }
@@ -1089,7 +1108,7 @@ void ComponentEditPanel::onImGuiRender()
 //        drawEditComponentWidget<SubGroupComponent>();
 
         // Popup
-        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvailWidth(), 0)) ||
+        if(ImGui::Button(ICON_FA_PLUS, ImVec2(ImGui::GetContentRegionAvail().x, 0)) ||
            (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))))
         {
             m_componentSelectionPanel.m_open = true;

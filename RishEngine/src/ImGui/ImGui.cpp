@@ -73,8 +73,8 @@ void ImGui::BeginDockspace(const char *name)
     if (opt_fullscreen)
     {
         ImGuiViewport *viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->GetWorkPos());
-        ImGui::SetNextWindowSize(viewport->GetWorkSize());
+        ImGui::SetNextWindowPos(viewport->WorkPos);
+        ImGui::SetNextWindowSize(viewport->WorkSize);
         ImGui::SetNextWindowViewport(viewport->ID);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -133,7 +133,7 @@ bool ImGui::Combo(const char *label, int *current_item, const std::vector<std::s
 //
 bool ImGui::ListBox(const char* label, int* current_item, const std::vector<std::string> &v, int height_in_items)
 {
-    if (ImGui::ListBoxHeader(label, v.size(), height_in_items))
+    /*if (ImGui::ListBoxHeader(label, v.size(), height_in_items))
     {
         for(int i = 0; i < v.size(); i++)
         {
@@ -143,7 +143,10 @@ bool ImGui::ListBox(const char* label, int* current_item, const std::vector<std:
             }
         }
         ImGui::ListBoxFooter();
-    }
+    }*/
+
+    // TODO(Roy): fix
+    return false;
 }
 
 void ImGui::HelpMarker(const char *desc)

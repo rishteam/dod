@@ -13,7 +13,7 @@ void ComponentSelectionPanel::onImGuiRender()
         ImGui::SetKeyboardFocusHere(0);
     m_open = false;
 
-    if(ImGui::ListBoxHeader("##Components"))
+    if(ImGui::BeginListBox("##Components"))
     {
         auto &mapping = ComponentManager::getAddMapping();
         for (auto &&[k, v] : mapping) {
@@ -32,7 +32,7 @@ void ComponentSelectionPanel::onImGuiRender()
                 }
             }
         }
-        ImGui::ListBoxFooter();
+        ImGui::EndListBox();
     }
 }
 
