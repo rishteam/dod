@@ -30,15 +30,19 @@ include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
 # enable doxygen
-option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
-if(ENABLE_DOXYGEN)
-    add_subdirectory(docs)
-endif()
+#option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
+#if(ENABLE_DOXYGEN)
+#    add_subdirectory(docs)
+#endif()
 
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
 
 # Dependencies
+
+
+
+
 add_subdirectory(deps/nativefiledialog)
 add_subdirectory(deps/glad)
 add_subdirectory(deps/spdlog)
@@ -188,6 +192,7 @@ if(RL_USE_DYNAMIC_LIBS)
     target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
 endif()
 
+# Add SFML ###############################
 if(APPLE)
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/usr/local/Cellar/sfml/2.5.1")
@@ -203,23 +208,31 @@ if(APPLE)
     target_link_libraries(RishEngine ${Boost_LIBRARIES})
 elseif(MSYS)
     set(SFML_STATIC_LIBRARIES False)
-    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    #    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/deps/SFML)
 else()
     set(SFML_STATIC_LIBRARIES False)
-    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    #    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/deps/SFML)
 endif()
-
-# Add SFML
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+add_subdirectory(deps/SFML)
+#find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 target_link_libraries(RishEngine
     sfml-system sfml-window sfml-graphics sfml-network sfml-audio
 )
 
-# Add ImGui-SFML
-find_package(ImGui-SFML REQUIRED)
-if(NOT ImGui-SFML_FOUND)
-    message(FATAL_ERROR "ImGui-SFML not found")
-endif()
+# Add imgui ###############################
+#add_subdirectory(deps/imgui)
+#target_link_libraries(RishEngine
+#    imgui::imgui
+#)
+
+# Add ImGui-SFML ###############################
+#find_package(ImGui-SFML REQUIRED)
+#if(NOT ImGui-SFML_FOUND)
+#    message(FATAL_ERROR "ImGui-SFML not found")
+#endif()
+add_subdirectory(deps/imgui-sfml)
 target_link_libraries(RishEngine
     ImGui-SFML::ImGui-SFML
 )
@@ -263,13 +276,30 @@ target_link_libraries(RishEngine
 )
 
 # Add cereal
-find_package(cereal REQUIRED)
+#find_package(cereal REQUIRED)
+add_subdirectory(deps/cereal)
 target_link_libraries(RishEngine
     cereal
 )
 
+include(FetchContent)
+
 # Add re2
-find_package(re2 REQUIRED)
+#find_package(re2 REQUIRED)
+set(ABSL_ENABLE_INSTALL ON)
+add_compile_options(-DABSL_FORCE_WAITER_MODE=4)
+FetchContent_Declare(
+    abseil-cpp
+    GIT_REPOSITORY  https://github.com/abseil/abseil-cpp.git
+    GIT_TAG 20230802.1
+)
+FetchContent_MakeAvailable(abseil-cpp)
+FetchContent_Declare(
+    re2
+    GIT_REPOSITORY https://github.com/google/re2.git
+    GIT_TAG 2023-11-01
+)
+FetchContent_MakeAvailable(re2)
 target_link_libraries(RishEngine
     re2::re2
 )
