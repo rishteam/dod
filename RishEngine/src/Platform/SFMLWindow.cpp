@@ -324,7 +324,9 @@ SFMLWindow::SFMLWindow(const std::string &title, const uint32_t width, const uin
     glGetIntegerv(GL_MAJOR_VERSION, &v_major);
     glGetIntegerv(GL_MINOR_VERSION, &v_minor);
     RL_CORE_INFO("OpenGL Version: {}.{}", v_major, v_minor);
-    RL_CORE_INFO("Vender: {}. Video Device: {}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+    const auto strVendor = std::string{reinterpret_cast<const char*>(glGetString(GL_VENDOR))};
+    const auto strRenderer = std::string{reinterpret_cast<const char*>(glGetString(GL_RENDERER))};
+    RL_CORE_INFO("Vender: {}. Video Device: {}", strVendor, strRenderer);
     RL_CORE_ASSERT(v_major > 4 || (v_major == 4 && v_minor >= 5), "RishEngine requires at least OpenGL version 4.5!");
 
     // DEBUG
