@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
 project(RishEngine)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -30,20 +32,13 @@ include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
 # enable doxygen
-option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
-if(ENABLE_DOXYGEN)
-    add_subdirectory(docs)
-endif()
+#option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
+#if(ENABLE_DOXYGEN)
+#    add_subdirectory(docs)
+#endif()
 
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
-
-# Dependencies
-add_subdirectory(deps/nativefiledialog)
-add_subdirectory(deps/glad)
-add_subdirectory(deps/spdlog)
-add_subdirectory(deps/entt)
-add_subdirectory(deps/IconFontCppHeaders)
 
 # Config generate for RishEngine
 set(CONFIG_H_SOURCE_DIR ${CMAKE_SOURCE_DIR}/)
@@ -65,7 +60,7 @@ set(RL_SCRIPT_FILES
 )
 
 # Add executable
-add_library(RishEngine
+add_library(RishEngine STATIC
     # Application
     src/Core/Application.cpp
 
@@ -178,6 +173,10 @@ target_include_directories(RishEngine
 target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
 target_precompile_headers(RishEngine PUBLIC ${PROJECT_SOURCE_DIR}/include/Rish/rlpch.h) # precompiled headers
 
+# TODO(Roy): try to build static app
+#set(CMAKE_EXE_LINKER_FLAGS " -static")
+#target_link_libraries(RishEngine -static-libgcc -static-libstdc++)
+
 option(RL_SHARED_LIB "Build shared lib" OFF)
 if(RL_SHARED_LIB)
     target_compile_definitions(RishEngine PUBLIC "RL_SHARED_LIB")
@@ -188,6 +187,9 @@ if(RL_USE_DYNAMIC_LIBS)
     target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
 endif()
 
+set(BUILD_SHARED_LIBS OFF)
+
+# Add SFML ###############################
 if(APPLE)
     set(SFML_STATIC_LIBRARIES False)
     set(SFML_DIR "/usr/local/Cellar/sfml/2.5.1")
@@ -203,23 +205,31 @@ if(APPLE)
     target_link_libraries(RishEngine ${Boost_LIBRARIES})
 elseif(MSYS)
     set(SFML_STATIC_LIBRARIES False)
-    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    #    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/deps/SFML)
 else()
     set(SFML_STATIC_LIBRARIES False)
-    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    #    set(SFML_DIR "/mingw32/lib/cmake/SFML")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/deps/SFML)
 endif()
-
-# Add SFML
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+add_subdirectory(deps/SFML)
+#find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 target_link_libraries(RishEngine
     sfml-system sfml-window sfml-graphics sfml-network sfml-audio
 )
 
-# Add ImGui-SFML
-find_package(ImGui-SFML REQUIRED)
-if(NOT ImGui-SFML_FOUND)
-    message(FATAL_ERROR "ImGui-SFML not found")
-endif()
+# Add imgui ###############################
+#add_subdirectory(deps/imgui)
+#target_link_libraries(RishEngine
+#    imgui::imgui
+#)
+
+# Add ImGui-SFML ###############################
+#find_package(ImGui-SFML REQUIRED)
+#if(NOT ImGui-SFML_FOUND)
+#    message(FATAL_ERROR "ImGui-SFML not found")
+#endif()
+add_subdirectory(deps/imgui-sfml)
 target_link_libraries(RishEngine
     ImGui-SFML::ImGui-SFML
 )
@@ -243,37 +253,64 @@ target_link_libraries(RishEngine
 )
 
 # Add spdlog
+set(SPDLOG_BUILD_SHARED OFF)
+add_subdirectory(deps/spdlog)
 target_link_libraries(RishEngine
     spdlog::spdlog
 )
 
 # Add nativefiledialog
+add_subdirectory(deps/nativefiledialog)
 target_link_libraries(RishEngine
     nfd::nfd
 )
 
 # Add glad
+add_subdirectory(deps/glad)
 target_link_libraries(RishEngine
     glad::glad
 )
 
 # Add EnTT
+add_subdirectory(deps/entt)
 target_link_libraries(RishEngine
     EnTT::EnTT
 )
 
 # Add cereal
-find_package(cereal REQUIRED)
+#find_package(cereal REQUIRED)
+set(BUILD_DOC OFF)
+set(BUILD_SANDBOX OFF)
+set(SKIP_PERFORMANCE_COMPARISON ON)
+add_subdirectory(deps/cereal)
 target_link_libraries(RishEngine
     cereal
 )
 
+include(FetchContent)
+
 # Add re2
-find_package(re2 REQUIRED)
+#find_package(re2 REQUIRED)
+set(ABSL_ENABLE_INSTALL ON)
+#set(ABSL_PROPAGATE_CXX_STD ON)
+add_compile_options(-DABSL_FORCE_WAITER_MODE=4)
+FetchContent_Declare(
+    abseil-cpp
+    GIT_REPOSITORY  https://github.com/abseil/abseil-cpp.git
+    GIT_TAG 20230802.1
+)
+FetchContent_MakeAvailable(abseil-cpp)
+FetchContent_Declare(
+    re2
+    GIT_REPOSITORY https://github.com/google/re2.git
+    GIT_TAG 2023-11-01
+)
+FetchContent_MakeAvailable(re2)
 target_link_libraries(RishEngine
     re2::re2
 )
 
+add_subdirectory(deps/IconFontCppHeaders)
 target_link_libraries(RishEngine IconFontCpp::IconFontCpp)
 
 # Copy files

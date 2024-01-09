@@ -10,3 +10,15 @@
 [submodule "RishEngine/deps/IconFontCppHeaders"]
 	path = RishEngine/deps/IconFontCppHeaders
 	url = https://github.com/rishteam/IconFontCppHeaders.git
+[submodule "RishEngine/deps/re2"]
+	path = RishEngine/deps/re2
+	url = git@github.com:rishteam/re2.git
+[submodule "RishEngine/deps/imgui-sfml"]
+	path = RishEngine/deps/imgui-sfml
+	url = git@github.com:rishteam/imgui-sfml.git
+[submodule "RishEngine/deps/cereal"]
+	path = RishEngine/deps/cereal
+	url = git@github.com:rishteam/cereal.git
+[submodule "RishEngine/deps/SFML"]
+	path = RishEngine/deps/SFML
+	url = git@github.com:rishteam/SFML.git
