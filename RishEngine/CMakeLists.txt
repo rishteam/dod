@@ -247,7 +247,8 @@ target_link_libraries(RishEngine
 )
 
 # Add nlohmann_json
-find_package(nlohmann_json 3.2.0 REQUIRED)
+add_subdirectory(deps/nlohmann_json)
+#find_package(nlohmann_json 3.2.0 REQUIRED)
 target_link_libraries(RishEngine
     nlohmann_json::nlohmann_json
 )
@@ -257,6 +258,18 @@ set(SPDLOG_BUILD_SHARED OFF)
 add_subdirectory(deps/spdlog)
 target_link_libraries(RishEngine
     spdlog::spdlog
+)
+
+# Add fmt
+add_subdirectory(deps/fmt)
+target_link_libraries(RishEngine
+    fmt::fmt
+)
+
+# Add glm
+add_subdirectory(deps/glm)
+target_link_libraries(RishEngine
+    glm::glm
 )
 
 # Add nativefiledialog

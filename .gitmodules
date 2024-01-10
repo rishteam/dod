@@ -22,3 +22,12 @@
 [submodule "RishEngine/deps/SFML"]
 	path = RishEngine/deps/SFML
 	url = git@github.com:rishteam/SFML.git
+[submodule "RishEngine/deps/nlohmann_json"]
+	path = RishEngine/deps/nlohmann_json
+	url = git@github.com:rishteam/json.git
+[submodule "RishEngine/deps/glm"]
+	path = RishEngine/deps/glm
+	url = git@github.com:rishteam/glm.git
+[submodule "RishEngine/deps/fmt"]
+	path = RishEngine/deps/fmt
+	url = git@github.com:rishteam/fmt.git
