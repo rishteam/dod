@@ -15,18 +15,18 @@
 
 namespace rl {
 
-// level, __FILE__, __LINE__, __PRETTY_FUNCTION__, format, ##__VA_ARGS__
-#define RL_TRACE(...) rl::Logger::ClientLog(rl::Logger::Trace, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_INFO(...) rl::Logger::ClientLog(rl::Logger::Info, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_WARN(...) rl::Logger::ClientLog(rl::Logger::Warn, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_ERROR(...) rl::Logger::ClientLog(rl::Logger::Error, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_CRITICAL(...) rl::Logger::ClientLog(rl::Logger::Critical, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
+// level, __FILE__, __LINE__, RL_PRETTY_FUNCTION, format, ##__VA_ARGS__
+#define RL_TRACE(...) rl::Logger::ClientLog(rl::Logger::Trace, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_INFO(...) rl::Logger::ClientLog(rl::Logger::Info, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_WARN(...) rl::Logger::ClientLog(rl::Logger::Warn, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_ERROR(...) rl::Logger::ClientLog(rl::Logger::Error, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_CRITICAL(...) rl::Logger::ClientLog(rl::Logger::Critical, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
 
-#define RL_CORE_TRACE(...) rl::Logger::CoreLog(rl::Logger::Trace, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_CORE_INFO(...) rl::Logger::CoreLog(rl::Logger::Info, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_CORE_WARN(...) rl::Logger::CoreLog(rl::Logger::Warn, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_CORE_ERROR(...) rl::Logger::CoreLog(rl::Logger::Error, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
-#define RL_CORE_CRITICAL(...) rl::Logger::CoreLog(rl::Logger::Critical, __FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
+#define RL_CORE_TRACE(...) rl::Logger::CoreLog(rl::Logger::Trace, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_CORE_INFO(...) rl::Logger::CoreLog(rl::Logger::Info, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_CORE_WARN(...) rl::Logger::CoreLog(rl::Logger::Warn, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_CORE_ERROR(...) rl::Logger::CoreLog(rl::Logger::Error, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
+#define RL_CORE_CRITICAL(...) rl::Logger::CoreLog(rl::Logger::Critical, __FILE__, __LINE__, RL_PRETTY_FUNCTION, __VA_ARGS__)
 
 // TODO: Use regex to parse the function
 

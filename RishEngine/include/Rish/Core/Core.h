@@ -12,7 +12,7 @@
 #define RL_DEBUG
 
 #ifdef RL_DEBUG
-    #define RL_ENABLE_ASSERT
+//    #define RL_ENABLE_ASSERT
 //    #define RL_PROFILE
 #endif
 
@@ -44,6 +44,14 @@
 #endif
 
 #define RL_UNUSED(x) ((void)(x))
+
+#if defined(_MSC_VER)
+    #define RL_PRETTY_FUNCTION __FUNCSIG__
+#elif defined(__GNUC__)
+    #define RL_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#else
+    #error "Unsupported compiler"
+#endif
 
 constexpr uint32_t bit_field(uint32_t x)
 {

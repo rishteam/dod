@@ -4,6 +4,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 project(RishEngine)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose Release or Debug" FORCE)
 endif()
@@ -32,10 +34,20 @@ include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
 # enable doxygen
-#option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
-#if(ENABLE_DOXYGEN)
-#    add_subdirectory(docs)
-#endif()
+option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" OFF)
+if(ENABLE_DOXYGEN)
+    add_subdirectory(docs)
+endif()
+
+option(RL_SHARED_LIB "Build shared lib" OFF)
+if(RL_SHARED_LIB)
+    target_compile_definitions(RishEngine PUBLIC "RL_SHARED_LIB")
+endif()
+
+option(RL_USE_DYNAMIC_LIBS "Use shared library" OFF)
+if(RL_USE_DYNAMIC_LIBS)
+    target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
+endif()
 
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
@@ -177,17 +189,7 @@ target_precompile_headers(RishEngine PUBLIC ${PROJECT_SOURCE_DIR}/include/Rish/r
 #set(CMAKE_EXE_LINKER_FLAGS " -static")
 #target_link_libraries(RishEngine -static-libgcc -static-libstdc++)
 
-option(RL_SHARED_LIB "Build shared lib" OFF)
-if(RL_SHARED_LIB)
-    target_compile_definitions(RishEngine PUBLIC "RL_SHARED_LIB")
-endif()
-
-option(RL_USE_DYNAMIC_LIBS "Use shared library" OFF)
-if(RL_USE_DYNAMIC_LIBS)
-    target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
-endif()
-
-set(BUILD_SHARED_LIBS OFF)
+set(BUILD_SHARED_LIBS ${RL_USE_DYNAMIC_LIBS})
 
 # Add SFML ###############################
 if(APPLE)
@@ -300,12 +302,16 @@ target_link_libraries(RishEngine
     cereal
 )
 
+add_subdirectory(deps/IconFontCppHeaders)
+target_link_libraries(RishEngine IconFontCpp::IconFontCpp)
+
 include(FetchContent)
 
 # Add re2
 #find_package(re2 REQUIRED)
 set(ABSL_ENABLE_INSTALL ON)
-#set(ABSL_PROPAGATE_CXX_STD ON)
+set(ABSL_PROPAGATE_CXX_STD ON)
+set(BUILD_SHARED_LIBS OFF)
 add_compile_options(-DABSL_FORCE_WAITER_MODE=4)
 FetchContent_Declare(
     abseil-cpp
@@ -313,6 +319,22 @@ FetchContent_Declare(
     GIT_TAG 20230802.1
 )
 FetchContent_MakeAvailable(abseil-cpp)
+#target_link_libraries(RishEngine
+#    absl::base
+#    absl::core_headers
+#    absl::fixed_array
+#    absl::flags
+#    absl::flat_hash_map
+#    absl::flat_hash_set
+#    absl::inlined_vector
+#    absl::optional
+#    absl::span
+#    absl::str_format
+#    absl::strings
+#    absl::synchronization
+#)
+
+set(BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
     re2
     GIT_REPOSITORY https://github.com/google/re2.git
@@ -322,9 +344,6 @@ FetchContent_MakeAvailable(re2)
 target_link_libraries(RishEngine
     re2::re2
 )
-
-add_subdirectory(deps/IconFontCppHeaders)
-target_link_libraries(RishEngine IconFontCpp::IconFontCpp)
 
 # Copy files
 file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
