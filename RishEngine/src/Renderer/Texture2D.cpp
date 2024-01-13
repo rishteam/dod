@@ -143,7 +143,12 @@ Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height, Texture2DOptio
  */
 void Texture2D::createTexture()
 {
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
+    //[TODO] Old and New Version
+    // OpenGL 4.5
+//    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
+    // OpenGL 4.1
+    glGenTextures(1, &m_textureID);
+    glBindTexture(GL_TEXTURE_2D, m_textureID);
     RL_ASSERT(m_textureID != 0, "[Texture2D] Failed to create a texture");
 }
 
@@ -210,7 +215,11 @@ void Texture2D::setOptions(const Texture2DOption &option)
 
 void Texture2D::setSize(uint32_t width, uint32_t height)
 {
-    glTextureStorage2D(m_textureID, 1, GL_RGBA8, width, height);
+    // [TODO] Old and New Version
+    // 4.5
+//    glTextureStorage2D(m_textureID, 1, GL_RGBA8, width, height);
+    // 4.1
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     m_width = width;
     m_height = height;
 }
