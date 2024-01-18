@@ -60,7 +60,11 @@ void Texture2D::setPixel(uint32_t x, uint32_t y, const glm::vec4 &color)
     p.p.g = (uint8_t)roundf(color.g * 0xff);
     p.p.b = (uint8_t)roundf(color.b * 0xff);
     p.p.a = (uint8_t)roundf(color.a * 0xff);
-    glTextureSubImage2D(m_textureID, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &p);
+    // [TODO] OpenGL 4.5
+//    glTextureSubImage2D(m_textureID, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &p);
+    // 4.1
+    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &p);
+    //
 }
 
 void Texture2D::bind(uint32_t slot) const
@@ -148,6 +152,7 @@ void Texture2D::createTexture()
 //    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
     // OpenGL 4.1
     glGenTextures(1, &m_textureID);
+    //
     glBindTexture(GL_TEXTURE_2D, m_textureID);
     RL_ASSERT(m_textureID != 0, "[Texture2D] Failed to create a texture");
 }
@@ -205,28 +210,41 @@ void Texture2D::setOptions(const Texture2DOption &option)
     const Texture2DWrap &wrapT = option.wrapT;
     //
     glBindTexture(GL_TEXTURE_2D, m_textureID);
+    // [TODO] OpenGL 4.5
     //
-    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, calculateFilterParam(minFilter));
-    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, calculateFilterParam(magFilter));
+//    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, calculateFilterParam(minFilter));
+//    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, calculateFilterParam(magFilter));
+//    //
+//    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, calculateWrapParam(wrapS));
+//    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, calculateWrapParam(wrapT));
+
+    // OpenGL 4.1
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, calculateFilterParam(minFilter));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, calculateFilterParam(magFilter));
+//
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, calculateWrapParam(wrapS));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, calculateWrapParam(wrapT));
     //
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, calculateWrapParam(wrapS));
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, calculateWrapParam(wrapT));
 }
 
 void Texture2D::setSize(uint32_t width, uint32_t height)
 {
-    // [TODO] Old and New Version
-    // 4.5
+    // [TODO] OpenGL 4.5
 //    glTextureStorage2D(m_textureID, 1, GL_RGBA8, width, height);
     // 4.1
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    //
     m_width = width;
     m_height = height;
 }
 
 void Texture2D::setTexture(const void *imagePtr)
 {
-    glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, imagePtr);
+    // [TODO] OpenGL 4.5
+//    glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, imagePtr);
+    // OpenGL 4.1
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, imagePtr);
+    //
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

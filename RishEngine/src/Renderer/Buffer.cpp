@@ -5,20 +5,32 @@ namespace rl {
 
 VertexBuffer::VertexBuffer()
 {
-	glCreateBuffers(1, &vbo);
+    // [TODO] OpenGL 4.5
+    //glCreateBuffers(1, &vbo);
+    // 4.1
+    glGenBuffers(1, &vbo);
+    //
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 }
 
 VertexBuffer::VertexBuffer(uint32_t size)
 {
-	glCreateBuffers(1, &vbo);
+    // [TODO] OpenGL 4.5
+//	glCreateBuffers(1, &vbo);
+    // 4.1
+    glGenBuffers(1, &vbo);
+    //
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 }
 
 VertexBuffer::VertexBuffer(float *vertices, uint32_t size)
 {
-	glCreateBuffers(1, &vbo);
+    // [TODO] OpenGL 4.5
+//	glCreateBuffers(1, &vbo);
+    // 4.1
+    glGenBuffers(1, &vbo);
+    //
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 }
@@ -66,7 +78,11 @@ Ref<VertexBuffer> VertexBuffer::Create()
 IndexBuffer::IndexBuffer(uint32_t *indices, uint32_t count)
 	: m_count(count)
 {
-	glCreateBuffers(1, &ebo);
+    // [TODO] OpenGL 4.5
+//	glCreateBuffers(1, &ebo);
+    // 4.1
+    glGenBuffers(1, &ebo);
+    //
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 }

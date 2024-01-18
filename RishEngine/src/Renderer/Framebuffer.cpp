@@ -32,11 +32,19 @@ void Framebuffer::invalidate()
 		glDeleteTextures(1, &m_depthAttachment);
 	}
     // Generate a framebuffer
-	glCreateFramebuffers(1, &m_frameBufferID);
+    // [TODO] OpenGL 4.5
+//	glCreateFramebuffers(1, &m_frameBufferID);
+    // 4.1
+    glGenFramebuffers(1, &m_frameBufferID);
+    //
 	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferID);
 
     // Generate color attachment
-	glCreateTextures(GL_TEXTURE_2D, 1, &m_colorAttachment);
+    //[TODO] OpenGL 4.5
+//	glCreateTextures(GL_TEXTURE_2D, 1, &m_colorAttachment);
+    // 4.1
+    glGenTextures(1, &m_colorAttachment);
+    //
 	glBindTexture(GL_TEXTURE_2D, m_colorAttachment);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_spec.width, m_spec.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr); // specify settings of texture
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -51,9 +59,20 @@ void Framebuffer::invalidate()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0);
 
     // Generate depth attachment
-	glCreateTextures(GL_TEXTURE_2D, 1, &m_depthAttachment);
+    // [TODO] OpenGL 4.5
+//	glCreateTextures(GL_TEXTURE_2D, 1, &m_depthAttachment);
+    // 4.1
+    glGenBuffers(1, &m_depthAttachment);
+    //
+
 	glBindTexture(GL_TEXTURE_2D, m_depthAttachment);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_spec.width, m_spec.height);
+
+    // [TODO] OpenGL 4.5
+//	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_spec.width, m_spec.height);
+    // 4.1 Not sure if this is equivalent
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, m_spec.width, m_spec.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    //
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachment, 0);
 
 	RL_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
