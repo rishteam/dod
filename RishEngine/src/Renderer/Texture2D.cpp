@@ -70,15 +70,26 @@ void Texture2D::setPixel(uint32_t x, uint32_t y, const glm::vec4 &color)
 void Texture2D::bind(uint32_t slot) const
 {
     RL_PROFILE_FUNCTION();
+    // [TODO] OpenGL 4.5
+//	glBindTextureUnit(slot, m_textureID);
 
-	glBindTextureUnit(slot, m_textureID);
+    // 4.1
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, m_textureID);
+    //
 }
 
 void Texture2D::unbind() const
 {
     RL_PROFILE_FUNCTION();
 
-	glBindTextureUnit(0, 0);
+    // [TODO] OpenGL 4.5
+//	glBindTextureUnit(0, 0);
+
+    // 4.1
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
