@@ -45,9 +45,6 @@ if(RL_SHARED_LIB)
 endif()
 
 option(RL_USE_DYNAMIC_LIBS "Use shared library" OFF)
-if(RL_USE_DYNAMIC_LIBS)
-    target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
-endif()
 
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
@@ -185,6 +182,10 @@ target_include_directories(RishEngine
 target_link_libraries(RishEngine project_options project_warnings) # project options and warnings
 target_precompile_headers(RishEngine PUBLIC ${PROJECT_SOURCE_DIR}/include/Rish/rlpch.h) # precompiled headers
 
+if(RL_USE_DYNAMIC_LIBS)
+    target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
+endif()
+
 # TODO(Roy): try to build static app
 #set(CMAKE_EXE_LINKER_FLAGS " -static")
 #target_link_libraries(RishEngine -static-libgcc -static-libstdc++)
@@ -215,6 +216,11 @@ else()
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/deps/SFML)
 endif()
 add_subdirectory(deps/SFML)
+if (WIN32 AND SFML_BUILD_AUDIO)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/deps/SFML/extlibs/bin/x64/openal32.dll $<TARGET_FILE_DIR:RishEngine>
+    )
+endif()
 #find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 target_link_libraries(RishEngine
     sfml-system sfml-window sfml-graphics sfml-network sfml-audio
