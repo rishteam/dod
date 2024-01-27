@@ -29,3 +29,10 @@ target_include_directories(Editor PUBLIC ${PROJECT_SOURCE_DIR})
 target_link_libraries(Editor
     Rish::Engine project_options project_warnings
 )
+
+if (MSYS AND MSYS_STATIC_RUNTIME)
+    target_link_libraries(${PROJECT_NAME}
+            -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
+            -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+    )
+endif()

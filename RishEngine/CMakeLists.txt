@@ -186,9 +186,12 @@ if(RL_USE_DYNAMIC_LIBS)
     target_compile_definitions(RishEngine PUBLIC "RL_EXPORTS")
 endif()
 
-# TODO(Roy): try to build static app
-#set(CMAKE_EXE_LINKER_FLAGS " -static")
-#target_link_libraries(RishEngine -static-libgcc -static-libstdc++)
+if (MSYS AND MSYS_STATIC_RUNTIME)
+    target_link_libraries(${PROJECT_NAME}
+        -static-libgcc -static-libstdc++ -lwsock32 -lws2_32
+        -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+    )
+endif()
 
 set(BUILD_SHARED_LIBS ${RL_USE_DYNAMIC_LIBS})
 
