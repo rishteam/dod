@@ -109,7 +109,11 @@ case "$1" in
 ;;
 
 "cloc")
-    cloc --exclude-dir=deps,build,cmake-build-debug,cmake-build-release,.idea,.vscode ..
+    if [[ "`whereis cloc`" == "cloc:\n" ]]; then
+        echo "cloc not found"
+    else
+        cloc --exclude-dir=deps,build,cmake-build-debug,cmake-build-release,.idea,.vscode ..
+    fi
 ;;
 
 "-h" | "--help")
